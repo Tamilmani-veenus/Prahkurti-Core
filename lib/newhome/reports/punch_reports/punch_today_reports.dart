@@ -264,7 +264,7 @@ class PunchTodayReports extends GetView<PunchInController> {
                                                     padding: const EdgeInsets.only(left: 20),
                                                     child: Row(
                                                       children: [
-                                                        SizedBox(width: 50,
+                                                        SizedBox(width: 70,
                                                           child: Text(
                                                             "In Time :",
                                                             style: TextStyle(
@@ -295,7 +295,7 @@ class PunchTodayReports extends GetView<PunchInController> {
                                                     child: Row(
                                                       children: [
                                                         SizedBox(
-                                                          width: 50,
+                                                          width: 70,
                                                           child: Text(
                                                             "In Project :  ",
                                                             style: TextStyle(

@@ -33,6 +33,7 @@ class _PunchInOutReportsState extends State<PunchInOutReports> with SingleTicker
         punchInController.filteredList.clear();
         punchInController.punchFilterRxList.clear();
         punchInController.todayRpteditingController.text = "";
+        punchInController.fromDate.text = BaseUtitiles.initiateCurrentDateFormat();
         if (loginController.user.value.userType == "A") {
           staffController.Staffname.text = "--SELECT--";
           staffController.selectedstaffId.value = 0;

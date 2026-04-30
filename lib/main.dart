@@ -110,7 +110,7 @@ class _StartAppState extends State<StartApp> {
 
   Widget _buildWithTheme(BuildContext context, ThemeState state) {
     return GetMaterialApp(
-      title: "Vrindhavana Properties",
+      title: "Prahkurti Constructions",
       builder: (context, child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),

@@ -375,8 +375,7 @@ class _HomeScreenOtherUserState extends State<HomeScreenOtherUser> {
                   const SizedBox(height: 100),
                   Column(
                     children: [
-                      FadeAnimation(
-                        1.2,
+                      FadeAnimation(1.2,
                         Transform(
                           alignment: FractionalOffset.center,
                           transform: Matrix4.rotationZ(
@@ -396,12 +395,10 @@ class _HomeScreenOtherUserState extends State<HomeScreenOtherUser> {
                                     -3.1415926535897932 / 4,
                                   ),
                                   child: Center(
-                                    child: Container(
-                                      height: 145,
-
-
+                                    child: SizedBox(
+                                      height: 120,
                                       child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(45),
+                                        borderRadius: BorderRadius.circular(15),
                                         child: Image.asset(
                                           "assets/images/resizelogo.png",
                                           fit: BoxFit.contain,
