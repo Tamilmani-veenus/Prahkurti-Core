@@ -17,11 +17,11 @@ class ApiConfig {
     if (isLive) {
       APIURL = "${LIVE_ENDPOINT_CORE}PrakruthiAPI/";
       APIURL_CORE = "${LIVE_ENDPOINT_CORE}PrakruthiAPI/";
-      WebURL = "http://49.204.233.151:8080/PrakruthiAPI/";
+      WebURL = "${LIVE_ENDPOINT_CORE}Prahkurti/";
       print("IP_URL $APIURL");
     } else {
       APIURL = DEFAULT_BASE_URL_CORE;
-      WebURL = "${LIVE_ENDPOINT_CORE}PrakruthiAPI/";
+      WebURL = "${LIVE_ENDPOINT_CORE}Prahkurti/";
       print("Using default base URL: $APIURL");
     }
   }

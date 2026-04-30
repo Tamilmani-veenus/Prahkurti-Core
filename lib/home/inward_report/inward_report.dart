@@ -539,11 +539,8 @@ class _InwardReportState extends State<InwardReport> {
 
 
   download(int uid,String uType,int pId,int sId,String pName, String sName,int supId, String supName,String fdate,String todate,mId){
-     // launch( ApiConstant.Web_URL + 'MobileReports/Mobile_Inward_RPT.aspx?UID=$uid&UTYPE=$uType&PID=$pId&SID=$sId&PNAME=$pName&SNAME=$sName&SUPID=$supId&SUPNAME=$supName&FDT=$fdate&TDT=$todate');
-     // print( ApiConstant.Web_URL + 'MobileReports/Mobile_Inward_RPT.aspx?UID=$uid&UTYPE=$uType&PID=$pId&SID=$sId&PNAME=$pName&SNAME=$sName&SUPID=$supId&SUPNAME=$supName&FDT=$fdate&TDT=$todate');
-
-    launch("${ApiConfig.WebURL}inward-report-mobile?fromDate=2020-04-01&toDate=2026-04-06&projectId=$pId&siteId=$sId&supplierId=$supId&materialId=$mId&access_token=${loginController.user.value.accessToken}");
-print("${ApiConfig.WebURL}inward-report-mobile?fromDate=2020-04-01&toDate=2026-04-06&projectId=$pId&siteId=$sId&supplierId=$supId&materialId=$mId&access_token=${loginController.user.value.accessToken}");
+   launch("${ApiConfig.WebURL}mobile-inward-report?fromDate=2020-04-01&toDate=2026-04-06&projectId=$pId&siteId=$sId&supplierId=$supId&materialId=$mId&access_token=${loginController.user.value.accessToken}");
+print("${ApiConfig.WebURL}mobile-inward-report?fromDate=2020-04-01&toDate=2026-04-06&projectId=$pId&siteId=$sId&supplierId=$supId&materialId=$mId&access_token=${loginController.user.value.accessToken}");
   }
 
   List<PdfListModel> getInwardReportList() {
