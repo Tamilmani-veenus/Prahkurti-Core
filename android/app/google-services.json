@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "444764150959",
+    "project_id": "prahkurti-72eac",
+    "storage_bucket": "prahkurti-72eac.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:444764150959:android:e13649f58b191cb63d485a",
+        "android_client_info": {
+          "package_name": "com.veenus.prahkurti"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDxxoNWh74liPyUbFhkVeP87TWfLse87I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
