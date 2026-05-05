@@ -850,63 +850,63 @@ class _Home_DashboardState extends State<Home_Dashboard> {
                               ),
                             ),
                             const SizedBox(height: 14),
-                            Container(
-                              margin: const EdgeInsets.only(left: 15),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).primaryColor,
-                                      borderRadius: const BorderRadius.all(
-                                        Radius.circular(10),
-                                      ),
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          purple,
-                                          blue,
-                                        ],
-                                      ),
-                                    ),
-                                    child: const Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.gps_fixed,
-                                          color: Colors.white,
-                                          size: 25,
-                                        )
-                                        // Image.asset('assets/images/ic_wallet.png',
-                                        //     width: 22),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: 14),
-                                  Text(
-                                    'Pin Site Locations',
-                                    style: subHeader,
-                                  ),
-                                  const Spacer(),
-                                  IconButton(
-                                    onPressed: () async {
-                                      await siteLocationController
-                                          .getProjectName("0", "1");
-                                      Get.to(() => const SiteLocationView(
-                                        allotedStatus: "0",
-                                        checkValue: "1",
-                                      ));
-                                    },
-                                    icon: Image.asset(
-                                      'assets/images/ic_arrow.png',
-                                      height: 24,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            // Container(
+                            //   margin: const EdgeInsets.only(left: 15),
+                            //   child: Row(
+                            //     children: [
+                            //       Container(
+                            //         width: 40,
+                            //         height: 40,
+                            //         decoration: BoxDecoration(
+                            //           color: Theme.of(context).primaryColor,
+                            //           borderRadius: const BorderRadius.all(
+                            //             Radius.circular(10),
+                            //           ),
+                            //           gradient: LinearGradient(
+                            //             begin: Alignment.topLeft,
+                            //             end: Alignment.bottomRight,
+                            //             colors: [
+                            //               purple,
+                            //               blue,
+                            //             ],
+                            //           ),
+                            //         ),
+                            //         child: const Row(
+                            //           mainAxisAlignment: MainAxisAlignment.center,
+                            //           children: [
+                            //             Icon(
+                            //               Icons.gps_fixed,
+                            //               color: Colors.white,
+                            //               size: 25,
+                            //             )
+                            //             // Image.asset('assets/images/ic_wallet.png',
+                            //             //     width: 22),
+                            //           ],
+                            //         ),
+                            //       ),
+                            //       const SizedBox(width: 14),
+                            //       Text(
+                            //         'Pin Site Locations',
+                            //         style: subHeader,
+                            //       ),
+                            //       const Spacer(),
+                            //       IconButton(
+                            //         onPressed: () async {
+                            //           await siteLocationController
+                            //               .getProjectName("0", "1");
+                            //           Get.to(() => const SiteLocationView(
+                            //             allotedStatus: "0",
+                            //             checkValue: "1",
+                            //           ));
+                            //         },
+                            //         icon: Image.asset(
+                            //           'assets/images/ic_arrow.png',
+                            //           height: 24,
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
                             const SizedBox(height: 20),
 
                           ],

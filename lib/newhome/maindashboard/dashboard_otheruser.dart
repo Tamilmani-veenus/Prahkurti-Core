@@ -372,7 +372,7 @@ class _HomeScreenOtherUserState extends State<HomeScreenOtherUser> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  const SizedBox(height: 100),
+                  const SizedBox(height: 150),
                   Column(
                     children: [
                       FadeAnimation(1.2,
@@ -423,116 +423,116 @@ class _HomeScreenOtherUserState extends State<HomeScreenOtherUser> {
                           const SizedBox(height: 20,),
                         ],
                       )),
-                      FadeAnimation(  1.5,
-                        Card(elevation: 5,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(32), // Apply rounded corners here
-                          ),
-                          child: Container(
-                            decoration: kGradientBoxDecoration,
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(32),
-                                ),
-                                width: BaseUtitiles.getWidthtofPercentage(context, 70),
-                                child: Column(
-                                  children: [
-                                    SizedBox( height: BaseUtitiles.getheightofPercentage(context, 2),),
-
-                                    FadeAnimation(
-                                      1.5,
-                                      Obx(()=>
-                                          Container(
-
-                                              width: BaseUtitiles.getWidthtofPercentage(context, 65),
-                                              height: BaseUtitiles.getheightofPercentage(context, 5),
-                                              child: ListTile(
-                                                title: GestureDetector(
-                                                    onTap: (){
-                                                      _handleRadioValueChange(1);
-                                                    },
-                                                    child: Text('Alloted Projects',style: const TextStyle(color: Colors.black,fontSize: 15,fontWeight: FontWeight.bold))),
-                                                leading: Radio<int>(
-                                                  activeColor: Theme.of(context).primaryColor,
-                                                  value: 1,
-                                                  groupValue: punchInController.selectedRadio.value,
-                                                  onChanged: _handleRadioValueChange,
-                                                ),
-                                              )),
-                                      ),
-                                    ),
-                                    Obx(()=>
-                                        FadeAnimation(
-                                          1.5, Container(
-                                          width: BaseUtitiles.getWidthtofPercentage(context, 65),
-                                          height: BaseUtitiles.getheightofPercentage(context, 5),
-                                          child: ListTile(
-                                            title: GestureDetector(
-                                                onTap: (){
-                                                  _handleRadioValueChange(2);
-                                                },
-                                                child: Text('Non-Alloted Projects',style: const TextStyle(color: Colors.black,fontSize: 15,fontWeight: FontWeight.bold))),
-                                            leading: Radio<int>(
-                                              activeColor: Theme.of(context).primaryColor,
-                                              value: 2,
-                                              groupValue: punchInController.selectedRadio.value,
-                                              onChanged: _handleRadioValueChange,
-                                            ),
-                                          ),
-                                        ),
-                                        ),
-                                    ),
-
-                                    SizedBox( height: BaseUtitiles.getheightofPercentage(context, 3),),
-
-                                    FadeAnimation(
-                                      1.5, Padding(
-                                      padding: EdgeInsets.only(bottom: 16.r,left: 16.r,right: 16.r),
-                                      child: PunchButtonWidget(
-                                        maxHeight: 40.h,
-                                        maxWidth: 150.w,
-                                        color: Theme.of(context).primaryColor,
-                                        title:
-                                        Obx(()=>
-                                            Text(
-                                              punchInController.resPunchSts.value=="TRUE" ?"Punch Out":"Punch In",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14.0,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                        ),
-                                        onTap: () async {
-                                          int selected = punchInController.selectedRadio.value;
-
-                                          if (selected == 1 || selected == 2) {
-                                            String allotedStatus = selected == 1 ? "Y" : "N";
-
-                                            await punchInController.getProjectPunchInSts();
-                                            punchIn = punchInController.resPunchSts.value == "FALSE";
-
-                                            await siteLocationController.getProjectName(allotedStatus, "0");
-                                            Get.to(() => SiteLocationView(allotedStatus: allotedStatus, checkValue: "0"));
-                                          } else {
-                                            BaseUtitiles.showToast("Please select any one");
-                                          }
-
-                                        },
-                                      ),
-                                    ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      // FadeAnimation(  1.5,
+                      //   Card(elevation: 5,
+                      //     shape: RoundedRectangleBorder(
+                      //       borderRadius: BorderRadius.circular(32), // Apply rounded corners here
+                      //     ),
+                      //     child: Container(
+                      //       decoration: kGradientBoxDecoration,
+                      //       child: Padding(
+                      //         padding: const EdgeInsets.all(2.0),
+                      //         child: Container(
+                      //           decoration: BoxDecoration(
+                      //             color: Colors.white,
+                      //             borderRadius: BorderRadius.circular(32),
+                      //           ),
+                      //           width: BaseUtitiles.getWidthtofPercentage(context, 70),
+                      //           child: Column(
+                      //             children: [
+                      //               SizedBox( height: BaseUtitiles.getheightofPercentage(context, 2),),
+                      //
+                      //               FadeAnimation(
+                      //                 1.5,
+                      //                 Obx(()=>
+                      //                     Container(
+                      //
+                      //                         width: BaseUtitiles.getWidthtofPercentage(context, 65),
+                      //                         height: BaseUtitiles.getheightofPercentage(context, 5),
+                      //                         child: ListTile(
+                      //                           title: GestureDetector(
+                      //                               onTap: (){
+                      //                                 _handleRadioValueChange(1);
+                      //                               },
+                      //                               child: Text('Alloted Projects',style: const TextStyle(color: Colors.black,fontSize: 15,fontWeight: FontWeight.bold))),
+                      //                           leading: Radio<int>(
+                      //                             activeColor: Theme.of(context).primaryColor,
+                      //                             value: 1,
+                      //                             groupValue: punchInController.selectedRadio.value,
+                      //                             onChanged: _handleRadioValueChange,
+                      //                           ),
+                      //                         )),
+                      //                 ),
+                      //               ),
+                      //               Obx(()=>
+                      //                   FadeAnimation(
+                      //                     1.5, Container(
+                      //                     width: BaseUtitiles.getWidthtofPercentage(context, 65),
+                      //                     height: BaseUtitiles.getheightofPercentage(context, 5),
+                      //                     child: ListTile(
+                      //                       title: GestureDetector(
+                      //                           onTap: (){
+                      //                             _handleRadioValueChange(2);
+                      //                           },
+                      //                           child: Text('Non-Alloted Projects',style: const TextStyle(color: Colors.black,fontSize: 15,fontWeight: FontWeight.bold))),
+                      //                       leading: Radio<int>(
+                      //                         activeColor: Theme.of(context).primaryColor,
+                      //                         value: 2,
+                      //                         groupValue: punchInController.selectedRadio.value,
+                      //                         onChanged: _handleRadioValueChange,
+                      //                       ),
+                      //                     ),
+                      //                   ),
+                      //                   ),
+                      //               ),
+                      //
+                      //               SizedBox( height: BaseUtitiles.getheightofPercentage(context, 3),),
+                      //
+                      //               FadeAnimation(
+                      //                 1.5, Padding(
+                      //                 padding: EdgeInsets.only(bottom: 16.r,left: 16.r,right: 16.r),
+                      //                 child: PunchButtonWidget(
+                      //                   maxHeight: 40.h,
+                      //                   maxWidth: 150.w,
+                      //                   color: Theme.of(context).primaryColor,
+                      //                   title:
+                      //                   Obx(()=>
+                      //                       Text(
+                      //                         punchInController.resPunchSts.value=="TRUE" ?"Punch Out":"Punch In",
+                      //                         style: TextStyle(
+                      //                           color: Colors.white,
+                      //                           fontSize: 14.0,
+                      //                           fontWeight: FontWeight.bold,
+                      //                         ),
+                      //                         textAlign: TextAlign.center,
+                      //                       ),
+                      //                   ),
+                      //                   onTap: () async {
+                      //                     int selected = punchInController.selectedRadio.value;
+                      //
+                      //                     if (selected == 1 || selected == 2) {
+                      //                       String allotedStatus = selected == 1 ? "Y" : "N";
+                      //
+                      //                       await punchInController.getProjectPunchInSts();
+                      //                       punchIn = punchInController.resPunchSts.value == "FALSE";
+                      //
+                      //                       await siteLocationController.getProjectName(allotedStatus, "0");
+                      //                       Get.to(() => SiteLocationView(allotedStatus: allotedStatus, checkValue: "0"));
+                      //                     } else {
+                      //                       BaseUtitiles.showToast("Please select any one");
+                      //                     }
+                      //
+                      //                   },
+                      //                 ),
+                      //               ),
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                   const SizedBox(height: 150),
