@@ -47,6 +47,9 @@ class MaterialEditResult  {
     this.preparedbyName,
     this.purchaseType,
     this.purchaseVal,
+    this.verifyStatus,
+    this.approveStatus,
+    this.preApproveStatus,
     this.requestDet,
   });
 
@@ -63,6 +66,9 @@ class MaterialEditResult  {
   String? preparedbyName;
   String? purchaseType;
   String? purchaseVal;
+  String? verifyStatus;
+  String? approveStatus;
+  String? preApproveStatus;
   List<RequestDet>? requestDet;
 
   factory MaterialEditResult .fromJson(Map<String, dynamic> json) => MaterialEditResult (
@@ -79,6 +85,9 @@ class MaterialEditResult  {
     preparedbyName: json["createdName"],
     purchaseType: json["requestType"],
     purchaseVal: json["requestType"],
+    verifyStatus: json["verifyStatus"],
+    approveStatus: json["approveStatus"],
+    preApproveStatus: json["preApproveStatus"],
     requestDet: List<RequestDet>.from(json["mMatReqMasLink"].map((x) => RequestDet.fromJson(x))),
   );
 
@@ -96,6 +105,9 @@ class MaterialEditResult  {
     "createdName": preparedbyName,
     "requestType": purchaseType,
     "requestType": purchaseVal,
+    "verifyStatus": verifyStatus,
+    "approveStatus": approveStatus,
+    "preApproveStatus": preApproveStatus,
     "mMatReqMasLink": List<dynamic>.from(requestDet!.map((x) => x.toJson())),
   };
 }
@@ -108,10 +120,13 @@ class RequestDet {
     this.matName,
     this.scale,
     this.qty,
+    this.reqQty,
     this.balqty,
     this.stockqty,
     this.detRemarks,
     this.detDescription,
+    this.preApproveStatus,
+    this.approveStatus
   });
 
   int? reqDetId;
@@ -120,10 +135,13 @@ class RequestDet {
   String? matName;
   String? scale;
   double? qty;
+  double? reqQty;
   double? balqty;
   double? stockqty;
   String? detRemarks;
   String? detDescription;
+  String? approveStatus;
+  String? preApproveStatus;
 
   factory RequestDet.fromJson(Map<String, dynamic> json) => RequestDet(
     reqDetId: json["id"],
@@ -132,10 +150,13 @@ class RequestDet {
     scale: json["scaleName"],
     scaleId: json["scaleID"],
     qty: json["qty"],
+    reqQty: json["reqQty"],
     balqty: (json["balQty"] as num?)?.toDouble(),
     stockqty: (json["stockQty"] as num?)?.toDouble(),
     detRemarks: json["remarks"],
     detDescription: json["reqDescription"],
+    preApproveStatus: json["preApproveStatus"],
+    approveStatus: json["approveStatus"]
   );
 
   Map<String, dynamic> toJson() => {
@@ -145,9 +166,12 @@ class RequestDet {
     "scaleName": scale,
     "scaleID": scaleId,
     "qty": qty,
+    "reqQty": reqQty,
     "balQty": balqty,
     "stockQty": stockqty,
     "remarks": detRemarks,
     "reqDescription": detDescription,
+    "approveStatus": approveStatus,
+    "preApproveStatus": preApproveStatus
   };
 }

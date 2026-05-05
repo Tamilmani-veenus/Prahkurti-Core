@@ -120,6 +120,21 @@ class TransferBW_project_Controller extends GetxController {
     ItemGetTableListdata.value = [];
   }
 
+  Future<bool> TransferStatusCheckApi(int? Id) async {
+    final value = await TransferBetweenProject_provider.TransferStatusCheckApi(Id!);
+    if (value != null) {
+      if (value["success"] == false) {
+        BaseUtitiles.showToast(value["message"]);
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      BaseUtitiles.showToast('Something went wrong..');
+      return false;
+    }
+  }
+
   ///----Transfer Pending---------
   Future getTransferProject_Alldatas(int reqId, BuildContext context) async {
     transferAllDatasList.value = [];

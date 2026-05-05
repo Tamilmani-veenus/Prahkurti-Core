@@ -173,7 +173,7 @@ class AdvanceReqVoucherController extends GetxController {
       vocDate:entryDateController.text,
       vocType:commonVoucherController.VocType.value,
       projectId:projectController.selectedProjectId.value.toString(),
-      accTypeId:commonVoucherController.selectedAccId.value.toString(),
+      accTypeId:commonVoucherController.selectedAccTypeId.value.toString(),
       accNameId:commonVoucherController.selectedAccnameId.value.toString(),
       payFor:commonVoucherController.selectedAccPayId.value.toString(),
       payMode:commonVoucherController.selectedPaymodeId.value.toString(),

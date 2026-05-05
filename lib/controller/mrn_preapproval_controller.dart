@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -77,7 +79,7 @@ class MrnPreApprovalController extends GetxController {
   var materialapprlistService = MaterialapprlistService();
 
   Future gettingProjectName(int reqMasId, int proId, BuildContext context) async {
-    final value = await MrnFinalApprovalProvider.projectNameProvider(proId);
+    final value = await MrnFinalApprovalProvider.projectNameProvider("MRN Pre Approve",proId);
     if (value != null) {
       if (value.success == true) {
         if (value.result!.isNotEmpty) {
@@ -129,6 +131,7 @@ class MrnPreApprovalController extends GetxController {
 
   //---------Get itemlist from local DB---------------
   getMaterialsItemlist_TableDatas() async {
+    MaterialAppr_itemview_GetDbList.value = [];
     var MatAppList =
         await materialapprlistService.Material_ApprovalItemlist_table_readAll();
     MatAppList.forEach((getdatas) {
@@ -176,6 +179,30 @@ class MrnPreApprovalController extends GetxController {
           MaterialAppr_itemview_GetDbList.value[index].desc.toString();
       mrnpre_Remarks_ListController[index].text =
           MaterialAppr_itemview_GetDbList.value[index].remarks.toString();
+    }
+  }
+
+  MaterialItemlistBal_clickEdit(int index) {
+    double balQty = double.parse(
+        MaterialAppr_itemview_GetDbList.value[index].balqty.toString());
+
+    double enteredQty = mrnpre_ApprQty_ListController[index].value.text.isEmpty
+        ? 0
+        : double.parse(mrnpre_ApprQty_ListController[index].value.text);
+    if(mrn_request_controller.ReqType.value == "PO")
+    {
+      if (enteredQty > balQty) {
+        enteredQty = 0;
+        mrnpre_ApprQty_ListController[index].text = "0.0";
+        BaseUtitiles.showToast("More than Bal Qty, Not Allowed");
+      }
+      else {
+        // If none of the above conditions are met, call updateConsumTables()
+        Approval_updateConsumTables();
+      }
+    }
+    else {
+      Approval_updateConsumTables();
     }
   }
 
@@ -329,11 +356,14 @@ class MrnPreApprovalController extends GetxController {
         preApproveBy: int.parse(loginController.EmpId()),
         preApproveDate:
             BaseUtitiles().convertToUtcIso(mrnpre_RequestDateText.text),
+        verifyStatus: "Y",
         preApproveStatus: "Y",
+        approveStatus: "N",
         approveRemarks: mrnpre_ApprovalremarksText.text,
         mMatReqMasLink: getsaveDetList.value.isEmpty
             ? attendanceListDet(reqId)
             : getsaveDetList.value));
+    print("DDDDDD....${jsonEncode(body)}");
     final list = await Mrn_Req_provider.SaveMaterialScreenEntryAPI(
         body, reqId, mrn_request_controller.saveButton.value, context);
 
@@ -363,7 +393,7 @@ class MrnPreApprovalController extends GetxController {
           id: element.reqDetId,
           materialReqOrdMasid: reqId,
           materialId: element.materialid,
-          qty: element.reqqty,
+          qty: element.appqty,
           scaleId: element.scaleId,
           siteId: siteController.selectedsiteId.value,
           reqQty: element.reqqty,
@@ -372,6 +402,7 @@ class MrnPreApprovalController extends GetxController {
           refProjectId: int.tryParse(element.tranfromprjid),
           preApproveType: element.apptype,
           preApproveStatus: "Y",
+          approveStatus: "N"
         );
         getsaveDetList.value.add(list);
       }

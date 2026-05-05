@@ -30,7 +30,7 @@ class _InternetLostConnectionState extends State<InternetLostConnection> {
     super.initState();
     var duration = const Duration(seconds: 2);
     Future.delayed(duration,() async {
-      // SignInPage.checkVersion(context);
+      SignInPage.checkVersion(context);
       final ConnectivityResult result = await Connectivity().checkConnectivity();
       _connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
         print('Current connectivity status: $result');
@@ -52,7 +52,7 @@ class _InternetLostConnectionState extends State<InternetLostConnection> {
     ScreenUtil.init(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Sample App"),
+        title: const Text("Prahkurti Constructions"),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios), // You can use any icon you want here
           onPressed: () {

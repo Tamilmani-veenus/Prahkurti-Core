@@ -302,6 +302,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
       materiallist.scaleId = user['scaleId'];
       materiallist.reqDetId = user['reqDetId'];
       materiallist.qty = user['qty'];
+      materiallist.reqQty = user['reqQty'];
       materiallist.balqty = user['balqty'];
       materiallist.remarks = user['remarks'];
       materiallist.desc = user['desc'];
@@ -350,6 +351,10 @@ class MRNRequest_PreIndent_Controller extends GetxController{
           enteredQty = 0;
           Addwork_qtyControllers[index].text = "0";
         }
+        else {
+          // If none of the above conditions are met, call updateConsumTables()
+          updateConsumTables();
+        }
       }
 
       else {
@@ -376,7 +381,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
 
         if (enteredQty > balQty) {
 
-          BaseUtitiles.showToast("Entered qty greater than Balance qty");
+          BaseUtitiles.showToast("More than Bal Qty, Not Allowed");
 
           Addwork_qtyControllers[index].text = "0";
 
@@ -407,6 +412,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
         materialTableModel.scaleId = element.scaleId;
         materialTableModel.reqDetId = element.reqDetId;
         materialTableModel.qty = 0;
+        materialTableModel.reqQty = element.reqQty;
         materialTableModel.balqty = element.balqty;
         materialTableModel.desc=Addwork_descControllers[i].value.text;
         materialTableModel.remarks=Addwork_remarksControllers[i].value.text;
@@ -421,7 +427,8 @@ class MRNRequest_PreIndent_Controller extends GetxController{
         materialTableModel.scaleId = element.scaleId!;
         materialTableModel.reqDetId = element.reqDetId!;
         materialTableModel.qty = double.parse(Addwork_qtyControllers[i].value.text);
-        // materialTableModel.balqty = element.balqty;
+        materialTableModel.reqQty = element.reqQty;
+        materialTableModel.balqty = element.balqty;
         materialTableModel.desc=Addwork_descControllers[i].value.text;
         materialTableModel.remarks=Addwork_remarksControllers[i].value.text;
         updateListDatas.add(materialTableModel);
@@ -490,7 +497,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
     final list = await MRNRequest_PreIndent_Provider.SaveMaterialPreIndentEntryAPII(body, id, saveButton.value, context);
     if (list != null) {
       if (list["success"] == true) {
-        if (saveButton.value == RequestConstant.VERIFY) {
+        if (saveButton.value == RequestConstant.VERIFY || saveButton.value == RequestConstant.APPROVAL) {
           BaseUtitiles.showToast(list["message"]);
           await pendingListController.getPendingList();
           BaseUtitiles.popMultiple(context, count: 4);
@@ -523,7 +530,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
           qty: element.qty,
           scaleId: element.scaleId,
           siteId: siteController.selectedsiteId.value,
-          reqQty: element.qty,
+          reqQty: isSubmit || isResubmit ? element.qty : isVerify ? element.reqQty : element.reqQty,
           remarks: element.remarks,
           reqDescription: element.desc,
         );
@@ -547,6 +554,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
         materialTableModel.scaleId = val.scaleId;
         materialTableModel.reqDetId = val.reqDetId;
         materialTableModel.qty = val.qty!;
+        materialTableModel.reqQty = val.reqQty!;
         materialTableModel.balqty = val.balqty!;
         materialTableModel.remarks = val.detRemarks!;
         materialTableModel.desc = val.detDescription;
@@ -602,6 +610,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
         materialTableModel.scaleId = val.scaleId!;
         materialTableModel.reqDetId = val.reqDetId!;
         materialTableModel.qty = val.qty!;
+        materialTableModel.reqQty = val.reqQty!;
         materialTableModel.balqty = val.balqty!;
         materialTableModel.remarks = val.detRemarks!;
         materialTableModel.desc = val.detDescription;

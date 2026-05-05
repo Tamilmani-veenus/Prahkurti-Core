@@ -1306,14 +1306,14 @@ class BottomsheetControllers {
                           child: Text(list[index].accType.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
                         ),
                         onTap: () async {
-                          commonVoucherController.selectedAccId.value = list[index].accTypeid;
+                          commonVoucherController.selectedAccTypeId.value = list[index].accTypeid;
                           commonVoucherController.AccountTypename.text = list[index].accType.toString();
-                          advanceReqVoucherController_new.listButton.value = commonVoucherController.selectedAccId.value == 4 ? "List" : "Sitewise List";
+                          advanceReqVoucherController_new.listButton.value = commonVoucherController.selectedAccTypeId.value == 4 ? "List" : "Sitewise List";
                           searchcontroller.text = "";
                           commonVoucherController.selectedAccnameId.value = 0;
                           commonVoucherController.Accountname.text = "--SELECT--";
                           commonVoucherController.namethrough.text = "--SELECT--";
-                          if(commonVoucherController.selectedAccId.value==4){
+                          if(commonVoucherController.selectedAccTypeId.value==4){
                             commonVoucherController.payforController.text = "Advance";
                             commonVoucherController.payfor.value = "A";
                           }
@@ -1416,8 +1416,8 @@ class BottomsheetControllers {
                         ),
                         onTap: () async {
                           commonVoucherController.selectedAccnameId.value = list[index].accNameid;
-                          commonVoucherController. Accountname.text = list[index].accName.toString();
-                          commonVoucherController. namethrough.text = list[index].accName.toString();
+                          commonVoucherController.Accountname.text = list[index].accName.toString();
+                          commonVoucherController.namethrough.text = list[index].accName.toString();
                           searchcontroller.text = "";
                           Navigator.pop(context);
                         },
@@ -1468,7 +1468,6 @@ class BottomsheetControllers {
                     },
                     textInputAction: TextInputAction.search,
                     onChanged: (value)  {
-                      // commonVoucherController.payforNamelist.value=BaseUtitiles.acPayForNamePopupAlert(value,widget.list);
                       list=BaseUtitiles.acPayForNamePopupAlert(value,commonVoucherController.getPayfordropDownvalue.value);
                     },
                   ),
@@ -1517,6 +1516,7 @@ class BottomsheetControllers {
                           commonVoucherController.AccPayforname.text = list[index].acPayForName.toString();
                           searchcontroller.text = "";
                           Navigator.pop(context);
+                          print("wwwwwwwww...${commonVoucherController.selectedAccPayId.value}");
                         },
                       ),
                       Divider(),
@@ -1626,6 +1626,103 @@ class BottomsheetControllers {
         );
       },);
   }
+
+  PaymentType(context, list ){
+    showModalBottomSheet(context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+      builder: (BuildContext context) {
+        return Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: BaseUtitiles.getWidthtofPercentage(context, 50),
+                  margin: EdgeInsets.only(top: 10, left: 15),
+                  child: TextField(
+                    controller: searchcontroller,
+                    decoration: InputDecoration(
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      prefixIcon: const Icon(Icons.search,
+                        color: Colors.black,
+                      ),
+                      hintText: "search..",
+                      hintStyle: TextStyle(color: Colors.black),
+                      isDense: true,
+                      fillColor: Setmybackground,
+                    ),
+                    onEditingComplete: () {
+                      FocusScope.of(context).unfocus();
+                    },
+                    textInputAction: TextInputAction.search,
+                    onChanged: (value)  {
+                      list=BaseUtitiles.paymodePopupAlert(value,commonVoucherController.paymentTypeList.value);
+                    },
+                  ),
+                ),
+                SizedBox(width: 20),
+                Container(
+                  width: BaseUtitiles.getWidthtofPercentage(context, 30),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(3),
+                    child: Text("Payment Type", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                  ),
+                ),
+                InkWell(
+                    onTap: (){
+                      Navigator.pop(context);
+                      searchcontroller.text = "";
+                    },
+                    child: Container(
+                        margin: EdgeInsets.only(right: 10),
+                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+              ],
+            ),
+            Divider(),
+
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.zero,
+                physics: BouncingScrollPhysics(),
+                itemCount: list.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
+                    children: [
+                      InkWell(
+                        child: Container(
+                          margin: EdgeInsets.only(left: 10),
+                          alignment: Alignment.center,
+                          child: Text(list[index].paymentTypeName.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+                        ),
+                        onTap: (){
+                          commonVoucherController.detVoucherTypeController.text = list[index].paymentTypeName;
+                          commonVoucherController.detVocType = list[index].paymentTypeValue.toString();
+                          searchcontroller.text = "";
+                          Navigator.pop(context);
+                        },
+                      ),
+                      Divider(),
+                    ],
+                  );
+
+                }, ),
+            )
+
+          ],
+        );
+      },);
+  }
+
 
   //-------voucher------------
 

@@ -56,7 +56,7 @@ class _VoucherTypeAlertState extends State<VoucherTypeAlert> {
                             setState(() {
                               commonVoucherController.getdropDownvalue.value.clear();
                               commonVoucherController.AccountTypename.text = "--SELECT--";
-                              commonVoucherController.selectedAccId.value = 0;
+                              commonVoucherController.selectedAccTypeId.value = 0;
                               commonVoucherController.getaccdropDownvalue.value.clear();
                               commonVoucherController.setSelectedaccountName(0);
                               commonVoucherController.Accountname.text = "--Select--";

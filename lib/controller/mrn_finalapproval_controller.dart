@@ -74,7 +74,7 @@ class MrnFinalApprovalController extends GetxController{
 
 
   Future gettingProjectName(int reqMasId,int matId,int proId,BuildContext context) async {
-    final value = await MrnFinalApprovalProvider.projectNameProvider(proId);
+    final value = await MrnFinalApprovalProvider.projectNameProvider("MRN Final Approve",proId);
     if (value != null) {
       if(value.success == true)
       {
@@ -136,6 +136,7 @@ class MrnFinalApprovalController extends GetxController{
   /// ------------ Get itemlist from local DB ---------------
 
   getFinalApp_MaterialsItemlist_TableDatas() async {
+    MaterialFinalAppr_itemview_GetDbList.value = [];
     var MatAppList = await materialFinalapprlistService.Material_ApprovalItemlist_table_readAll();
     MatAppList.forEach((getdatas){
       var materialapprlist =  Materialapprlist();
@@ -173,6 +174,31 @@ class MrnFinalApprovalController extends GetxController{
       Remarks_ListController[index].text=MaterialFinalAppr_itemview_GetDbList.value[index].remarks.toString();
     }
   }
+
+  MaterialItemlistBal_clickEdit(int index) {
+    double balQty = double.parse(
+        MaterialFinalAppr_itemview_GetDbList.value[index].balqty.toString());
+
+    double enteredQty = ApprQty_ListController[index].value.text.isEmpty
+        ? 0
+        : double.parse(ApprQty_ListController[index].value.text);
+    if(mrn_request_controller.ReqType.value == "PO")
+    {
+      if (enteredQty > balQty) {
+        enteredQty = 0;
+        ApprQty_ListController[index].text = "0.0";
+        BaseUtitiles.showToast("More than Bal Qty, Not Allowed");
+      }
+      else {
+        // If none of the above conditions are met, call updateConsumTables()
+        finalApproval_updateConsumTables();
+      }
+    }
+    else {
+      finalApproval_updateConsumTables();
+    }
+  }
+
 
   finalApproval_updateConsumTables() async {
     int i = 0;
@@ -270,7 +296,9 @@ class MrnFinalApprovalController extends GetxController{
         reqRemarks:ReqremarksText.text,
         requestType: mrn_request_controller.ReqType.value.toString(),
         approvedBy: int.parse(loginController.EmpId()),
-        approveStatus: "Y" ,
+        verifyStatus: "Y",
+        preApproveStatus: "Y",
+        approveStatus: "Y",
         approveDate: BaseUtitiles().convertToUtcIso(RequestDateText.text) ,
         approveRemarks: ApprovalremarksText.text,
         mMatReqMasLink: attendanceListDet(reqId)
@@ -304,7 +332,7 @@ class MrnFinalApprovalController extends GetxController{
           id: element.reqDetId,
           materialReqOrdMasid: reqId,
           materialId: element.materialid,
-          qty: element.reqqty,
+          qty: element.appqty,
           scaleId: element.scaleId,
           siteId: siteController.selectedsiteId.value,
           reqQty: element.reqqty,
@@ -312,6 +340,7 @@ class MrnFinalApprovalController extends GetxController{
           reqDescription: element.desc,
           refProjectId:int.tryParse(element.tranfromprjid),
           approveType:element.apptype,
+          preApproveStatus: "Y",
           approveStatus: "Y",
         );
         getsaveDetList.value.add(list);

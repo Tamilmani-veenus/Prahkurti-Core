@@ -228,45 +228,54 @@ class _MrnPreapprovalItemlistState extends State<MrnPreapprovalItemlist> {
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Expanded(
-                                              flex: 2,
-                                              child: Text("Bal Qty",style: TextStyle(color: Colors.black,fontSize: 14.0),)),
-                                          Expanded(
-                                            flex: 3,
-                                            child: Container(
-                                              margin: EdgeInsets.only(right: 11),
-                                              height: BaseUtitiles.getheightofPercentage(context, 4),
-                                              //width: BaseUtitiles.getWidthtofPercentage(context, 38),
-                                              child:
-                                              TextField(
-                                                readOnly: true,
-                                                cursorColor:Theme.of(context).primaryColor,
-                                                textAlign: TextAlign.center,
-                                               controller: mrnPreApprovalController.mrnpre_BalQty_ListController[index],
-                                                keyboardType: TextInputType.number,
-                                                decoration: InputDecoration(
-                                                  contentPadding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0,0.0),
-                                                  focusedBorder: OutlineInputBorder(
-                                                      borderSide: BorderSide(color: Theme.of(context).primaryColor),
-                                                      borderRadius: BorderRadius.all(
-                                                          Radius.circular(10))),
-                                                  enabledBorder: OutlineInputBorder(
-                                                      borderSide: BorderSide(color: Theme.of(context).primaryColor),
-                                                      borderRadius: BorderRadius.all(
-                                                          Radius.circular(10))),
-                                                ),
-                                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16.0),
-                                                onChanged: (value) {
+                                          Obx((){
+                                    return mrn_request_controller.activeType.value ?
+                                    Expanded(
+                                        flex: 2,
+                                        child: Text("Bal Qty",style: TextStyle(color: Colors.black,fontSize: 14.0),)) : SizedBox();
+                                    }
 
-                                                },
+                                          ),
+                                          Obx(() {
+                                            return mrn_request_controller.activeType.value ?
+                                            Expanded(
+                                              flex: 3,
+                                              child: Container(
+                                                margin: EdgeInsets.only(right: 11),
+                                                height: BaseUtitiles.getheightofPercentage(context, 4),
+                                                //width: BaseUtitiles.getWidthtofPercentage(context, 38),
+                                                child:
+                                                TextField(
+                                                  readOnly: true,
+                                                  cursorColor:Theme.of(context).primaryColor,
+                                                  textAlign: TextAlign.center,
+                                                 controller: mrnPreApprovalController.mrnpre_BalQty_ListController[index],
+                                                  keyboardType: TextInputType.number,
+                                                  decoration: InputDecoration(
+                                                    contentPadding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0,0.0),
+                                                    focusedBorder: OutlineInputBorder(
+                                                        borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                                                        borderRadius: BorderRadius.all(
+                                                            Radius.circular(10))),
+                                                    enabledBorder: OutlineInputBorder(
+                                                        borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                                                        borderRadius: BorderRadius.all(
+                                                            Radius.circular(10))),
+                                                  ),
+                                                  style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16.0),
+                                                  onChanged: (value) {
+
+                                                  },
+                                                ),
                                               ),
-                                            ),
+                                            ) : SizedBox();
+                                            },
                                           ),
                                           Expanded(
-                                              flex: 2,
+                                              flex: 3,
                                               child: Text("Req Qty",style: TextStyle(color: Colors.black,fontSize: 14.0),)),
                                           Expanded(
-                                            flex: 3,
+                                            flex: 4,
                                             child: Container(
                                               margin: EdgeInsets.only(right: 11),
                                               height: BaseUtitiles.getheightofPercentage(context, 4),
@@ -328,10 +337,14 @@ class _MrnPreapprovalItemlistState extends State<MrnPreapprovalItemlist> {
                                                 ),
                                                 style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16.0),
                                                 onChanged: (value) {
-                                                  setState(() {
+                                                  // setState(() {
+                                                  if(mrn_request_controller.activeType.value){
+                                                    mrnPreApprovalController.MaterialItemlistBal_clickEdit(index);
+                                                  }
+                                                  else {
                                                     mrnPreApprovalController.Approval_updateConsumTables();
-                                                  });
-                                                  // mrnPreApprovalController.Approval_MaterialItemlist_clickEdit();
+                                                    }
+                                                  // });
                                                 },
                                               ),
                                             ),

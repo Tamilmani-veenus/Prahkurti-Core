@@ -48,7 +48,7 @@ class _Inward_PoAmendmentState extends State<Inward_PoAmendment> {
   @override
   void initState() {
     inwardPending_Controller.add_PoAmdaprovalListvalue.value.clear();
-    inwardPending_Controller.ischecked = List<bool>.filled(inwardPending_Controller.PoAmdList.value.length, false);
+    // inwardPending_Controller.ischecked = List<bool>.filled(inwardPending_Controller.PoAmdList.value.length, false);
     super.initState();
   }
 
@@ -58,7 +58,7 @@ class _Inward_PoAmendmentState extends State<Inward_PoAmendment> {
     return SafeArea(
       top: false,
       child: Scaffold(
-         backgroundColor: Setmybackground,
+        backgroundColor: Setmybackground,
         bottomNavigationBar: Container(
           child:  Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -69,8 +69,8 @@ class _Inward_PoAmendmentState extends State<Inward_PoAmendment> {
                   width: BaseUtitiles.getWidthtofPercentage(context, 27),
                   height: BaseUtitiles.getheightofPercentage(context, 4),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    color: Theme.of(context).primaryColor),
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: Theme.of(context).primaryColor),
                   alignment: Alignment.center,
                   child: Text("Amendment",
                     style: TextStyle(
@@ -93,123 +93,100 @@ class _Inward_PoAmendmentState extends State<Inward_PoAmendment> {
             ],
           ),
 
-          //
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //   crossAxisAlignment: CrossAxisAlignment.center,
-          //   children: <Widget>[
-          //     Container(
-          //       margin: EdgeInsets.only(top:15, bottom: 15),
-          //       height: BaseUtitiles.getheightofPercentage(context, 4),
-          //       child: ElevatedButton(
-          //         style: ElevatedButton.styleFrom(
-          //           primary: Theme.of(context).primaryColor,
-          //           side: BorderSide(width: 3, color: Colors.black),
-          //           elevation: 3,
-          //           shape: RoundedRectangleBorder(
-          //               borderRadius: BorderRadius.circular(30)),),
-          //         child: Text("Approval"),
-          //         onPressed: () {
-          //           inwardPending_Controller.PoAmendment_ApprovalButtonsave(context);
-          //         },
-          //       ),
-          //     ),
-          //   ],
-          // ),
         ),
         body: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 40),
-              Container(
-                margin: EdgeInsets.only(left: 15, right: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      "Po Amendment",
-                      style: TextStyle(
-                          fontSize: RequestConstant.Heading_Font_SIZE,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          "Back",
-                          style: TextStyle(color: Colors.grey, fontSize: 18),
-                        ))
-                  ],
+            child: Column(
+              children: [
+                SizedBox(height: 40),
+                Container(
+                  margin: EdgeInsets.only(left: 15, right: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Po Amendment",
+                        style: TextStyle(
+                            fontSize: RequestConstant.Heading_Font_SIZE,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            "Back",
+                            style: TextStyle(color: Colors.grey, fontSize: 18),
+                          ))
+                    ],
+                  ),
                 ),
-              ),
 
 
-              Container(
-               margin: EdgeInsets.only(top: 10, left: 5, right: 5),
-                child: Card(
-                  color: Colors.white,
-                  elevation: 3,
-                  child: Container(
-                    margin: EdgeInsets.all(5),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
+                Container(
+                  margin: EdgeInsets.only(top: 10, left: 5, right: 5),
+                  child: Card(
+                    color: Colors.white,
+                    elevation: 3,
+                    child: Container(
+                      margin: EdgeInsets.all(5),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                  flex: 6,
+                                  child: Text(widget.ReqNo.toString(), style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold))),
+                              Expanded(
+                                  flex: 3,
+                                  child: Row(
+                                    children: [
+                                      ConstIcons.list_date,
+                                      Text(widget.PoDate.toString()),
+                                    ],
+                                  )),
+                            ],
+                          ),
+
+                          SizedBox(height: 10),
+                          Row(children: [
                             Expanded(
-                                flex: 6,
-                                child: Text(widget.ReqNo.toString(), style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold))),
+                                flex: 2,
+                                child: Text("Project Name:")),
                             Expanded(
                                 flex: 3,
-                                child: Row(
-                                  children: [
-                                    ConstIcons.list_date,
-                                    Text(widget.PoDate.toString()),
-                                  ],
-                                )),
-                          ],
-                        ),
+                                child: Text(widget.ProjectName.toString())),
+                          ],),
+                          SizedBox(height: 5),
+                          Row(children: [
+                            Expanded(
+                                flex: 2,
+                                child: Text("Site Name:")),
+                            Expanded(
+                                flex: 3,
+                                child: Text(widget.SiteName.toString())),
+                          ],),
+                          SizedBox(height: 5),
+                          Row(children: [
+                            Expanded(
+                                flex: 2,
+                                child: Text("Supplier Name:")),
+                            Expanded(
+                                flex: 3,
+                                child: Text(widget.SupplierName.toString())),
+                          ],),
 
-                        SizedBox(height: 10),
-                        Row(children: [
-                          Expanded(
-                              flex: 2,
-                              child: Text("Project Name:")),
-                          Expanded(
-                              flex: 3,
-                              child: Text(widget.ProjectName.toString())),
-                        ],),
-                        SizedBox(height: 5),
-                        Row(children: [
-                          Expanded(
-                              flex: 2,
-                              child: Text("Site Name:")),
-                          Expanded(
-                              flex: 3,
-                              child: Text(widget.SiteName.toString())),
-                        ],),
-                        SizedBox(height: 5),
-                        Row(children: [
-                          Expanded(
-                              flex: 2,
-                              child: Text("Supplier Name:")),
-                          Expanded(
-                              flex: 3,
-                              child: Text(widget.SupplierName.toString())),
-                        ],),
-
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Divider(thickness: 1,
-              color: Theme.of(context).primaryColor
-              ),
-              ListDetails(),
-          ],)
+                Divider(thickness: 1,
+                    color: Theme.of(context).primaryColor
+                ),
+                ListDetails(),
+              ],)
         ),
       ),
     );
@@ -299,26 +276,26 @@ class _Inward_PoAmendmentState extends State<Inward_PoAmendment> {
               );
             },) ),
         ),
-            // Container(
-            //   width: BaseUtitiles.getWidthtofPercentage(context, 90),
-            //   height: BaseUtitiles.getheightofPercentage(context, 4),
-            //   margin: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-            //   decoration: BoxDecoration(),
-            //   child: TextField(
-            //     style:TextStyle(fontSize: 13),
-            //     textAlign: TextAlign.center,
-            //     controller: inwardPending_Controller.InwardAmdRemarksText,
-            //     decoration: InputDecoration(
-            //       labelText: "Remarks",
-            //       contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-            //       border: OutlineInputBorder(),
-            //       enabledBorder: OutlineInputBorder(
-            //         borderSide: BorderSide(
-            //             color: Theme.of(context).primaryColor, width: 1.0),
-            //       ),
-            //     ),
-            //   ),
-            // ),
+        // Container(
+        //   width: BaseUtitiles.getWidthtofPercentage(context, 90),
+        //   height: BaseUtitiles.getheightofPercentage(context, 4),
+        //   margin: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+        //   decoration: BoxDecoration(),
+        //   child: TextField(
+        //     style:TextStyle(fontSize: 13),
+        //     textAlign: TextAlign.center,
+        //     controller: inwardPending_Controller.InwardAmdRemarksText,
+        //     decoration: InputDecoration(
+        //       labelText: "Remarks",
+        //       contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
+        //       border: OutlineInputBorder(),
+        //       enabledBorder: OutlineInputBorder(
+        //         borderSide: BorderSide(
+        //             color: Theme.of(context).primaryColor, width: 1.0),
+        //       ),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }
@@ -363,11 +340,11 @@ class _Inward_PoAmendmentState extends State<Inward_PoAmendment> {
                   Expanded(
                     child: TextButton(
                         onPressed: () async {
-                        if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
-                          await inwardPending_Controller.PoAmendment_ApprovalButtonsave(
-                              context, widget.purOrdMasId, widget.projectId, widget.siteId, widget.inwdType);
-                          Navigator.pop(context);
-                        }
+                          if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
+                            await inwardPending_Controller.PoAmendment_ApprovalButtonsave(
+                                context, widget.purOrdMasId, widget.projectId, widget.siteId, widget.inwdType);
+                            Navigator.pop(context);
+                          }
                         },
                         child: Text(RequestConstant.APPROVAL,
                             style: TextStyle(

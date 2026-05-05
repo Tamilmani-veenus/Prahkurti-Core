@@ -279,11 +279,11 @@ class _staff_voucher_sitewiseState extends State<staff_voucher_sitewise> {
                         ),
                       ),
                       onTap: (){
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return SitewisepaymentTypeAlert(from: '',);
-                            });
+                        // showDialog(
+                        //     context: context,
+                        //     builder: (BuildContext context) {
+                        //       return SitewisepaymentTypeAlert(from: '',);
+                        //     });
                       },
                       validator: (value) {
                         if (value!.isEmpty || value == "--Select--") {

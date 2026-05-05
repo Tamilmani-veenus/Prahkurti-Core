@@ -59,7 +59,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
           projectController.selectedProjectId.value = element.projectId;
           commonVoucherController.VoucherTypeController.text =
           element.vocType == "P" ? "Site Petty Cash" : "Advance";
-          commonVoucherController.selectedAccId.value = element.accTypeId;
+          commonVoucherController.selectedAccTypeId.value = element.accTypeId;
           commonVoucherController.selectedAccnameId.value = element.accNameId;
           commonVoucherController.selectedAccPayId.value = element.payFor;
           commonVoucherController.AccPayforname.text =
@@ -80,7 +80,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
               element.payForName.toString();
           commonVoucherController.payfor.value = element.payFor;
           advanceReqVoucherController_new.listButton.value =
-          commonVoucherController.selectedAccId.value == 4
+          commonVoucherController.selectedAccTypeId.value == 4
               ? "List"
               : "Sitewise List";
           advanceReqVoucherController_new.entry_amount.text =
@@ -1039,7 +1039,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                                 BaseUtitiles.showToast(
                                     "Please select Project Name");
                               } else {
-                                if (commonVoucherController.selectedAccId.value == 4) {
+                                if (commonVoucherController.selectedAccTypeId.value == 4) {
                                   await advanceReqVoucherController_new.delete_ListTable();
                                   await advanceReqVoucherController_new.getAdvList();
                                   await advanceReqVoucherController_new.saveListTable();
@@ -1079,7 +1079,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                   ],
                 ),
               ),
-              Obx(() => commonVoucherController.VocType.value == "A" && commonVoucherController.selectedAccId.value == 5
+              Obx(() => commonVoucherController.VocType.value == "A" && commonVoucherController.selectedAccTypeId.value == 5
                   ? Container(
                 child: Visibility(
                   visible: advanceReqVoucherController_new
@@ -1503,7 +1503,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                       builder: (context, setState) => TextButton(
                         onPressed: () async {
                           if (commonVoucherController.VocType.value == "A" &&
-                              commonVoucherController.selectedAccId.value ==
+                              commonVoucherController.selectedAccTypeId.value ==
                                   4) {
                             await advanceReqVoucherController_new
                                 .getTableListDatas();
@@ -1885,11 +1885,11 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                                     Expanded(
                                         child: Text(
                                           commonVoucherController
-                                              .selectedAccId.value ==
+                                              .selectedAccTypeId.value ==
                                               4
                                               ? "PO Amt"
                                               : commonVoucherController
-                                              .selectedAccId
+                                              .selectedAccTypeId
                                               .value ==
                                               5
                                               ? "Amt Bal in WO"

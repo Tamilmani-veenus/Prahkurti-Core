@@ -277,7 +277,7 @@ class StaffVoucher_Controller extends GetxController{
       vocDate: staffvocDate.text,
       vocType: commonVoucherController.VocType.value,
       staffId: staffController.selectedstaffId.value.toString(),
-      accTypeId: commonVoucherController.selectedAccId.value.toString(),
+      accTypeId: commonVoucherController.selectedAccTypeId.value.toString(),
       accNameId: commonVoucherController.selectedAccnameId.value.toString(),
       payFor: commonVoucherController.selectedAccPayId.value.toString(),
       payMode: commonVoucherController.selectedPaymodeId.value.toString(),

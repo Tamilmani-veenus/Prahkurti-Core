@@ -75,7 +75,7 @@ class _DashboardScreen_OtherUserState extends State<DashboardScreen_OtherUser> {
     });
     var duration = const Duration(seconds: 0);
     Future.delayed(duration, () {
-      // SignInPage.checkVersion(context);
+      SignInPage.checkVersion(context);
     });
     super.initState();
   }

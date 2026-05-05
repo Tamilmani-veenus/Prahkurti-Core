@@ -735,7 +735,7 @@ class _SubAttendanceSiteEntryListState
                                                                     dailyEntryController.readListdata.value=[];
                                                                     dailyEntryController.getAttendanceDetailsDto.value=[];
                                                                     FocusScope.of(context).unfocus();
-                                                                    await dailyEntryController.subContEntryList_EditApi(dailyEntryController.Entrylist.value[index].id, context, 0);
+                                                                    await dailyEntryController.subContEntryList_EditApi(dailyEntryController.Entrylist.value[index].id, context);
                                                                   }),
                                                             ),
                                                             Container(

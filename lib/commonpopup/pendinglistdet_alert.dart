@@ -2714,7 +2714,7 @@ class _PendingList_SiteVerifyPopupState extends State<PendingList_SiteVerifyPopu
                             ),
                           ),
                           Expanded(
-                              flex: 4,
+                              flex: 8,
                               child: Text( pendingListController.onclickPendingListDet[index].reqQty.toString())),
                           // Expanded(
                           //   flex: 2,

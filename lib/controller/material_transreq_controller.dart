@@ -201,6 +201,7 @@ class MaterialTransferReqController extends GetxController {
       ItemListTableModel.scale = value['scale'];
       ItemListTableModel.stockQty = value['stockQty'];
       ItemListTableModel.Qty = value['Qty'];
+      ItemListTableModel.trQty = value['trQty'];
       ItemListTableModel.detRemarks = value['detRemarks'];
       ItemGetTableListdata.add(ItemListTableModel);
     });
@@ -239,6 +240,8 @@ class MaterialTransferReqController extends GetxController {
       ItemListTableModel.stockQty = element.stockQty;
       ItemListTableModel.Qty =
           double.parse(Show_Itemlist_TransQtyController[i].text);
+      ItemListTableModel.trQty =
+          element.trQty;
       ItemListTableModel.detRemarks =
           Show_Itemlist_DetRemarksController[i].text;
       itemListUpdateModelList.add(ItemListTableModel);
@@ -331,7 +334,7 @@ class MaterialTransferReqController extends GetxController {
           materialTransferRequestMasId: id != 0 ? id : 0,
           materialId: ItemGetTableListdata[index].materialId,
           qty: ItemGetTableListdata[index].Qty,
-          trQty: ItemGetTableListdata[index].Qty,
+          trQty: isVerify || isApprove ? ItemGetTableListdata[index].trQty : ItemGetTableListdata[index].Qty,
           remarks: "");
       getTransfferbetDetList.add(list);
     }
@@ -372,6 +375,7 @@ class MaterialTransferReqController extends GetxController {
         ItemListTableModel.scale = value.scaleName;
         ItemListTableModel.stockQty = value.stockQty;
         ItemListTableModel.Qty = value.qty;
+        ItemListTableModel.trQty = value.trQty;
         ItemListTableModel.detRemarks = value.remarks;
         matTransReqDetTable.add(ItemListTableModel);
       });

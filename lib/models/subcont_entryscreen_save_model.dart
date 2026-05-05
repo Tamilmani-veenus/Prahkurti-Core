@@ -74,6 +74,7 @@ import 'dart:io';
      "ProjectId": projectId,
      "ApprovedDt": approvedDt,
      "ApprovedBy": approvedBy,
+     "ApproveStatus": approveStatus,
      "SubcontractorId": subContId,
      "SiteId": siteId,
      "SubContLabourAttendDetS": List<dynamic>.from(subContLabourAttendDetS!.map((x) => x.toJson())),

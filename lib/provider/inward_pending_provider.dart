@@ -124,7 +124,6 @@ class Inward_Pending_provider {
         final url = saveButton == RequestConstant.RESUBMIT
             ? "${ApiConstant.PUT_INWARDPENDING_UPDATE_API}/$id"
             : ApiConstant.INWARDPENDING_SAVE_API;
-        print("eeeee....${url}");
 
         final request = http.MultipartRequest(
           saveButton == RequestConstant.RESUBMIT ? 'PUT' : 'POST',
@@ -215,7 +214,6 @@ class Inward_Pending_provider {
 
 
   static Future<InwardPendingEditApiRes?> entryList_editAPI(int inwardId, String type) async {
-
     try {
       final value = await ApiManager.getAPICall("${ApiConstant.EDIT_INWARDPENDING_API}?InwardId=$inwardId&InwardType=$type");
       print('API Response: ${value}');
@@ -264,9 +262,12 @@ class Inward_Pending_provider {
     }
   }
 
-  static Future<dynamic> gettingImageProvider(int inwardId,String type) async {
+  static Future<dynamic> gettingImageProvider(int Id,String type) async {
     try {
-      final value = await ApiManager.getAPICall(type=="inward"?"${ApiConstant.GET_INWARD_IMAGE_LIST}?id=$inwardId":"${ApiConstant.GET_DLR_IMAGE_LIST}?id=$inwardId");
+      final value = await ApiManager.getAPICall(
+          type=="inward"?"${ApiConstant.GET_INWARD_IMAGE_LIST}?id=$Id":
+          type=="siteVoucher"?"${ApiConstant.GET_VOC_IMAGE_LIST}?id=$Id":
+          "${ApiConstant.GET_DLR_IMAGE_LIST}?id=$Id");
       print('API Response: ${value}');
       return gettingImageFromJson(value);
 
@@ -282,7 +283,10 @@ class Inward_Pending_provider {
 
   static Future<bool> deleteImageProvider(int imageId,String type) async {
     try {
-      final response = await ApiManager.deleteAPICall(type=="inward"?"${ApiConstant.DELETE_INWARD_IMAGE_API }?inwId=$imageId":"${ApiConstant.DELETE_DLR_IMAGE_API }?imgId=$imageId");
+      final response = await ApiManager.deleteAPICall(
+          type=="inward"?"${ApiConstant.DELETE_INWARD_IMAGE_API }?inwId=$imageId":
+          type=="siteVoucher"?"${ApiConstant.SITE_VOC_IMAGE_DELETE }?Id=$imageId":
+          "${ApiConstant.DELETE_DLR_IMAGE_API }?imgId=$imageId");
 
       final Map<String, dynamic> decoded = jsonDecode(response);
 

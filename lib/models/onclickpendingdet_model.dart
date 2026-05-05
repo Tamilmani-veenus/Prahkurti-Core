@@ -1,135 +1,3 @@
-//
-//
-// import 'dart:convert';
-//
-// List<OnclickPendingDet> onclickPendingDetFromJson(String str) => List<OnclickPendingDet>.from(json.decode(str).map((x) => OnclickPendingDet.fromJson(x)));
-//
-// String onclickPendingDetToJson(List<OnclickPendingDet> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-//
-// class OnclickPendingDet {
-//   OnclickPendingDet({
-//     this.materialName,
-//     this.materialID,
-//     this.scale,
-//     this.qty,
-//     this.requestqty,
-//     this.poQty,
-//     this.balQty,
-//     this.PORate,
-//     this.DataRate,
-//     this.PoAmt,
-//     this.GSTPer,
-//     this.GSTAmt,
-//     this.NetAmt,
-//     this.grnQty,
-//     this.remarks,
-//     this.transQty,
-//     this.ackQty,
-//     this.frProjectName,
-//     this.preAppType,
-//
-//
-//     //----WorkOrder Verify & Approve
-//     this.workdetid,
-//     this.itemDes,
-//     this.fulldescription,
-//     this.unit,
-//     this.rate,
-//     this.amount,
-//   });
-//
-//   String? materialName;
-//   int? materialID;
-//   String? scale;
-//   double? qty;
-//   double? requestqty;
-//   double? poQty;
-//   double? balQty;
-//   double? PORate;
-//   double? DataRate;
-//   double? PoAmt;
-//   double? GSTPer;
-//   double? GSTAmt;
-//   double? NetAmt;
-//   double? grnQty;
-//   String? remarks;
-//   double? transQty;
-//   double? ackQty;
-//   String? frProjectName;
-//   String? preAppType;
-//
-//   //----WorkOrder Verify & Approve
-//   int? workdetid;
-//   String? itemDes;
-//   String? fulldescription;
-//   String? unit;
-//   double? rate;
-//   double? amount;
-//
-//
-//   factory OnclickPendingDet.fromJson(Map<String, dynamic> json) => OnclickPendingDet(
-//     materialName: json["MaterialName"],
-//     materialID: json["Materialid"],
-//     scale: json["Scale"],
-//     qty: json["Qty"],
-//     requestqty: json["ReqQty"],
-//     poQty: json["POQty"],
-//     balQty: json["BalQty"],
-//     PORate: json["PORate"],
-//     DataRate: json["DataRate"],
-//     PoAmt: json["POAmt"],
-//     GSTPer: json["GSTPer"],
-//     GSTAmt: json["GSTAmt"],
-//     NetAmt: json["NetAmt"],
-//     grnQty: json["GRNQty"],
-//     remarks: json["Remarks"],
-//     transQty: json["TransQty"],
-//     ackQty: json["AckQty"],
-//     frProjectName: json["FrProjectName"],
-//     preAppType: json["PreAppType"],
-//
-//     //----WorkOrder Verify & Approve
-//     workdetid: json["workdetid"],
-//     itemDes: json["itemDes"],
-//     fulldescription: json["Fulldescription"],
-//     unit: json["Unit"],
-//     rate: json["Rate"],
-//     amount: json["Amt"],
-//   );
-//
-//   Map<String, dynamic> toJson() => {
-//     "MaterialName": materialName,
-//     "Materialid": materialID,
-//     "Scale": scale,
-//     "Qty": qty,
-//     "ReqQty": requestqty,
-//     "POQty": poQty,
-//     "BalQty": balQty,
-//     "PORate": PORate,
-//     "DataRate": DataRate,
-//     "POAmt": PoAmt,
-//     "GSTPer": GSTPer,
-//     "GSTAmt": GSTAmt,
-//     "NetAmt": NetAmt,
-//     "GRNQty": grnQty,
-//     "Remarks": remarks,
-//     "TransQty": transQty,
-//     "AckQty": ackQty,
-//     "FrProjectName": frProjectName,
-//     "PreAppType": preAppType,
-//
-//     //----WorkOrder Verify & Approve
-//     "workdetid" : workdetid,
-//     "itemDes": itemDes,
-//     "Fulldescription": fulldescription,
-//     "Unit": unit,
-//     "Rate": rate,
-//     "Amt": amount,
-//
-//   };
-// }
-
-
 
 // To parse this JSON data, do
 //
@@ -154,11 +22,6 @@ class OnclickPendingDet {
     this.result,
   });
 
-  // factory OnclickPendingDet.fromJson(Map<String, dynamic> json) => OnclickPendingDet(
-  //   success: json["success"],
-  //   result: OnclickPendingDetResult.fromJson(json["result"]),
-  // );
-
   factory OnclickPendingDet.fromJson(Map<String, dynamic> json)  {
     var res = json["result"];
 
@@ -178,8 +41,9 @@ class OnclickPendingDet {
       );
     } else {
       return OnclickPendingDet(
-        success: json["success"],
-        result: null,
+      success: json["success"],
+      message: json["message"], // ✅ FIXED
+      result: null,
       );
     }
   }
@@ -188,7 +52,11 @@ class OnclickPendingDet {
   Map<String, dynamic> toJson() => {
     "success": success,
     "message": message,
-    "result": result!.toJson(),
+    "result": result == null
+        ? null
+        : result is List
+        ? List<dynamic>.from(result.map((e) => e.toJson()))
+        : result.toJson(),
   };
 }
 
@@ -251,6 +119,7 @@ class MMatReqMasLink {
   String? reqDescription;
   String? materialName;
   String? MaterialName;
+  int? UnitId;
   String? scaleName;
   String? ScaleName;
   double? stockQty;
@@ -304,6 +173,7 @@ class MMatReqMasLink {
     this.reqDescription,
     this.materialName,
     this.MaterialName,
+    this.UnitId,
     this.scaleName,
     this.ScaleName,
     this.stockQty,
@@ -366,6 +236,7 @@ class MMatReqMasLink {
     reqDescription: json["reqDescription"],
     materialName: json["materialName"],
     MaterialName: json["MaterialName"],
+    UnitId: json["UnitId"],
     scaleName: json["scaleName"],
     ScaleName: json["ScaleName"],
     stockQty: (json['stockQty'] as num?)?.toDouble(),
@@ -420,6 +291,7 @@ class MMatReqMasLink {
     "reqDescription": reqDescription,
     "materialName": materialName,
     "MaterialName": MaterialName,
+    "UnitId": UnitId,
     "scaleName": scaleName,
     "ScaleName": ScaleName,
     "stockQty": stockQty,
@@ -465,7 +337,6 @@ class MMatReqMasLink {
     "Amt": amount,
   };
 }
-
 
 class MMatPurOrdLink {
   int? id;
@@ -607,7 +478,6 @@ class MMatPurOrdLink {
 
   };
 }
-
 
 class MaterialTransferRequestDets {
   int? id;

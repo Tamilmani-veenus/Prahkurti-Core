@@ -190,8 +190,6 @@ class _CameraCapturePageState extends State<CameraCapturePage> with WidgetsBindi
         else if(widget.fromScreen=="Site Voucher"){
           siteVoucher_Controller.imageFiles.add(watermarkedFile);
           newlyAddedIndex = siteVoucher_Controller.imageFiles.length - 1;
-          siteVoucher_Controller.count = siteVoucher_Controller.count! + 1;
-          siteVoucher_Controller.pickedImageCount?.value++;
         }
         else if(widget.fromScreen=="Inward"){
           inwardPendingcontroller.checkImgList.value = true;
@@ -243,8 +241,6 @@ class _CameraCapturePageState extends State<CameraCapturePage> with WidgetsBindi
         }
         else if (widget.fromScreen == "Site Voucher" && newlyAddedIndex != null) {
           siteVoucher_Controller.imageFiles.removeAt(newlyAddedIndex!);
-          siteVoucher_Controller.count = siteVoucher_Controller.count! - 1;
-          siteVoucher_Controller.pickedImageCount?.value--;
           newlyAddedIndex = null;
         }
         else if (widget.fromScreen == "Inward"  && newlyAddedIndex != null ) {
@@ -434,8 +430,6 @@ class _CameraCapturePageState extends State<CameraCapturePage> with WidgetsBindi
                                 }
                                 else if (widget.fromScreen == "Site Voucher" && newlyAddedIndex != null) {
                                   siteVoucher_Controller.imageFiles.removeAt(newlyAddedIndex!);
-                                  siteVoucher_Controller.count = siteVoucher_Controller.count! - 1;
-                                  siteVoucher_Controller.pickedImageCount?.value--;
                                   newlyAddedIndex = null;
                                 }
                                 else if ((widget.fromScreen == "Inward" || widget.fromScreen == "InwardAddButton" ) && newlyAddedIndex != null) {

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import '../controller/commonvoucher_controller.dart';
@@ -14,10 +15,14 @@ import '../models/inwardimageres_model.dart';
 import '../models/site_voc_image_delete.dart';
 import '../models/site_voc_image_payload.dart';
 import '../models/sitevouchersave_model.dart';
+import '../provider/inward_pending_provider.dart';
 import '../provider/sitevoucher_provider.dart';
 import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
 import 'logincontroller.dart';
+
+
+int? vocId;
 
 class SiteVoucher_Controller extends GetxController {
   final SiteVocEntrylistFrDate = TextEditingController();
@@ -40,29 +45,25 @@ class SiteVoucher_Controller extends GetxController {
   var sitevoucherItemListTableModel = SitevoucherDetlist();
   late List<SitevoucherDetlist> sitevoucherTableList = <SitevoucherDetlist>[];
   late List<SitevoucherDetlist> deleteModelList = <SitevoucherDetlist>[];
-  RxList<VocDet> getSiteDetList = <VocDet>[].obs;
+  RxList<AccountSiteVoucherSwPayment> getSiteDetList = <AccountSiteVoucherSwPayment>[].obs;
   var sitevoucherlistService = SitevoucherlistService();
 
   RxList SiteVocEtyList = [].obs;
   RxList Sitevoucher_itemview_GetDbList = [].obs;
   RxList Sitevoucher_EditListApiValue = [].obs;
   int VocID = 0;
-  RxString type = "SiteWise Payment".obs;
+  RxString type = "Direct Payment/Office".obs;
   String edittype = "";
   RxString SaveButton = RequestConstant.SUBMIT.obs;
-  RxInt? count = 0.obs;
+  RxBool checkImgList = false.obs;
   var imageFiles = <File>[].obs;
-  bool checkImgList = false;
-  List<ImageView>? gettingNetworkImages;
-  List<String>? gettingNetworkImageList = [];
-  RxInt? netWorkImageCount = 0.obs;
-  RxInt? pickedImageCount = 0.obs;
-  List<int>? imageId = [];
+  var gettingNetworkImages = <String>[].obs;
+  List<int> imageId = [];
 
   clearDatas() {
     SaveButton.value = RequestConstant.SUBMIT;
     siteController.selectedsiteId = 0.obs;
-    type.value = "SiteWise Payment";
+    type.value = "Direct Payment/Office";
     delete_Sitevoucher_itemlist_Table();
     Sitevoucher_itemview_GetDbList.clear();
     siteController.selectedsitedropdownName = "--Select--".obs;
@@ -80,6 +81,7 @@ class SiteVoucher_Controller extends GetxController {
     commonVoucherController.Paymodename.text = "--Select--";
     commonVoucherController.AccPayforname.text = "--Select--";
     Remarks.text = "";
+    Amount.text = "0.00";
   }
 
   Future getSiteVoc_EntryList() async {
@@ -119,18 +121,20 @@ class SiteVoucher_Controller extends GetxController {
     if(NetAmount.text == "0.0" || NetAmount.text == "0.00" || NetAmount.text == "0") {
     } else {
       sitevoucherItemListTableModel = SitevoucherDetlist();
+      sitevoucherItemListTableModel.reqDetId = 0;
       sitevoucherItemListTableModel.siteid = siteController.selectedsiteId.value;
       sitevoucherItemListTableModel.sitename = siteController.Sitename.text;
       sitevoucherItemListTableModel.paytype = commonVoucherController.detVocType;
       amt = double.parse(DetAmount.text).round();
       sitevoucherItemListTableModel.amt = amt.toDouble();
-      sitevoucherItemListTableModel.TdsPer = double.parse(Tds.text);
-      sitevoucherItemListTableModel.TdsAmt = double.parse(Tdsamount.text);
+      sitevoucherItemListTableModel.TdsPer = double.parse(Tds.text==""?"0":Tds.text);
+      sitevoucherItemListTableModel.TdsAmt = double.parse(Tdsamount.text==""?"0":Tdsamount.text);
       netAmount = double.parse(NetAmount.text).round();
       sitevoucherItemListTableModel.NetAmt = netAmount.toDouble();
       for (var element in Sitevoucher_itemview_GetDbList.value) {
-        if (element.siteid == sitevoucherItemListTableModel.siteid) {
+        if (element.siteid == sitevoucherItemListTableModel.siteid && element.paytype == sitevoucherItemListTableModel.paytype) {
           j = 1;
+          BaseUtitiles.showToast("Entry already exist");
         }
       }
       if (j == 0) {
@@ -151,6 +155,7 @@ class SiteVoucher_Controller extends GetxController {
     siteItem.forEach((user) {
       var SitevoucherItemlist = SitevoucherDetlist();
       SitevoucherItemlist.siteid = user['siteid'];
+      SitevoucherItemlist.reqDetId = user['reqDetId'];
       SitevoucherItemlist.sitename = user['sitename'];
       SitevoucherItemlist.paytype = user['paytype'];
       SitevoucherItemlist.amt = user['amt'];
@@ -185,6 +190,7 @@ class SiteVoucher_Controller extends GetxController {
     deleteModelList.clear();
     sitevoucherItemListTableModel = SitevoucherDetlist();
     sitevoucherItemListTableModel.siteid = data.siteid;
+    sitevoucherItemListTableModel.paytype = data.paytype;
     deleteModelList.add(sitevoucherItemListTableModel);
     await sitevoucherlistService.SitevoucherdeleteById(deleteModelList);
   }
@@ -192,115 +198,75 @@ class SiteVoucher_Controller extends GetxController {
   ///----- POST and PUT JSON Values----
 
   Future  SaveButtonSitevoucher_ItemlistScreen(BuildContext context, int id) async {
-    getSiteDetList.value.clear();
-    if (type.value == "SiteWise Payment") {
-      await getsitevoucherTablesDatas();
-    }
-    Sitevouchersaverequest formdata = Sitevouchersaverequest(
-      vocId: id != 0 ? id.toString() : "0",
-      vocNo: AutoYearwiseSiteVoc.text,
-      vocDate: sitevocDate.text,
-      vocType: commonVoucherController.VocType.value,
-      projectId: projectController.selectedProjectId.value.toString(),
-      accTypeId: commonVoucherController.selectedAccId.value.toString(),
-      accNameId: commonVoucherController.selectedAccnameId.value.toString(),
-      payFor: commonVoucherController.selectedAccPayId.value.toString(),
-      payMode: commonVoucherController.selectedPaymodeId.value.toString(),
-      payType: type.value == "Direct Payment/Office" ? "DP" : "SP",
-      vocAmt: Amount.text,
-      paidFrom: commonVoucherController.vocPaidformId.toString(),
-      companyId: "0",
-      bankId: "0",
-      chqNo: "0",
-      chqDate: "",
+    SitevoucherSaveRequest formdata = SitevoucherSaveRequest(
+      id: SaveButton.value == RequestConstant.RESUBMIT? id : 0,
+      siteVoucherNo: AutoYearwiseSiteVoc.text,
+      siteVoucherDate: sitevocDate.text,
+      siteVoucherType: commonVoucherController.VocType.value,
+      projectId: projectController.selectedProjectId.value,
+      companyId: SaveButton.value == RequestConstant.RESUBMIT?Sitevoucher_EditListApiValue.value[0].companyId:0,
+      accountTypeId: commonVoucherController.selectedAccTypeId.value,
+      accountNameId: commonVoucherController.selectedAccnameId.value,
+      siteVoucherAmount: double.tryParse(Amount.text),
+      payForType: commonVoucherController.selectedAccPayId.value,
+      payModeId: commonVoucherController.selectedPaymodeId.value,
+      paidFrom: commonVoucherController.vocPaidformId,
+      paymentType: type.value == "Direct Payment/Office" ? "DP" : "SP",
       nameThrough: commonVoucherController.namethrough.text,
       remarks: Remarks.text,
-      preparedby: loginController.EmpId(),
-      userId: loginController.UserId(),
-      deviceName: BaseUtitiles.deviceName,
-      entryMode: SaveButton.value == RequestConstant.SUBMIT
-          ? "ADD"
-          : SaveButton.value == RequestConstant.RESUBMIT
-          ? "UPDATE"
-          : SaveButton.value == "Verify"
-          ? "VERIFY"
-          : SaveButton.value == "Approve"
-          ? "APPROVE"
-          : "",
-      // vocFile: imageFiles,
-      vocDet: getSiteDetList.value.length == 0
-          ? getSitevoucherDet()
-          : getSiteDetList.value,
-
+      companyBankId: 0,
+      cheQueNo:"-",
+      accountPayee: 0,
+      cheQueDate: sitevocDate.text,
+      requisitionId: 0,
+      createdBy: int.tryParse(loginController.EmpId()),
+      createdDt: BaseUtitiles().convertToUtcIso(sitevocDate.text),
+      accountSiteVoucherSwPayments: getSitevoucherDet(id)
     );
-    // final list = await Sitevoucher_provider.SaveSitevoucherScreenEntryAPI(
-    //     id, formdata, imageFiles, context);
-    // if (list != null) {
-    //   if (id != 0) {
-    //     Navigator.pop(context);
-    //     Navigator.pop(context);
-    //     Navigator.pop(context);
-    //     // Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => SiteVoucher_EntryListNew()));
-    //     BaseUtitiles.showToast(list);
-    //     delete_Sitevoucher_itemlist_Table();
-    //     Sitevoucher_itemview_GetDbList.clear();
-    //     Clear();
-    //     clearDatas();
-    //     getSiteVoc_EntryList();
-    //     // if (editcheck == 1) {
-    //     //   await sendMultipleUpdateImage();
-    //     // } else {
-    //     //   await sendMultipleImage();
-    //     // }
-    //     editcheck.value = 0;
-    //     itemcheck = 0;
-    //     Active = 1;
-    //     // return Navigator.pop(context);
-    //   }
-    //   else {
-    //     buttonControl = 0;
-    //     if (list == RequestConstant.DUPLICATE_OCCURED) {
-    //       Navigator.pop(context);
-    //       Navigator.pop(context);
-    //       return BaseUtitiles.showToast(list!);
-    //     } else {
-    //       Navigator.pop(context);
-    //       Navigator.pop(context);
-    //       Navigator.pop(context);
-    //       // Navigator.pushReplacement(
-    //       //     context,
-    //       //     new MaterialPageRoute(
-    //       //         builder: (BuildContext context) =>
-    //       //         new SiteVoucher_EntryListNew()));
-    //       clearDatas();
-    //       BaseUtitiles.showToast(list!);
-    //       delete_Sitevoucher_itemlist_Table();
-    //       Sitevoucher_itemview_GetDbList.clear();
-    //       Clear();
-    //       getSiteVoc_EntryList();
-    //       // if (editcheck == 1) {
-    //       //   await sendMultipleUpdateImage();
-    //       // } else {
-    //       //   await sendMultipleImage();
-    //       // }
-    //       editcheck.value = 0;
-    //       itemcheck = 0;
-    //       Active = 1;
-    //       // return Navigator.pop(context);
-    //     }
-    //   }
-    // }
+    print(jsonEncode(formdata.toJson()));
+
+    final list = await Sitevoucher_provider.SaveSitevoucherScreenEntryAPI(
+        formdata, imageFiles, SaveButton.value, id);
+
+    if (list != null) {
+      if (list["success"] == true) {
+        BaseUtitiles.showToast(list["message"]);
+        await getSiteVoc_EntryList();
+        clearDatas();
+        BaseUtitiles.popMultiple(context, count: 3);
+      }
+      else {
+        BaseUtitiles.popMultiple(context, count: 2);
+        BaseUtitiles.showToast(list["message"] ?? 'Something went wrong..');
+      }
+    }
+    else {
+      BaseUtitiles.showToast("Something went wrong..");
+      BaseUtitiles.popMultiple(context, count: 2);
+    }
   }
 
-  List<VocDet>? getSitevoucherDet() {
+  List<AccountSiteVoucherSwPayment>? getSitevoucherDet(id) {
+    getSiteDetList.value.clear();
     Sitevoucher_itemview_GetDbList.value.forEach((element) {
-      var list = new VocDet(
-        siteId: element.siteid.toString(),
-        payType: element.paytype.toString(),
-        amt: element.amt.toString(),
-        tdsPer: element.TdsPer.toString(),
-        tdsAmt: element.TdsAmt.toString(),
-        netAmt: element.NetAmt.toString(),
+      var list = new AccountSiteVoucherSwPayment(
+        id: SaveButton.value == RequestConstant.RESUBMIT? element.reqDetId : 0 ,
+        siteVoucherId: SaveButton.value == RequestConstant.RESUBMIT?id:0,
+        payType: element.paytype,
+        projectId: projectController.selectedProjectId.value,
+        siteId: element.siteid,
+        purOrdmasId: 0,
+        purOrdBillmasId: 0,
+        workOrderId: 0,
+        workId: 0,
+        nmrWorkDetId: 0,
+        nmrWorkId: 0,
+        paymentReqId: 0,
+        tdsAmount: element.TdsAmt,
+        tdsPercentage: element.TdsPer,
+        amount: element.amt,
+        netAmount: element.NetAmt,
+        reqAmount: 0,
       );
       getSiteDetList.value.add(list);
     });
@@ -319,15 +285,16 @@ class SiteVoucher_Controller extends GetxController {
   Future Sitevoucher_entrylist_editSaveDetTable() async {
     sitevoucherTableList.clear();
     Sitevoucher_EditListApiValue.forEach((element) {
-      element.vocEditDet.forEach((val) {
+      element.accountSiteVoucherSwPayments.forEach((val) {
         sitevoucherItemListTableModel = new SitevoucherDetlist();
         sitevoucherItemListTableModel.siteid = val.siteId;
+        sitevoucherItemListTableModel.reqDetId = val.id;
         sitevoucherItemListTableModel.sitename = val.siteName.toString();
         sitevoucherItemListTableModel.paytype = val.payType.toString();
-        sitevoucherItemListTableModel.amt = val.amt;
-        sitevoucherItemListTableModel.TdsPer = val.tdsPer;
-        sitevoucherItemListTableModel.TdsAmt = val.tdsAmt;
-        sitevoucherItemListTableModel.NetAmt = val.netAmt;
+        sitevoucherItemListTableModel.amt = val.amount;
+        sitevoucherItemListTableModel.TdsPer = val.tdsPercentage;
+        sitevoucherItemListTableModel.TdsAmt = val.tdsAmount;
+        sitevoucherItemListTableModel.NetAmt = val.netAmount;
         sitevoucherTableList.add(sitevoucherItemListTableModel);
       });
     });
@@ -336,24 +303,29 @@ class SiteVoucher_Controller extends GetxController {
     return savedatas;
   }
 
-  Future ConsumEntryList_EditApi(int VocId, BuildContext context) async {
-    await Sitevoucher_provider.Sitevoucher_entryList_editAPI(VocId).then((value) async {
-      if (value != null && value.length > 0) {
-        delete_Sitevoucher_itemlist_Table();
-        Sitevoucher_itemview_GetDbList.clear();
-        Sitevoucher_EditListApiValue.value = value;
-        await Sitevoucher_entrylist_editSaveDetTable();
-        await getsitevoucherTablesDatas();
-        await gettingImage(VocId);
-        return Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SiteVoucher_EntryScreen()));
+  Future SiteVoucher_List_EditApi(int VocId, BuildContext context) async {
+    Sitevoucher_EditListApiValue.value = [];
+    await Sitevoucher_provider.Sitevoucher_entryList_editAPI(VocId)
+        .then((value) async {
+      if (value != null) {
+        if (value.success == true) {
+          Sitevoucher_EditListApiValue.value = [value.result];
+          SaveButton.value = RequestConstant.RESUBMIT;
+          delete_Sitevoucher_itemlist_Table();
+          Sitevoucher_itemview_GetDbList.clear();
+          await Sitevoucher_entrylist_editSaveDetTable();
+          await getsitevoucherTablesDatas();
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => SiteVoucher_EntryScreen()));
+        } else {
+          BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
+        }
+      } else {
+        BaseUtitiles.showToast('Something went wrong..');
       }
     });
   }
-
-  Clear() {
-    Amount.text = "0.00";
-  }
-
+  
   Future DeleteAlert(BuildContext context, int index) async {
     return await showDialog(
       context: context,
@@ -412,69 +384,29 @@ class SiteVoucher_Controller extends GetxController {
     );
   }
 
-  /// Sending multiple images controller.....
-
-  Future<void> sendMultipleImage() async {
-    InwardImageRes inwardImageRes =
-    await Sitevoucher_provider().sendMultipleImageProvider(
-        SiteVocImagePayload(
-          vocId: VocID.toString(),
-          vocNo: AutoYearwiseSiteVoc.text,
-          entryMode: "ADD",
-        ), imageFiles);
-    if (inwardImageRes.retString != null) {
-      if (kDebugMode) {
-        print("Successfully upload the images");
-        print(inwardImageRes.retString.toString());
-      }
-    } else {
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
-    }
-  }
-
-  Future<void> sendMultipleUpdateImage() async {
-    InwardImageRes inwardImageRes =
-    await Sitevoucher_provider().sendMultipleImageProvider(
-        SiteVocImagePayload(
-          vocId: VocID.toString(),
-          vocNo: AutoYearwiseSiteVoc.text,
-          entryMode: "UPDATE",
-        ), imageFiles);
-    if (inwardImageRes.retString != null) {
-      if (kDebugMode) {
-        print("Successfully upload the images");
-        print(inwardImageRes.retString.toString());
-      }
-    } else {
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
-    }
-  }
 
   /// Getting image.....
 
-  Future<void> gettingImage(int? vocId) async {
-    GetSiteVocImage gettingImage =
-    await Sitevoucher_provider().gettingImageProvider(vocId);
-    gettingNetworkImages = gettingImage.imageView;
-    netWorkImageCount?.value = gettingImage.imageView!.length;
-    print("Getting count :: $netWorkImageCount");
-    if (gettingNetworkImages!.isNotEmpty) {
-      checkImgList = true;
-      gettingNetworkImageList!.clear();
-      imageId!.clear();
-      for (int i = 0; i < gettingNetworkImages!.length; i++) {
-        gettingNetworkImageList!
-            .add(gettingImage.imageView![i].imageUrl.toString());
-        imageId!.add(int.parse(gettingImage.imageView![i].imageId.toString()));
+  Future<void> gettingImage() async {
+    gettingNetworkImages.clear();
+    imageId.clear();
+    imageFiles.clear();
+    final value =
+    await Inward_Pending_provider.gettingImageProvider(vocId!, "siteVoucher");
+    if (value != null) {
+      for (int i = 0; i < value!.length; i++) {
+        gettingNetworkImages.add(value[i].url.toString());
+        imageId.add(value[i].id);
       }
+    } else {
+      BaseUtitiles.showToast('Something went wrong..');
     }
   }
 
   /// Delete image.....
 
-  Future<void> deletingImage(int imageId) async {
-    SiteVocImageDelete siteVocImageDelete =
-    await Sitevoucher_provider().deleteImageProvider(imageId);
-    BaseUtitiles.showToast(siteVocImageDelete.message.toString());
+
+  Future<bool> deletingImage(int imageId) async {
+    return await Inward_Pending_provider.deleteImageProvider(imageId,"siteVoucher");
   }
 }

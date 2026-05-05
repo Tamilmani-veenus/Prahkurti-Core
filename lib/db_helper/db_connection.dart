@@ -56,7 +56,7 @@ class DatabaseConnection {
     await database.execute(advanceReqvoucherItemlistTable);
 
 
-    String sitevoucherListTable = "CREATE TABLE sitevoucherListTable (id INTEGER PRIMARY KEY UNIQUE,siteid INTEGER,paytype TEXT,sitename TEXT,amt REAL,TdsPer REAL,TdsAmt REAL,NetAmt REAL)";
+    String sitevoucherListTable = "CREATE TABLE sitevoucherListTable (id INTEGER PRIMARY KEY UNIQUE,siteid INTEGER,paytype TEXT,sitename TEXT,amt REAL,TdsPer REAL,TdsAmt REAL,NetAmt REAL,reqDetId INTEGER)";
     await database.execute(sitevoucherListTable);
 
     String staffvouchersite = "CREATE TABLE staffvouchersite (id INTEGER PRIMARY KEY UNIQUE,siteid INTEGER,projectid INTEGER,paytype TEXT,sitename TEXT,projectname TEXT,amt REAL,TdsPer REAL,TdsAmt REAL,NetAmt REAL)";
@@ -65,7 +65,7 @@ class DatabaseConnection {
     String materialApprovalListTable = "CREATE TABLE materialApprovalListTable (id INTEGER PRIMARY KEY UNIQUE,materialid INTEGER,reqDetId INTEGER,materialname TEXT,scale TEXT,balqty REAL,reqqty REAL,appqty REAL,apptype TEXT,tranfromprjid TEXT,tranfromprjname TEXT,remarks TEXT,desc TEXT,scaleId INTEGER)";
     await database.execute(materialApprovalListTable);
 
-    String materialListTable = "CREATE TABLE materialListTable (id INTEGER PRIMARY KEY UNIQUE,materialid INTEGER,material TEXT,scale TEXT,balqty REAL,qty REAL,stockqty REAL,remarks TEXT,desc TEXT,scaleId INTEGER,reqDetId INTEGER)";
+    String materialListTable = "CREATE TABLE materialListTable (id INTEGER PRIMARY KEY UNIQUE,materialid INTEGER,material TEXT,scale TEXT,balqty REAL,qty REAL,reqQty REAL,stockqty REAL,remarks TEXT,desc TEXT,scaleId INTEGER,reqDetId INTEGER)";
     await database.execute(materialListTable);
 
     String consumItemListTable = "CREATE TABLE consumItemListTable (id INTEGER PRIMARY KEY UNIQUE,materialid INTEGER,material TEXT,scale TEXT,stockqty REAL,usageqty REAL,scaleId INTEGER,reqDetId INTEGER)";
@@ -95,7 +95,7 @@ class DatabaseConnection {
     String punchOut = "CREATE TABLE punchOut (id INTEGER PRIMARY KEY UNIQUE,empId Text,date Text,timeOut Text,entryMode TEXT,userId TEXT,deviceName TEXT,locId TEXT)";
     await database.execute(punchOut);
 
-    String materialTransReqDetTable = "CREATE TABLE materialTransReqDet (id INTEGER PRIMARY KEY UNIQUE,reqDetId INTEGER,materialId INTEGER,materialName TEXT,scale TEXT,stockQty REAL,Qty REAL,detRemarks TEXT)";
+    String materialTransReqDetTable = "CREATE TABLE materialTransReqDet (id INTEGER PRIMARY KEY UNIQUE,reqDetId INTEGER,materialId INTEGER,materialName TEXT,scale TEXT,stockQty REAL,Qty REAL,trQty REAL,detRemarks TEXT)";
     await database.execute(materialTransReqDetTable);
 
   }
@@ -146,8 +146,17 @@ class DatabaseConnection {
       await database.execute(
           "ALTER TABLE subcontAttendanceDet ADD COLUMN reqDetId INTEGER"
       );
+      await database.execute(
+          "ALTER TABLE materialListTable ADD COLUMN reqQty INTEGER"
+      );
+      await database.execute(
+          "ALTER TABLE materialTransReqDet ADD COLUMN trQty INTEGER"
+      );
+      await database.execute(
+          "ALTER TABLE sitevoucherListTable ADD COLUMN reqDetId INTEGER"
+      );
     }
 
 
-}
+  }
 }

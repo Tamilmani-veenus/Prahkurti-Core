@@ -219,11 +219,11 @@ class _advance_sitewisepayment_newState extends State<advance_sitewisepayment_ne
                             ),
                           ),
                           onTap: (){
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return SitewisepaymentTypeAlert(from: 'Advance req voucher');
-                                });
+                            // showDialog(
+                            //     context: context,
+                            //     builder: (BuildContext context) {
+                            //       return SitewisepaymentTypeAlert(from: 'Advance req voucher');
+                            //     });
                           },
                           validator: (value) {
                             if (value!.isEmpty || value == "--Select--") {

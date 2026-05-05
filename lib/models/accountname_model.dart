@@ -35,27 +35,19 @@ class AccountNameReponse {
 class Result {
   int? accNameid;
   String? accName;
-  int? accountTypeId;
-  String? accountTypeName;
 
   Result({
     this.accNameid,
     this.accName,
-    this.accountTypeId,
-    this.accountTypeName,
   });
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
     accNameid: json["id"],
     accName: json["accountName"],
-    accountTypeId: json["accountTypeId"],
-    accountTypeName: json["accountTypeName"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": accNameid,
     "accountName": accName,
-    "accountTypeId": accountTypeId,
-    "accountTypeName": accountTypeName,
   };
 }

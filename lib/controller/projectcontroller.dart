@@ -51,9 +51,9 @@ class ProjectController extends GetxController{
     }
   }
 
-  Future getToProjectName(int proId) async {
+  Future getToProjectName(Url, int proId) async {
     ToProjectDropdownName.value.clear();
-    final value = await MrnFinalApprovalProvider.projectNameProvider(proId);
+    final value = await MrnFinalApprovalProvider.projectNameProvider(Url,proId);
     if (value != null ) {
       if(value.success == true){
         if( value.result!.isNotEmpty) {

@@ -234,7 +234,6 @@ class TransferBt_Site_Controller extends GetxController {
 
       itemListUpdateModelList.add(itemModel);
     }
-
     if (hasInvalidQty) {
       BaseUtitiles.showToast("Invalid quantity, check stock limit");
     }
@@ -351,17 +350,20 @@ class TransferBt_Site_Controller extends GetxController {
   List<MaterialSiteLink>? getDetDetails(id) {
     getTransfferbetDetList.value = [];
     for (int index = 0; index < ItemGetTableListdata.length; index++) {
-      var list = MaterialSiteLink(
-        id:  isResubmit ? ItemGetTableListdata[index].StSDetId : 0,
-        transferSiteId: id != 0 ? id : 0,
-        materialId: ItemGetTableListdata[index].materialId,
-        reqOrdDetId: isPending ? ItemGetTableListdata[index].reqDetId : isResubmit ? ItemGetTableListdata[index].reqDetId : null,
-        qty: ItemGetTableListdata[index].Qty,
-        rate: 0,
-        amount: 0,
-      );
-      getTransfferbetDetList.add(list);
-    }
+      if(ItemGetTableListdata[index].Qty > 0) {
+        var list = MaterialSiteLink(
+          id: isResubmit ? ItemGetTableListdata[index].StSDetId : 0,
+          transferSiteId: id != 0 ? id : 0,
+          materialId: ItemGetTableListdata[index].materialId,
+          reqOrdDetId: isPending
+              ? ItemGetTableListdata[index].reqDetId
+              : isResubmit ? ItemGetTableListdata[index].reqDetId : null,
+          qty: ItemGetTableListdata[index].Qty,
+          rate: 0,
+          amount: 0,
+        );
+        getTransfferbetDetList.add(list);
+      }}
     return getTransfferbetDetList.value;
   }
 

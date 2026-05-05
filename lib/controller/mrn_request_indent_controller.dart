@@ -79,6 +79,8 @@ class MRN_Request_Controller extends GetxController {
 
   int checkColor = 0;
 
+  RxBool activeType = false.obs;
+
   String screenCheck = "";
   var materialTableModel = Materiallist();
   var materiallistService = MateriallistService();
@@ -156,7 +158,74 @@ class MRN_Request_Controller extends GetxController {
     }
   }
 
-  Future<void> getAppTypeList() async {
+
+  Future<bool?> CheckmaterialBalQty() async {
+    final value = await CommonProvider.checkMaterialBalqty();
+    if (value != null) {
+      if (value["success"] == true) {
+        if (value["result"].isNotEmpty) {
+          handleConfig(value["result"][0]);
+        }
+        else {
+          BaseUtitiles.showToast('No Data Found');
+        }
+      }
+      else {
+        BaseUtitiles.showToast(value["message"] ?? 'Something went wrong..');
+      }
+    }
+    else {
+      BaseUtitiles.showToast("Something went wrong..");
+    }
+}
+
+
+  void handleConfig(Map<String, dynamic> data) {
+    if (data["projectWise"] == true) {
+      activeType.value = true;
+    }
+    else if (data["siteIWise"] == true) {
+      activeType.value = true;
+    }
+    else if (data["materialWise"] == true) {
+      activeType.value = true;
+    }
+    else if (data["materialHeadWise"] == true) {
+      activeType.value = true;
+    }
+    else {
+      activeType.value = false;
+    }
+  }
+
+  MaterialItemlistBal_clickEdit(int index) {
+    double balQty = double.parse(
+        Material_itemview_GetDbList.value[index].balqty.toString());
+
+    double enteredQty = Addwork_qtyControllers[index].value.text.isEmpty
+        ? 0
+        : double.parse(Addwork_qtyControllers[index].value.text);
+    if(ReqType.value == "PO")
+    {
+      if (enteredQty > balQty) {
+        enteredQty = 0;
+        Addwork_qtyControllers[index].text = "0.0";
+        BaseUtitiles.showToast("More than Bal Qty, Not Allowed");
+      }
+      else {
+      // If none of the above conditions are met, call updateConsumTables()
+        updateConsumTables();
+      }
+    }
+    else {
+      updateConsumTables();
+    }
+  }
+
+
+
+
+    Future<void> getAppTypeList() async {
     appTypeList.clear();
     var response = await Mrn_Req_provider.getAppTypeListAPI();
     if (response != null) {
@@ -217,6 +286,7 @@ class MRN_Request_Controller extends GetxController {
           materialTableModel.qty = double.parse("0");
           materialTableModel.stockqty = element.stockQty;
           materialTableModel.scaleId = element.scaleId;
+          materialTableModel.balqty = element.balqty;
           materialTableModel.reqDetId = 0;
           materialTableModel.remarks = "";
           materialTableModel.desc = "";
@@ -245,12 +315,17 @@ class MRN_Request_Controller extends GetxController {
     Material_itemview_GetDbList.value = [];
     var Matlist = await materiallistService.MaterialItemlist_table_readAll();
     Matlist.forEach((user) {
+      print("VVVVVVVV..${user["balqty"]}");
+      print("VVVVVVVV..${user["stockqty"]}");
       var materiallist = Materiallist();
+      print("SSSSSS${materiallist.balqty}");
       materiallist.materialid = user['materialid'];
       materiallist.material = user['material'];
       materiallist.scale = user['scale'];
       materiallist.stockqty = user['stockqty'];
       materiallist.qty = user['qty'];
+      materiallist.reqQty = user["reqQty"];
+      materiallist.balqty = user["balqty"];
       materiallist.scaleId = user['scaleId'];
       materiallist.reqDetId = user['reqDetId'];
       materiallist.remarks = user['remarks'];
@@ -293,10 +368,11 @@ class MRN_Request_Controller extends GetxController {
         materialTableModel.material = element.material!;
         materialTableModel.scale = element.scale!;
         materialTableModel.qty = double.parse("0");
+        materialTableModel.reqQty = element.reqQty;
         materialTableModel.stockqty = element.stockqty;
         materialTableModel.scaleId = element.scaleId;
         materialTableModel.reqDetId = element.reqDetId;
-        // materialTableModel.balqty = element.balqty;
+        materialTableModel.balqty = element.balqty;
         materialTableModel.desc = Addwork_descControllers[i].value.text;
         materialTableModel.remarks = Addwork_remarksControllers[i].value.text;
         updateListDatas.add(materialTableModel);
@@ -310,7 +386,8 @@ class MRN_Request_Controller extends GetxController {
         materialTableModel.reqDetId = element.reqDetId!;
         materialTableModel.qty =
             double.parse(Addwork_qtyControllers[i].value.text);
-        // materialTableModel.balqty = element.balqty;
+        materialTableModel.reqQty = element.reqQty;
+        materialTableModel.balqty = element.balqty;
         materialTableModel.stockqty = element.stockqty;
         materialTableModel.desc = Addwork_descControllers[i].value.text;
         materialTableModel.remarks = Addwork_remarksControllers[i].value.text;
@@ -366,7 +443,9 @@ class MRN_Request_Controller extends GetxController {
       verifyDate: isVerify
           ? BaseUtitiles().convertToUtcIso(RequestDateController.text)
           : null,
-      verifyStatus: isVerify ? "Y" : null,
+      verifyStatus: isResubmit ?Material_EditListApiValue[0].verifyStatus:isVerify ? "Y" : "N",
+      preApproveStatus: isResubmit ?Material_EditListApiValue[0].preApproveStatus:"N",
+      approveStatus: isResubmit ?Material_EditListApiValue[0].approveStatus:"N",
 
       //det
       mMatReqMasLink: getRequestDetList.value.isEmpty
@@ -412,9 +491,11 @@ class MRN_Request_Controller extends GetxController {
           qty: element.qty,
           scaleId: element.scaleId,
           siteId: siteController.selectedsiteId.value,
-          reqQty: element.qty,
+          reqQty: isSubmit || isResubmit ? element.qty : isVerify ? element.reqQty : element.qty,
           remarks: element.remarks,
           reqDescription: element.desc,
+          preApproveStatus: isResubmit ? Material_EditListApiValue[0].preApproveStatus : "N",
+          approveStatus: isResubmit ? Material_EditListApiValue[0].approveStatus : "N"
         );
         getRequestDetList.value.add(list);
       }
@@ -433,9 +514,10 @@ class MRN_Request_Controller extends GetxController {
         materialTableModel.material = val.matName!;
         materialTableModel.scale = val.scale!;
         materialTableModel.qty = val.qty;
+        materialTableModel.reqQty = val.reqQty;
         materialTableModel.scaleId = val.scaleId;
         materialTableModel.reqDetId = val.reqDetId;
-        // materialTableModel.balqty = val.balqty!;
+        materialTableModel.balqty = val.balqty!;
         materialTableModel.stockqty = val.stockqty;
         materialTableModel.remarks = val.detRemarks!;
         materialTableModel.desc = val.detDescription;
@@ -516,9 +598,10 @@ class MRN_Request_Controller extends GetxController {
         materialTableModel.material = val.matName!;
         materialTableModel.scale = val.scale!;
         materialTableModel.qty = val.qty!;
+        materialTableModel.reqQty = val.reqQty!;
         materialTableModel.scaleId = val.scaleId!;
         materialTableModel.reqDetId = val.reqDetId!;
-        // materialTableModel.balqty = val.balqty!;
+        materialTableModel.balqty = val.balqty!;
         materialTableModel.remarks = val.detRemarks!;
         materialTableModel.stockqty = val.stockqty!;
         materialTableModel.desc = val.detDescription;

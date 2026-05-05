@@ -186,7 +186,7 @@ class AdvanceReqVoucherController_new extends GetxController {
     AdvanceList.value=[];
     await AdvanceReqVoucherProvider.getAdvTypeList(
         commonVoucherController.payfor.value,
-        commonVoucherController.selectedAccId.value,
+        commonVoucherController.selectedAccTypeId.value,
         commonVoucherController.selectedAccnameId.value,
         projectController.selectedProjectId.value)
         .then((value) async {
@@ -305,7 +305,7 @@ class AdvanceReqVoucherController_new extends GetxController {
         vocDate: entryDateController.text,
         vocType: commonVoucherController.VocType.value,
         projectId: projectController.selectedProjectId.value.toString(),
-        accTypeId: commonVoucherController.selectedAccId.value.toString(),
+        accTypeId: commonVoucherController.selectedAccTypeId.value.toString(),
         accNameId: commonVoucherController.selectedAccnameId.value.toString(),
         payFor: commonVoucherController.payfor.value.toString(),
         // payMode: commonVoucherController.selectedPaymodeId.value.toString(),
@@ -331,10 +331,10 @@ class AdvanceReqVoucherController_new extends GetxController {
             : saveButton.value == "Approve"
             ? "APPROVE"
             : "",
-        vocDet : commonVoucherController.VocType.value == "A" && commonVoucherController.selectedAccId.value==4
+        vocDet : commonVoucherController.VocType.value == "A" && commonVoucherController.selectedAccTypeId.value==4
             ? (getDetList_Advance.value.isEmpty
             ? getDetPayforAdvDetails()
-            : getDetList_Advance.value):commonVoucherController.VocType.value == "A" && commonVoucherController.selectedAccId.value==5
+            : getDetList_Advance.value):commonVoucherController.VocType.value == "A" && commonVoucherController.selectedAccTypeId.value==5
             ? (getDetList_NMR.value.isEmpty
             ? getDetDetails()
             : getDetList_NMR.value): []
@@ -402,8 +402,8 @@ class AdvanceReqVoucherController_new extends GetxController {
     for (int index = 0; index < GetTableList.length; index++) {
       if(GetTableList[index].amount > 0.0){
         var list = VocDet(
-            purOrdMasId: commonVoucherController.selectedAccId.value == 4 ? GetTableList[index].purOrdMasId.toString() : "0",  //----(4 means SUPPLIER)
-            workOrdId: commonVoucherController.selectedAccId.value == 5 ? GetTableList[index].purOrdMasId.toString() : "0", //----(5 means SUBCONTRACTOR)
+            purOrdMasId: commonVoucherController.selectedAccTypeId.value == 4 ? GetTableList[index].purOrdMasId.toString() : "0",  //----(4 means SUPPLIER)
+            workOrdId: commonVoucherController.selectedAccTypeId.value == 5 ? GetTableList[index].purOrdMasId.toString() : "0", //----(5 means SUBCONTRACTOR)
             payType: commonVoucherController.payfor.value.toString(),
             siteId: GetTableList[index].siteId.toString(),
             amt: amount_ListControllers[index].text,
