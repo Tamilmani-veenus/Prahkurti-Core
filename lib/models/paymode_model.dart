@@ -1,25 +1,52 @@
+// To parse this JSON data, do
+//
+//     final payModeReponse = payModeReponseFromJson(jsonString);
+
 import 'dart:convert';
 
-List<PayModereponse> payModereponseFromJson(String str) => List<PayModereponse>.from(json.decode(str).map((x) => PayModereponse.fromJson(x)));
+PayModeReponse payModeReponseFromJson(String str) => PayModeReponse.fromJson(json.decode(str));
 
-String payModereponseToJson(List<PayModereponse> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String payModeReponseToJson(PayModeReponse data) => json.encode(data.toJson());
 
-class PayModereponse {
-  PayModereponse({
+class PayModeReponse {
+  bool? success;
+  String? message;
+  List<Result>? result;
+
+  PayModeReponse({
+    this.success,
+    this.message,
+    this.result,
+  });
+
+  factory PayModeReponse.fromJson(Map<String, dynamic> json) => PayModeReponse(
+    success: json["success"],
+    message: json["message"],
+    result: List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "success": success,
+    "result": List<dynamic>.from(result!.map((x) => x.toJson())),
+  };
+}
+
+class Result {
+  int? paymodeid;
+  String? paymode;
+
+  Result({
     this.paymodeid,
     this.paymode,
   });
 
-  int? paymodeid;
-  String? paymode;
-
-  factory PayModereponse.fromJson(Map<String, dynamic> json) => PayModereponse(
-    paymodeid: json["paymodeid"],
-    paymode: json["paymode"],
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    paymodeid: json["id"],
+    paymode: json["payMode"],
   );
 
   Map<String, dynamic> toJson() => {
-    "paymodeid": paymodeid,
-    "paymode": paymode,
+    "id": paymodeid,
+    "payMode": paymode,
   };
 }

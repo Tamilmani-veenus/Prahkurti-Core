@@ -4,6 +4,7 @@ class Materiallist{
   String? material;
   String? scale;
   double? qty;
+  double? reqQty;
   double? balqty;
   double? stockqty;
   String? remarks;
@@ -18,6 +19,7 @@ class Materiallist{
     mapping['material'] = material != null ? material : null;
     mapping['scale'] = scale != null ? scale : null;
     mapping['qty'] = qty != null ? qty : null;
+    mapping['reqQty'] = reqQty != null ? reqQty : null;
     mapping['balqty'] = balqty != null ? balqty : null;
     mapping['stockqty'] = stockqty != null ? stockqty : null;
     mapping['remarks'] = remarks != null ? remarks : null;

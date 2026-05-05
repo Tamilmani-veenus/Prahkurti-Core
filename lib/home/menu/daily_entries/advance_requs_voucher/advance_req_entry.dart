@@ -668,7 +668,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Advance_Req_Voucher_Entry
         projectController.projectname.text=element.projectName.toString();
         projectController.selectedProjectId.value=element.projectId;
         commonVoucherController.VoucherTypeController.text=element.vocType=="P"?"Payment":"Receipt";
-        commonVoucherController.selectedAccId.value=element.accTypeId;
+        commonVoucherController.selectedAccTypeId.value=element.accTypeId;
         commonVoucherController.selectedAccnameId.value=element.accNameId;
         commonVoucherController.selectedAccPayId.value=element.payFor;
         commonVoucherController.selectedPaymodeId.value=element.payMode;
@@ -1144,9 +1144,8 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Advance_Req_Voucher_Entry
 
                                 }
                                 else{
-                                  commonVoucherController.Accountname_DeleteApi(commonVoucherController.selectedAccId.value, commonVoucherController.selectedAccnameId.value);
+                                  commonVoucherController.Accountname_DeleteApi(commonVoucherController.selectedAccnameId.value);
                                 }
-
                               }
                               else{
 

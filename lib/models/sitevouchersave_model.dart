@@ -1,154 +1,193 @@
 // To parse this JSON data, do
 //
-//     final sitevouchersaverequest = sitevouchersaverequestFromJson(jsonString);
+//     final sitevoucherSaveRequest = sitevoucherSaveRequestFromJson(jsonString);
 
 import 'dart:convert';
-import 'dart:io';
 
-Sitevouchersaverequest sitevouchersaverequestFromJson(String str) => Sitevouchersaverequest.fromJson(json.decode(str));
+SitevoucherSaveRequest sitevoucherSaveRequestFromJson(String str) => SitevoucherSaveRequest.fromJson(json.decode(str));
 
-String sitevouchersaverequestToJson(Sitevouchersaverequest data) => json.encode(data.toJson());
+String sitevoucherSaveRequestToJson(SitevoucherSaveRequest data) => json.encode(data.toJson());
 
-class Sitevouchersaverequest {
-  Sitevouchersaverequest({
-    this.vocId,
-    this.vocNo,
-    this.vocDate,
-    this.vocType,
-    this.projectId,
-    this.accTypeId,
-    this.accNameId,
-    this.payFor,
-    this.payMode,
-    this.payType,
-    this.vocAmt,
-    this.companyId,
-    this.paidFrom,
-    this.bankId,
-    this.chqNo,
-    this.chqDate,
-    this.nameThrough,
-    this.remarks,
-    this.preparedby,
-    this.userId,
-    this.deviceName,
-    this.entryMode,
-    this.vocFile,
-    this.vocDet,
-
-  });
-
-  String? vocId;
-  String? vocNo;
-  String? vocDate;
-  String? vocType;
-  String? projectId;
-  String? accTypeId;
-  String? accNameId;
-  String? payFor;
-  String? payMode;
-  String? payType;
-  String? vocAmt;
-  String? companyId;
-  String? bankId;
-  String? paidFrom;
-  String? chqNo;
-  String? chqDate;
+class SitevoucherSaveRequest {
+  int? id;
+  String? siteVoucherNo;
+  String? siteVoucherDate;
+  String? siteVoucherType;
+  int? projectId;
+  int? companyId;
+  int? accountTypeId;
+  int? accountNameId;
+  double? siteVoucherAmount;
+  String? payForType;
+  int? payModeId;
+  int? paidFrom;
+  String? paymentType;
   String? nameThrough;
   String? remarks;
-  String? preparedby;
-  String? userId;
-  String? deviceName;
-  String? entryMode;
-  List<File>? vocFile;
-  List<VocDet>? vocDet;
+  int? companyBankId;
+  String? cheQueNo;
+  int? accountPayee;
+  String? cheQueDate;
+  int? requisitionId;
+  int? createdBy;
+  String? createdDt;
+  List<AccountSiteVoucherSwPayment>? accountSiteVoucherSwPayments;
 
-  factory Sitevouchersaverequest.fromJson(Map<String, dynamic> json) => Sitevouchersaverequest(
-    vocId: json["VocId"],
-    vocNo: json["VocNo"],
-    vocDate: json["VocDate"],
-    vocType: json["VocType"],
-    projectId: json["ProjectId"],
-    accTypeId: json["AccTypeId"],
-    accNameId: json["AccNameId"],
-    paidFrom: json["PaidFrom"],
-    payFor: json["PayFor"],
-    payMode: json["PayMode"],
-    payType: json["PayType"],
-    vocAmt: json["VocAmt"],
-    companyId: json["CompanyId"],
-    bankId: json["BankId"],
-    chqNo: json["ChqNo"],
-    chqDate: json["ChqDate"],
-    nameThrough: json["NameThrough"],
-    remarks: json["Remarks"],
-    preparedby: json["Preparedby"],
-    userId: json["UserId"],
-    deviceName: json["DeviceName"],
-    entryMode: json["EntryMode"],
-    vocFile : json["VocFlie"],
-    vocDet: List<VocDet>.from(json["VocDet"].map((x) => VocDet.fromJson(x))),
+  SitevoucherSaveRequest({
+    this.id,
+    this.siteVoucherNo,
+    this.siteVoucherDate,
+    this.siteVoucherType,
+    this.projectId,
+    this.companyId,
+    this.accountTypeId,
+    this.accountNameId,
+    this.siteVoucherAmount,
+    this.payForType,
+    this.payModeId,
+    this.paidFrom,
+    this.paymentType,
+    this.nameThrough,
+    this.remarks,
+    this.companyBankId,
+    this.cheQueNo,
+    this.accountPayee,
+    this.cheQueDate,
+    this.requisitionId,
+    this.createdBy,
+    this.createdDt,
+    this.accountSiteVoucherSwPayments,
+  });
+
+  factory SitevoucherSaveRequest.fromJson(Map<String, dynamic> json) => SitevoucherSaveRequest(
+    id: json["id"],
+    siteVoucherNo: json["siteVoucherNo"],
+    siteVoucherDate: json["siteVoucherDate"],
+    siteVoucherType: json["siteVoucherType"],
+    projectId: json["projectId"],
+    companyId: json["companyId"],
+    accountTypeId: json["accountTypeId"],
+    accountNameId: json["accountNameId"],
+    siteVoucherAmount: json["siteVoucherAmount"],
+    payForType: json["payForType"],
+    payModeId: json["payModeId"],
+    paidFrom: json["paidFrom"],
+    paymentType: json["paymentType"],
+    nameThrough: json["nameThrough"],
+    remarks: json["remarks"],
+    companyBankId: json["companyBankId"],
+    cheQueNo: json["cheQueNo"],
+    accountPayee: json["accountPayee"],
+    cheQueDate: json["cheQueDate"],
+    requisitionId: json["requisitionId"],
+    createdBy: json["createdBy"],
+    createdDt: json["createdDt"],
+    accountSiteVoucherSwPayments: List<AccountSiteVoucherSwPayment>.from(json["accountSiteVoucherSWPayments"].map((x) => AccountSiteVoucherSwPayment.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "VocId": vocId,
-    "VocNo": vocNo,
-    "VocDate": vocDate,
-    "VocType": vocType,
-    "PaidFrom": paidFrom,
-    "ProjectId": projectId,
-    "AccTypeId": accTypeId,
-    "AccNameId": accNameId,
-    "PayFor": payFor,
-    "PayMode": payMode,
-    "PayType": payType,
-    "VocAmt": vocAmt,
-    "CompanyId": companyId,
-    "BankId": bankId,
-    "ChqNo": chqNo,
-    "ChqDate": chqDate,
-    "NameThrough": nameThrough,
-    "Remarks": remarks,
-    "Preparedby": preparedby,
-    "UserId": userId,
-    "DeviceName": deviceName,
-    "EntryMode": entryMode,
-    "VocDet": List<dynamic>.from(vocDet!.map((x) => x.toJson())),
+    "id": id,
+    "siteVoucherNo": siteVoucherNo,
+    "siteVoucherDate": siteVoucherDate,
+    "siteVoucherType": siteVoucherType,
+    "projectId": projectId,
+    "companyId": companyId,
+    "accountTypeId": accountTypeId,
+    "accountNameId": accountNameId,
+    "siteVoucherAmount": siteVoucherAmount,
+    "payForType": payForType,
+    "payModeId": payModeId,
+    "paidFrom": paidFrom,
+    "paymentType": paymentType,
+    "nameThrough": nameThrough,
+    "remarks": remarks,
+    "companyBankId": companyBankId,
+    "cheQueNo": cheQueNo,
+    "accountPayee": accountPayee,
+    "cheQueDate": cheQueDate,
+    "requisitionId": requisitionId,
+    "createdBy": createdBy,
+    "createdDt": createdDt,
+    "accountSiteVoucherSWPayments": List<dynamic>.from(accountSiteVoucherSwPayments!.map((x) => x.toJson())),
   };
 }
 
-class VocDet {
-  VocDet({
-    this.siteId,
+class AccountSiteVoucherSwPayment {
+  int? id;
+  int? siteVoucherId;
+  String? payType;
+  int? projectId;
+  int? siteId;
+  int? purOrdmasId;
+  int? purOrdBillmasId;
+  int? workOrderId;
+  int? workId;
+  int? nmrWorkDetId;
+  int? nmrWorkId;
+  int? paymentReqId;
+  double? tdsPercentage;
+  double? tdsAmount;
+  double? amount;
+  double? netAmount;
+  double? reqAmount;
+
+  AccountSiteVoucherSwPayment({
+    this.id,
+    this.siteVoucherId,
     this.payType,
-    this.amt,
-    this.tdsPer,
-    this.tdsAmt,
-    this.netAmt,
+    this.projectId,
+    this.siteId,
+    this.purOrdmasId,
+    this.purOrdBillmasId,
+    this.workOrderId,
+    this.workId,
+    this.nmrWorkDetId,
+    this.nmrWorkId,
+    this.paymentReqId,
+    this.tdsPercentage,
+    this.tdsAmount,
+    this.amount,
+    this.netAmount,
+    this.reqAmount,
   });
 
-  String? siteId;
-  String? payType;
-  String? amt;
-  String? tdsPer;
-  String? tdsAmt;
-  String? netAmt;
-
-  factory VocDet.fromJson(Map<String, dynamic> json) => VocDet(
-    siteId: json["SiteId"],
-    payType: json["PayType"],
-    amt: json["Amt"],
-    tdsPer: json["TdsPer"],
-    tdsAmt: json["TdsAmt"],
-    netAmt: json["NetAmt"],
+  factory AccountSiteVoucherSwPayment.fromJson(Map<String, dynamic> json) => AccountSiteVoucherSwPayment(
+    id: json["id"],
+    siteVoucherId: json["siteVoucherId"],
+    payType: json["payType"],
+    projectId: json["projectId"],
+    siteId: json["siteId"],
+    purOrdmasId: json["purOrdmasId"],
+    purOrdBillmasId: json["purOrdBillmasId"],
+    workOrderId: json["workOrderId"],
+    workId: json["workId"],
+    nmrWorkDetId: json["nmrWorkDetId"],
+    nmrWorkId: json["nmrWorkId"],
+    paymentReqId: json["paymentReqId"],
+    tdsPercentage: json["tdsPercentage"],
+    tdsAmount: json["tdsAmount"],
+    amount: json["amount"],
+    netAmount: json["netAmount"],
+    reqAmount: json["reqAmount"],
   );
 
   Map<String, dynamic> toJson() => {
-    "SiteId": siteId,
-    "PayType": payType,
-    "Amt": amt,
-    "TdsPer": tdsPer,
-    "TdsAmt": tdsAmt,
-    "NetAmt": netAmt,
+    "id": id,
+    "siteVoucherId": siteVoucherId,
+    "payType": payType,
+    "projectId": projectId,
+    "siteId": siteId,
+    "purOrdmasId": purOrdmasId,
+    "purOrdBillmasId": purOrdBillmasId,
+    "workOrderId": workOrderId,
+    "workId": workId,
+    "nmrWorkDetId": nmrWorkDetId,
+    "nmrWorkId": nmrWorkId,
+    "paymentReqId": paymentReqId,
+    "tdsPercentage": tdsPercentage,
+    "tdsAmount": tdsAmount,
+    "amount": amount,
+    "netAmount": netAmount,
+    "reqAmount": reqAmount,
   };
 }

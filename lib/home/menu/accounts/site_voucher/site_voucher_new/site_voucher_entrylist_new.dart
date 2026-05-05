@@ -43,6 +43,9 @@ class _SiteVoucher_EntryListNewState extends State<SiteVoucher_EntryListNew> {
           visible: commanController.addMode.value == 1 ? true : false,
           child: FloatingActionButton.extended(
             onPressed: () {
+              siteVoucher_Controller.SaveButton.value = RequestConstant.SUBMIT;
+              siteVoucher_Controller.delete_Sitevoucher_itemlist_Table();
+              siteVoucher_Controller.Sitevoucher_itemview_GetDbList.clear();
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -308,7 +311,7 @@ class _SiteVoucher_EntryListNewState extends State<SiteVoucher_EntryListNew> {
             child: Obx(() => ListView.builder(
                   shrinkWrap: true,
                   physics: BouncingScrollPhysics(),
-                  padding: EdgeInsets.zero,
+                  padding: EdgeInsets.only(bottom: BaseUtitiles.getheightofPercentage(context, 10)),
                   itemCount: siteVoucher_Controller.SiteVocEtyList.value.length,
                   itemBuilder: (context, index) {
                     return Container(
@@ -447,7 +450,7 @@ class _SiteVoucher_EntryListNewState extends State<SiteVoucher_EntryListNew> {
                                   flex: 8,
                                   child: Text(
                                     siteVoucher_Controller.SiteVocEtyList.value[index].status,
-                                    style:  TextStyle(color:Colors.black),
+                                    style:  TextStyle(color:siteVoucher_Controller.SiteVocEtyList.value[index].status=="Approved"?Colors.green:Colors.red),
                                   ),
                                 ),
                               ],
@@ -499,6 +502,8 @@ class _SiteVoucher_EntryListNewState extends State<SiteVoucher_EntryListNew> {
                                     flex: 1,
                                     child: IconButton(
                                         onPressed: () {
+                                          vocId = siteVoucher_Controller.SiteVocEtyList.value[index].id;
+
                                           if(siteVoucher_Controller.SiteVocEtyList.value[index].status=="Approved"){
                                          BaseUtitiles.showToast("Approved record cannot be edited or deleted");
                                          }
@@ -605,7 +610,7 @@ class _SiteVoucher_EntryListNewState extends State<SiteVoucher_EntryListNew> {
                                                                   .value
                                                                   .clear();
                                                               await siteVoucher_Controller
-                                                                  .ConsumEntryList_EditApi(
+                                                                  .SiteVoucher_List_EditApi(
                                                                   siteVoucher_Controller
                                                                         .SiteVocEtyList
                                                                       .value[index]

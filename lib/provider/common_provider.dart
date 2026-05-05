@@ -13,6 +13,7 @@ import '../models/materialwise_subhead_dropdown_model.dart';
 import '../models/nmr_billno_model.dart';
 import '../models/nmrwklybill_deduction_save_model.dart';
 import '../models/payfor_model.dart';
+import '../models/paymenttype_model.dart';
 import '../models/paymode_model.dart';
 import '../models/project_dropdownlist_model.dart';
 import '../models/sitedropdownresponse_model.dart';
@@ -484,20 +485,24 @@ class CommonProvider {
     }
   }
 
-  static Future<List> getPaymodetype() async {
-    List responseData = [];
-    await ApiManager.getAPICall(ApiConstant.GETPAYMODEDROPDOWNLIST).then(
-        (value) {
-      responseData = payModereponseFromJson(value);
-      if (responseData != null && responseData.length > 0) {
-        return responseData;
-      }
-    }, onError: (error) {
-      print(error);
-      print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return responseData;
+  static Future<PayModeReponse?> getPaymodetype() async {
+    try {
+      final value = await ApiManager.getAPICall(ApiConstant.GETPAYMODEDROPDOWNLIST);
+      return payModeReponseFromJson(value);
+    } catch (e) {
+      print("Error == $e");
+      return null;
+    }
+  }
+
+  static Future<PaymentTypeReponse?> getPaymentTypeListAPI() async {
+    try {
+      final value = await ApiManager.getAPICall(ApiConstant.GETPAYMENTDROPDOWNLIST);
+      return paymentTypeReponseFromJson(value);
+    } catch (e) {
+      print("Error == $e");
+      return null;
+    }
   }
 
   static Future<PayforReponse?> getPayforType() async {
@@ -566,52 +571,71 @@ class CommonProvider {
     }
   }
 
-  static SaveAccountnameScreenEntryAPI(String body, int Accnameid) async {
-    var ratingRes = null;
-    if (Accnameid != 0) {
-      await ApiManager.putUpdateAPIButton(
-              ApiConstant.PUT_ACCOUNTNAME_UPDATE_API, body)
-          .then((value) {
-        var response = saveDeduction_SaveResponseFromJson(value);
-        if (response.RetString != null) {
-          ratingRes = response.RetString;
-          return ratingRes;
-        }
-      }, onError: (error) {
-        print(error);
-        BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
-      });
-    } else {
-      await ApiManager.postAPICall(ApiConstant.ACCOUNTNAME_SAVE, body).then(
-          (value) {
-        var response = saveDeduction_SaveResponseFromJson(value);
-        if (response.RetString != null) {
-          ratingRes = response.RetString;
-          return ratingRes;
-        }
-      }, onError: (error) {
-        print(error);
-        BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
-      });
+
+  static Future<dynamic> checkMaterialBalqty() async {
+    try {
+      final value = await ApiManager.getAPICall(ApiConstant.CHECKMATERIALLISTBALQTY);
+      print('API Response: ${value}');
+      return jsonDecode(value);
+
+    } catch (error) {
+      print("Error == $error");
+      return null;
     }
-    return ratingRes;
+  }
+
+  static Future<dynamic> SaveAccountnameScreenEntryAPI(
+      String body, int accNameId, String saveButton) async {
+
+    try {
+      dynamic response;
+
+      if (saveButton == RequestConstant.UPDATE) {
+        response = await ApiManager.putUpdateAPIButton(
+          ApiConstant.ACCOUNTNAME_UPDATE + "?id=$accNameId",
+          body,
+        );
+      } else {
+        response = await ApiManager.postAPICall(
+          ApiConstant.ACCOUNTNAME_SAVE,
+          body,
+        );
+      }
+
+      print("response...$response");
+      return jsonDecode(response);
+
+    } catch (error) {
+      print("Error == $error");
+      return null;
+    }
   }
 
   //---Delete API----
-  static Future Accountname_deleteAPI(int AccTypeId, int AccNameId) async {
-    var data = null;
-    await ApiManager.deleteAPICall(ApiConstant.DELETE_ACCOUNTNAME_API +
-            "?AccTypeId=$AccTypeId&AccNameId=$AccNameId")
-        .then((value) {
-      final res = json.decode(value);
-      if (res != null) {
-        data = res;
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG + error);
-    });
-    return data;
+
+  static Future<bool> Accountname_deleteAPI(int accNameId) async {
+    try {
+      final response = await ApiManager.deleteAPICall(
+          "${ApiConstant.DELETE_ACCOUNTNAME_API}?id=$accNameId");
+
+      final Map<String, dynamic> decoded = jsonDecode(response);
+
+
+      bool isSuccess = decoded["success"] == true;
+
+      final message = decoded["message"] ??
+          (isSuccess
+              ? "Deleted successfully"
+              : "Something went wrong");
+
+      BaseUtitiles.showToast(message);
+
+      return isSuccess;
+    } catch (error) {
+      print("Delete API Error: $error");
+      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
+      return false;
+    }
   }
+
 }

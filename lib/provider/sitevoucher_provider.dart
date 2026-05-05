@@ -33,135 +33,84 @@ class Sitevoucher_provider{
     }
   }
 
-  /// -----------Save API------------
-
-  // static SaveSitevoucherScreenEntryAPI(String body, int vocid) async {
-  //   var ratingRes = null;
-  //   if(vocid!=0){
-  //     await ApiManager.putUpdateAPIButton(ApiConstant.PUT_SITEVOUCHER_UPDATE_API, body).then(
-  //             (value) {
-  //           var response = saveDeduction_SaveResponseFromJson(value);
-  //           if (response.RetString != null) {
-  //             ratingRes = response.RetString;
-  //             return ratingRes;
-  //           }
-  //         }, onError: (error) {
-  //       print(error);
-  //       BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
-  //     });
-  //   }
-  //   else{
-  //     await ApiManager.postAPICall(
-  //         ApiConstant.SITEVOUCHER_SAVE, body)
-  //         .then((value) {
-  //       var response = saveDeduction_SaveResponseFromJson(value);
-  //       if (response.RetString != null) {
-  //         ratingRes = response.RetString;
-  //         return ratingRes;
-  //       }
-  //     }, onError: (error) {
-  //       print(error);
-  //       BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
-  //     });
-  //   }
-  //   return ratingRes;
-  // }
-
   ///---Save API---
 
-  // static Future<String?> SaveSitevoucherScreenEntryAPI(int vocid, Sitevouchersaverequest data, imagesPath, buttonControl,context) async {
-  //   var request;
-  //   String url;
-  //   if (vocid != 0) {
-  //     url = ApiConstant.PUT_SITEVOUCHER_UPDATE_API;
-  //     request = http.MultipartRequest('PUT', Uri.parse(url));
-  //   } else {
-  //     url = ApiConstant.SITEVOUCHER_SAVE;
-  //     request = http.MultipartRequest('POST', Uri.parse(url));
-  //   }
-  //   if (kDebugMode) {
-  //     print('Calling API: $url');
-  //   }
-  //
-  //   Map<String, dynamic> bodyData = data.toJson();
-  //
-  //   bodyData.forEach((key, value) {
-  //     if (value != null) {
-  //       request.fields[key] = value.toString();
-  //     }
-  //   });
-  //
-  //   // Serialize VocDet into a JSON string
-  //   if (bodyData.containsKey('VocDet')) {
-  //     request.fields['VocDet'] = jsonEncode(bodyData['VocDet']);
-  //     bodyData.remove('VocDet'); // Remove it from bodyData to avoid double encoding
-  //   }
-  //
-  //   if (imagesPath != null) {
-  //     for (File file in imagesPath!) {
-  //       var stream = http.ByteStream(file.openRead());
-  //       var length = await file.length();
-  //       var multipartFile = http.MultipartFile(
-  //         'Files',
-  //         stream,
-  //         length,
-  //         filename: basename(file.path),
-  //         contentType: MediaType('image', 'jpeg'),
-  //       );
-  //       request.files.add(multipartFile);
-  //     }
-  //   }
-  //
-  //   print("Request Fields: ${request.fields}");
-  //   print("Request Files: ${request.files.map((f) => f.filename).toList()}");
-  //   var responseBody;
-  //   try {
-  //     var response = await request.send();
-  //     if (response.statusCode == 200) {
-  //       responseBody = await response.stream.bytesToString();
-  //       var jsonResponse = json.decode(responseBody);
-  //       print('Response: $jsonResponse');
-  //       var res = InwardImageRes.fromJson(jsonResponse);
-  //       print('Response data: ${res.retString}');
-  //       return res.retString;
-  //     } else {
-  //       Navigator.pop(context);
-  //       Navigator.pop(context);
-  //       Navigator.pop(context);
-  //       BaseUtitiles.showToast(RequestConstant.NETWORKERROR);
-  //       return null;
-  //     }
-  //   } on SocketException catch (_) {
-  //     BaseUtitiles.showToast(RequestConstant.NOINTERNETCONNECTION);
-  //     Navigator.pop(context);
-  //     Navigator.pop(context);
-  //     Navigator.pop(context);
-  //     return null;
-  //   }
-  //   on TimeoutException catch (_) {
-  //     BaseUtitiles.showToast(RequestConstant.REQUESTTIMEOUT);
-  //     Navigator.pop(context);
-  //     Navigator.pop(context);
-  //     Navigator.pop(context);
-  //     return null;
-  //   }
-  //   on FormatException catch (_) {
-  //     BaseUtitiles.showToast(RequestConstant.BADRESPONSE);
-  //     Navigator.pop(context);
-  //     Navigator.pop(context);
-  //     Navigator.pop(context);
-  //     return null;
-  //   }
-  //   catch (e) {
-  //     buttonControl=0;
-  //     Navigator.pop(context);
-  //     Navigator.pop(context);
-  //     Navigator.pop(context);
-  //     print('Exception: $e');
-  //     return null;
-  //   }
-  // }
+  static Future<dynamic> SaveSitevoucherScreenEntryAPI(SitevoucherSaveRequest data, List<File> imagesPath, saveButton,id) async {
+    try {
+      final url = saveButton == RequestConstant.RESUBMIT
+          ? "${ApiConstant.PUT_SITEVOUCHER_UPDATE_API}?id=$id"
+          : ApiConstant.SITEVOUCHER_SAVE;
 
+      print('API url: ${url}');
+
+      final request = http.MultipartRequest(
+        saveButton == RequestConstant.RESUBMIT ? 'PUT' : 'POST',
+        Uri.parse(url),
+      );
+
+      request.headers.addAll(RequestConstant.postHeaders());
+
+
+      final bodyData = data.toJson();
+      bodyData.remove('accountSiteVoucherSWPayments');
+
+      bodyData.forEach((key, value) {
+        if (value != null) {
+          request.fields[key] = value.toString();
+        }
+      });
+
+      if (data.accountSiteVoucherSwPayments != null && data.accountSiteVoucherSwPayments!.isNotEmpty) {
+        for (int i = 0; i < data.accountSiteVoucherSwPayments!.length; i++) {
+          final det = data.accountSiteVoucherSwPayments![i];
+
+          request.fields['accountSiteVoucherSWPayments[$i].id'] = (det.id ?? 0).toString();
+          request.fields['accountSiteVoucherSWPayments[$i].siteVoucherId'] = (det.siteVoucherId ?? 0).toString();
+          request.fields['accountSiteVoucherSWPayments[$i].payType'] = (det.payType ?? 0).toString();
+          request.fields['accountSiteVoucherSWPayments[$i].projectId'] = (det.projectId ?? 0).toString();
+          request.fields['accountSiteVoucherSWPayments[$i].siteId'] = (det.siteId ?? 0).toString();
+          request.fields['accountSiteVoucherSWPayments[$i].purOrdmasId'] = (det.purOrdmasId ?? 0).toString();
+          request.fields['accountSiteVoucherSWPayments[$i].purOrdBillmasId'] = (det.purOrdBillmasId ?? 0).toString();
+          request.fields['accountSiteVoucherSWPayments[$i].workOrderId'] = (det.workOrderId ?? 0).toString();
+          request.fields['accountSiteVoucherSWPayments[$i].workId'] = (det.workId ?? 0).toString();
+          request.fields['accountSiteVoucherSWPayments[$i].nmrWorkDetId'] = (det.nmrWorkDetId ?? 0).toString();
+          request.fields['accountSiteVoucherSWPayments[$i].nmrWorkId'] = (det.nmrWorkId ?? 0).toString();
+          request.fields['accountSiteVoucherSWPayments[$i].paymentReqId'] = (det.paymentReqId ?? 0).toString();
+          request.fields['accountSiteVoucherSWPayments[$i].tdsPercentage'] = (det.tdsPercentage ?? 0).toString();
+          request.fields['accountSiteVoucherSWPayments[$i].tdsAmount'] = (det.tdsAmount ?? 0).toString();
+          request.fields['accountSiteVoucherSWPayments[$i].amount'] = (det.amount ?? 0).toString();
+          request.fields['accountSiteVoucherSWPayments[$i].netAmount'] = (det.netAmount ?? 0).toString();
+          request.fields['accountSiteVoucherSWPayments[$i].reqAmount'] = (det.reqAmount ?? 0).toString();
+        }
+      }
+
+      if (imagesPath.isNotEmpty) {
+        for (File file in imagesPath) {
+          request.files.add(
+            await http.MultipartFile.fromPath(
+              'siteVouImg',
+              file.path,
+              contentType: MediaType('image', 'jpeg'),
+            ),
+          );
+        }
+      }
+
+      if (kDebugMode) {
+        print("Fields: ${request.fields}");
+        print("Files: ${request.files.map((f) => f.filename).toList()}");
+      }
+
+      final response = await request.send();
+      final responseBody = await response.stream.bytesToString();
+      print("responseBodyyyyy...${jsonDecode(responseBody)}");
+      return jsonDecode(responseBody);
+
+    } catch (error) {
+      print("Error == $error");
+      return null;
+    }
+  }
 
   ///---Delete API----
 
@@ -193,75 +142,17 @@ class Sitevoucher_provider{
 
   ///--EditAPI
 
-  static Future<List<SitevouchereditResponse>> Sitevoucher_entryList_editAPI(int VocId) async {
-    var data = null;
-    await ApiManager.getAPICall("${ApiConstant.GET_SITEVOUCHER_EDIT_API}?VocId=$VocId").then((value) {
-      final res = sitevouchereditResponseFromJson(value);
-      if (res != null && res.length > 0) {
-        data = res;
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG+error);
-    });
-    return data;
-  }
-
-  /// Sending multiple image provider.....
-
-  Future<InwardImageRes> sendMultipleImageProvider(SiteVocImagePayload data,List<File> imagesPath) async {
-    const String contentType = "application/json; charset=utf-8";
+  static Future<SitevouchereditResponse?> Sitevoucher_entryList_editAPI(int VocId) async {
     try {
-      var request = http.MultipartRequest('POST', Uri.parse(ApiConstant.SITEVOCIMAGE_SAVEAPI));
-      if (kDebugMode) {
-        print("Calling API: ${ApiConstant.SITEVOCIMAGE_SAVEAPI}");
-      }
-      Map<String, dynamic> bodyData = data.toJson();
-      for (var i = 0; i < imagesPath.length; i++) {
-        print("Index value :: $i");
-        var imageFile = imagesPath[i];
-        request.files.add(
-          await http.MultipartFile.fromPath(
-            'VocFile',
-            imageFile.path,
-            contentType: MediaType('image', 'jpeg'),
-            filename: 'image_$i.jpeg',
-          ),
-        );
-      }
-      for (var field in bodyData.keys) {
-        var value = bodyData[field];
-        if (value is String || value is num) {
-          request.fields[field] = value.toString();
-        }
-      }
-      request.headers["content-type"] = contentType;
-      var response = await http.Response.fromStream(await request.send());
-      if (kDebugMode) {
-        print("Request Data :: ${request.fields}");
-        print("Request Data :: ${request.files}");
-      }
-      if (response.statusCode == 200) {
-        if (kDebugMode) {
-          print("Status code ::: ${response.statusCode}");
-        }
-        await getResponse(response);
-        return InwardImageRes.fromJson(jsonDecode(response.body.toString()));
-      } else if(response.statusCode == 500) {
-        if (kDebugMode) {
-          print("Status code ::: ${response.statusCode}");
-        }
-        await getResponse(response);
-        throw Exception('Failed to upload images: ${response.reasonPhrase}');
-      } else {
-        await getResponse(response);
-        throw Exception('Failed to upload images: ${response.reasonPhrase}');
-      }
-    } on SocketException {
-      throw Exception(RequestConstant.NOINTERNETCONNECTION);
+      final value = await ApiManager.getAPICall("${ApiConstant.GET_SITEVOUCHER_EDIT_API}?id=$VocId");
+      print('API Response: ${value}');
+      return sitevouchereditResponseFromJson(value);
+    } catch (error) {
+      print("Error == $error");
+      return null;
     }
   }
+
 
   /// Getting multiple image provider.....
 

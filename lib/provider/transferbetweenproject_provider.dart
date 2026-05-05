@@ -56,6 +56,17 @@ class TransferBetweenProject_provider{
     }
   }
 
+  static Future<dynamic> TransferStatusCheckApi(int Id) async {
+    try {
+      final value = await ApiManager.getAPICall("${ApiConstant.GETTRANSFERSTATUSCHECKAPI}?id=$Id");
+      print('API Response: ${value}');
+      return jsonDecode(value);
+
+    } catch (error) {
+      print("Error == $error");
+      return null;
+    }
+  }
 
   static Future<List<TransferbetItemListApiRes>> getItemList(int? proId, int siteId, int reqId, String type) async {
     var data = null;

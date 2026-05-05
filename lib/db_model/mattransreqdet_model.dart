@@ -5,6 +5,7 @@ class MatTransDetItemListTableModel{
   String? scale;
   double? stockQty;
   double? Qty;
+  double? trQty;
   String? detRemarks;
 
 
@@ -16,6 +17,7 @@ class MatTransDetItemListTableModel{
     mapping['scale'] = scale != null ? scale : null;
     mapping['stockQty'] = stockQty != null ? stockQty : null;
     mapping['Qty'] = Qty != null ? Qty : null;
+    mapping['trQty'] = trQty != null ? trQty : null;
     mapping['detRemarks'] = detRemarks != null ? detRemarks : null;
     return mapping;
   }

@@ -186,7 +186,7 @@ class InwardAmdsaveDetLink {
   int? materialid;
   int? scaleid;
   int? addQty;
-  int? lessQty;
+  double? lessQty;
 
   InwardAmdsaveDetLink({
     this.purDetId,

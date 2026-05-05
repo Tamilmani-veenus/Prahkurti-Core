@@ -33,25 +33,21 @@ class PayforReponse {
 }
 
 class Result {
-  int? acPayForId;
+  String? acPayForId;
   String? acPayForName;
-  String? accountPayForType;
 
   Result({
     this.acPayForId,
     this.acPayForName,
-    this.accountPayForType,
   });
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
-    acPayForId: json["id"],
+    acPayForId: json["accountPayForType"],
     acPayForName: json["accountPayForName"],
-    accountPayForType: json["accountPayForType"],
   );
 
   Map<String, dynamic> toJson() => {
-    "id": acPayForId,
+    "accountPayForType": acPayForId,
     "accountPayForName": acPayForName,
-    "accountPayForType": accountPayForType,
   };
 }

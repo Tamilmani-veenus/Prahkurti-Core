@@ -252,11 +252,11 @@ class InwardPending_Controller extends GetxController
           if (ItemGetTableListdata[i].balQty <
               double.parse(
                   Itemlist_Inward_QtyListController[i].value.text.toString())) {
-            ischecked?[i] = true;
+            // ischecked?[i] = true;
           } else if (ItemGetTableListdata[i].balQty >
               double.parse(
                   Itemlist_Inward_QtyListController[i].value.text.toString())) {
-            ischecked?[i] = false;
+            // ischecked?[i] = false;
           }
         }
 
@@ -496,9 +496,7 @@ class InwardPending_Controller extends GetxController
       siteId: siteId,
       amdType: "Q",
       inwardType: inwType,
-      inwardAmdsaveDetLink: getInwardDetAmedmentList.value.length == 0
-          ? getDetDetailsAmendment()
-          : getInwardDetAmedmentList.value,
+      inwardAmdsaveDetLink: getDetDetailsAmendment(),
     ));
     var list =
     await Inward_Pending_provider.inward_PoAmendment_ApprovalAPI(body);
@@ -519,10 +517,10 @@ class InwardPending_Controller extends GetxController
         var list = new InwardAmdsaveDetLink(
           purDetId: element.purOrdDetId,
           workOrdDetId: 0,
-          materialid: 0,
-          scaleid: 0,
+          materialid: element.MaterialId,
+          scaleid: element.UnitId,
           addQty: 0,
-          lessQty: 0,
+          lessQty: element.balqty,
         );
         getInwardDetAmedmentList.add(list);
       }

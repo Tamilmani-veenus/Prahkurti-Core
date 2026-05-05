@@ -272,62 +272,65 @@ class _MrnfinalItemListState extends State<MrnfinalItemList> {
                                     mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Expanded(
-                                          flex: 2,
-                                          child: Text(
-                                            "Bal Qty",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14.0),
-                                          )),
-                                      Expanded(
-                                        flex: 3,
-                                        child: Container(
-                                          margin:
-                                          const EdgeInsets.only(right: 11),
-                                          height: BaseUtitiles
-                                              .getheightofPercentage(
-                                              context, 4),
-                                          //width: BaseUtitiles.getWidthtofPercentage(context, 38),
-                                          child: TextField(
-                                            readOnly: true,
-                                            cursorColor:
-                                            Theme.of(context).primaryColor,
-                                            textAlign: TextAlign.center,
-                                            controller:
-                                            mrnFinalApprovalController
-                                                .BalQty_ListController[
-                                            index],
-                                            keyboardType: TextInputType.number,
-                                            decoration: InputDecoration(
-                                              contentPadding:
-                                              const EdgeInsets.fromLTRB(
-                                                  8.0, 0.0, 8.0, 0.0),
-                                              focusedBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Theme.of(context)
-                                                          .primaryColor),
-                                                  borderRadius:
-                                                  BorderRadius.all(
-                                                      Radius.circular(10))),
-                                              enabledBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Theme.of(context)
-                                                          .primaryColor),
-                                                  borderRadius:
-                                                  BorderRadius.all(
-                                                      Radius.circular(10))),
+                                      Obx((){
+                                        return mrn_request_controller.activeType.value ?
+                                        Expanded(
+                                            flex: 3,
+                                            child: Text("Bal Qty",style: TextStyle(color: Colors.black,fontSize: 14.0),)) : SizedBox();
+                                      }
+                                      ),
+                                      Obx((){
+                                        return mrn_request_controller.activeType.value ?
+                                         Expanded(
+                                          flex: 4,
+                                          child: Container(
+                                            margin:
+                                            const EdgeInsets.only(right: 11),
+                                            height: BaseUtitiles
+                                                .getheightofPercentage(
+                                                context, 4),
+                                            //width: BaseUtitiles.getWidthtofPercentage(context, 38),
+                                            child: TextField(
+                                              readOnly: true,
+                                              cursorColor:
+                                              Theme.of(context).primaryColor,
+                                              textAlign: TextAlign.center,
+                                              controller:
+                                              mrnFinalApprovalController
+                                                  .BalQty_ListController[
+                                              index],
+                                              keyboardType: TextInputType.number,
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                const EdgeInsets.fromLTRB(
+                                                    8.0, 0.0, 8.0, 0.0),
+                                                focusedBorder: OutlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Theme.of(context)
+                                                            .primaryColor),
+                                                    borderRadius:
+                                                    BorderRadius.all(
+                                                        Radius.circular(10))),
+                                                enabledBorder: OutlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Theme.of(context)
+                                                            .primaryColor),
+                                                    borderRadius:
+                                                    BorderRadius.all(
+                                                        Radius.circular(10))),
+                                              ),
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16.0),
+                                              onChanged: (value) {},
                                             ),
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16.0),
-                                            onChanged: (value) {},
                                           ),
-                                        ),
+                                        ) : SizedBox();
+                                        },
                                       ),
                                       Expanded(
-                                          flex: 2,
+                                          flex: 3,
                                           child: Text(
                                             "Req Qty",
                                             style: TextStyle(
@@ -335,7 +338,7 @@ class _MrnfinalItemListState extends State<MrnfinalItemList> {
                                                 fontSize: 14.0),
                                           )),
                                       Expanded(
-                                        flex: 3,
+                                        flex: 4,
                                         child: Container(
                                           margin:
                                           const EdgeInsets.only(right: 11),
@@ -441,9 +444,14 @@ class _MrnfinalItemListState extends State<MrnfinalItemList> {
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 16.0),
                                             onChanged: (value) {
-                                              mrnFinalApprovalController
-                                                  .finalApproval_updateConsumTables();
-                                            },
+                                              if(mrn_request_controller.activeType.value)
+                                                {
+                                                  mrnFinalApprovalController.MaterialItemlistBal_clickEdit(index);
+                                                }
+                                              else {
+                                                mrnFinalApprovalController
+                                                    .finalApproval_updateConsumTables();
+                                              } },
                                           ),
                                         ),
                                       ),

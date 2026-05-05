@@ -252,10 +252,7 @@ class _Home_DashboardState extends State<Home_Dashboard> {
   void initState() {
     var duration = const Duration(seconds: 0);
     Future.delayed(duration, () async {
-      // await dashboard_controller.DirectBill_EntryList();
-      // if(mounted){
-      //   await projectController.getProjectListAll(context, 0);
-      // }
+      SignInPage.checkVersion(context);
       dashboard_controller.Date.text = BaseUtitiles.initiateCurrentDateFormat();
     });
     super.initState();

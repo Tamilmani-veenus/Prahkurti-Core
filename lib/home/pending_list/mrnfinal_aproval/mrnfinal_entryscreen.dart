@@ -39,6 +39,7 @@ class _MrnfinalEntryScreenState extends State<MrnfinalEntryScreen> {
   }
 
   Future<void> _initializeData() async {
+    await mrn_request_controller.CheckmaterialBalQty();
     await mrn_request_controller.getAppTypeList();
     mrnFinalApprovalController.mrnfinalAppDetList.forEach((element) {
       mrnFinalApprovalController.RequestNoText.text = element.no.toString();
@@ -239,8 +240,6 @@ class _MrnfinalEntryScreenState extends State<MrnfinalEntryScreen> {
                                   ),
 
                                   onTap: () async {
-                                    if (mrn_request_controller.saveButton == RequestConstant.RESUBMIT) {
-                                    } else {
                                       var Entrydate = await showDatePicker(
                                           context: context,
                                           initialDate: DateTime.now(),
@@ -269,10 +268,9 @@ class _MrnfinalEntryScreenState extends State<MrnfinalEntryScreen> {
                                               child: child!,
                                             );
                                           });
-                                      mrn_request_controller
-                                          .DuedateController.text =
+                                      mrnFinalApprovalController
+                                          .DueDateText.text =
                                           BaseUtitiles.selectDateFormat(Entrydate!);
-                                    }
                                   },
                                 ),
                               ),
@@ -532,12 +530,6 @@ class _MrnfinalEntryScreenState extends State<MrnfinalEntryScreen> {
                               prefixIcon: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8), child: ConstIcons.preparedBy
                               ),
                             ),
-                            // validator: (value) {
-                            //   if (value!.isEmpty) {
-                            //     return '\u26A0 ${RequestConstant.VALIDATE}';
-                            //   }
-                            //   return null;
-                            // },
                           ),
                         ),
                       ),
@@ -573,12 +565,6 @@ class _MrnfinalEntryScreenState extends State<MrnfinalEntryScreen> {
                                   child: ConstIcons.preparedBy
                               ),
                             ),
-                            // validator: (value) {
-                            //   if (value!.isEmpty) {
-                            //     return '\u26A0 Enter user name';
-                            //   }
-                            //   return null;
-                            // },
                           ),
                         ),
                       ),
@@ -614,12 +600,7 @@ class _MrnfinalEntryScreenState extends State<MrnfinalEntryScreen> {
                                   child: ConstIcons.remarks
                               ),
                             ),
-                            // validator: (value) {
-                            //   if (value!.isEmpty) {
-                            //     return '\u26A0 Enter user name';
-                            //   }
-                            //   return null;
-                            // },
+
                           ),
                         ),
                       ),
@@ -655,12 +636,6 @@ class _MrnfinalEntryScreenState extends State<MrnfinalEntryScreen> {
                                   child: ConstIcons.remarks
                               ),
                             ),
-                            // validator: (value) {
-                            //   if (value!.isEmpty) {
-                            //     return '\u26A0 Enter user name';
-                            //   }
-                            //   return null;
-                            // },
                           ),
                         ),
                       ),

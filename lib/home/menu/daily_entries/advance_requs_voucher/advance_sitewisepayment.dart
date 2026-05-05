@@ -211,11 +211,11 @@ class _advance_sitewisepaymentState extends State<advance_sitewisepayment> {
                         ),
                       ),
                       onTap: (){
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return SitewisepaymentTypeAlert(from: '',);
-                            });
+                        // showDialog(
+                        //     context: context,
+                        //     builder: (BuildContext context) {
+                        //       return SitewisepaymentTypeAlert(from: '',);
+                        //     });
                       },
                       validator: (value) {
                         if (value!.isEmpty || value == "--Select--") {

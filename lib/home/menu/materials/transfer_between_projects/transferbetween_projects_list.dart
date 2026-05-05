@@ -588,12 +588,9 @@ class _TransferBtweenProjects_EntrylistState extends State<TransferBtweenProject
                                     Expanded(
                                         flex: 1,
                                         child: IconButton(
-                                            onPressed: () {
-                                              if(transferBW_project_Controller
-                                                  .TRPEtyList.value[index].ackStatus=="A"){
-                                                BaseUtitiles.showToast("Ack made can't be edit and delete");
-                                              }
-                                              else{
+                                            onPressed: () async{
+                                              if(await transferBW_project_Controller.
+                                              TransferStatusCheckApi(transferBW_project_Controller.TRPEtyList.value[index].transferId)) {
                                                 showModalBottomSheet(
                                                     context: context,
                                                     shape: RoundedRectangleBorder(
@@ -638,7 +635,8 @@ class _TransferBtweenProjects_EntrylistState extends State<TransferBtweenProject
                                                                         fontWeight:
                                                                         FontWeight
                                                                             .bold,
-                                                                        color: Theme.of(
+                                                                        color: Theme
+                                                                            .of(
                                                                             context)
                                                                             .primaryColor),
                                                                   ),
@@ -646,7 +644,8 @@ class _TransferBtweenProjects_EntrylistState extends State<TransferBtweenProject
                                                                 IconButton(
                                                                     onPressed:
                                                                         () {
-                                                                      Navigator.pop(
+                                                                      Navigator
+                                                                          .pop(
                                                                           context);
                                                                     },
                                                                     icon: ConstIcons
@@ -669,13 +668,16 @@ class _TransferBtweenProjects_EntrylistState extends State<TransferBtweenProject
                                                                         child:
                                                                         Padding(
                                                                           padding:
-                                                                          const EdgeInsets.all(8),
+                                                                          const EdgeInsets
+                                                                              .all(
+                                                                              8),
                                                                           child:
                                                                           Icon(
                                                                             Icons
                                                                                 .edit,
                                                                             color:
-                                                                            Colors.white,
+                                                                            Colors
+                                                                                .white,
                                                                           ),
                                                                         ),
                                                                       ),
@@ -707,8 +709,12 @@ class _TransferBtweenProjects_EntrylistState extends State<TransferBtweenProject
                                                                         .value
                                                                         .clear();
 
-                                                                    FocusScope.of(context).unfocus();
-                                                                    await transferBW_project_Controller.EntryList_EditApi(
+                                                                    FocusScope
+                                                                        .of(
+                                                                        context)
+                                                                        .unfocus();
+                                                                    await transferBW_project_Controller
+                                                                        .EntryList_EditApi(
                                                                         transferBW_project_Controller
                                                                             .TRPEtyList
                                                                             .value[
@@ -741,13 +747,16 @@ class _TransferBtweenProjects_EntrylistState extends State<TransferBtweenProject
                                                                         child:
                                                                         Padding(
                                                                           padding:
-                                                                          const EdgeInsets.all(8),
+                                                                          const EdgeInsets
+                                                                              .all(
+                                                                              8),
                                                                           child:
                                                                           Icon(
                                                                             Icons
                                                                                 .delete_forever,
                                                                             color:
-                                                                            Colors.white,
+                                                                            Colors
+                                                                                .white,
                                                                           ),
                                                                         ),
                                                                       ),
@@ -766,7 +775,8 @@ class _TransferBtweenProjects_EntrylistState extends State<TransferBtweenProject
                                                                   ),
                                                                   onTap:
                                                                       () async {
-                                                                    Navigator.pop(
+                                                                    Navigator
+                                                                        .pop(
                                                                         context);
                                                                     setState(() {
                                                                       transferBW_project_Controller
@@ -776,13 +786,13 @@ class _TransferBtweenProjects_EntrylistState extends State<TransferBtweenProject
                                                                     });
                                                                   }),
                                                             ),
-                                                            SizedBox(height: 20),
+                                                            SizedBox(
+                                                                height: 20),
                                                           ],
                                                         ),
                                                       );
                                                     });
-                                              }
-                                            },
+                                              }},
                                             icon: Icon(
                                               Icons
                                                   .arrow_drop_down_circle_outlined,

@@ -53,6 +53,7 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
   void initState() {
     var duration = const Duration(seconds: 0);
     Future.delayed(duration, () async {
+      mrn_request_controller.CheckmaterialBalQty();
 
       if (mrn_request_controller.saveButton.value == RequestConstant.SUBMIT) {
         await autoYearWiseNoController.AutoYearWiseNo("MRN INDENT");
@@ -112,7 +113,7 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
           projectController.projectname.text = element.projectName;
           siteController.Sitename.text = element.siteName;
           mrn_request_controller.preparedbyController.text = element.preparedbyName;
-          mrn_request_controller.ReqTypeController.text = element.purchaseType.toString();
+          mrn_request_controller.ReqTypeController.text = element.purchaseType == "PO" ? "General Items" : "Asset Materials";
           mrn_request_controller.ReqType.value = element.purchaseVal.toString();
           mrn_request_controller.RemarksController.text = element.reqRemarks;
         });
@@ -1020,23 +1021,18 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                           elevation: 5,
                           margin: EdgeInsets.only(left: 5, right: 5,top: 0),
                           child: Column(
-                      mainAxisAlignment:
-                      MainAxisAlignment
-                      .spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
                         Container(
                           margin:
-                          const EdgeInsets
-                              .only(
-                              left: 10,
-                              top: 10,
-                              right: 10),
+                          const EdgeInsets.only(left: 10, top: 10, right: 10),
                           child: Row(
                             mainAxisAlignment:
                             MainAxisAlignment
                                 .spaceBetween,
                             children: <Widget>[
                               Expanded(
+                                flex: 5,
                                 child: Text(
                                   "${mrn_request_controller.Material_itemview_GetDbList.value[index].material} (${mrn_request_controller.Material_itemview_GetDbList.value[index].scale})",
                                   style: TextStyle(
@@ -1049,6 +1045,25 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                                       color: Theme.of(context)
                                           .primaryColor),
                                 ),
+                              ),
+                              Obx((){
+                                return mrn_request_controller.activeType.value ?
+                                 Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                    "( BalQty: ${mrn_request_controller.Material_itemview_GetDbList.value[index].balqty.toString()} )",
+                                    style: TextStyle(
+                                        fontWeight:
+                                        FontWeight
+                                            .bold,
+                                        fontSize:
+                                        RequestConstant
+                                            .ALERT_Font_SIZE,
+                                        color: Theme.of(context)
+                                            .primaryColor),
+                                  ),
+                                ) : SizedBox();
+                                },
                               ),
                               Visibility(
                                 visible: mrn_request_controller.saveButton.value != RequestConstant.VERIFY
@@ -1100,7 +1115,7 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                                                         ),
                                                         Expanded(
                                                           child: TextButton(
-                                                              onPressed: () {
+                                                              onPressed: () async{
                                                                 mrn_request_controller.deleteParticularList(mrn_request_controller.Material_itemview_GetDbList[index]);
                                                                 mrn_request_controller.Material_itemview_GetDbList.remove(mrn_request_controller.Material_itemview_GetDbList[index]);
                                                                 mrn_request_controller.getMaterialTablesDatas();
@@ -1147,11 +1162,7 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                                   Expanded(
                                     flex: 4,
                                     child: Container(
-                                        margin: EdgeInsets.only(
-                                            left:
-                                            15,
-                                            bottom:
-                                            10),
+                                        margin: EdgeInsets.only(left: 15, bottom: 10),
                                         child: Text(
                                             "Stock Qty:  ",
                                             style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE, color: Theme.of(context).primaryColor))),
@@ -1159,10 +1170,7 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                                   Expanded(
                                     flex: 5,
                                     child: Container(
-                                        margin: const EdgeInsets
-                                            .only(
-                                            bottom:
-                                            10),
+                                        margin: const EdgeInsets.only(bottom: 10),
                                         child: Text(
                                             mrn_request_controller.Material_itemview_GetDbList.value[index].stockqty.toString(),
                                             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: RequestConstant.ALERT_Font_SIZE, color: Colors.black))),
@@ -1171,12 +1179,7 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                                     flex: 3,
                                     child:
                                     Container(
-                                      margin: const EdgeInsets
-                                          .only(
-                                          left:
-                                          10,
-                                          bottom:
-                                          10),
+                                      margin: const EdgeInsets.only(left: 10,bottom: 10),
                                       child:
                                       RichText(
                                         text: TextSpan(
@@ -1205,83 +1208,53 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                                     flex: 5,
                                     child:
                                     Container(
-                                      margin: const EdgeInsets
-                                          .only(
-                                          top:
-                                          5,
-                                          right:
-                                          10,
-                                          bottom:
-                                          10),
-                                      height: BaseUtitiles.getheightofPercentage(
-                                          context,
-                                          3),
-                                      width: BaseUtitiles.getWidthtofPercentage(
-                                          context,
-                                          20),
+                                      margin: const EdgeInsets.only(top: 5, right: 10,bottom: 10),
+                                      height: BaseUtitiles.getheightofPercentage(context, 3),
+                                      width: BaseUtitiles.getWidthtofPercentage(context, 20),
                                       child:
                                       TextFormField(
-                                        autovalidateMode:
-                                        AutovalidateMode.onUserInteraction,
-                                        onTap:
-                                            () {
-                                          setState(() {
-                                            if (mrn_request_controller.Addwork_qtyControllers[index].text != "" && mrn_request_controller.Addwork_qtyControllers[index].text != "0" && mrn_request_controller.Addwork_qtyControllers[index].text != "0.0") {
+                                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                                        onTap: () {
+                                          if (mrn_request_controller.Addwork_qtyControllers[index].text != "" && mrn_request_controller.Addwork_qtyControllers[index].text != "0" && mrn_request_controller.Addwork_qtyControllers[index].text != "0.0") {
                                               return;
                                             } else {
                                               mrn_request_controller.Addwork_qtyControllers[index].text = "";
-                                              mrn_request_controller.MaterialItemlist_clickEdit();
                                             }
-                                          });
-                                        },
-                                        cursorColor:
-                                        Theme.of(context).primaryColor,
-                                        textAlign:
-                                        TextAlign.center,
-                                        controller:
-                                        mrn_request_controller.Addwork_qtyControllers[index],
+                                          },
+                                        cursorColor: Theme.of(context).primaryColor,
+                                        textAlign: TextAlign.center,
+                                        controller: mrn_request_controller.Addwork_qtyControllers[index],
                                         keyboardType: TextInputType.numberWithOptions(decimal: true),
-                                        decoration:
-                                        InputDecoration(
-                                          contentPadding: const EdgeInsets.fromLTRB(
-                                              5.0,
-                                              0.0,
-                                              5.0,
-                                              0.0),
-                                          focusedBorder:
-                                          OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).primaryColor), borderRadius: const BorderRadius.all(Radius.circular(5))),
-                                          enabledBorder:
-                                          const OutlineInputBorder(borderSide: BorderSide(color: Colors.grey), borderRadius: BorderRadius.all(Radius.circular(5))),
-                                          errorStyle:
-                                          const TextStyle(
+                                        decoration: InputDecoration(contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
+                                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).primaryColor), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                                          enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.grey), borderRadius: BorderRadius.all(Radius.circular(5))),
+                                          errorStyle: const TextStyle(
                                             color: Colors.red,
                                             fontWeight: FontWeight.normal,
                                             fontSize: 10.0,
                                           ),
-                                          errorBorder:
-                                          OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(2.0),
+                                          errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(2.0),
                                             borderSide: const BorderSide(
                                               color: Colors.red,
                                             ),
                                           ),
-                                          focusedErrorBorder:
-                                          OutlineInputBorder(
+                                          focusedErrorBorder: OutlineInputBorder(
                                             borderRadius: BorderRadius.circular(2.0),
                                             borderSide: const BorderSide(
                                               color: Colors.red,
                                             ),
                                           ),
                                         ),
-                                        style:
-                                        const TextStyle(color: Colors.black),
-                                        onChanged:
-                                            (value) {
-                                          setState(() {
-                                            mrn_request_controller.updateConsumTables();
-                                            // mrn_request_controller.MaterialItemlist_clickEdit();
-                                          });
+                                        style: const TextStyle(color: Colors.black),
+                                        onChanged: (value) {
+                                            if(mrn_request_controller.activeType.value){
+                                              mrn_request_controller.MaterialItemlistBal_clickEdit(index);
+                                            }
+                                            else{
+                                              mrn_request_controller.updateConsumTables();
+                                            }
                                         },
+
                                       ),
                                     ),
                                   ),

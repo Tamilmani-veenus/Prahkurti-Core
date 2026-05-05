@@ -330,6 +330,9 @@ class DailyEntriesController extends GetxController {
       projectId: projectController.selectedProjectId.value,
       subContId: subcontractorController.selectedSubcontId.value,
       siteId: siteController.selectedsiteId.value,
+      approveStatus: saveButton.value == RequestConstant.APPROVAL?"Y":"N",
+      approvedBy: saveButton.value == RequestConstant.APPROVAL?int.tryParse(loginController.EmpId()):0,
+      approvedDt: saveButton.value == RequestConstant.APPROVAL?BaseUtitiles().convertToUtcIso(AttendDateController.text):null,
       subContLabourAttendDetS: getAttendanceDetails(id),
     );
     print(jsonEncode(formdata.toJson()));
@@ -437,15 +440,15 @@ class DailyEntriesController extends GetxController {
         attendId);
   }
 
-  Future subContEntryList_EditApi(
-      int attendId, BuildContext context, int check) async {
+  Future subContEntryList_EditApi(int attendId, BuildContext context,
+      {String? type}) async {
     var response =
         await SubContAttendanceProvider.subcont_entryList_editAPI(attendId);
     if (response != null) {
       if (response.success == true) {
         EditListResDatas.value = [response.result];
         if (EditListResDatas.isNotEmpty) {
-          saveButton.value = RequestConstant.RESUBMIT;
+            saveButton.value = type=="approve"?RequestConstant.APPROVAL:RequestConstant.RESUBMIT;
           editSaveDetTable();
           getDetTablesDatas();
           return Navigator.pushReplacement(

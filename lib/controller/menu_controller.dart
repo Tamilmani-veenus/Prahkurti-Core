@@ -312,13 +312,8 @@ class Menu_Controller extends GetxController {
 
   AccountsScreen(String value, BuildContext context) {
     if (value == "Site Voucher") {
-      siteVoucher_Controller.Amount.text="0.00";
-      siteVoucher_Controller.type.value="Direct Payment/Office";
-      siteVoucher_Controller.delete_Sitevoucher_itemlist_Table();
-      siteVoucher_Controller.Sitevoucher_itemview_GetDbList.clear();
       Navigator.push(
         context,
-        // MaterialPageRoute(builder: (context) => Site_Voucher_Activity(0)),
         MaterialPageRoute(builder: (context) => SiteVoucher_EntryListNew()),
       );
     } else if (value == "Staff Voucher") {

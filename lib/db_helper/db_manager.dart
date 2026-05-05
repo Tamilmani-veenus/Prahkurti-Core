@@ -156,7 +156,7 @@ class DBManager {
 
   deletesiteById(table, data) async {
     var connection =  _database;
-    return await connection?.rawDelete('delete from $table where siteid=?',[data['siteid']]);
+    return await connection?.rawDelete('delete from $table where siteid=? AND paytype = ?',[data['siteid'], data['paytype']]);
   }
 
   deletestaffvouchersiteById(table, data) async {

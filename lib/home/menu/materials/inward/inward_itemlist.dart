@@ -796,7 +796,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
                     child: Image.network(
-                      "${inwardPendingcontroller.gettingNetworkImageList![index].toString()}?time=${DateTime.now().millisecondsSinceEpoch}",
+                      "${inwardPendingcontroller.gettingNetworkImageList[index].toString()}?time=${DateTime.now().millisecondsSinceEpoch}",
                       fit: BoxFit.cover,
                     ),
                   ),

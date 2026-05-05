@@ -39,6 +39,8 @@ class _MrnPreApprovalEntryScreenState extends State<MrnPreApprovalEntryScreen> {
   }
 
   Future<void> _initializeData() async {
+    await mrn_request_controller.CheckmaterialBalQty();
+
     await mrn_request_controller.getAppTypeList();
 
     // 🔹 Header Data
@@ -263,42 +265,39 @@ class _MrnPreApprovalEntryScreenState extends State<MrnPreApprovalEntryScreen> {
                                         vertical: 8, horizontal: 8),
                                     child: ConstIcons.date),
                               ),
-                              // onTap: () async {
-                              //   if (mrn_request_controller.editCheck == 1) {
-                              //   } else {
-                              //     var Entrydate = await showDatePicker(
-                              //         context: context,
-                              //         initialDate: DateTime.now(),
-                              //         firstDate: DateTime(2000),
-                              //         lastDate: DateTime(2100),
-                              //         builder: (context, child) {
-                              //           return Theme(
-                              //             data: Theme.of(context).copyWith(
-                              //               colorScheme: ColorScheme.light(
-                              //                 primary: Theme.of(context)
-                              //                     .primaryColor,
-                              //                 // header background color
-                              //                 onPrimary: Colors.white,
-                              //                 // header text color
-                              //                 onSurface: Colors
-                              //                     .black, // body text color
-                              //               ),
-                              //               textButtonTheme:
-                              //               TextButtonThemeData(
-                              //                 style: TextButton.styleFrom(
-                              //                   primary: Colors
-                              //                       .black, // button text color
-                              //                 ),
-                              //               ),
-                              //             ),
-                              //             child: child!,
-                              //           );
-                              //         });
-                              //     mrn_request_controller
-                              //         .DuedateController.text =
-                              //         BaseUtitiles.selectDateFormat(Entrydate!);
-                              //   }
-                              // },
+                              onTap: () async {
+                                var Entrydate = await showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime(2000),
+                                      lastDate: DateTime(2100),
+                                      builder: (context, child) {
+                                        return Theme(
+                                          data: Theme.of(context).copyWith(
+                                            colorScheme: ColorScheme.light(
+                                              primary: Theme.of(context)
+                                                  .primaryColor,
+                                              // header background color
+                                              onPrimary: Colors.white,
+                                              // header text color
+                                              onSurface: Colors
+                                                  .black, // body text color
+                                            ),
+                                            textButtonTheme:
+                                            TextButtonThemeData(
+                                              style: TextButton.styleFrom(
+                                                primary: Colors
+                                                    .black, // button text color
+                                              ),
+                                            ),
+                                          ),
+                                          child: child!,
+                                        );
+                                      });
+                                mrnPreApprovalController
+                                      .mrnpre_DueDateText.text =
+                                      BaseUtitiles.selectDateFormat(Entrydate!);
+                              },
                             ),
                           ),
                         ),
@@ -519,12 +518,6 @@ class _MrnPreApprovalEntryScreenState extends State<MrnPreApprovalEntryScreen> {
                               child: ConstIcons.preparedBy
                           ),
                         ),
-                        // validator: (value) {
-                        //   if (value!.isEmpty) {
-                        //     return '\u26A0 Enter user name';
-                        //   }
-                        //   return null;
-                        // },
                       ),
                     ),
                   ),
@@ -561,12 +554,7 @@ class _MrnPreApprovalEntryScreenState extends State<MrnPreApprovalEntryScreen> {
                               child: ConstIcons.preparedBy
                           ),
                         ),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return '\u26A0 ${RequestConstant.VALIDATE}';
-                          }
-                          return null;
-                        },
+
                       ),
                     ),
                   ),
@@ -603,12 +591,6 @@ class _MrnPreApprovalEntryScreenState extends State<MrnPreApprovalEntryScreen> {
                               child: ConstIcons.preparedBy
                           ),
                         ),
-                        // validator: (value) {
-                        //   if (value!.isEmpty) {
-                        //     return '\u26A0 Enter user name';
-                        //   }
-                        //   return null;
-                        // },
                       ),
                     ),
                   ),
@@ -644,12 +626,6 @@ class _MrnPreApprovalEntryScreenState extends State<MrnPreApprovalEntryScreen> {
                               child: ConstIcons.remarks
                           ),
                         ),
-                        // validator: (value) {
-                        //   if (value!.isEmpty) {
-                        //     return '\u26A0 Enter user name';
-                        //   }
-                        //   return null;
-                        // },
                       ),
                     ),
                   ),
@@ -685,12 +661,6 @@ class _MrnPreApprovalEntryScreenState extends State<MrnPreApprovalEntryScreen> {
                               child: ConstIcons.remarks
                           ),
                         ),
-                        // validator: (value) {
-                        //   if (value!.isEmpty) {
-                        //     return '\u26A0 Enter user name';
-                        //   }
-                        //   return null;
-                        // },
                       ),
                     ),
                   ),

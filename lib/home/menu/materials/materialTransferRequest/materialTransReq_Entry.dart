@@ -425,21 +425,11 @@ class _MaterialTransReqEntryState extends State<MaterialTransReqEntry> {
                                   child: ConstIcons.siteName),
                             ),
                             onTap: () async {
-                              if (materialTransferReqController
-                                          .saveButton.value ==
-                                      RequestConstant.SUBMIT ||
-                                  materialTransferReqController
-                                          .saveButton.value ==
-                                      RequestConstant.RESUBMIT) {
-                                await siteController
-                                    .subcontEntry_siteDropdowntList(context, 0,
-                                        type: "transb/wproj&site");
+                              if (materialTransferReqController.saveButton.value == RequestConstant.SUBMIT ||
+                                  materialTransferReqController.saveButton.value == RequestConstant.RESUBMIT) {
+                                await siteController.subcontEntry_siteDropdowntList(context, 0, type: "transb/wproj&site");
                                 if (mounted) {
-                                  bottomsheetControllers.FromSiteName(
-                                      context,
-                                      "Material transfer request",
-                                      siteController
-                                          .getSiteDropdownvalue.value);
+                                  bottomsheetControllers.FromSiteName(context, "Material transfer request", siteController.getSiteDropdownvalue.value);
                                 }
                               } else {}
                             },
@@ -490,7 +480,7 @@ class _MaterialTransReqEntryState extends State<MaterialTransReqEntry> {
                                   child: ConstIcons.projectName),
                             ),
                             onTap: () async {
-                              await projectController.getToProjectName(
+                              await projectController.getToProjectName("Material Transfer Request",
                                   fromprojectController
                                       .selectedProjectId.value);
                               if (mounted) {

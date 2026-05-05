@@ -106,39 +106,8 @@ class PendingListController extends GetxController {
     });
   }
 
-  ///--------------------------mrn_verified_delete-----------------------------
-
-  Future mrn_verification_delete(BuildContext context, id) async {
-    String body =
-    pendingPoapprovalApiResmodelToJson(PendingPoapprovalApiResmodel(
-      urlName: "MRN VERIFICATION DELETE",
-      userId: loginController.user.value.userId.toString(),
-      deviceName: BaseUtitiles.deviceName,
-      approvalDet: getPoAprovalDetList.value.isEmpty
-          ? getmrnverfiedDet(id)
-          : getPoAprovalDetList.value,
-    ));
-    if (mainlist.isNotEmpty) {
-      // await MrnFinalApprovalProvider.mrnverifydeleteApi(body);
-    } else {
-      BaseUtitiles.showToast("Please select a list");
-    }
-  }
-
-  List<ApprovalDet> getmrnverfiedDet(int id) {
-    getPoAprovalDetList.value.clear();
-    mainlist.forEach((element) {
-      if (id == element.id) {
-        var list =
-        ApprovalDet(id: element.id, no: element.no.toString(), poWoType: '-');
-        getPoAprovalDetList.add(list);
-      }
-    });
-    return getPoAprovalDetList.value;
-  }
 
   ///--------------------TRANSFER REQUEST verifily----------------------------
-
 
 
   Future<String?> TransferReq_Verify_DeleteApi(Url,int reqId) async {
@@ -176,39 +145,8 @@ class PendingListController extends GetxController {
     return getPoAprovalDetList.value;
   }
 
-  ///---------------------------PO_APPROVE_DELETE---------------------------
 
-  Future poapprovaldelete(BuildContext context, id) async {
-    String body =
-    pendingPoapprovalApiResmodelToJson(PendingPoapprovalApiResmodel(
-      urlName: "PO APPROVE DELETE",
-      userId: loginController.user.value.userId.toString(),
-      deviceName: BaseUtitiles.deviceName,
-      approvalDet: getPoAprovalDetList.value.isEmpty
-          ? poapprovaldeletedet(id)
-          : getPoAprovalDetList.value,
-    ));
-    if (mainlist.isNotEmpty) {
-      await MrnFinalApprovalProvider.poapprovaldeleteapi(body);
-    } else {
-      BaseUtitiles.showToast("Please select a list");
-    }
-  }
 
-  List<ApprovalDet> poapprovaldeletedet(int id) {
-    getPoAprovalDetList.value.clear();
-    mainlist.forEach((element) {
-      if (id == element.id) {
-        var list = ApprovalDet(
-          id: element.id,
-          no: element.no.toString(),
-          poWoType: element.type,
-        );
-        getPoAprovalDetList.add(list);
-      }
-    });
-    return getPoAprovalDetList.value;
-  }
 
   Future punchInAproval_buttonApi(BuildContext context, String Urlname) async {
     String body = punchInapprovalApiResmodelToJson(PunchInapprovalApiResmodel(
@@ -309,7 +247,7 @@ class PendingListController extends GetxController {
       if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
         var response = await PendingListProvider.PoAprovalAPI(Urlname, body, context);
         if (response != null) {
-          BaseUtitiles.showToast(response.message ?? 'Something went wrong..');
+          BaseUtitiles.showToast(response.message=="PO/WO verified successfully"?"PO verified successfully":response.message=="PO/WO Approved successfully"?"PO Approved successfully":response.message ?? 'Something went wrong..');
           Navigator.pop(context);
         }
         else{
@@ -570,13 +508,13 @@ class PendingListController extends GetxController {
 
         Url == "PENDING QUOTE" || Url == "QUOTE VERIFICATION PENDING" || Url == "QUOTE APPROVAL PENDING" ?
         Navigator.push(
-                    context, MaterialPageRoute(
-                    builder: (context) => QuoteDetPopup(
-                      heading: Url,
-                      list: onclickPendingListDet,
-                      ReqNo: Reqno,
-                      ProjectName: Projectname,
-                    ))) : SizedBox();
+            context, MaterialPageRoute(
+            builder: (context) => QuoteDetPopup(
+              heading: Url,
+              list: onclickPendingListDet,
+              ReqNo: Reqno,
+              ProjectName: Projectname,
+            ))) : SizedBox();
       }
       else {
         BaseUtitiles.showToast(response.message ?? 'Something went wrong..');
@@ -648,14 +586,14 @@ class PendingListController extends GetxController {
     var response = await PendingListProvider.getOnclickDetProvider(Url, RID, purchaseType:purchaseType);
     if (response != null ) {
       if(response.success==true){
-      onclickPendingListDet = response.result!.mMatPurOrdLink!;
-      print(onclickPendingListDet.toString());
-      return Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => PendingPo_Approvel_Popup(
-                  heading: Url, list: onclickPendingListDet, ReqNo: Reqno)));
-    }
+        onclickPendingListDet = response.result!.mMatPurOrdLink!;
+        print(onclickPendingListDet.toString());
+        return Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PendingPo_Approvel_Popup(
+                    heading: Url, list: onclickPendingListDet, ReqNo: Reqno)));
+      }
       else {
         BaseUtitiles.showToast(response.message ?? 'Something went wrong..');
       }
@@ -672,18 +610,18 @@ class PendingListController extends GetxController {
     var response = await PendingListProvider.getOnclickDetProvider(Url, RID);
     if (response != null ) {
       if(response.success==true) {
-      onclickPendingListDet = response.result!.materialTransferRequestDets!;
-      print(onclickPendingListDet.toString());
-      return Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => DirectTransVerifyApprovalDet(
-                heading: Url,
-                list: onclickPendingListDet,
-                ReqNo: Reqno,
-                frProjectName: frProjectName,
-              )));
-        }
+        onclickPendingListDet = response.result!.materialTransferRequestDets!;
+        print(onclickPendingListDet.toString());
+        return Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DirectTransVerifyApprovalDet(
+                  heading: Url,
+                  list: onclickPendingListDet,
+                  ReqNo: Reqno,
+                  frProjectName: frProjectName,
+                )));
+      }
       else
       {
         BaseUtitiles.showToast(response.message ?? 'Something went wrong..');
@@ -731,17 +669,17 @@ class PendingListController extends GetxController {
     var response =  await PendingListProvider.getOnclickDetProvider(Url, RID);
     if (response != null ) {
       if(response.success==true){
-      onclickPendingListDet = response.result!.mMatReqMasLink!;
-      print(onclickPendingListDet.toString());
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => WorkOrderDet(
-                heading: Url,
-                list: onclickPendingListDet,
-                ReqNo: Reqno,
-                WOType: WOType,
-              )));
+        onclickPendingListDet = response.result!.mMatReqMasLink!;
+        print(onclickPendingListDet.toString());
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => WorkOrderDet(
+                  heading: Url,
+                  list: onclickPendingListDet,
+                  ReqNo: Reqno,
+                  WOType: WOType,
+                )));
       }
       else {
         BaseUtitiles.showToast(response.message ?? 'Something went wrong..');
@@ -757,23 +695,23 @@ class PendingListController extends GetxController {
     Searchpoapproval_supplierList.clear();
     var response = await PendingListProvider.getPoapproval_SupplierbuildList_Provider(matId);
     if (response != null) {
-        if(response.success == true ){
-          if(response.result!.isNotEmpty){
-        poapprovalSupplierList = response.result!;
-        Searchpoapproval_supplierList.value = poapprovalSupplierList;
-        print(poapprovalSupplierList.toString());
-        return showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return PoApproval_supplierList_Alert(
-                  MaterialId: matId, MaterialName: materialname, Scale: scale);
-            });
-          }
-          else{
-            BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
-          }
+      if(response.success == true ){
+        if(response.result!.isNotEmpty){
+          poapprovalSupplierList = response.result!;
+          Searchpoapproval_supplierList.value = poapprovalSupplierList;
+          print(poapprovalSupplierList.toString());
+          return showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return PoApproval_supplierList_Alert(
+                    MaterialId: matId, MaterialName: materialname, Scale: scale);
+              });
+        }
+        else{
+          BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+        }
       } else {
-        BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+        BaseUtitiles.showToast(response.message ?? "Something Went Wrong..");
       }
     }
     else
@@ -837,21 +775,21 @@ class PendingListController extends GetxController {
   }
 
   Future quotVerifyAprovalbuttonApi(context,int id,type,{quoteMasId}) async {
-      final response = await PendingListProvider.quoteVerifyApprovalApi(id,type,verifyRemarks.text,revertRemarks.text,quoteMasId);
-      print("Quote Approve :: $response");
-      if(response!=null){
-        if(response["success"]==true){
-          BaseUtitiles.showToast(response["message"]);
+    final response = await PendingListProvider.quoteVerifyApprovalApi(id,type,verifyRemarks.text,revertRemarks.text,quoteMasId);
+    print("Quote Approve :: $response");
+    if(response!=null){
+      if(response["success"]==true){
+        BaseUtitiles.showToast(response["message"]);
         await getPendingList();
         BaseUtitiles.popMultiple(context, count: 3);
       }else {
-          BaseUtitiles.showToast(response["message"] ?? 'Something went wrong..');
-          BaseUtitiles.popMultiple(context, count: 3);
-        }
-      }else {
-        BaseUtitiles.showToast("Something went wrong..");
+        BaseUtitiles.showToast(response["message"] ?? 'Something went wrong..');
         BaseUtitiles.popMultiple(context, count: 3);
       }
+    }else {
+      BaseUtitiles.showToast("Something went wrong..");
+      BaseUtitiles.popMultiple(context, count: 3);
+    }
   }
 
   Future PendingTransferPendingDetDetails(String Url, int RID, String Reqno,
@@ -860,27 +798,27 @@ class PendingListController extends GetxController {
     var response = await PendingListProvider.getOnclickDetProvider(Url, RID);
     if (response != null ) {
       if(response.success==true){
-      var result = response!.result;
+        var result = response!.result;
 
-      if (result is List<MMatReqMasLink>) {
-        onclickPendingListDet = result;
+        if (result is List<MMatReqMasLink>) {
+          onclickPendingListDet = result;
 
-      } else if (result is OnclickPendingDetResult) {
-        onclickPendingListDet = result.mMatReqMasLink ?? [];
+        } else if (result is OnclickPendingDetResult) {
+          onclickPendingListDet = result.mMatReqMasLink ?? [];
 
-      } else {
-        onclickPendingListDet = [];
-      }
-      print(onclickPendingListDet.toString());
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => PendingList_TransferPending_Popup(
-                list: onclickPendingListDet,
-                ReqNo: Reqno,
-                ProjectName: ProjectName,
-                heading: Url,
-              )));
+        } else {
+          onclickPendingListDet = [];
+        }
+        print(onclickPendingListDet.toString());
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PendingList_TransferPending_Popup(
+                  list: onclickPendingListDet,
+                  ReqNo: Reqno,
+                  ProjectName: ProjectName,
+                  heading: Url,
+                )));
       }
       else {
         BaseUtitiles.showToast(response.message ?? 'Something went wrong..');
@@ -933,25 +871,25 @@ class PendingListController extends GetxController {
     var response = await PendingListProvider.getOnclickDetProvider(Url, RID);
     if (response != null ) {
       if(response.success==true){
-      var result = response!.result;
+        var result = response!.result;
 
-      if (result is List<MMatReqMasLink>) {
-        onclickPendingListDet = result;
+        if (result is List<MMatReqMasLink>) {
+          onclickPendingListDet = result;
 
-      } else if (result is OnclickPendingDetResult) {
-        onclickPendingListDet = result.mMatReqMasLink ?? [];
+        } else if (result is OnclickPendingDetResult) {
+          onclickPendingListDet = result.mMatReqMasLink ?? [];
 
-      } else {
-        onclickPendingListDet = [];
-      }
-      print(onclickPendingListDet.toString());
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => TransferAckMaterialList(
-                list: onclickPendingListDet,
-                ReqNo: Reqno,
-              )));
+        } else {
+          onclickPendingListDet = [];
+        }
+        print(onclickPendingListDet.toString());
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => TransferAckMaterialList(
+                  list: onclickPendingListDet,
+                  ReqNo: Reqno,
+                )));
       }else {
         BaseUtitiles.showToast(response.message ?? 'Something went wrong..');
       }

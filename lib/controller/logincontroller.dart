@@ -105,7 +105,7 @@ class LoginController extends GetxController {
       "password": seassion_values.userPassword.toString().trim(),
     };
 
-    var value = await AuthendicationProvider.getAuthendication( body, context);
+    var value = await AuthendicationProvider.getAuthendication( body, context,from: "session");
 
     user.value = value;
 

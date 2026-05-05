@@ -75,7 +75,7 @@ class _TransferBetweenSites_EntryState extends State<TransferBetweenSites_Entry>
          fromsiteController.selectedsiteId.value=element.fromSiteid;
          siteController.Sitename.text=element.toSiteName.toString();
          siteController.selectedsiteId.value=element.toSiteId;
-         subcontractorController.Subcontractorname.text=element.subcontractName.toString();
+         subcontractorController.Subcontractorname.text=element.subcontractName == null ? "--SELECT--" : element.subcontractName;
          subcontractorController.selectedSubcontId.value=element.subContractId;
          transferBt_Site_Controller.remarksText.text=element.remarks.toString();
          transferBt_Site_Controller.radioValue.value=element.transferType==1?"transfer_usage":"transfer";
@@ -792,13 +792,34 @@ class _TransferBetweenSites_EntryState extends State<TransferBetweenSites_Entry>
                               color: Colors.white ),),
                         ),
                         onTap: () async {
-
-                            if(_formKey.currentState!.validate()){
+                          if(_formKey.currentState!.validate()){
                               _formKey.currentState!.save();
                               if( transferBt_Site_Controller.ItemGetTableListdata.isEmpty){
                                 Fluttertoast.showToast(msg: "Please add items");
                               }else{
-                                bool hasInvalid = false;
+                                if(transferBt_Site_Controller.saveButton.value == RequestConstant.PENDINGLIST){
+                                bool hasAtLeastOneValid = false;
+
+                                for (int i = 0; i < transferBt_Site_Controller.ItemGetTableListdata.length; i++) {
+                                  final controller = transferBt_Site_Controller.Itemlist_TransQty_ListController[i];
+                                  final text = controller.text.trim();
+
+                                  if (text.isEmpty) continue;
+
+                                  final value = double.tryParse(text);
+
+                                  if (value != null && value > 0) {
+                                    hasAtLeastOneValid = true;
+                                    break;
+                                  }
+                                }
+
+                                if (!hasAtLeastOneValid) {
+                                  BaseUtitiles.showToast("Transfer Qty Should Not be Zero or Empty");
+                                  return;
+                                }
+                                }else if(transferBt_Site_Controller.saveButton.value == RequestConstant.SUBMIT || transferBt_Site_Controller.saveButton.value == RequestConstant.RESUBMIT){
+                                  bool hasInvalid = false;
                                 for (int i = 0; i < transferBt_Site_Controller.ItemGetTableListdata.length; i++) {
                                   final controller = transferBt_Site_Controller.Itemlist_TransQty_ListController[i];
                                   final text = controller.text.trim();
@@ -814,10 +835,11 @@ class _TransferBetweenSites_EntryState extends State<TransferBetweenSites_Entry>
                                 }
                                 if (hasInvalid) {
                                   BaseUtitiles.showToast("Transfer Qty Should Not be Zero or Empty");
+                                  return;
                                 }
-                                else {
-                                  SubmitAlert(context);
                                 }
+                                SubmitAlert(context);
+
                               }
                             }
 

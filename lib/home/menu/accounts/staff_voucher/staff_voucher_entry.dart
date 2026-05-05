@@ -65,7 +65,7 @@ class _Subcont_Nmr_EntryScreenState_Site
           staffController.Staffname.text = element.staffName;
           staffController.selectedstaffId.value = element.staffId;
           commonVoucherController.AccountTypename.text = element.accTypeName;
-          commonVoucherController.selectedAccId.value = element.accTypeId;
+          commonVoucherController.selectedAccTypeId.value = element.accTypeId;
           commonVoucherController.Accountname.text = element.accNameName;
           commonVoucherController.selectedAccnameId.value = element.accNameId;
 
@@ -565,7 +565,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                       commonVoucherController.Accountname.text ==
                                           "--SELECT--") {
                                   } else {
-                                   await commonVoucherController.Accountname_DeleteApi(commonVoucherController.selectedAccId.value, commonVoucherController.selectedAccnameId.value);
+                                   await commonVoucherController.Accountname_DeleteApi(commonVoucherController.selectedAccnameId.value);
                                    await commonVoucherController.getAccountName();
                                   }
                                 } else {}

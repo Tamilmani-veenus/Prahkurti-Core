@@ -183,6 +183,25 @@ class _Materials_AddState extends State<Materials_Add> {
                                       margin: EdgeInsets.only(top: 5, left: 3),
                                       child:  Row(
                                         children: <Widget>[
+                                          Obx((){
+                                            return mrn_request_controller.activeType.value ?
+                                             RichText(
+                                              text: TextSpan(
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize:
+                                                    RequestConstant.Lable_Font_SIZE),
+                                                children: <TextSpan>[
+                                                  TextSpan(
+                                                    text: "( " + "Balqty: " + mrn_request_controller.getmaterialvalue[index].balqty.toString() + " ) ",
+                                                    style: TextStyle(
+                                                        color: Theme.of(context).primaryColor,
+                                                        fontSize: RequestConstant.App_Font_SIZE,
+                                                        fontWeight: FontWeight.bold),
+                                                  ),
+                                                ],
+                                              ),): SizedBox();}
+                                          ),
                                           RichText(
                                             text: TextSpan(
                                               style: TextStyle(

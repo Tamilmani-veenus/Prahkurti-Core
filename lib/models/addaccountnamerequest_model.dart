@@ -9,25 +9,37 @@ AccountnamesaveRequest accountnamesaveRequestFromJson(String str) => Accountname
 String accountnamesaveRequestToJson(AccountnamesaveRequest data) => json.encode(data.toJson());
 
 class AccountnamesaveRequest {
+  int? id;
+  int? accountTypeId;
+  int? accountHeadId;
+  int? accountMainGroupId;
+  String? accountName;
+  String? active;
+
   AccountnamesaveRequest({
-    this.accTypeId,
-    this.accNameId,
-    this.accName,
+    this.id,
+    this.accountTypeId,
+    this.accountHeadId,
+    this.accountMainGroupId,
+    this.accountName,
+    this.active,
   });
 
-  String? accTypeId;
-  String? accNameId;
-  String? accName;
-
   factory AccountnamesaveRequest.fromJson(Map<String, dynamic> json) => AccountnamesaveRequest(
-    accTypeId: json["AccTypeId"],
-    accNameId: json["AccNameId"],
-    accName: json["AccName"],
+    id: json["id"],
+    accountTypeId: json["accountTypeId"],
+    accountHeadId: json["accountHeadId"],
+    accountMainGroupId: json["accountMainGroupId"],
+    accountName: json["accountName"],
+    active: json["active"],
   );
 
   Map<String, dynamic> toJson() => {
-    "AccTypeId": accTypeId,
-    "AccNameId": accNameId,
-    "AccName": accName,
+    "id": id,
+    "accountTypeId": accountTypeId,
+    "accountHeadId": accountHeadId,
+    "accountMainGroupId": accountMainGroupId,
+    "accountName": accountName,
+    "active": active,
   };
 }

@@ -24,7 +24,7 @@ class AuthendicationProvider {
 
 
 
-  static Future getAuthendication(body,context) async {
+  static Future getAuthendication(body,context,{from}) async {
     try {
       final response = await ApiManager.postAPICall(
         "${ApiConstant.AUTHENTICATION}",jsonEncode(body)
@@ -35,7 +35,9 @@ class AuthendicationProvider {
 
     }  catch (error) {
       print("Error == $error");
+      if(from!="session") {
         Navigator.pop(context);
+      }
       BaseUtitiles.showToast(RequestConstant.NETWORKERROR);
       return null;
     }

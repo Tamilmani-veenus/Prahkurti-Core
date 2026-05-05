@@ -56,7 +56,7 @@ class _SignInPageState extends State<SignInPage> {
   void initState() {
     loginController.password_controller.clear();
     loginController.username_controller.clear();
-    // SignInPage.checkVersion(context);
+    SignInPage.checkVersion(context);
     super.initState();
   }
 
@@ -78,8 +78,9 @@ class _SignInPageState extends State<SignInPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  SizedBox(height: MediaQuery.of(context).size.height*10/100),
-                  FadeAnimation(1.2,
+                  SizedBox(height: MediaQuery.of(context).size.height*15/100),
+                  FadeAnimation(
+                    1.2,
                     Transform(
                       alignment: FractionalOffset.center,
                       transform: Matrix4.rotationZ(

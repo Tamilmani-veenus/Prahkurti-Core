@@ -507,9 +507,10 @@ class _MRNReportState extends State<MRNReport> {
   }
 
   download(int pId,int mId,String fdate,String todate){
-     launch("${ApiConfig.WebURL}mobile-mrn-report?fromDate=$fdate&toDate=$todate&projectId=$pId&materialId=$mId&access_token=${loginController.user.value.accessToken}");
-     print("${ApiConfig.WebURL}mobile-mrn-report?fromDate=$fdate&toDate=$todate&projectId=$pId&materialId=$mId&access_token=${loginController.user.value.accessToken}");
+    launch("${ApiConfig.WebURL}mobile-mrn-report?fromDate=$fdate&toDate=$todate&projectId=$pId&materialId=$mId&access_token=${loginController.user.value.accessToken}");
+    print("${ApiConfig.WebURL}mobile-mrn-report?fromDate=$fdate&toDate=$todate&projectId=$pId&materialId=$mId&access_token=${loginController.user.value.accessToken}");
   }
+
 
 
   Widget ListDetails(){

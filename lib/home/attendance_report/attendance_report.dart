@@ -570,8 +570,8 @@ class _AttendanceReportState extends State<AttendanceReport> {
   }
 
   download(int pId, int sId, int SubId, String wid, fdate, String todate) {
-     launch("${ApiConfig.WebURL}mobile-nmr-weekly-report?fromDate=$fdate&toDate=$todate&projectId=$pId&siteId=$sId&labourId=$SubId&workType=$wid&access_token=${loginController.user.value.accessToken}");
-     print("${ApiConfig.WebURL}mobile-nmr-weekly-report?fromDate=$fdate&toDate=$todate&projectId=$pId&siteId=$sId&labourId=$SubId&workType=$wid&access_token=${loginController.user.value.accessToken}");
+    launch("${ApiConfig.WebURL}mobile-nmr-weekly-report?fromDate=$fdate&toDate=$todate&projectId=$pId&siteId=$sId&labourId=$SubId&workType=$wid&access_token=${loginController.user.value.accessToken}");
+    print("${ApiConfig.WebURL}mobile-nmr-weekly-report?fromDate=$fdate&toDate=$todate&projectId=$pId&siteId=$sId&labourId=$SubId&workType=$wid&access_token=${loginController.user.value.accessToken}");
   }
 
   List<PdfListModel> getSubContAttdList() {
