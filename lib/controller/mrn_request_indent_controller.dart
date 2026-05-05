@@ -425,6 +425,8 @@ class MRN_Request_Controller extends GetxController {
       siteId: siteController.selectedsiteId.value,
       reqRemarks: RemarksController.text,
       requestType: ReqType.value.toString(),
+      isEdit: isResubmit ? true :  false,
+
 
       //save
       createdBy: isSubmit ? int.parse(loginController.EmpId()) : null,
