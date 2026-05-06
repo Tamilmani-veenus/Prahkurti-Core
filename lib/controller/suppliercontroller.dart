@@ -66,34 +66,49 @@ class SupplierController extends GetxController {
 
   Future getInwardtList() async {
     getSupplierListData.value.clear();
-    await ReportsProvider.getInward_Report_List(reportsController.selectedProjectId.value,reportsController.selectedsiteId.value,reportsController.selectedsuppliertId.value,FromdateController.text,TodateController.text,loginController.user.value.userType.toString(),
-        loginController.user.value.userId!).then((value)async{
-      if(value!=null&& value.length>0){
-        getSupplierListData.value=value;
-        return getSupplierListData.value;
+    final value = await ReportsProvider.getInward_Report_List(reportsController.selectedProjectId.value,reportsController.selectedsiteId.value,reportsController.selectedsuppliertId.value,FromdateController.text,TodateController.text);
+    if (value != null) {
+      if(value.success == true){
+        if(value.result!.isNotEmpty) {
+          getSupplierListData.value = value.result!;
+        }
+        else {
+          BaseUtitiles.showToast(value.message ?? "No Data Found");
+        }
       }
       else{
-        BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+        BaseUtitiles.showToast(value.message ??"Something went wrong..");
       }
-    });
+    }else
+    {
+      BaseUtitiles.showToast("Something went wrong..");
+    }
   }
 
-  Future OnItemsSelected(int slectid,String inwardNo,BuildContext context)async{
-    await ReportsProvider.onItemSelctInwardList(slectid).then((value)async{
-      if(value!=null&&value.length>0){
-        selctListDatas.value=value;
-        return showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return inwardPopup(list:selctListDatas.value, inwardNo:inwardNo);
-            });
+  Future OnItemsSelected(int slectid,String inwardNo,BuildContext context) async {
+    final value = await ReportsProvider.onItemSelctInwardList(slectid);
+    if (value != null) {
+      if(value.success == true){
+        if(value.result!.isNotEmpty) {
+          selctListDatas.value = value.result!;
+          return showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return inwardPopup(list:selctListDatas.value, inwardNo:inwardNo);
+              });
+        }
+        else {
+          BaseUtitiles.showToast(value.message ?? "No Data Found");
+        }
       }
-    });
+      else{
+        BaseUtitiles.showToast(value.message ??"Something went wrong..");
+      }
+    }else
+    {
+      BaseUtitiles.showToast("Something went wrong..");
+    }
   }
- // @override
-  // void onInit() {
-  //
-  //   super.onInit();
-  // }
+
 
 }

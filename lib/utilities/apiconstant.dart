@@ -1,5 +1,6 @@
 import 'dart:io';
 
+
 class ApiConfig {
   // static const String LIVE_ENDPOINT_CORE = "http://192.168.0.250:8080/";  //local
   static const String LIVE_ENDPOINT_CORE = "http://49.204.233.151:8080/";    //local
@@ -71,12 +72,12 @@ class ApiConstant{
   static String GETSUBCONTRACTBILLDIRLIST = BASE_URL + "api/SubContDirectBill/GetSubcontList";
   static String GETNMRREPORT = BASE_URL + "api/Report/GetNmrReportMas";
   static String GETLABOURLIST = BASE_URL + "api/CommonFile/GetLabour";
-  static String GETATTENDANCEREPORTLIST = BASE_URL + "api/Report/GetAttendanceReportMas";
-  static String ATTENDANCEONITEMSELCT = BASE_URL + "api/Report/GetAttendanceReportDet";
+  static String GETATTENDANCEREPORTLIST = BASE_URL + "api/SubContLabourAttendance/GetDlrReportViewListMas";
+  static String ATTENDANCEONITEMSELCT = BASE_URL + "api/SubContLabourAttendance/GetDlrReportViewListDet";
   static String SITEDROPDWONLISTAPI = BASE_URL_CORE + "api/GenericMaster/GetProjectWiseSiteList";
   static String TOSITEDROPDWONLISTAPI = BASE_URL_CORE + "api/GenericMaster/GetToSitesByFrSiteDd";
-  static String GETMRNREPORTSLISTAPI = BASE_URL + "api/Report/GetMrnReportMas";
-  static String GETINWARDREPORTSLISTAPI = BASE_URL + "api/Report/GetInwardReportMas";
+  static String GETMRNREPORTSLISTAPI = BASE_URL_CORE + "api/MaterialReqOrdMas/GetAllMRNReportViewListMas";
+  static String GETINWARDREPORTSLISTAPI = BASE_URL_CORE + "api/MaterialInward/GetInwardRepViewListMas";
   static String GETSUPPLIERDROPDOWNAPI = BASE_URL + "api/CommonFile/GetSupplier";
   static String GETDPRLISTAPI = BASE_URL + "api/Report/GetDPRReportMas";
   static String GETCOMPANYDROPDOWNLIST = BASE_URL + "api/CommonFile/GetCompany";
@@ -85,8 +86,8 @@ class ApiConstant{
   static String GETSUPPLIEROSEXPENSESAPI = BASE_URL + "api/CommonFile/GetSupplierExpenses";
   static String GETSUBCONTRACTOREXPENSESAPI = BASE_URL + "api/CommonFile/GetSubConExpenses";
   static String GETONCLICK_PENDINGLISTAPI = BASE_URL_CORE + "api/CommonFile/GetPendingRecords";
-  static String MRNONITEMSELCT = BASE_URL + "api/Report/GetMrnReportDet";
-  static String INWARDONITEMSELCT = BASE_URL + "api/Report/GetInwardReportDet";
+  static String MRNONITEMSELCT = BASE_URL_CORE + "api/MaterialReqOrdMas/GetAllMRNReportViewListDet";
+  static String INWARDONITEMSELCT = BASE_URL_CORE + "api/MaterialInward/GetInwardReportViewListDet";
   static String DPRONITEMSELCT = BASE_URL + "api/Report/GetDPRReportDet";
   static String GETMATERIALSUBDRPDOWNLIST = BASE_URL + "api/CommonFile/GetMaterialSub";
   static String GETMATERIALSUBMAT_REPORTLIST = BASE_URL + "api/CommonFile/GetMaterialSubReport";

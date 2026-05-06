@@ -54,8 +54,8 @@ class _AttendanceReportState extends State<AttendanceReport> {
       reportsController.sitename.text = "--ALL--";
       reportsController.selectedsiteId.value = 0;
 
-      reportsController.subcontractorname.text = "--ALL--";
-      reportsController.selectedSubcontId.value = 0;
+      subcontractorController.Subcontractorname.text = "--ALL--";
+      subcontractorController.selectedSubcontId.value = 0;
 
       attendanceController.workTypeController.text = "--SELECT--";
       attendanceController.wrktype.value = "0";
@@ -378,7 +378,7 @@ class _AttendanceReportState extends State<AttendanceReport> {
                           const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                       child: TextFormField(
                         readOnly: true,
-                        controller: reportsController.subcontractorname,
+                        controller: subcontractorController.Subcontractorname,
                         cursorColor: Colors.black,
                         style: const TextStyle(color: Colors.black),
                         decoration: const InputDecoration(
@@ -396,11 +396,16 @@ class _AttendanceReportState extends State<AttendanceReport> {
                               child: ConstIcons.subcontractorName),
                         ),
                         onTap: () async {
-                          await reportsController.getSubcontactorReportList();
+                          await subcontractorController.getSubcontList(context,
+                              reportsController.selectedProjectId.value,
+                              reportsController.selectedsiteId.value,
+                              subcontractorController.checkScreen);
                           if (mounted) {
-                            bottomsheetControllers.subcontractorNameReport(
-                                context,
-                                reportsController.getdropDownvalue.value);
+                            bottomsheetControllers.SubcontractorName(context, subcontractorController.getdropDownvalue.value);
+
+                            // bottomsheetControllers.subcontractorNameReport(
+                            //     context,
+                            //     reportsController.getdropDownvalue.value);
                           }
                         },
                         validator: (value) {
@@ -501,7 +506,7 @@ class _AttendanceReportState extends State<AttendanceReport> {
                             if (_formKey.currentState!.validate()) {
                               attendanceController.attendanceDatas.value = [];
                               await attendanceController
-                                  .getAttendance_rptList();
+                                  .getAttendance_rptList(attendanceController.wrktype.value);
                             }
                           },
                         ),

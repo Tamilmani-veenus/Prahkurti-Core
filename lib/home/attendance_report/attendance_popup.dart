@@ -91,7 +91,7 @@ class AttendancePopup extends StatelessWidget {
                               flex:2,
                               child: Container(
                                 margin: const EdgeInsets.only(top: 3),
-                                child: Text(list[index].Extra.toString()),
+                                child: Text(list[index].extra.toString()),
                               ),
                             ),
                           ],
@@ -114,7 +114,7 @@ class AttendancePopup extends StatelessWidget {
                               flex:2,
                               child: Container(
                                 margin: const EdgeInsets.only(top: 3),
-                                child: Text(list[index].MOROTHrs.toString()),
+                                child: Text(list[index].morotHrs.toString()),
                               ),
                             ),
 
@@ -129,7 +129,7 @@ class AttendancePopup extends StatelessWidget {
                               flex:2,
                               child: Container(
                                 margin: const EdgeInsets.only(top: 3),
-                                child: Text(list[index].MOROTAmt.toString()),
+                                child: Text(list[index].morotAmt.toString()),
                               ),
                             ),
                           ],
@@ -152,7 +152,7 @@ class AttendancePopup extends StatelessWidget {
                               flex:2,
                               child: Container(
                                 margin: const EdgeInsets.only(top: 3),
-                                child: Text(list[index].EVEOTHrs.toString()),
+                                child: Text(list[index].eveotHrs.toString()),
                               ),
                             ),
                             Expanded(
@@ -166,7 +166,7 @@ class AttendancePopup extends StatelessWidget {
                               flex:2,
                               child: Container(
                                 margin: const EdgeInsets.only(top: 3),
-                                child: Text(list[index].EVEOTAmt.toString()),
+                                child: Text(list[index].eveotAmt.toString()),
                               ),
                             ),
                           ],
@@ -187,7 +187,7 @@ class AttendancePopup extends StatelessWidget {
                               flex:2,
                               child: Container(
                                 margin: const EdgeInsets.only(top: 3,bottom: 3),
-                                child: Text(list[index].ExtraAmt.toString()),
+                                child: Text(list[index].extraAmt.toString()),
                               ),
                             ),
 
@@ -202,7 +202,7 @@ class AttendancePopup extends StatelessWidget {
                               flex:2,
                               child: Container(
                                 margin: const EdgeInsets.only(top: 3,bottom: 3),
-                                child: Text(list[index].TotAmt.toString()),
+                                child: Text(list[index].totalAmount.toString()),
                               ),
                             ),
                           ],

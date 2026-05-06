@@ -58,23 +58,10 @@ class inwardPopup extends StatelessWidget {
                       Expanded(
                         child: Container(
                           margin: EdgeInsets.only(top: 5, left: 5),
-                          child: Text(list[index].materialName.toString() + " ( " + list[index].scale.toString() + " ) "
+                          child: Text(list[index].materialName.toString() + " ( " + list[index].scaleName.toString() + " ) "
                               ,style: TextStyle(color: Theme.of(context).primaryColor)),
                         ),
                       ),
-
-
-                          // Row(
-                          //   children: <Widget>[
-                          //     Expanded(
-                          //         flex:10,
-                          //         child: Text(list[index].materialName.toString(),style: TextStyle(color: Colors.red),)
-                          //     ),
-                          //     Expanded(
-                          //         flex:3,
-                          //         child: Text(list[index].scale.toString(),style: TextStyle(color:Colors.white),))
-                          //   ],
-                          // ),
 
                           Expanded(
                             flex: 1,
@@ -91,7 +78,7 @@ class inwardPopup extends StatelessWidget {
                                   Expanded(
                                     flex:2,
                                     child: Container(
-                                      child: Text(list[index].poQty.toString()),
+                                      child: Text(list[index].poqty.toString()),
                                     ),
                                   ),
                                   Expanded(

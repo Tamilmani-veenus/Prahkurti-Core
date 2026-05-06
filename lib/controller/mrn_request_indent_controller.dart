@@ -315,10 +315,7 @@ class MRN_Request_Controller extends GetxController {
     Material_itemview_GetDbList.value = [];
     var Matlist = await materiallistService.MaterialItemlist_table_readAll();
     Matlist.forEach((user) {
-      print("VVVVVVVV..${user["balqty"]}");
-      print("VVVVVVVV..${user["stockqty"]}");
       var materiallist = Materiallist();
-      print("SSSSSS${materiallist.balqty}");
       materiallist.materialid = user['materialid'];
       materiallist.material = user['material'];
       materiallist.scale = user['scale'];
@@ -427,7 +424,6 @@ class MRN_Request_Controller extends GetxController {
       requestType: ReqType.value.toString(),
       isEdit: isResubmit ? true :  false,
 
-
       //save
       createdBy: isSubmit ? int.parse(loginController.EmpId()) : null,
       createdDt: isSubmit
@@ -496,8 +492,8 @@ class MRN_Request_Controller extends GetxController {
           reqQty: isSubmit || isResubmit ? element.qty : isVerify ? element.reqQty : element.qty,
           remarks: element.remarks,
           reqDescription: element.desc,
-          preApproveStatus: isResubmit ? Material_EditListApiValue[0].preApproveStatus : "N",
-          approveStatus: isResubmit ? Material_EditListApiValue[0].approveStatus : "N"
+          preApproveStatus: "N",
+          approveStatus: "N"
         );
         getRequestDetList.value.add(list);
       }

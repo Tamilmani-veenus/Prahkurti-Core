@@ -1,51 +1,85 @@
+// To parse this JSON data, do
+//
+//     final mrnListReportsResponse = mrnListReportsResponseFromJson(jsonString);
 
 import 'dart:convert';
 
-List<MrnListReportsResponse> mrnListReportsResponseFromJson(String str) => List<MrnListReportsResponse>.from(json.decode(str).map((x) => MrnListReportsResponse.fromJson(x)));
+MrnListReportsResponse mrnListReportsResponseFromJson(String str) => MrnListReportsResponse.fromJson(json.decode(str));
 
-String mrnListReportsResponseToJson(List<MrnListReportsResponse> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String mrnListReportsResponseToJson(MrnListReportsResponse data) => json.encode(data.toJson());
 
 class MrnListReportsResponse {
+  bool? success;
+  String? message;
+  List<Result>? result;
+
   MrnListReportsResponse({
-    this.mrnReqId,
-    this.mrnReqNo,
-    this.mrnReqDate,
-    this.projectName,
-    this.siteName,
-    this.mrnReqStatus,
-    this.deviceName,
-    this.purchaseType,
+    this.success,
+    this.message,
+    this.result,
   });
 
-  int? mrnReqId;
-  String? mrnReqNo;
-  String? mrnReqDate;
-  String? projectName;
-  String? siteName;
-  String? mrnReqStatus;
-  String? deviceName;
-  String? purchaseType;
-
   factory MrnListReportsResponse.fromJson(Map<String, dynamic> json) => MrnListReportsResponse(
-    mrnReqId: json["MrnReqId"],
-    mrnReqNo: json["MrnReqNo"],
-    mrnReqDate: json["MrnReqDate"],
-    projectName: json["ProjectName"],
-    siteName: json["SiteName"],
-    mrnReqStatus: json["MrnReqStatus"],
-    deviceName: json["DeviceName"],
-    purchaseType: json["PurchaseType"],
+    success: json["success"],
+    message: json["message"],
+    result: json["result"]==null?null:List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "MrnReqId": mrnReqId,
-    "MrnReqNo": mrnReqNo,
-    "MrnReqDate": mrnReqDate,
-    "ProjectName": projectName,
-    "SiteName": siteName,
-    "MrnReqStatus": mrnReqStatus,
-    "DeviceName": deviceName,
-    "PurchaseType" : purchaseType,
+    "success": success,
+    "message": message,
+    "result": result == null? null :List<dynamic>.from(result!.map((x) => x.toJson())),
   };
 }
 
+class Result {
+  int? id;
+  String? reqNo;
+  String? reqDate;
+  int? projectId;
+  String? projectName;
+  int? siteId;
+  String? siteName;
+  String? requestType;
+  String? remarks;
+  String? status;
+
+  Result({
+    this.id,
+    this.reqNo,
+    this.reqDate,
+    this.projectId,
+    this.projectName,
+    this.siteId,
+    this.siteName,
+    this.requestType,
+    this.remarks,
+    this.status,
+  });
+
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    id: json["id"],
+    reqNo: json["reqNo"],
+    reqDate: json["reqDate"],
+    projectId: json["projectId"],
+    projectName: json["projectName"],
+    siteId: json["siteId"],
+    siteName: json["siteName"],
+    requestType: json["requestType"],
+    remarks: json["remarks"],
+    status: json["status"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "reqNo": reqNo,
+    "reqDate": reqDate,
+    "projectId": projectId,
+    "projectName": projectName,
+    "siteId": siteId,
+    "siteName": siteName,
+    "requestType": requestType,
+    "remarks": remarks,
+    "status": status,
+  };
+}

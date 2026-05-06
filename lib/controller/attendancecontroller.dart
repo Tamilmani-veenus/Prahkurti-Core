@@ -30,30 +30,55 @@ class AttendanceController extends GetxController {
 
   RxList selctListDatas = [].obs;
 
-  Future getAttendance_rptList() async {
+
+  Future getAttendance_rptList(workType) async {
     attendanceDatas.value.clear();
-    await ReportsProvider.getAttendancereportList( reportsController.selectedProjectId.value,reportsController.selectedSubcontId.value, FromdateController.text,TodateController.text,wrktype.value, loginController.user.value.userType.toString(), loginController.user.value.userId!).then((value)async{
-      if(value!=null&& value.length>0){
-        attendanceDatas.value=value;
-        return attendanceDatas.value;
+    final value = await ReportsProvider.getAttendancereportList(
+        reportsController.selectedProjectId.value,
+        reportsController.selectedsiteId.value,
+        subcontcontroller.selectedSubcontId.value,
+        FromdateController.text,TodateController.text,workType);
+    if (value != null) {
+      if(value.success == true){
+        if(value.result!.isNotEmpty) {
+          attendanceDatas.value = value.result!;
+        }
+        else {
+          BaseUtitiles.showToast(value.message ?? "No Data Found");
+        }
       }
       else{
-        BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
-        // attendanceDatas.value.clear();
+        BaseUtitiles.showToast(value.message ??"Something went wrong..");
       }
-    });
+    }else
+    {
+      BaseUtitiles.showToast("Something went wrong..");
+    }
   }
 
-  Future OnItemsSelected(int slectid,String attenNo,BuildContext context)async{
-    await ReportsProvider.onItemSelctAttendanceList(slectid).then((value)async{
-      if(value!=null&&value.length>0){
-        selctListDatas.value=value;
-        return showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AttendancePopup(list:selctListDatas.value, attendNo:attenNo,);
-            });
+  Future OnItemsSelected(int slectid,String attenNo,BuildContext context) async {
+    final value = await ReportsProvider.onItemSelctAttendanceList(slectid);
+    if (value != null) {
+      if(value.success == true){
+        if(value.result!.isNotEmpty) {
+          selctListDatas.value = value.result!;
+          return showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AttendancePopup(list:selctListDatas.value, attendNo:attenNo,);
+              });
+        }
+        else {
+          BaseUtitiles.showToast(value.message ?? "No Data Found");
+        }
       }
-    });
+      else{
+        BaseUtitiles.showToast(value.message ??"Something went wrong..");
+      }
+    }else
+    {
+      BaseUtitiles.showToast("Something went wrong..");
+    }
   }
+
 }

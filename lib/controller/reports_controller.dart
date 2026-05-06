@@ -51,7 +51,7 @@ class ReportsController extends GetxController{
 
   Future getReportProjectList({String? type}) async {
     getProjectdropDownvalue.value=[];
-    final value = await CommonProvider.getReportproject(type);
+    final value = await CommonProvider.getproject();
     if (value != null ) {
     if(value.success == true) {
       getProjectdropDownvalue.value = value.result!;
