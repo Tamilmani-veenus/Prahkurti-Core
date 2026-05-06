@@ -125,8 +125,6 @@ class RequestDet {
     this.stockqty,
     this.detRemarks,
     this.detDescription,
-    this.preApproveStatus,
-    this.approveStatus
   });
 
   int? reqDetId;
@@ -140,8 +138,6 @@ class RequestDet {
   double? stockqty;
   String? detRemarks;
   String? detDescription;
-  String? approveStatus;
-  String? preApproveStatus;
 
   factory RequestDet.fromJson(Map<String, dynamic> json) => RequestDet(
     reqDetId: json["id"],
@@ -155,8 +151,6 @@ class RequestDet {
     stockqty: (json["stockQty"] as num?)?.toDouble(),
     detRemarks: json["remarks"],
     detDescription: json["reqDescription"],
-    preApproveStatus: json["preApproveStatus"],
-    approveStatus: json["approveStatus"]
   );
 
   Map<String, dynamic> toJson() => {
@@ -171,7 +165,5 @@ class RequestDet {
     "stockQty": stockqty,
     "remarks": detRemarks,
     "reqDescription": detDescription,
-    "approveStatus": approveStatus,
-    "preApproveStatus": preApproveStatus
   };
 }

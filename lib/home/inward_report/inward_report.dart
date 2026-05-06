@@ -559,175 +559,103 @@ class _InwardReportState extends State<InwardReport> {
 
   Widget ListDetails(){
     return Container(
-      height:BaseUtitiles.getheightofPercentage(context,50),
-      child: Column(
-        children: [
-          Expanded(
-            child: Container(
-              height:BaseUtitiles.getheightofPercentage(context,48),
-              width: BaseUtitiles.getWidthtofPercentage(context,100),
-              child: Obx(()=>ListView.builder(
-                  shrinkWrap: true,
-                  physics: ScrollPhysics(),
-                  itemCount: suppliercontroller.getSupplierListData.value.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: (){
-                        suppliercontroller.OnItemsSelected(suppliercontroller.getSupplierListData.value[index].inwardId,suppliercontroller.getSupplierListData.value[index].inwardNo, context);
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(left: 3, right: 3, top: 5, bottom: 5),
-                        child: Card(
-                          color: Colors.white,
-                          child: Container(
-                            margin: EdgeInsets.only(left: 10, right: 3, top: 5, bottom: 5),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
+      height:BaseUtitiles.getheightofPercentage(context,35),
+      width: BaseUtitiles.getWidthtofPercentage(context,100),
+      child: Obx(()=>ListView.builder(
+          shrinkWrap: true,
+          physics: ScrollPhysics(),
+          itemCount: suppliercontroller.getSupplierListData.value.length,
+          itemBuilder: (context, index) {
+            return InkWell(
+              onTap: (){
+                suppliercontroller.OnItemsSelected(suppliercontroller.getSupplierListData.value[index].id,suppliercontroller.getSupplierListData.value[index].inwardNo, context);
+              },
+              child: Container(
+                margin: EdgeInsets.only(left: 3, right: 3, top: 5, bottom: 5),
+                child: Card(
+                  margin: EdgeInsets.zero,
+                  color: Colors.white,
+                  child: Container(
+                    margin: EdgeInsets.only(left: 10, right: 3, top: 5, bottom: 5),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
 
-                                Container(
-                                  margin: EdgeInsets.only( right: 10),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Row(
-                                        children: [
-                                          ConstIcons.list_date,
-                                          Text(
-                                              suppliercontroller.getSupplierListData.value[index].inwardDate.toString(),
-                                            style: TextStyle(color: Theme.of(context).primaryColor,fontWeight: FontWeight.bold),
-                                          ),
-                                        ],
-                                      ),
-                                      Text(suppliercontroller.getSupplierListData.value[index].inwardNo.toString(),style: TextStyle(color: Theme.of(context).primaryColor,fontWeight: FontWeight.bold),),
-                                    ],
+                        Container(
+                          margin: EdgeInsets.only( right: 10),
+                          child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Row(
+                                children: [
+                                  ConstIcons.list_date,
+                                  Text(
+                                      suppliercontroller.getSupplierListData.value[index].entryDate.toString(),
+                                    style: TextStyle(color: Theme.of(context).primaryColor,fontWeight: FontWeight.bold),
                                   ),
-                                ),
-                                SizedBox(height: 5,),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                        flex: 2,
-                                        child: Text("Project Name",style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold))),
-
-                                    Expanded(
-                                      flex: 3,
-                                      child: Text(
-                                        suppliercontroller.getSupplierListData.value[index].projectName.toString(),style: TextStyle(color: Colors.black),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 3,),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                        flex: 2,
-                                        child: Text("Site Name",style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold))),
-
-                                    Expanded(
-                                      flex: 3,
-                                      child: Text(
-                                        suppliercontroller.getSupplierListData.value[index].siteName.toString(),style: TextStyle(color: Colors.black),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 3,),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                        flex: 2,
-                                        child: Text("Supplier Name",style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold))),
-
-                                    Expanded(
-                                      flex: 3,
-                                      child: Text(
-                                        suppliercontroller.getSupplierListData.value[index].supplierName.toString(),style: TextStyle(color: Colors.black),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 3,),
-
-                                // Row(
-                                //   mainAxisAlignment:
-                                //   MainAxisAlignment.spaceBetween,
-                                //   children: <Widget>[
-                                //     Text(suppliercontroller.getSupplierListData.value[index].inwardNo.toString(),style: TextStyle(color: Colors.yellow,fontWeight: FontWeight.bold),),
-                                //     Text(
-                                //       (suppliercontroller.getSupplierListData.value[index].inwardDate.toString()),style: TextStyle(color: Colors.yellow,fontWeight: FontWeight.bold),
-                                //     ),
-                                //   ],
-                                // ),
-                                // Container(
-                                //   margin: EdgeInsets.only(top: 10),
-                                //   child: Row(
-                                //     mainAxisAlignment:
-                                //     MainAxisAlignment.spaceBetween,
-                                //     children: <Widget>[
-                                //       Text(
-                                //         ("Project Name "),style: TextStyle(color: Colors.white),
-                                //       ),
-                                //       Container(
-                                //         width: BaseUtitiles.getWidthtofPercentage(context, 60),
-                                //         child: Text(
-                                //           (suppliercontroller.getSupplierListData.value[index].projectName.toString()),style: TextStyle(color: Colors.white),
-                                //         ),
-                                //       ),
-                                //
-                                //     ],
-                                //   ),
-                                // ),
-                                // Container(
-                                //   margin: EdgeInsets.only(top: 10),
-                                //   child: Row(
-                                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                //     children: [
-                                //       Text(
-                                //         ("Site Name " ),style: TextStyle(color: Colors.white),
-                                //       ),
-                                //       Container(
-                                //         width: BaseUtitiles.getWidthtofPercentage(context, 60),
-                                //         child: Text(
-                                //           (suppliercontroller.getSupplierListData.value[index].siteName.toString()),style: TextStyle(color: Colors.white),
-                                //         ),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // ),
-                                // Container(
-                                //   margin: EdgeInsets.only(top: 10),
-                                //   child: Row(
-                                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                //     children: [
-                                //       Text(
-                                //         ("Supplier Name" ),style: TextStyle(color:Colors.white),
-                                //       ),
-                                //       Container(
-                                //         width: BaseUtitiles.getWidthtofPercentage(context, 60),
-                                //         child: Text(
-                                //           (
-                                //              suppliercontroller.getSupplierListData.value[index].supplierName.toString()),style: TextStyle(color:Colors.white),
-                                //         ),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // ),
-
-                              ],
-                            ),
+                                ],
+                              ),
+                              Text(suppliercontroller.getSupplierListData.value[index].inwardNo.toString(),style: TextStyle(color: Theme.of(context).primaryColor,fontWeight: FontWeight.bold),),
+                            ],
                           ),
                         ),
-                      ),
-                    );
-                  }),
+                        SizedBox(height: 5,),
+                        Row(
+                          children: [
+                            Expanded(
+                                flex: 2,
+                                child: Text("Project Name",style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold))),
+
+                            Expanded(
+                              flex: 3,
+                              child: Text(
+                                suppliercontroller.getSupplierListData.value[index].projectName.toString(),style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 3,),
+                        Row(
+                          children: [
+                            Expanded(
+                                flex: 2,
+                                child: Text("Site Name",style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold))),
+
+                            Expanded(
+                              flex: 3,
+                              child: Text(
+                                suppliercontroller.getSupplierListData.value[index].siteName.toString(),style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 3,),
+                        Row(
+                          children: [
+                            Expanded(
+                                flex: 2,
+                                child: Text("Supplier Name",style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold))),
+
+                            Expanded(
+                              flex: 3,
+                              child: Text(
+                                suppliercontroller.getSupplierListData.value[index].supplierName.toString(),style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 5,),
+
+
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ],
+            );
+          }),
       ),
     );
 

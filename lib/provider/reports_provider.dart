@@ -160,70 +160,56 @@ class ReportsProvider{
     return data;
   }
 
-  static Future<List<AttendanceReportListResponse>> getAttendancereportList(int projectId,int subId,String frdate,String todate,String type, String usertype, int userId) async {
-    List<AttendanceReportListResponse> data = [];
-    await ApiManager.getAPICall("${ApiConstant.GETATTENDANCEREPORTLIST}?PrjId=$projectId&SubId=$subId&FrDate=$frdate&ToDate=$todate&type=$type&UserType=$usertype&UserId=$userId").then((value) {
-      if (kDebugMode) {
-        print('AttendanceReportList:$value');
-      }
-      data = attendanceReportListResponseFromJson(value);
-      if (data!=null&& data.length>0) {
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
+  static Future<AttendanceReportListResponse?> getAttendancereportList(int projectId,int siteId,int subId,String frdate,String todate,String workType) async {
+    try {
+      final response =
+      await ApiManager.getAPICall("${ApiConstant.GETATTENDANCEREPORTLIST}?fromDate=$frdate&toDate=$todate&ProjectId=$projectId&SiteId=$siteId&SubContactId=$subId&WorkType=$workType");
+      print("response...${response}");
+      return attendanceReportListResponseFromJson(response);
+    } catch (error,e) {
       print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return data;
+      print("ERROR....${e}");
+      return null;
+    }
   }
 
-  static Future<List<OnItemSelectAttendanceList>> onItemSelctAttendanceList(int SelctId) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.ATTENDANCEONITEMSELCT+"?AttenId=$SelctId").then((value) {
-      print("OnItemSelectAttendanceList:"+value);
-      data = onItemSelectAttendanceListFromJson(value);
-      if (data!=null&& data.length>0) {
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
+  static Future<OnItemSelectAttendanceList?> onItemSelctAttendanceList(int SelctId) async {
+    try {
+      final response =
+      await ApiManager.getAPICall(ApiConstant.ATTENDANCEONITEMSELCT+"?AttenId=$SelctId");
+      print("response...${response}");
+      return onItemSelectAttendanceListFromJson(response);
+    } catch (error,e) {
       print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return data;
+      print("ERROR....${e}");
+      return null;
+    }
   }
 
-  static Future<List<OnItemSelectInwardList>> onItemSelctInwardList(int SelctId) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.INWARDONITEMSELCT+"?InwId=$SelctId").then((value) {
-      print("OnItemSelectInwardList:"+value);
-      data = onItemSelectInwardListFromJson(value);
-      if (data!=null&& data.length>0) {
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
+  static Future<OnItemSelectInwardList?> onItemSelctInwardList(int SelctId) async {
+    try {
+      final response =
+      await ApiManager.getAPICall(ApiConstant.INWARDONITEMSELCT+"?InwardId=$SelctId");
+      print("response...${response}");
+      return onItemSelectInwardListFromJson(response);
+    } catch (error,e) {
       print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return data;
+      print("ERROR....${e}");
+      return null;
+    }
   }
 
-  static Future<List<OnItemSelectMrnList>> onItemSelctMrnList(int SelctId) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.MRNONITEMSELCT+"?ReqMasId=$SelctId").then((value) {
-      print("OnItemSelectMRNList:"+value);
-      data = onItemSelectMrnListFromJson(value);
-      if (data!=null&& data.length>0) {
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
+  static Future<OnItemSelectMrnList?> onItemSelctMrnList(int SelctId) async {
+    try {
+      final response =
+      await ApiManager.getAPICall(ApiConstant.MRNONITEMSELCT+"?ReqOrdId=$SelctId");
+      print("response...${response}");
+      return onItemSelectMrnListFromJson(response);
+    } catch (error,e) {
       print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return data;
+      print("ERROR....${e}");
+      return null;
+    }
   }
 
   static Future<List<OnItemSelectDprList>> onItemSelctDprList(int SelctId) async {
@@ -242,36 +228,31 @@ class ReportsProvider{
     return data;
   }
 
-  static Future<List<MrnListReportsResponse>> getMrn_Report_List(int projectId,int subId,String frdate,String todate, String usertype, int userId) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GETMRNREPORTSLISTAPI+"?PrjId=$projectId&SiteId=$subId&FrDate=$frdate&ToDate=$todate&UserType=$usertype&UserId=$userId").then((value) {
-      print("AttendanceReportList:"+value);
-      data = mrnListReportsResponseFromJson(value);
-      if (data!=null&& data.length>0) {
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
+  static Future<MrnListReportsResponse?> getMrn_Report_List(int projectId,int siteId,String frdate,String todate) async {
+    try {
+      final response =
+      await ApiManager.getAPICall(ApiConstant.GETMRNREPORTSLISTAPI + "?fromDate=$frdate&toDate=$todate&ProjectId=$projectId&SiteId=$siteId");
+      print("response...${response}");
+      return mrnListReportsResponseFromJson(response);
+    } catch (error,e) {
       print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return data;
+      print("ERROR....${e}");
+      return null;
+    }
   }
 
-  static Future<List<InwardReportListResponse>> getInward_Report_List(int projectId,int siteId,int subId,String frdate,String todate, String userType, int userId) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GETINWARDREPORTSLISTAPI+"?PrjId=$projectId&SiteId=$siteId&SupId=$subId&FrDate=$frdate&ToDate=$todate&UserType=$userType&UserId=$userId").then((value) {
-      print("AttendanceReportList:"+value);
-      data = inwardReportListResponseFromJson(value);
-      if (data!=null&& data.length>0) {
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
+
+  static Future<InwardReportListResponse?> getInward_Report_List(int projectId,int siteId,int subId,String frdate,String todate) async {
+    try {
+      final response =
+      await ApiManager.getAPICall(ApiConstant.GETINWARDREPORTSLISTAPI+"?PrjId=$projectId&SiteId=$siteId&SupId=$subId&FrDate=$frdate&ToDate=$todate");
+      print("response...${response}");
+      return inwardReportListResponseFromJson(response);
+    } catch (error,e) {
       print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return data;
+      print("ERROR....${e}");
+      return null;
+    }
   }
 
   static Future<List<DprListResponse>> getDprReport_List(int projectId,int siteId,int subId,String frdate,String todate,String wType, String userType, int userId) async {
@@ -357,15 +338,6 @@ class ReportsProvider{
             'Error occurred while communication with server with statusCode: ${response.statusCode}');
     }
   }
-
-
-
-
-
-
-
-
-
 
   static Future<List<ProjectWiseDetailsListResponse>> getProject_Details_List(int projectId,int siteId,int mId,int mhId) async {
     var data = null;

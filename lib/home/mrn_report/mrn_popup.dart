@@ -59,23 +59,8 @@ class mrnPopup extends StatelessWidget {
                             margin: EdgeInsets.only(top: 5, left: 5),
                             child: Container(
                                 width: BaseUtitiles.getWidthtofPercentage(context,55),
-                                child: Text(list[index].material.toString()+" ("+list[index].scale.toString()+")",style: TextStyle(color: Theme.of(context).primaryColor),)),
+                                child: Text(list[index].materialName.toString()+" ("+list[index].scaleName.toString()+")",style: TextStyle(color: Theme.of(context).primaryColor),)),
                           ),
-
-                          // Container(
-                          //
-                          //
-                          //
-                          //   child: Row(
-                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //     children: <Widget>[
-                          //       Container(
-                          //         child: Text("Name",style: TextStyle(color: Colors.white)),
-                          //       ),
-                          //
-                          //     ],
-                          //   ),
-                          // ),
 
                           Container(
                             margin: EdgeInsets.only(top: 5,left: 5),
@@ -88,7 +73,7 @@ class mrnPopup extends StatelessWidget {
                                   ),
                                 ),
                                 Expanded(
-                                  flex:2,
+                                  flex:3,
                                   child: Container(
                                     child: Text(list[index].reqQty.toString()),
                                   ),
@@ -100,9 +85,9 @@ class mrnPopup extends StatelessWidget {
                                   ),
                                 ),
                                 Expanded(
-                                  flex:2,
+                                  flex:3,
                                   child: Container(
-                                    child: Text(list[index].appQty.toString()),
+                                    child: Text(list[index].appqty.toString()),
                                   ),
                                 ),
                               ],
@@ -113,15 +98,15 @@ class mrnPopup extends StatelessWidget {
                             child: Row(
                               children: <Widget>[
                                 Expanded(
-                                  flex:3,
+                                  flex:1,
                                   child: Container(
                                     child: Text("Status: ",style: TextStyle(fontWeight: FontWeight.bold)),
                                   ),
                                 ),
                                 Expanded(
-                                  flex:7,
+                                  flex:3,
                                   child: Container(
-                                    child: Text(list[index].appType.toString()),
+                                    child: Text(list[index].approveType==""?"-":list[index].approveType),
                                   ),
                                 ),
 
@@ -134,15 +119,15 @@ class mrnPopup extends StatelessWidget {
                             child: Row(
                               children: <Widget>[
                                 Expanded(
-                                  flex:2,
+                                  flex:1,
                                   child: Container(
-                                    child: Text("Remarks",style: TextStyle(fontWeight: FontWeight.bold)),
+                                    child: Text("Remarks: ",style: TextStyle(fontWeight: FontWeight.bold)),
                                   ),
                                 ),
                                 Expanded(
                                   flex:3,
                                   child: Container(
-                                    child: Text(list[index].remarks.toString()),
+                                    child: Text(list[index].remarks==""?"-":list[index].remarks),
                                   ),
                                 ),
                               ],

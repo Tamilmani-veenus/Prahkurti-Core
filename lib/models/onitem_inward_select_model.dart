@@ -1,39 +1,77 @@
-
+// To parse this JSON data, do
+//
+//     final onItemSelectInwardList = onItemSelectInwardListFromJson(jsonString);
 
 import 'dart:convert';
 
-List<OnItemSelectInwardList> onItemSelectInwardListFromJson(String str) => List<OnItemSelectInwardList>.from(json.decode(str).map((x) => OnItemSelectInwardList.fromJson(x)));
+OnItemSelectInwardList onItemSelectInwardListFromJson(String str) => OnItemSelectInwardList.fromJson(json.decode(str));
 
-String onItemSelectInwardListToJson(List<OnItemSelectInwardList> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String onItemSelectInwardListToJson(OnItemSelectInwardList data) => json.encode(data.toJson());
 
 class OnItemSelectInwardList {
+  bool? success;
+  String? message;
+  List<Result>? result;
+
   OnItemSelectInwardList({
-    this.materialId,
-    this.materialName,
-    this.scale,
-    this.poQty,
-    this.inwQty,
+    this.success,
+    this.message,
+    this.result,
   });
 
-  int? materialId;
-  String? materialName;
-  String? scale;
-  double? poQty;
-  double? inwQty;
-
   factory OnItemSelectInwardList.fromJson(Map<String, dynamic> json) => OnItemSelectInwardList(
-    materialId: json["MaterialId"],
-    materialName: json["MaterialName"],
-    scale: json["Scale"],
-    poQty: json["POQty"],
-    inwQty: json["InwQty"],
+    success: json["success"],
+    message: json["message"],
+    result: json["result"]==null?null:List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "MaterialId": materialId,
+    "success": success,
+    "message": message,
+    "result": result == null? null :List<dynamic>.from(result!.map((x) => x.toJson())),
+  };
+}
+
+class Result {
+  int? purOrdDetId;
+  int? materialid;
+  String? materialName;
+  int? scaleId;
+  String? scaleName;
+  double? poqty;
+  double? inwQty;
+  double? balPoQty;
+
+  Result({
+    this.purOrdDetId,
+    this.materialid,
+    this.materialName,
+    this.scaleId,
+    this.scaleName,
+    this.poqty,
+    this.inwQty,
+    this.balPoQty,
+  });
+
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    purOrdDetId: json["PurOrdDetId"],
+    materialid: json["Materialid"],
+    materialName: json["MaterialName"],
+    scaleId: json["ScaleID"],
+    scaleName: json["ScaleName"],
+    poqty: json["poqty"],
+    inwQty: json["InwQty"],
+    balPoQty: json["BalPoQty"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "PurOrdDetId": purOrdDetId,
+    "Materialid": materialid,
     "MaterialName": materialName,
-    "Scale": scale,
-    "POQty": poQty,
+    "ScaleID": scaleId,
+    "ScaleName": scaleName,
+    "poqty": poqty,
     "InwQty": inwQty,
+    "BalPoQty": balPoQty,
   };
 }

@@ -94,34 +94,52 @@ class SiteController extends GetxController {
 
   Future getMrnReporttList() async {
     mrnListValue.value.clear();
-    await ReportsProvider.getMrn_Report_List(
+    final value = await ReportsProvider.getMrn_Report_List(
             reportsController.selectedProjectId.value,
             reportsController.selectedsiteId.value,
             FromdateController.text,
-            TodateController.text,
-            loginController.user.value.userType.toString(),
-            loginController.user.value.userId!)
-        .then((value) async {
-      if (value != null && value.length > 0) {
-        mrnListValue.value = value;
-        return mrnListValue.value;
-      } else {
-        BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+            TodateController.text);
+    if (value != null) {
+      if(value.success == true){
+        if(value.result!.isNotEmpty) {
+          mrnListValue.value = value.result!;
+        }
+        else {
+          BaseUtitiles.showToast(value.message ?? "No Data Found");
+        }
       }
-    });
+      else{
+        BaseUtitiles.showToast(value.message ??"Something went wrong..");
+      }
+    }else
+    {
+      BaseUtitiles.showToast("Something went wrong..");
+    }
   }
 
-  Future OnItemsSelected(
-      int slectid, String MrnReqNo, BuildContext context) async {
-    await ReportsProvider.onItemSelctMrnList(slectid).then((value) async {
-      if (value != null && value.length > 0) {
-        selctListDatas.value = value;
-        return showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return mrnPopup(list: selctListDatas.value, MrnReqNo: MrnReqNo);
-            });
+
+  Future OnItemsSelected(int slectid, String MrnReqNo, BuildContext context) async {
+    final value = await ReportsProvider.onItemSelctMrnList(slectid);
+    if (value != null) {
+      if(value.success == true){
+        if(value.result!.isNotEmpty) {
+          selctListDatas.value = value.result!;
+          return showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return mrnPopup(list: selctListDatas.value, MrnReqNo: MrnReqNo);
+              });
+        }
+        else {
+          BaseUtitiles.showToast(value.message ?? "No Data Found");
+        }
       }
-    });
+      else{
+        BaseUtitiles.showToast(value.message ??"Something went wrong..");
+      }
+    }else
+    {
+      BaseUtitiles.showToast("Something went wrong..");
+    }
   }
 }
