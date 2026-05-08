@@ -38,7 +38,6 @@ class _Reports_screenState extends State<Reports_screen> {
 
   @override
   void initState() {
-    stockSiteController.projectShowList.value.clear();
     var duration = const Duration(seconds: 0);
     Future.delayed(duration, () async {
       await menuController.getReportsList();
@@ -208,9 +207,6 @@ class _Reports_screenState extends State<Reports_screen> {
                                 if (menuController.reportListDatas.value[index]
                                         .mobileMenuName ==
                                     'Stock at site') {
-                                  // await stockSiteController.getProjectwiseshow();
-                                  stockSiteController.clearlistData();
-                                  stockSiteController.reportScreen = 0;
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(

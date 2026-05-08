@@ -36,7 +36,6 @@ class StockSiteController extends GetxController{
   final Materialsubname = TextEditingController();
   final materialHeadName = TextEditingController();
   final Subheadername = TextEditingController();
-  RxList projectShowList=[].obs;
   RxList projectDetailsList=[].obs;
 
   RxList materialWiseShowList=[].obs;
@@ -64,10 +63,9 @@ class StockSiteController extends GetxController{
   RxList getMaterialdropDownvalue = [].obs;
   RxList MaterialNamemainlist = [].obs;
   RxList getMaterialDropdownName = [].obs;
-  RxInt materialDropdowntId = 0.obs;
+  RxInt materialSubDropdowntId = 0.obs;
   RxString materiaDropdownName = "".obs;
 
-  int reportScreen = 0;
 
 
 
@@ -88,13 +86,6 @@ class StockSiteController extends GetxController{
         BaseUtitiles.showToast('Something went wrong..');
       }
     }
-
-  // Future getProjectWiseSubmatList(BuildContext context,mhId, reportScreen) async {
-  //   getmaterialSubdropDownvalue.value= await CommonProvider.getmaterialsubDropdown(mhId, reportScreen);
-  //   getmaterialSubdropDownvalue.value.forEach((element) {
-  //     return submaterialDropdownName.value.add(element.materialSubname);
-  //   });
-  // }
 
   Future getMaterialHeadReportList() async {
     getmaterialHeadDropDownvalue.value.clear();
@@ -164,160 +155,64 @@ class StockSiteController extends GetxController{
 
   var groupedlist;
 
-  // Future getProjectShow() async {
-  //   projectShowList.clear();
-  //       await ReportsProvider.getProject_Show_List(
-  //       loginController.user.value.userId!,
-  //       loginController.user.value.userType!,
-  //       reportsController.selectedProjectId.value,
-  //       reportsController.selectedsiteId.value,
-  //       matDropdowntId.value,
-  //       matHeadDropdowntId.value).then((value)async{
-  //     print("Project id :: ${reportsController.selectedProjectId.value}");
-  //     print("Site id :: ${reportsController.selectedsiteId.value}");
-  //     print("Mat id :: ${matDropdowntId.value}");
-  //     if(value != null){
-  //       projectShowList.value=value;
-  //       // projectShowList.forEach((element) {
-  //       //   // if(groupedlist['$group']){
-  //       //   //
-  //       //   // }
-  //       //
-  //       // });
-  //       return projectShowList.value;
-  //     } else {
-  //       Fluttertoast.showToast(msg: "No details found");
-  //     }
-  //   });
-  // }
-  // StockRepDetails? _stockRepDetails;
-  // // StockRepDetails? get stockRepDetails => _stockRepDetails;
-
-  RxList stockReportList = [].obs;
-  GetstockprojwiseModel? _getstockprojwiseModel;
-  GetstockprojwiseModel? get getStockReport => _getstockprojwiseModel;
-
-  StockRepDetails? _getStockReport;
-  StockRepDetails? get stockRepDetails => _getStockReport;
-
-  List<GetStockReport>?  getStockReportList = [];
-  List<StockRepDetails>?  getStockReportDetList = [];
   RxList<GetStockReport> getStockList = <GetStockReport>[].obs;
-  RxList<StockRepDetails> getStockDetList = <StockRepDetails>[].obs;
-
-  clearlistData(){
-   getStockReportList!.clear();
-   getStockReportDetList!.clear();
-   getStockList.clear();
-   getStockDetList.clear();
-  }
 
 
-  Future getProjectwiseshow() async {
-    getStockReportList!.clear();
-    getStockReportDetList!.clear();
+  Future getProjectwiseshow(type) async {
     getStockList.clear();
-    getStockDetList.clear();
-    try {
-      // Assuming ReportsProvider().stockReportProvider(...) returns a List<StockReport>
-      GetstockprojwiseModel getstockprojwiseModel = await ReportsProvider().stockReportProvider(
-        loginController.user.value.userId!,
-        loginController.user.value.userType!,
+
+      final value = await ReportsProvider().stockReportProvider(
         reportsController.selectedProjectId.value,
         reportsController.selectedsiteId.value,
-        matDropdowntId.value,
         matHeadDropdowntId.value,
+        materialSubDropdowntId.value,
+          reportsController.materialDropdowntId.value,
+        type=="Projectwise"?"1":"2"
       );
-      _getstockprojwiseModel = getstockprojwiseModel;
-
-      if (getstockprojwiseModel.getStockReport != null && getstockprojwiseModel.getStockReport!.isNotEmpty) {
-        getStockReportList = getstockprojwiseModel.getStockReport;
-        getStockList.value = getStockReportList!;
-        for (var report in getStockList.value!) {
-          if (report.stockRepDetails != null) {
-            getStockReportDetList!.addAll(report.stockRepDetails!);
-            getStockDetList.value = getStockReportDetList!;
-            // return getStockReportDetList;
-          }
+    if (value != null) {
+      if(value.success == true){
+        if(value.getStockReport!.isNotEmpty) {
+            getStockList.value = value.getStockReport!;
+            print('✅ PROJECT COUNT: ${getStockList.value!.length}');
         }
-        print('REPORT DATAS1 :: $getStockReportDetList');
-        // for (var report in getStockReportList!) {
-        //   if (report.stockRepDetails != null) {
-        //     getStockReportDetList!.addAll(report.stockRepDetails!);
-        //
-        //     print('REPORT DATAS1 :: $getStockReportDetList');
-        //     return getStockReportDetList;
-        //   }
-        // }
+        else {
+          BaseUtitiles.showToast(value.message ?? "No Data Found");
+        }
       }
-      else {
-        BaseUtitiles.showToast("No record found...");
+      else{
+        BaseUtitiles.showToast(value.message ??"Something went wrong..");
       }
-      // return getStockReportList;
-    } catch (e) {
-      // Handle exceptions or errors here
-      print('Error fetching data: $e');
-      rethrow; // Optionally rethrow the exception
+    }else
+    {
+      BaseUtitiles.showToast("Something went wrong..");
     }
   }
 
 
-
-  /// ----Try this function
-  Future getProjectShowData() async {
-    // HomeState homeState = state!;
-    // GetStockReport getStockReport = await ReportsProvider().stockReportProvider(
-        await ReportsProvider().stockReportProvider(
-        loginController.user.value.userId!,
-        loginController.user.value.userType!,
-        reportsController.selectedProjectId.value,
-        reportsController.selectedsiteId.value,
-        matDropdowntId.value,
-        matHeadDropdowntId.value).then((value)async{
-          if(value != null){
-            stockReportList.value = value as List;
-          }else{
-            BaseUtitiles.showToast("No record found...");
-          }
-          return stockReportList.value;
-    });
-
-    // if(getStockReport == null ? getStockReport.stockRepDetails.isNotEmpty){
-    //
-    // }
-
-      // getStockReport.stockRepDetails = getStockReport as List<StockRepDetail>;
-      // if(getStockReport.stockRepDetails.isNotEmpty){
-      //   stockRepDetailsList = getStockReport.stockRepDetails;
-      // }else{
-      //   BaseUtitiles.showToast("No record found...");
-      // }
-      // return stockRepDetailsList;
-    // stockRepDetailsList = getStockReport.stockRepDetails;
-
-
-
-    // homeState._punchFilterResponse = punchFilterResponse;
-    // if (punchFilterResponse.employeeTiming!.isNotEmpty) {
-    //   punchFilterList = punchFilterResponse.employeeTiming;
-    // } else {
-    //   BaseUtitiles.showToast("No record found...");
-    // }
-    // return punchFilterList;
-  }
-
-
-
   Future getProjectDetailisList(BuildContext context, String pName) async {
     projectDetailsList.value.clear();
-    await ReportsProvider.getProject_Details_List(reportsController.selectedProjectId.value,reportsController.selectedsiteId.value,matDropdowntId.value,matHeadDropdowntId.value).then((value)async{
-      if(value.isNotEmpty){
-        projectDetailsList.value=value;
-        return  Navigator.push(context, MaterialPageRoute(builder: (context) => ProjectDetailsPopup(list:projectDetailsList.value,ProjectName: pName)));
-      } else {
-        Fluttertoast.showToast(msg: "No details found");
+    final value = await ReportsProvider.getProject_Details_List(
+        reportsController.selectedProjectId.value,
+        reportsController.selectedsiteId.value,
+        matDropdowntId.value,matHeadDropdowntId.value);
+    if (value != null) {
+      if(value.success == true){
+        if(value.result!.isNotEmpty) {
+          projectDetailsList.value = value.result!;
+          return  Navigator.push(context, MaterialPageRoute(builder: (context) => ProjectDetailsPopup(list:projectDetailsList.value,ProjectName: pName)));
+
+        }
+        else {
+          BaseUtitiles.showToast(value.message ?? "No Data Found");
+        }
       }
-    });
+      else{
+        BaseUtitiles.showToast(value.message ??"Something went wrong..");
+      }
+    }else
+    {
+      BaseUtitiles.showToast("Something went wrong..");
+    }
   }
 
 
@@ -337,23 +232,15 @@ class StockSiteController extends GetxController{
     }
   }
 
-  // Future getmaterialDropdowntList(BuildContext context,subId,mhId,reportScreen) async {
-  //   getMaterialdropDownvalue.value = await CommonProvider.getMaterialDropdown(subId,mhId, reportScreen);
-  //   // getMaterialdropDownvalue.value = await CommonProvider.getMaterialDropdown(matDropdowntId.value,mhId, reportScreen);
-  //   getMaterialdropDownvalue.value.forEach((element) {
-  //     return getMaterialDropdownName.add(element.materialName);
-  //   });
-  // }
-
   selectedMaterialID(String value) {
     if (getMaterialdropDownvalue.value.length>0) {
       getMaterialdropDownvalue.forEach((element) {
         if(value == element.materialName){
-          materialDropdowntId(element.materialId);
+          materialSubDropdowntId(element.materialId);
         }
       });
     }
-    selectedMaterialName(materialDropdowntId.value);
+    selectedMaterialName(materialSubDropdowntId.value);
   }
 
   selectedMaterialName(int? id) {
@@ -373,7 +260,7 @@ class StockSiteController extends GetxController{
         loginController.user.value.userId!,
         loginController.user.value.userType!,
         matDropdowntId.value,
-        materialDropdowntId.value,matHeadDropdowntId.value
+        materialSubDropdowntId.value,matHeadDropdowntId.value
     ).then((value)async{
       if(value.isNotEmpty){
         materialWiseShowList.value=value;

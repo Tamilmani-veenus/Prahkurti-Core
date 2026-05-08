@@ -14,7 +14,7 @@ class SiteLocationProvider {
 
   static Future<SiteLocationResponse?> siteLocationProvider(userId,empId,punchId,check,status,userType,projectName) async {
     try {
-      final response = await ApiManager.getAPICall(ApiConstant.GET_SITE_LOCATION+"?Id=0&EmployeeID=$empId&status=$status&check=$check");
+      final response = await ApiManager.getAPICall(ApiConstant.GET_SITE_LOCATION+"?Id=0&EmployeeID=$empId&status=$status&check=$check&projectName=$projectName");
       print("response...${response}");
       return siteLocationResponseFromJson(response);
     }

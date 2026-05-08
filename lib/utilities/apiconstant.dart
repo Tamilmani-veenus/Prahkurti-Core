@@ -1,11 +1,11 @@
 import 'dart:io';
 
-
 class ApiConfig {
   // static const String LIVE_ENDPOINT_CORE = "http://192.168.0.250:8080/";  //local
   static const String LIVE_ENDPOINT_CORE = "http://49.204.233.151:8080/";    //local
 
   static const String DEFAULT_BASE_URL_CORE = LIVE_ENDPOINT_CORE + "PrakruthiAPI/";
+  // static const String DEFAULT_BASE_URL_CORE = LIVE_ENDPOINT_CORE + "cms_dev_api/";
   static late final String APIURL;
   static late final String APIURL_CORE;
   static late final String WebURL;
@@ -91,8 +91,8 @@ class ApiConstant{
   static String DPRONITEMSELCT = BASE_URL + "api/Report/GetDPRReportDet";
   static String GETMATERIALSUBDRPDOWNLIST = BASE_URL + "api/CommonFile/GetMaterialSub";
   static String GETMATERIALSUBMAT_REPORTLIST = BASE_URL + "api/CommonFile/GetMaterialSubReport";
-  static String GETMATERIAL_SHOW_LIST = BASE_URL + "api/Report/GetStockReport";
-  static String GETMATERIAL_DETAILS_LIST = BASE_URL + "api/Report/GetStockDetail";
+  static String GETMATERIAL_SHOW_LIST = BASE_URL_CORE + "api/MaterialOpenStock/GetStockAtSiteViewListProjectWiseDetails";
+  static String GETMATERIAL_DETAILS_LIST = BASE_URL + "api/MaterialOpenStock/GetStockAtSiteDetails";
   static String GETMATERIAL_SUBHAED_DROPDOWNLIST = BASE_URL + "api/CommonFile/GetMaterialHead";
   static String GETMATERIALHEAD_REPORT = BASE_URL_CORE + "api/GenericMaster/GetMaterialHeadItem";
   static String GETMATERIALSUBHEAD_REPORT = BASE_URL_CORE + "api/GenericMaster/GetMaterialSubByHead";

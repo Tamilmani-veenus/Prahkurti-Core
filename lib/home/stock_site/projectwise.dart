@@ -31,48 +31,23 @@ class _PrjectWiseState extends State<PrjectWise> {
   void initState() {
     var duration = const Duration(seconds: 0);
     Future.delayed(duration, () async {
-      stockSiteController.reportScreen = 1;
-      await siteController.subcontEntry_siteDropdowntList(context, 0);
-      // await stockSiteController.getMaterialHeadReportList();
-      // await stockSiteController.getProjectWiseSubmatList(context,  stockSiteController.reportScreen);
-
-      await reportsController.getReportProjectList();
-      await reportsController.getSiteReportList(context,0);
-
-
+      stockSiteController.getStockList.value=[];
       reportsController.projectname.text = "--ALL--";
       reportsController.selectedProjectId.value = 0;
       reportsController.selectedsiteId.value = 0;
       reportsController.sitename.text = "--ALL--";
-
       stockSiteController.materialHeadName.text = "--ALL--";
       stockSiteController.matHeadDropdowntId.value = 0;
       stockSiteController.Materialsubname.text = "--ALL--";
       stockSiteController.matDropdowntId.value = 0;
-      siteController.siteDropdownName.clear();
-      setState(() {
-        stockSiteController.projectShowList.value.clear();
-        stockSiteController.getStockReportList!.clear();
-        stockSiteController.getStockReportDetList!.clear();
-        stockSiteController.getStockList.clear();
-        stockSiteController.getStockDetList.clear();
-      });
+
+      reportsController.materialDropdowntId.value=0;
+      reportsController.Subheadername.text="--ALL--";
+
     });
     super.initState();
   }
 
-  var groupedlist;
-
-  // list.forEach((product) {
-  // product.groups.forEach((group) {
-  // if (groupedLists['$group'] == null) {
-  // groupedLists['$group'] = <Product>[];
-  // }
-  // (groupedLists['$group'] as List<Product>).add(product);
-  // });
-  // });
-
-  // print(groupedLists);
 
   @override
   Widget build(BuildContext context) {
@@ -116,17 +91,9 @@ class _PrjectWiseState extends State<PrjectWise> {
                                 EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                             child: ConstIcons.projectName),
                       ),
-                      onTap: () {
-                        // await projectController.getProjectList(context, 0);
-                        setState(() {
-                          bottomsheetControllers.projectNameReport(context, reportsController.getProjectdropDownvalue.value);
-                        });
-                      },
-                      validator: (value) {
-                        if (value!.isEmpty || value == "--Select--") {
-                          return '\u26A0 Please select project name.';
-                        }
-                        return null;
+                      onTap: () async {
+                        await reportsController.getReportProjectList();
+                        bottomsheetControllers.projectNameReport(context, reportsController.getProjectdropDownvalue.value);
                       },
                     ),
                   ),
@@ -161,16 +128,11 @@ class _PrjectWiseState extends State<PrjectWise> {
                                 EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                             child: ConstIcons.siteName),
                       ),
-                      onTap: () {
-                        setState(() {
-                          bottomsheetControllers.siteNameReport(context, reportsController.getSiteDropdownvalue.value);
-                        });
-                      },
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return '\u26A0 Please select site name.';
+                      onTap: () async {
+                        await siteController.subcontEntry_siteDropdowntList(context, 0,type: "StockReport");
+                        if (mounted) {
+                        bottomsheetControllers.siteNameReport(context, siteController.getSiteDropdownvalue.value);
                         }
-                        return null;
                       },
                     ),
                   ),
@@ -207,16 +169,11 @@ class _PrjectWiseState extends State<PrjectWise> {
                           child: ConstIcons.siteName,
                         ),
                       ),
-                      onTap: () {
-                        setState(() {
+                      onTap: () async {
+                        await stockSiteController.getMaterialHeadReportList();
+                        if (mounted) {
                           bottomsheetControllers.materialHeadItem(context, stockSiteController.getmaterialHeadDropDownvalue.value);
-                        });
-                      },
-                      validator: (value) {
-                        if (value!.isEmpty || value == "--Select--") {
-                          return '\u26A0 Please select site name';
                         }
-                        return null;
                       },
                     ),
                   ),
@@ -250,107 +207,18 @@ class _PrjectWiseState extends State<PrjectWise> {
                             padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                             child: ConstIcons.siteName),
                       ),
-                      onTap: () {
-                        setState(() {
+                      onTap: () async {
+                        await stockSiteController.getProjectWiseSubmatList(stockSiteController.matHeadDropdowntId.value);
+
+                        if (mounted) {
                           bottomsheetControllers.MaterialSubItem(context, stockSiteController.matHeadDropdowntId.value, stockSiteController.getmaterialSubdropDownvalue.value);
-                        });
-                      },
-                      validator: (value) {
-                        if (value!.isEmpty || value == "--Select--") {
-                          return '\u26A0 Please select site name';
                         }
-                        return null;
                       },
                     ),
                   ),
                 ),
               ),
-              // -----------Need for reference------------
-      
-              //   Container(
-              //     alignment: Alignment.center,
-              //     margin:
-              //     EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 10),
-              //     height: BaseUtitiles.getheightofPercentage(context, 5),
-              //     width: BaseUtitiles.getWidthtofPercentage(context, 90),
-              //     child: TextField(
-              //       style: TextStyle(fontSize: RequestConstant.Dropdown_Font_SIZE),
-              //       readOnly: true,
-              //       controller: projectController.projectname,
-              //       decoration: new InputDecoration(
-              //         contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-              //         labelText: "ProjectName",
-              //         focusedBorder: OutlineInputBorder(
-              //           borderSide: BorderSide(color: Colors.black, width: 1.0),
-              //         ),
-              //         enabledBorder: OutlineInputBorder(
-              //           borderSide: BorderSide(color: Colors.black, width: 1.0),
-              //         ),
-              //
-              //       ),
-              //
-              //       onTap: () {
-              //         projectController.getProjectList(context,0);
-              //         textclear();
-              //       },
-              //     ),
-              //
-              //   ),
-              //   Container(
-              //     alignment: Alignment.center,
-              //     margin:
-              //     EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-              //     height: BaseUtitiles.getheightofPercentage(context, 5),
-              //     width: BaseUtitiles.getWidthtofPercentage(context, 90),
-              //     child: TextField(
-              //       style: TextStyle(fontSize:RequestConstant.Dropdown_Font_SIZE),
-              //       readOnly: true,
-              //       controller: siteController.Sitename,
-              //       decoration: new InputDecoration(
-              //         contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-              //         labelText: "SiteName",
-              //         focusedBorder: OutlineInputBorder(
-              //           borderSide: BorderSide(color: Colors.black, width: 1.0),
-              //         ),
-              //         enabledBorder: OutlineInputBorder(
-              //           borderSide: BorderSide(color: Colors.black, width: 1.0),
-              //         ),
-              //
-              //       ),
-              //
-              //       onTap: () {
-              //         siteController.subcont_SiteEntry_SiteDropdowntList(context,0);
-              //       },
-              //     ),
-              //
-              //   ),
-              //   Container(
-              //   alignment: Alignment.center,
-              //   margin:
-              //   EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-              //   height: BaseUtitiles.getheightofPercentage(context, 5),
-              //   width: BaseUtitiles.getWidthtofPercentage(context, 90),
-              //   child: TextField(
-              //     style: TextStyle(fontSize: RequestConstant.Dropdown_Font_SIZE),
-              //     readOnly: true,
-              //     controller: stockSiteController.Materialsubname,
-              //     decoration: new InputDecoration(
-              //       contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-              //       labelText: "Material Sub Item",
-              //       focusedBorder: OutlineInputBorder(
-              //         borderSide: BorderSide(color: Colors.black, width: 1.0),
-              //       ),
-              //       enabledBorder: OutlineInputBorder(
-              //         borderSide: BorderSide(color: Colors.black, width: 1.0),
-              //       ),
-              //     ),
-              //
-              //     onTap: () {
-              //       stockSiteController.getProjectWisesubmaterialDropdownList(context);
-              //     },
-              //   ),
-              //
-              // ),
+
               Container(
                 margin: const EdgeInsets.only(
                     left: 20, right: 20, top: 10, bottom: 10),
@@ -369,12 +237,7 @@ class _PrjectWiseState extends State<PrjectWise> {
                                 borderRadius: BorderRadius.circular(30)),
                           ),
                           onPressed: () async {
-                            await  stockSiteController.getProjectwiseshow();
-                            // Future.delayed(Duration(milliseconds: 500), () {
-                            //   setState(() {
-                            //       stockSiteController.getProjectwiseshow();
-                            //   });
-                            // });
+                            await  stockSiteController.getProjectwiseshow("Projectwise");
                           },
                           child: const Text("Show"),
                         ),
@@ -389,15 +252,6 @@ class _PrjectWiseState extends State<PrjectWise> {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                           ),
                           onPressed: () async {
-                            // if(reportsController.selectedProjectId.value == 0) {
-                            //   Fluttertoast.showToast(msg: "Please select a project name");
-                            // }
-                            // else if(reportsController.selectedsiteId.value == 0){
-                            //   Fluttertoast.showToast(msg: "Please select a site name");
-                            // }
-                            // else{
-                            //   stockSiteController.getProjectDetailisList(context,reportsController.projectname.text);
-                            // }
                             stockSiteController.getProjectDetailisList(context, reportsController.projectname.text);
                           },
                           child: const Text("Details"),
@@ -424,8 +278,7 @@ class _PrjectWiseState extends State<PrjectWise> {
       margin: const EdgeInsets.only(bottom: 10),
       height: BaseUtitiles.getheightofPercentage(context, 60),
       width: BaseUtitiles.getWidthtofPercentage(context, 100),
-      child:
-      Obx(
+      child: Obx(
             () => ListView.builder(
           shrinkWrap: true,
           physics: const BouncingScrollPhysics(),
@@ -461,7 +314,7 @@ class _PrjectWiseState extends State<PrjectWise> {
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: Scrollbar(
-                        // thumbVisibility: true,
+                        thumbVisibility: false,
                         child: ListView.builder(
                           physics: const BouncingScrollPhysics(),
                           itemCount: details.length,
@@ -540,103 +393,5 @@ class _PrjectWiseState extends State<PrjectWise> {
     );
   }
 
-// Widget ListDatas(){
-//   return Container(
-//     margin: const EdgeInsets.only(bottom: 10),
-//     height:BaseUtitiles.getheightofPercentage(context,60),
-//     width: BaseUtitiles.getWidthtofPercentage(context,100),
-//     child: Obx(()=>ListView.builder(
-//         shrinkWrap: true,
-//         physics: const ScrollPhysics(),
-//         itemCount: stockSiteController.projectShowList.value.length,
-//         itemBuilder: (context, index) {
-//           bool isNewGroup = false;
-//           if (index == 0) {
-//             isNewGroup = true;
-//           } else {
-//             var currentGroup = stockSiteController.projectShowList.value[index].group;
-//             var previousGroup = stockSiteController.projectShowList.value[index - 1].group;
-//             if (currentGroup != previousGroup) {
-//               isNewGroup = true;
-//             }
-//           }
-//
-//           return Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               if (isNewGroup)
-//                 Padding(
-//                   padding: const EdgeInsets.all(8.0),
-//                   child: Text(
-//                     stockSiteController.projectShowList.value[index].header.group,
-//                     style: TextStyle(
-//                       fontSize: 18,
-//                       fontWeight: FontWeight.bold,
-//                       color: Theme.of(context).primaryColor,
-//                     ),
-//                   ),
-//                 ),
-//               Container(
-//                 margin: const EdgeInsets.all(1),
-//                 child: Card(
-//                   shape: RoundedRectangleBorder(
-//                     borderRadius: BorderRadius.circular(10.0),
-//                   ),
-//                   color: Colors.white,
-//                   child: Container(
-//                     margin: const EdgeInsets.all(10),
-//                     child: Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                       children: <Widget>[
-//                         SizedBox(
-//                           width: BaseUtitiles.getWidthtofPercentage(context, 75),
-//                           child: Text(
-//                             // "${stockSiteController.projectShowList.value[index].header} "
-//                                 "( ${stockSiteController.projectShowList.value[index].footer} )",
-//                             style: TextStyle(color: Theme.of(context).primaryColor),
-//                           ),
-//                         ),
-//                         Container(
-//                           margin: const EdgeInsets.only(top: 10),
-//                           child: Row(
-//                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                             children: <Widget>[
-//                               const Expanded(
-//                                 flex: 6,
-//                                 child: Text("Unit:", style: TextStyle(color: Colors.black)),
-//                               ),
-//                               Expanded(
-//                                 flex: 9,
-//                                 child: Text(
-//                                   stockSiteController.projectShowList.value[index].unit.toString(),
-//                                   style: const TextStyle(color: Colors.black),
-//                                 ),
-//                               ),
-//                               const Expanded(
-//                                 flex: 8,
-//                                 child: Text("Stock Qty:", style: TextStyle(color: Colors.black)),
-//                               ),
-//                               Expanded(
-//                                 flex: 5,
-//                                 child: Text(
-//                                   stockSiteController.projectShowList.value[index].stockQty.toString(),
-//                                   style: const TextStyle(color: Colors.black),
-//                                 ),
-//                               ),
-//                             ],
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           );
-//         }),
-//     ),
-//   );
-//
-// }
+
 }

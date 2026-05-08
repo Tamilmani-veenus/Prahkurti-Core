@@ -53,7 +53,7 @@ class OnclickPendingDet {
     "success": success,
     "message": message,
     "result": result == null
-        ? null
+        ? []
         : result is List
         ? List<dynamic>.from(result.map((e) => e.toJson()))
         : result.toJson(),

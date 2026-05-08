@@ -22,13 +22,13 @@ class OnItemSelectMrnList {
   factory OnItemSelectMrnList.fromJson(Map<String, dynamic> json) => OnItemSelectMrnList(
     success: json["success"],
     message: json["message"],
-    result: json["result"]==null?null:List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
+    result: json["result"]==null?[]:List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "success": success,
     "message": message,
-    "result": result == null? null :List<dynamic>.from(result!.map((x) => x.toJson())),
+    "result": result == null?[] :List<dynamic>.from(result!.map((x) => x.toJson())),
   };
 }
 
