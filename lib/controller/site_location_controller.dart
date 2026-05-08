@@ -21,7 +21,6 @@ class SiteLocationController extends GetxController {
   TextEditingController projectNameSearch = TextEditingController();
   LoginController loginController = Get.put (LoginController());
   RxList<Result> projectNameRxList = <Result>[].obs;
-  List<Result> projectNameList = <Result>[].obs;
 
   String? siteName;
   String? punchInAddress = "";
@@ -34,7 +33,6 @@ class SiteLocationController extends GetxController {
   /// Get Site Name.....
 
   Future<void> getProjectName(allotedStatus,checkValue) async {
-    projectNameList=[];
     projectNameRxList.value=[];
     final value = await SiteLocationProvider.siteLocationProvider(
         loginController.user.value.userId,
@@ -48,12 +46,11 @@ class SiteLocationController extends GetxController {
     if(value!=null) {
       if(value.success==true ) {
         if (value.result!.isNotEmpty) {
-          projectNameList = value.result!;
-          projectNameRxList.value = projectNameList;
+          projectNameRxList.value = value.result!;
         }
-        else{
-          BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
-        }
+        // else{
+        //   BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+        // }
       }
       else{
         BaseUtitiles.showToast(value.message ?? "Something went wrong..");

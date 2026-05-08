@@ -2243,7 +2243,7 @@ class BottomsheetControllers {
                         onTap: () async {
                           stockSiteController.Materialsubname.text = list[index].materialSubName.toString();
                           stockSiteController.matDropdowntId.value = list[index].id;
-                          await stockSiteController.getmaterialDropdowntList(stockSiteController.matDropdowntId.value);
+                          // await stockSiteController.getmaterialDropdowntList(stockSiteController.matDropdowntId.value);
                           searchcontroller.text = "";
                           Navigator.pop(context);
                         },
@@ -2341,12 +2341,11 @@ class BottomsheetControllers {
                           Future.delayed(const Duration(seconds: 0), () async {
                             stockSiteController.materialHeadName.text    = list[index].materialHeadName.toString();
                             stockSiteController.matHeadDropdowntId.value = list[index].id;
-                            await stockSiteController.getProjectWiseSubmatList(stockSiteController.matHeadDropdowntId.value);
                             stockSiteController.Materialsubname.text = "--All--";
-                            stockSiteController.matDropdowntId.value = 0;
-                            stockSiteController.Subheadername.text = "--All--";
-                            stockSiteController.materialDropdowntId.value = 0;
-                            stockSiteController.materialWiseShowList.clear();
+                            reportsController.materialDropdowntId.value = 0;
+                            reportsController.Subheadername.text = "--All--";
+                            stockSiteController.materialSubDropdowntId.value = 0;
+                            stockSiteController.materialWiseShowList.value=[];
                           });
                           searchcontroller.text = "";
                           Navigator.pop(context);
@@ -2438,7 +2437,6 @@ class BottomsheetControllers {
                         //MRN Material Name
                         reportsController.Subheadername.text = list[index].materialName.toString();
                         reportsController.materialDropdowntId.value = list[index].id;
-                        reportsController.getReportMaterialList();
                         searchcontroller.text = "";
                         Navigator.pop(context);
                       },
@@ -2499,7 +2497,7 @@ class BottomsheetControllers {
                     },
                     textInputAction: TextInputAction.search,
                     onChanged: (value)  {
-                      list = BaseUtitiles.materialName_StockAtSitePopupAlert(value,reportsController.getMaterialdropDownvalue.value);
+                      list = BaseUtitiles.materialName_StockAtSitePopupAlert(value,stockSiteController.getMaterialdropDownvalue.value);
                     },
                   ),
                 ),
@@ -2538,7 +2536,7 @@ class BottomsheetControllers {
                       onTap: (){
                         //Inward Report Material Based List
                         stockSiteController.Subheadername.text = list[index].materialName.toString();
-                        stockSiteController.materialDropdowntId.value = list[index].id;
+                        stockSiteController.materialSubDropdowntId.value = list[index].id;
                         stockSiteController.getmaterialDropdowntList(stockSiteController.matDropdowntId.value);
                         searchcontroller.text = "";
                         Navigator.pop(context);

@@ -272,55 +272,18 @@ class ReportsProvider{
   }
 
 
-  // static Future<List<StockReport>> getProject_Show_List(int userId,String userType,int projectId,int siteId,int mId,int mhId) async {
-  //   List<StockReport> data = [];
-  //   await ApiManager.getAPICall("${ApiConstant.GETMATERIAL_SHOW_LIST}?UserId=$userId&UserType=$userType&PId=$projectId&SId=$siteId&MHID=$mhId&MSId=$mId").then((value) {
-  //     print("StockReportList:$value");
-  //     // data = projectWiseShowListResponseFromJson(value);
-  //     data = stockReportFromJson(value) as List<StockReport>;
-  //     if (data.isNotEmpty && data.length>0) {
-  //       return data;
-  //     }else{
-  //       Fluttertoast.showToast(msg: RequestConstant.NORECORD_FOUND);
-  //     }
-  //   }, onError: (error) {
-  //     print(error);
-  //     print("Error == $error");
-  //     BaseUtitiles.showToast('Something went wrong..');
-  //   });
-  //   return data;
-  // }
-
-
-  Future<GetstockprojwiseModel> stockReportProvider(int userId,String userType,int projectId,int siteId,int mId,int mhId) async {
+  Future<GetStockRptListDetails?> stockReportProvider(int projectId,int siteId,int mHId,int mSId,int mId,type) async {
     try {
-      Uri uri = Uri.parse("${ApiConstant.GETMATERIAL_SHOW_LIST}?UserId=$userId&UserType=$userType&PId=$projectId&SId=$siteId&MHID=$mhId&MSId=$mId");
-      if (kDebugMode) {
-        print(uri.toString());
-      }
-      String method = "GET";
-      http.Request request = http.Request(method, uri);
-      request.headers['Content-Type'] = 'application/json';
-      http.StreamedResponse streamRes = await send(request);
-      http.Response response = await http.Response.fromStream(streamRes);
-
-      print("Response Data ::  ${response.body}");
-      print("Response Data ::  ${uri}");
-      await getResponse(response);
-      if (response.statusCode == 200){
-        return GetstockprojwiseModel.fromJson(jsonDecode(response.body.toString()));
-      }
-      else {
-        throw Exception('Request failed with status code ${response.statusCode}');
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error sending request: $e');
-      }
-      rethrow;
+      final response =
+      await ApiManager.getAPICall(ApiConstant.GETMATERIAL_SHOW_LIST+"?ProjectId=$projectId&SiteId=$siteId&MatHeadId=$mHId&MatSubId=$mSId&MatId=$mId&Type=$type");
+      print("response...${response}");
+      return getStockRptListDetailsFromJson(response);
+    } catch (error,e) {
+      print("Error == $error");
+      print("ERROR....${e}");
+      return null;
     }
   }
-
 
   static dynamic getResponse(http.Response response) {
     switch (response.statusCode) {
@@ -339,21 +302,20 @@ class ReportsProvider{
     }
   }
 
-  static Future<List<ProjectWiseDetailsListResponse>> getProject_Details_List(int projectId,int siteId,int mId,int mhId) async {
-    var data = null;
-    await ApiManager.getAPICall("${ApiConstant.GETMATERIAL_DETAILS_LIST}?PId=$projectId&SId=$siteId&MHID=$mhId&MSId=$mId").then((value) {
-      print("AttendanceReportList:"+value);
-      data = projectWiseDetailsListResponseFromJson(value);
-      if (data!=null&& data.length>0) {
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
+  static Future<ProjectWiseDetailsListResponse?> getProject_Details_List(int projectId,int siteId,int mId,int mhId) async {
+    try {
+      final response =
+      await ApiManager.getAPICall("${ApiConstant.GETMATERIAL_DETAILS_LIST}?projectId=$projectId&SiteId=$siteId&MaterialHeadItemId=$mhId&materialSubitemId=$mId");
+      print("response...${response}");
+      return projectWiseDetailsListResponseFromJson(response);
+    } catch (error,e) {
       print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return data;
+      print("ERROR....${e}");
+      return null;
+    }
   }
+
+
 
   static Future<List<MaterialWiseShowListResponse>> getMaterialWise_Show_List(int userId,String userType,int msId,int mId,int mhId) async {
     List<MaterialWiseShowListResponse> data = [];

@@ -98,7 +98,6 @@ class _SiteShowPopupState extends State<SiteShowPopup> {
                                         id=1;
                                         boq_revised_controller.Boqitem_itemview_GetDbList.value.clear();
                                         boq_revised_controller.delete_BoqRevised_itemlist_Table();
-                                        stockSiteController.projectShowList.clear();
                                         consumption_controller.Consum_itemview_GetDbList.value.clear();
                                         consumption_controller.delete_Consum_itemlist_Table();
                                         Navigator.of(context).pop();

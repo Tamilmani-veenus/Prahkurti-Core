@@ -5,7 +5,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:prahkurticore/splash/splash.dart';
 import 'package:permission_handler/permission_handler.dart';
-
 import '../login/animation_signinpage/signin_page.dart';
 
 ///-----------Lost net connection------------

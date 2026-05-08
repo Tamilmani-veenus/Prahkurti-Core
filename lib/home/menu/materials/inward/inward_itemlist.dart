@@ -87,7 +87,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                       )
                     : InkWell(
                         child: Padding(
-                          padding: EdgeInsets.only(bottom: 16.r),
+                          padding: EdgeInsets.only(bottom: 16.r,),
                           child: CircleAvatar(
                             backgroundColor: const Color(0XFFeff9fb),
                             radius: 70.r,
@@ -127,71 +127,55 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                         child: StatefulBuilder(
                           builder: (context, setState) => InkWell(
                             onTap: () async {
-                              var inwardQtyNonNullableList = <double>[];
+                                var inwardQtyNonNullableList = <double>[];
 
-                              for (int i = 0;
-                                  i <
-                                      inwardPendingcontroller
-                                          .Itemlist_Inward_QtyListController
-                                          .length;
-                                  i++) {
-                                var itemText = inwardPendingcontroller
-                                    .Itemlist_Inward_QtyListController[i].text;
+                                for (int i = 0;
+                                i <
+                                    inwardPendingcontroller
+                                        .Itemlist_Inward_QtyListController.length;
+                                i++) {
 
-                                if (itemText != null && itemText.isNotEmpty) {
-                                  var parsedValue = double.tryParse(itemText);
+                                  String itemText = inwardPendingcontroller
+                                      .Itemlist_Inward_QtyListController[i]
+                                      .text;
 
-                                  if (parsedValue != null) {
-                                    inwardQtyNonNullableList.add(parsedValue);
-                                  }
-                                }
-                              }
+                                  if (itemText.isNotEmpty) {
+                                    double? parsedValue = double.tryParse(itemText);
 
-                              if (inwardQtyNonNullableList
-                                  .any((value) => value > 0)) {
-                                if (inwardPendingcontroller.projectId == 0) {
-                                  BaseUtitiles.showToast(
-                                      "Please select Project Name");
-                                } else if (inwardPendingcontroller.siteId ==
-                                    0) {
-                                  BaseUtitiles.showToast(
-                                      "Please select Site Name");
-                                } else if (inwardPendingcontroller
-                                        .saveButton.value ==
-                                    RequestConstant.RESUBMIT) {
-                                  if (inwardPendingcontroller
-                                              .netWorkImageCount ==
-                                          0 &&
-                                      inwardPendingcontroller.count == 0) {
-                                    BaseUtitiles.showToast("Please add image");
-                                  } else {
-                                    if (await BaseUtitiles
-                                        .checkNetworkAndShowLoader(context)) {
-                                      await inwardPendingcontroller
-                                          .getItemlistTablesDatas();
-                                      await inwardPendingcontroller
-                                          .Save_EntryScreen(context,
-                                              inwardPendingcontroller.inwardID);
+                                    if (parsedValue != null) {
+                                      inwardQtyNonNullableList.add(parsedValue);
                                     }
                                   }
-                                } else if (inwardPendingcontroller
-                                            .saveButton.value ==
-                                        RequestConstant.RESUBMIT &&
-                                    inwardPendingcontroller.count == 0) {
-                                  BaseUtitiles.showToast("Please add image");
-                                } else {
-                                  if (await BaseUtitiles
-                                      .checkNetworkAndShowLoader(context)) {
-                                    await inwardPendingcontroller
-                                        .getItemlistTablesDatas();
-                                    await inwardPendingcontroller
-                                        .Save_EntryScreen(context, 0);
-                                  }
                                 }
-                              } else {
-                                BaseUtitiles.showToast(
-                                    "Inward qty should not be zero(0) or empty");
-                              }
+
+                                bool hasValidQty =
+                                inwardQtyNonNullableList.any((value) => value > 0);
+
+                                if (!hasValidQty) {
+                                  BaseUtitiles.showToast(
+                                      "Inward qty should not be zero(0) or empty");
+                                  return;
+                                }
+                                bool isResubmit =
+                                    inwardPendingcontroller.saveButton.value ==
+                                        RequestConstant.RESUBMIT;
+
+                                bool hasImage = inwardPendingcontroller.gettingNetworkImageList.isNotEmpty || inwardPendingcontroller.imageFiles.isNotEmpty;
+
+                                if (!hasImage) {
+                                  BaseUtitiles.showToast("Please add image");
+                                  return;
+                                }
+
+                                if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
+                                  await inwardPendingcontroller.getItemlistTablesDatas();
+                                  await inwardPendingcontroller.Save_EntryScreen(
+                                    context,
+                                    isResubmit
+                                        ? inwardPendingcontroller.inwardID
+                                        : 0,
+                                  );
+                                }
                             },
                             child: Container(
                               margin:
@@ -648,7 +632,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
               } else if (inwardPendingcontroller.count! == 0) {
                 return InkWell(
                   child: Padding(
-                    padding: EdgeInsets.only(bottom: 16.r),
+                    padding: EdgeInsets.only(bottom: 16.r, left: 100.r),
                     child: CircleAvatar(
                       backgroundColor: const Color(0XFFeff9fb),
                       radius: 70.r,
@@ -667,10 +651,6 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                                 fromScreen: "Inward",
                               )),
                     );
-                    // setState(() {
-                    //   inwardPendingcontroller.checkImgList.value = true;
-                    // });
-                    // await getImage(ImageSource.camera);
                   },
                 );
               } else {

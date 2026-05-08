@@ -1,14 +1,56 @@
+// To parse this JSON data, do
+//
+//     final projectWiseDetailsListResponse = projectWiseDetailsListResponseFromJson(jsonString);
+
 import 'dart:convert';
 
-List<ProjectWiseDetailsListResponse> projectWiseDetailsListResponseFromJson(String str) => List<ProjectWiseDetailsListResponse>.from(json.decode(str).map((x) => ProjectWiseDetailsListResponse.fromJson(x)));
+ProjectWiseDetailsListResponse projectWiseDetailsListResponseFromJson(String str) => ProjectWiseDetailsListResponse.fromJson(json.decode(str));
 
-String projectWiseDetailsListResponseToJson(List<ProjectWiseDetailsListResponse> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String projectWiseDetailsListResponseToJson(ProjectWiseDetailsListResponse data) => json.encode(data.toJson());
 
 class ProjectWiseDetailsListResponse {
+  bool? success;
+  List<Result>? result;
+  String? message;
+
   ProjectWiseDetailsListResponse({
+    this.success,
+    this.result,
+    this.message,
+  });
+
+  factory ProjectWiseDetailsListResponse.fromJson(Map<String, dynamic> json) => ProjectWiseDetailsListResponse(
+    success: json["success"],
+    result: json["result"]==null?[]:List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
+    message: json["message"]
+  );
+
+  Map<String, dynamic> toJson() => {
+    "success": success,
+    "result": result==null?[]:List<dynamic>.from(result!.map((x) => x.toJson())),
+    "message": message
+  };
+}
+
+class Result {
+  String? materialHeadName;
+  int? materialId;
+  String? materialName;
+  int? scaleId;
+  String? scaleName;
+  double? opQty;
+  double? purQty;
+  double? transInQty;
+  double? transOutQty;
+  double? usageQty;
+  double? clQty;
+
+  Result({
+    this.materialHeadName,
     this.materialId,
-    this.material,
-    this.scale,
+    this.materialName,
+    this.scaleId,
+    this.scaleName,
     this.opQty,
     this.purQty,
     this.transInQty,
@@ -17,32 +59,26 @@ class ProjectWiseDetailsListResponse {
     this.clQty,
   });
 
-  int? materialId;
-  String? material;
-  String? scale;
-  double? opQty;
-  double? purQty;
-  double? transInQty;
-  double? transOutQty;
-  double? usageQty;
-  double? clQty;
-
-  factory ProjectWiseDetailsListResponse.fromJson(Map<String, dynamic> json) => ProjectWiseDetailsListResponse(
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    materialHeadName: json["MaterialHeadName"],
     materialId: json["MaterialID"],
-    material: json["Material"],
-    scale: json["Scale"],
-    opQty: json["Op_Qty"].toDouble(),
-    purQty: json["Pur_Qty"].toDouble(),
+    materialName: json["MaterialName"],
+    scaleId: json["ScaleId"],
+    scaleName: json["ScaleName"],
+    opQty: json["Op_Qty"],
+    purQty: json["Pur_Qty"],
     transInQty: json["TransIn_Qty"],
     transOutQty: json["TransOut_Qty"],
     usageQty: json["Usage_Qty"],
-    clQty: json["CL_QTY"].toDouble(),
+    clQty: json["CL_QTY"],
   );
 
   Map<String, dynamic> toJson() => {
+    "MaterialHeadName": materialHeadName,
     "MaterialID": materialId,
-    "Material": material,
-    "Scale": scale,
+    "MaterialName": materialName,
+    "ScaleId": scaleId,
+    "ScaleName": scaleName,
     "Op_Qty": opQty,
     "Pur_Qty": purQty,
     "TransIn_Qty": transInQty,

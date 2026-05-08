@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -14,20 +16,21 @@ import '../punch_in_out/punch_in.dart';
 import '../punch_in_out/punch_out.dart';
 
 class SiteLocationView extends StatefulWidget {
-  const SiteLocationView({super.key, required this.allotedStatus, required this.checkValue});
+  const SiteLocationView(
+      {super.key, required this.allotedStatus, required this.checkValue});
   final String allotedStatus;
   final String checkValue;
-
 
   @override
   State<SiteLocationView> createState() => _SiteLocationViewState();
 }
 
 class _SiteLocationViewState extends State<SiteLocationView> {
-
-  SiteLocationController siteLocationController = Get.put(SiteLocationController());
+  SiteLocationController siteLocationController =
+      Get.put(SiteLocationController());
   PunchInController punchInController = Get.put(PunchInController());
   LoginController loginController = Get.put(LoginController());
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -72,7 +75,9 @@ class _SiteLocationViewState extends State<SiteLocationView> {
             body: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height:MediaQuery.sizeOf(context).height*0.02 ,),
+                SizedBox(
+                  height: MediaQuery.sizeOf(context).height * 0.02,
+                ),
                 Expanded(
                   flex: 0,
                   child: Column(
@@ -98,11 +103,19 @@ class _SiteLocationViewState extends State<SiteLocationView> {
                           hintText: "Search",
                           controller: siteLocationController.projectNameSearch,
                           onChange: (value) {
-                              Future.delayed(const Duration(seconds: 1), () async {
-                                setState(() {
-                                  siteLocationController.getProjectName(widget.allotedStatus,widget.checkValue);
-                                });
-                              });
+                            if (_debounce?.isActive ?? false) {
+                              _debounce!.cancel();
+                            }
+
+                            _debounce = Timer(
+                              const Duration(milliseconds: 500),
+                              () async {
+                                await siteLocationController.getProjectName(
+                                  widget.allotedStatus,
+                                  widget.checkValue,
+                                );
+                              },
+                            );
                           },
                         ),
                       ),
@@ -123,131 +136,201 @@ class _SiteLocationViewState extends State<SiteLocationView> {
                 Expanded(
                   flex: 1,
                   child: Padding(
-                      padding: EdgeInsets.only(top: 4.r, right: 4.r, left: 4.r),
-                      child: siteLocationController.projectNameRxList.value.isNotEmpty
-                          ? Obx(()=>
-                          ListView.builder(
-                            itemCount: siteLocationController.projectNameRxList.value.length,
-                            itemBuilder: (context, i) {
-                              return StatefulBuilder(
-                                  builder: (BuildContext context, setState) {
-                                    return GestureDetector(
-                                      onTap: () async {
-                                        FocusScope.of(context).unfocus();
-                                        siteLocationController.projectNameSearch.text = "";
-                                        if (loginController.user.value.userType == "A") {
-                                          siteLocationController.projectId = siteLocationController.projectNameRxList[i].projectId.toString();
-                                          Get.to(() => RadiusView(ProjectId: siteLocationController.projectId));
-                                        }
-                                        else {
-                                            await punchInController.getProjectPunchInSts();
-                                          if (punchIn == true) {
-                                            if (siteLocationController.projectNameRxList[i].pinStatus == "True") {
-                                              siteLocationController.projectId = siteLocationController.projectNameRxList[i].projectId.toString();
-                                              siteLocationController.locId = siteLocationController.projectNameRxList[i].locid.toString();
-                                              Get.to(()=>PunchIn(
-                                                  latitude: siteLocationController.projectNameRxList[i].latitude.toString(),
-                                                  longitude: siteLocationController.projectNameRxList[i].longitude.toString(),
-                                                  radius: siteLocationController.projectNameRxList[i].radius.toString(),
-                                                  allotedStatus:widget.allotedStatus));
-                                            } else {
-                                              Fluttertoast.showToast(msg: "This project doesn't pin the map");
-                                            }
-                                          }
-                                          else if(punchIn == false){
-                                            if (siteLocationController.projectNameRxList[i].pinStatus == "True") {
-                                              siteLocationController.projectId = siteLocationController.projectNameRxList[i].projectId.toString();
-                                              siteLocationController.locId = siteLocationController.projectNameRxList[i].locid.toString();
-                                              Get.to(() => PunchOut(
-                                                  latitude: siteLocationController.projectNameRxList[i].latitude.toString(),
-                                                  longitude: siteLocationController.projectNameRxList[i].longitude.toString(),
-                                                  radius: siteLocationController.projectNameRxList[i].radius.toString(),
-                                                  allotedStatus:widget.allotedStatus));
-                                            } else {
-                                              Fluttertoast.showToast(msg: "This project doesn't pin the map");
-                                            }
-                                          } else {
-                                            null;
-                                          }
-                                        }
-                                      },
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 4.r, vertical: 4.r),
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                const CircleAvatar(
-                                                  backgroundColor: Color(0xFFF5F5F5),
-                                                  child: ConstIcons.projectName,
-                                                ),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: EdgeInsets.all(16.r),
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        SizedBox(
-                                                          width: 250.r,
-                                                          child: Text(
-                                                            siteLocationController.projectNameRxList![i].projectName.toString(),
-                                                            overflow: TextOverflow.ellipsis,
-                                                            style: TextStyle(
-                                                              fontSize: ScreenUtil().setSp(14),
-                                                              fontWeight: FontWeight.normal,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                siteLocationController.projectNameRxList![i].pinStatus.toString() == "True"
-                                                    ? Align(
-                                                  alignment: Alignment.center,
-                                                  child: SizedBox(
-                                                    height: 20,
-                                                    width: 20,
-                                                    child: Image.asset("assets/select_check.png"),
-                                                  ),
-                                                )
-                                                    : Container(
-                                                  width: 20,
-                                                  height: 20,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    border: Border.all(
-                                                        color: const Color(0xFF69e772)),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const Divider(
-                                              color: Colors.black12,
-                                              height: 2,
-                                              thickness: 1,
-                                              indent: 0,
-                                              endIndent: 0,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  });
-                            },
-                          ),
-                      )
-                          : const SizedBox(
-                        child: Center(
+                    padding: EdgeInsets.only(top: 4.r, right: 4.r, left: 4.r),
+                    child: Obx(() {
+                      if (siteLocationController.projectNameRxList.isEmpty) {
+                        return const Center(
                           child: Text(
                             "No details found",
-                            style: TextStyle(fontSize: 16, color: Colors.black),
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
                           ),
-                        ),
-                      )),
+                        );
+                      }
+                      return ListView.builder(
+                        itemCount:
+                        siteLocationController.projectNameRxList.length,
+                        itemBuilder: (context, i) {
+                          return Obx(() =>
+                              GestureDetector(
+                                onTap: () async {
+                                  FocusScope.of(context).unfocus();
+                                  siteLocationController
+                                      .projectNameSearch.text = "";
+                                  if (loginController.user.value.userType ==
+                                      "A") {
+                                    siteLocationController.projectId =
+                                        siteLocationController
+                                            .projectNameRxList[i].projectId
+                                            .toString();
+                                    Get.to(() =>
+                                        RadiusView(
+                                            ProjectId: siteLocationController
+                                                .projectId));
+                                  } else {
+                                    await punchInController
+                                        .getProjectPunchInSts();
+                                    if (punchIn == true) {
+                                      if (siteLocationController
+                                          .projectNameRxList[i]
+                                          .pinStatus ==
+                                          "True") {
+                                        siteLocationController.projectId =
+                                            siteLocationController
+                                                .projectNameRxList[i]
+                                                .projectId
+                                                .toString();
+                                        siteLocationController.locId =
+                                            siteLocationController
+                                                .projectNameRxList[i].locid
+                                                .toString();
+                                        Get.to(() =>
+                                            PunchIn(
+                                                latitude: siteLocationController
+                                                    .projectNameRxList[i]
+                                                    .latitude
+                                                    .toString(),
+                                                longitude: siteLocationController
+                                                    .projectNameRxList[i]
+                                                    .longitude
+                                                    .toString(),
+                                                radius: siteLocationController
+                                                    .projectNameRxList[i].radius
+                                                    .toString(),
+                                                allotedStatus:
+                                                widget.allotedStatus));
+                                      } else {
+                                        Fluttertoast.showToast(
+                                            msg:
+                                            "This project doesn't pin the map");
+                                      }
+                                    } else if (punchIn == false) {
+                                      if (siteLocationController
+                                          .projectNameRxList[i]
+                                          .pinStatus ==
+                                          "True") {
+                                        siteLocationController.projectId =
+                                            siteLocationController
+                                                .projectNameRxList[i]
+                                                .projectId
+                                                .toString();
+                                        siteLocationController.locId =
+                                            siteLocationController
+                                                .projectNameRxList[i].locid
+                                                .toString();
+                                        Get.to(() =>
+                                            PunchOut(
+                                                latitude: siteLocationController
+                                                    .projectNameRxList[i]
+                                                    .latitude
+                                                    .toString(),
+                                                longitude: siteLocationController
+                                                    .projectNameRxList[i]
+                                                    .longitude
+                                                    .toString(),
+                                                radius: siteLocationController
+                                                    .projectNameRxList[i].radius
+                                                    .toString(),
+                                                allotedStatus:
+                                                widget.allotedStatus));
+                                      } else {
+                                        Fluttertoast.showToast(
+                                            msg:
+                                            "This project doesn't pin the map");
+                                      }
+                                    } else {
+                                      null;
+                                    }
+                                  }
+                                },
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 4.r, vertical: 4.r),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                        children: [
+                                          const CircleAvatar(
+                                            backgroundColor:
+                                            Color(0xFFF5F5F5),
+                                            child: ConstIcons.projectName,
+                                          ),
+                                          Expanded(
+                                            child: Padding(
+                                              padding: EdgeInsets.all(16.r),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  SizedBox(
+                                                    width: 250.r,
+                                                    child: Text(
+                                                      siteLocationController
+                                                          .projectNameRxList![
+                                                      i]
+                                                          .projectName
+                                                          .toString(),
+                                                      overflow: TextOverflow
+                                                          .ellipsis,
+                                                      style: TextStyle(
+                                                        fontSize: ScreenUtil()
+                                                            .setSp(14),
+                                                        fontWeight:
+                                                        FontWeight.normal,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          siteLocationController
+                                              .projectNameRxList![i]
+                                              .pinStatus
+                                              .toString() ==
+                                              "True"
+                                              ? Align(
+                                            alignment: Alignment.center,
+                                            child: SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: Image.asset(
+                                                  "assets/select_check.png"),
+                                            ),
+                                          )
+                                              : Container(
+                                            width: 20,
+                                            height: 20,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                  color: const Color(
+                                                      0xFF69e772)),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const Divider(
+                                        color: Colors.black12,
+                                        height: 2,
+                                        thickness: 1,
+                                        indent: 0,
+                                        endIndent: 0,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ));
+                        },
+
+                      );
+                    }),
                 ),
-              ],
+                )],
             )),
       ),
     );

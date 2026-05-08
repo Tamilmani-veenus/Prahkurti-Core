@@ -47,7 +47,7 @@ class SiteController extends GetxController {
         type=="transb/wproj&site"?fromprojectController.selectedProjectId.value:
         type=="transAck"?transferAcknowController.frProjectID.value:
         type=="StoreTransfer"?projectController.selectedProjectId.value:
-        type=="InwardReport"?reportsController.selectedProjectId.value:
+        type=="InwardReport" || type=="StockReport"?reportsController.selectedProjectId.value:
         projectController.selectedProjectId.value,
         0,
         type == "StoreTransfer" ? "StoreTransfer" : "Fromsite",toSiteId:selectedsiteId.value);
