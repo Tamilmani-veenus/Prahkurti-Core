@@ -600,7 +600,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                                 borderRadius: BorderRadius.circular(15),
                                 child: Image.file(
                                     inwardPendingcontroller.imageFiles[index],
-                                    fit: BoxFit.fill),
+                                    fit: BoxFit.cover),
                               ),
                             ),
                           ),

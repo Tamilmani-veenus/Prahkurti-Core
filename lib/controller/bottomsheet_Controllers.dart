@@ -1726,99 +1726,103 @@ class BottomsheetControllers {
 
   //-------voucher------------
 
-  StaffName(context, list ){
+  StaffName(context, list,{String? type} ){
     showModalBottomSheet(context: context,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
       builder: (BuildContext context) {
-        return Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Column(
               children: [
-                Container(
-                  width: BaseUtitiles.getWidthtofPercentage(context, 50),
-                  margin: EdgeInsets.only(top: 10, left: 15),
-                  child: TextField(
-                    controller: searchcontroller,
-                    decoration: InputDecoration(
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      prefixIcon: const Icon(Icons.search,
-                        color: Colors.black,
-                      ),
-                      hintText: "search..",
-                      hintStyle: TextStyle(color: Colors.black),
-                      isDense: true,
-                      fillColor: Setmybackground,
-                    ),
-                    onEditingComplete: () {
-                      FocusScope.of(context).unfocus();
-                    },
-                    textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list = BaseUtitiles.empNameamePopupAlert(value, staffController.getStaffDropdownvalue.value);
-                    },
-                  ),
-                ),
-                SizedBox(width: 20),
-                Container(
-                  width: BaseUtitiles.getWidthtofPercentage(context, 25),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(3),
-                    child: Text("Staff Name", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
-                  ),
-                ),
-                InkWell(
-                    onTap: (){
-                      Navigator.pop(context);
-                      searchcontroller.text = "";
-                    },
-                    child: Container(
-                        margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
-              ],
-            ),
-            Divider(),
-
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.zero,
-                physics: BouncingScrollPhysics(),
-                itemCount: list.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Column(
-                    children: [
-                      InkWell(
-                        child: Container(
-                          margin: EdgeInsets.only(left: 10),
-                          alignment: Alignment.center,
-                          child: Text(list[index].staffName.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: BaseUtitiles.getWidthtofPercentage(context, 50),
+                      margin: EdgeInsets.only(top: 10, left: 15),
+                      child: TextField(
+                        controller: searchcontroller,
+                        decoration: InputDecoration(
+                          filled: true,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
+                          ),
+                          prefixIcon: const Icon(Icons.search,
+                            color: Colors.black,
+                          ),
+                          hintText: "search..",
+                          hintStyle: TextStyle(color: Colors.black),
+                          isDense: true,
+                          fillColor: Setmybackground,
                         ),
-                        onTap: (){
-                          staffController.selectedstaffId.value = list[index].id;
-                          staffController.Staffname.text = list[index].staffName.toString();
-                          searchcontroller.text = "";
-                          // cashBookStaffController.calculations();
-                          Navigator.pop(context);
+                        onEditingComplete: () {
+                          FocusScope.of(context).unfocus();
+                        },
+                        textInputAction: TextInputAction.search,
+                        onChanged: (value)  {
+
+                          list = BaseUtitiles.empNameamePopupAlert(value, staffController.getStaffDropdownvalue.value);
                         },
                       ),
-                      Divider(),
-                    ],
-                  );
+                    ),
+                    SizedBox(width: 20),
+                    Container(
+                      width: BaseUtitiles.getWidthtofPercentage(context, 25),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(3),
+                        child: Text("Staff Name", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                      ),
+                    ),
+                    InkWell(
+                        onTap: (){
+                          Navigator.pop(context);
+                          searchcontroller.text = "";
+                        },
+                        child: Container(
+                            margin: EdgeInsets.only(right: 10),
+                            child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                  ],
+                ),
+                Divider(),
 
-                }, ),
-            )
+                Expanded(
+                  child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    physics: BouncingScrollPhysics(),
+                    itemCount: list.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Column(
+                        children: [
+                          InkWell(
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10),
+                              alignment: Alignment.center,
+                              child: Text(type=="staffVoucher"?list[index].employeeName :type=="punchReport"? list[index].employeeName : list[index].staffName,
+                                textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+                            ),
+                            onTap: (){
+                              staffController.selectedstaffId.value = list[index].id;
+                              staffController.Staffname.text = type=="staffVoucher"?list[index].employeeName.toString():type=="punchReport"? list[index].employeeName:list[index].staffName.toString();
+                              searchcontroller.text = "";
+                              Navigator.pop(context);
+                            },
+                          ),
+                          Divider(),
+                        ],
+                      );
 
-          ],
+                    }, ),
+                )
+
+              ],
+            );},
         );
       },);
   }

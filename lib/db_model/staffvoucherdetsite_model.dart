@@ -8,6 +8,7 @@ class StaffvouchersiteDetlist{
   double? TdsPer;
   double? TdsAmt;
   double? NetAmt;
+  int? reqDetId;
 
   StaffvouchersiteDetlistmodelmap(){
     var mapping = Map<String, dynamic>();
@@ -20,6 +21,7 @@ class StaffvouchersiteDetlist{
     mapping['TdsPer'] = TdsPer != null ? TdsPer : null;
     mapping['TdsAmt'] = TdsAmt != null ? TdsAmt : null;
     mapping['NetAmt'] = NetAmt != null ? NetAmt : null;
+    mapping['reqDetId'] = reqDetId != null ? reqDetId : null;
     return mapping;
   }
 }

@@ -30,7 +30,6 @@ class StaffController extends GetxController{
   RxString SaveButton=RequestConstant.SAVE.obs;
   RxList getStaffDropdownvalue = [].obs;
   RxList mainlist=[].obs;
-  RxList staffDropdownName = [].obs;
   RxInt selectedstaffId = 0.obs;
   RxString selectedstaffdropdownName = "".obs;
 
@@ -38,15 +37,12 @@ class StaffController extends GetxController{
 
 
 
-  Future get_staffDropdowntList(BuildContext) async {
+  Future get_staffDropdowntList(BuildContext,type) async {
     getStaffDropdownvalue.value.clear();
-    final value = await CommonProvider.getStaffDropdown();
+    final value = await CommonProvider.getStaffDropdown(type);
     if (value != null) {
       if(value.success == true){
         getStaffDropdownvalue.value = value.result!;
-        getStaffDropdownvalue.forEach((element) {
-          return staffDropdownName.value.add(element.staffName);
-        });
       }
       else {
         BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
@@ -56,18 +52,6 @@ class StaffController extends GetxController{
       BaseUtitiles.showToast('Something went wrong..');
     }
   }
-
-  // Future get_staffDropdowntList(BuildContext context) async {
-  //   getStaffDropdownvalue.value = await CommonProvider.getStaffDropdown(loginController.user.value.empId,loginController.UserType(),loginController.user.value.userId!);
-  //   getStaffDropdownvalue.value.forEach((element) {
-  //       return staffDropdownName.add(element.empName);
-  //     });
-  //     // showDialog(
-  //     //     context: context,
-  //     //     builder: (BuildContext context) {
-  //     //       return StaffShowPopup(list:getStaffDropdownvalue.value,value: 0,);
-  //     //     });
-  // }
 
   setSelectedStaffID(String value) {
     if (getStaffDropdownvalue.value.length>0) {

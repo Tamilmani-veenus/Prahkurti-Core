@@ -546,10 +546,9 @@ class CommonProvider {
     }
   }
 
-  static Future<StaffNameResponse?> getStaffDropdown() async {
+  static Future<StaffNameResponse?> getStaffDropdown(type) async {
     try {
-      final response =
-          await ApiManager.getAPICall(ApiConstant.STAFFDROPDWONLISTAPI);
+      final response = await ApiManager.getAPICall(type=="staffVoucher"?ApiConstant.STAFFVOUSTAFFLISTAPI:type=="punchReport"?ApiConstant.GETPUNCHREPORTSTAFF:ApiConstant.STAFFDROPDWONLISTAPI);
       print("response...${response}");
       return staffNameResponseFromJson(response);
     } catch (error) {

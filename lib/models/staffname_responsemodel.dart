@@ -35,19 +35,23 @@ class StaffNameResponse {
 class Result {
   int? id;
   String? staffName;
+  String? employeeName;
 
   Result({
     this.id,
     this.staffName,
+    this.employeeName
   });
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
-    id: json["id"],
-    staffName: json["staffName"],
+      id: json["id"],
+      staffName: json["staffName"],
+      employeeName: json["employeeName"]
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "staffName": staffName,
+    "employeeName": employeeName
   };
 }

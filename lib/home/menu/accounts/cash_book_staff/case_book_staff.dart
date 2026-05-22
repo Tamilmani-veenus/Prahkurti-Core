@@ -36,7 +36,7 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
     DateTime lastDayOfMonth = new DateTime(currentDate.year, currentDate.month - 1, 0);
     cashBookStaffController.cashbookStaff_frdateController.text = lastDayOfMonth.toString().substring(0, 10);
     cashBookStaffController.cashbookStaff_todateController.text = currentDate.toString().substring(0, 10);
-    staffController.get_staffDropdowntList(context);
+    // staffController.get_staffDropdowntList(context);
     staffController.Staffname.text = "--Select--";
     staffController.selectedstaffId.value = 0;
     cashBookStaffController.totalDebit.text = "0.0";

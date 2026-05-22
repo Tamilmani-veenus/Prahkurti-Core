@@ -873,7 +873,46 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                           if (dailyEntriesController.readListdata.isEmpty) {
                             Fluttertoast.showToast(msg: "Please add labour details");
                           } else {
-                            SubmitAlert(context);
+                            bool hasInvalid = false;
+
+                            for (int i = 0; i < dailyEntriesController.readListdata.length; i++) {
+
+                              final nosText = dailyEntriesController
+                                  .EntrySCreenNosControllers[i]
+                                  .text
+                                  .trim();
+
+                              final morOtText = dailyEntriesController
+                                  .MrngOtHrsControllers[i]
+                                  .text
+                                  .trim();
+
+                              final eveOtText = dailyEntriesController
+                                  .EvgOtHrsControllers[i]
+                                  .text
+                                  .trim();
+
+                              final double nosValue = double.tryParse(nosText) ?? 0;
+                              final double morOtValue = double.tryParse(morOtText) ?? 0;
+                              final double eveOtValue = double.tryParse(eveOtText) ?? 0;
+
+
+                              if (nosValue <= 0 &&
+                                  morOtValue <= 0 &&
+                                  eveOtValue <= 0) {
+
+                                hasInvalid = true;
+                                break;
+                              }
+                            }
+
+                            if (hasInvalid) {
+                              BaseUtitiles.showToast(
+                                "Please enter either Nos, MOR OT Hrs, or EVE OT Hrs.",
+                              );
+                            } else {
+                              SubmitAlert(context);
+                            }
                           }
                         }
                       },

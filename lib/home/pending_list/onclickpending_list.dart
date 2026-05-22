@@ -16200,9 +16200,9 @@ class _QuotePendingState extends State<QuotePending> {
                                                 child: TextButton(
                                                     onPressed: () {
                                                       launch(
-                                                          "${ApiConfig.WebURL}pending-quote-list-comparison?reqMasId=${pendingListController.mainlist[index].materialReqOrdMasId}&access_token=${loginController.user.value.accessToken}");
+                                                          "${ApiConfig.WebURL}mobile-pending-quote-list-comparison?reqMasId=${pendingListController.mainlist[index].materialReqOrdMasId}&access_token=${loginController.user.value.accessToken}");
                                                       print(
-                                                          "${ApiConfig.WebURL}pending-quote-list-comparison?reqMasId=${pendingListController.mainlist[index].materialReqOrdMasId}&access_token=${loginController.user.value.accessToken}");
+                                                          "${ApiConfig.WebURL}mobile-pending-quote-list-comparison?reqMasId=${pendingListController.mainlist[index].materialReqOrdMasId}&access_token=${loginController.user.value.accessToken}");
                                                     },
                                                     child: Text("Comparison",
                                                         style: TextStyle(
@@ -16715,8 +16715,8 @@ class _QuoteVerifyandApprovalState extends State<QuoteVerifyandApproval> {
                                                 flex: 4,
                                                 child: TextButton(
                                                     onPressed: () {
-                                                      launch("${ApiConfig.WebURL}${widget.heading == "QUOTE VERIFICATION PENDING"?"pending-quote-verification-comparison":"pending-quote-approval-comparison"}?reqMasId=${pendingListController.mainlist[index].id}&access_token=${loginController.user.value.accessToken}");
-                                                      print("${ApiConfig.WebURL}${widget.heading == "QUOTE VERIFICATION PENDING"?"pending-quote-verification-comparison":"pending-quote-approval-comparison"}?reqMasId=${pendingListController.mainlist[index].id}&access_token=${loginController.user.value.accessToken}");
+                                                      launch("${ApiConfig.WebURL}${widget.heading == "QUOTE VERIFICATION PENDING"?"mobile-pending-quote-verification-comparison":"mobile-pending-quote-approval-comparison"}?reqMasId=${pendingListController.mainlist[index].id}&access_token=${loginController.user.value.accessToken}");
+                                                      print("${ApiConfig.WebURL}${widget.heading == "QUOTE VERIFICATION PENDING"?"mobile-pending-quote-verification-comparison":"mobile-pending-quote-approval-comparison"}?reqMasId=${pendingListController.mainlist[index].id}&access_token=${loginController.user.value.accessToken}");
                                                     },
                                                     child: Text(
                                                         "Comparison",
