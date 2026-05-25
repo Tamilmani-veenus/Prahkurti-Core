@@ -287,7 +287,7 @@ class PunchSearchReports extends GetView<PunchInController> {
                             onTap: () async {
                               if (loginController.user.value.userType == "A") {
                                 await staffController
-                                    .get_staffDropdowntList(context);
+                                    .get_staffDropdowntList(context,"punchReport");
                                 bottomsheetControllers.StaffName(
                                     context,
                                     staffController

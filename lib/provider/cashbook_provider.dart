@@ -6,37 +6,32 @@ import '../utilities/apiconstant.dart';
 import '../utilities/baseutitiles.dart';
 
 class CashBookProvider {
-  static Future<List<Casebooksite>> getcashbooksiteList(int? Id, String FrDate,String ToDate) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GETCASHBOOK_SITE + "?Id=$Id&FrDate=$FrDate&ToDate=$ToDate&PaidFrom=0")
-        .then((value) {
-      data = casebooksiteFromJson(value);
-      if (data != null && data.length > 0) {
-        return data;
-      }
-    }, onError: (error) {
+
+
+  static Future<Casebooksite?> getcashbooksiteList(int? pId, String FrDate,String ToDate) async {
+    try {
+      var value = await ApiManager.getAPICall("${ApiConstant.GETCASHBOOK_SITE}?fromDate=$FrDate&toDate=$ToDate&projectId=$pId&PaidFromType=0");
+      return casebooksiteFromJson(value);
+    } catch (error, e) {
       print(error);
-      print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return data;
+      print("ERROR....${e}");
+      return null;
+    }
   }
 
-  static Future<List<Casebookstaff>> getcashbookstaffList(int? Id, String FrDate,String ToDate) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GETCASHBOOK_STAFF + "?Id=$Id&FrDate=$FrDate&ToDate=$ToDate")
-        .then((value) {
-      data = casebookstaffFromJson(value);
-      if (data != null && data.length > 0) {
-        return data;
-      }
-    }, onError: (error) {
+
+  static Future<Casebookstaff?> getcashbookstaffList(int? eId, String FrDate,String ToDate) async {
+    try {
+      var value = await ApiManager.getAPICall("${ApiConstant.GETCASHBOOK_STAFF}?fromdate=$FrDate&toDate=$ToDate&EmployeeID=$eId");
+      return casebookstaffFromJson(value);
+    } catch (error, e) {
       print(error);
-      print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return data;
+      print("ERROR....${e}");
+      return null;
+    }
   }
+
+
 
 
 }

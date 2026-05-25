@@ -4,58 +4,94 @@
 
 import 'dart:convert';
 
-List<Casebooksite> casebooksiteFromJson(String str) => List<Casebooksite>.from(json.decode(str).map((x) => Casebooksite.fromJson(x)));
+Casebooksite casebooksiteFromJson(String str) => Casebooksite.fromJson(json.decode(str));
 
-String casebooksiteToJson(List<Casebooksite> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String casebooksiteToJson(Casebooksite data) => json.encode(data.toJson());
 
 class Casebooksite {
+  bool? success;
+  List<Result>? result;
+  String? message;
+  double? totalCredit;
+  double? totalDebit;
+  double? closingBalance;
+
   Casebooksite({
-    this.sno,
-    this.projectid,
-    this.vocDate,
-    this.vocdate,
-    this.vocNo,
-    this.descriptions,
-    this.vocType,
-    this.debit,
-    this.credit,
-    this.remarks,
+    this.success,
+    this.result,
+    this.message,
+    this.totalCredit,
+    this.totalDebit,
+    this.closingBalance,
   });
 
-  int? sno;
-  int? projectid;
-  String? vocDate;
-  String? vocdate;
-  String? vocNo;
-  String? descriptions;
-  String? vocType;
-  double? debit;
-  double? credit;
-  String? remarks;
-
   factory Casebooksite.fromJson(Map<String, dynamic> json) => Casebooksite(
-    sno: json["sno"],
-    projectid: json["projectid"],
-    vocDate: json["voc_date"],
-    vocdate: json["vocdate"],
-    vocNo: json["voc_no"],
-    descriptions: json["Descriptions"],
-    vocType: json["VOC_TYPE"],
-    debit: json["Debit"],
-    credit: json["credit"],
-    remarks: json["remarks"],
+    success: json["success"],
+    result: json["result"]==null?[]:List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
+    message: json["message"],
+    totalCredit: json["totalCredit"],
+    totalDebit: json["totalDebit"],
+    closingBalance: json["closingBalance"],
   );
 
   Map<String, dynamic> toJson() => {
-    "sno": sno,
-    "projectid": projectid,
-    "voc_date": vocDate,
-    "vocdate": vocdate,
-    "voc_no": vocNo,
+    "success": success,
+    "result": result==null?[]:List<dynamic>.from(result!.map((x) => x.toJson())),
+    "message": message,
+    "totalCredit": totalCredit,
+    "totalDebit": totalDebit,
+    "closingBalance": closingBalance,
+  };
+}
+
+class Result {
+  int? sno;
+  int? projectId;
+  String? voucherNo;
+  String? vocdate;
+  String? voucherDate;
+  String? voucherType;
+  String? descriptions;
+  double? creditAmount;
+  double? depitAmount;
+  String? remarks;
+
+  Result({
+    this.sno,
+    this.projectId,
+    this.voucherNo,
+    this.vocdate,
+    this.voucherDate,
+    this.voucherType,
+    this.descriptions,
+    this.creditAmount,
+    this.depitAmount,
+    this.remarks,
+  });
+
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    sno: json["SNO"],
+    projectId: json["ProjectId"],
+    voucherNo: json["VoucherNo"],
+    vocdate: json["Vocdate"],
+    voucherDate: json["VoucherDate"],
+    voucherType: json["VoucherType"],
+    descriptions: json["Descriptions"],
+    creditAmount: json["CreditAmount"],
+    depitAmount: json["DepitAmount"],
+    remarks: json["Remarks"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "SNO": sno,
+    "ProjectId": projectId,
+    "VoucherNo": voucherNo,
+    "Vocdate": vocdate,
+    "VoucherDate": voucherDate,
+    "VoucherType": voucherType,
     "Descriptions": descriptions,
-    "VOC_TYPE": vocType,
-    "Debit": debit,
-    "credit": credit,
-    "remarks": remarks,
+    "CreditAmount": creditAmount,
+    "DepitAmount": depitAmount,
+    "Remarks": remarks,
   };
 }

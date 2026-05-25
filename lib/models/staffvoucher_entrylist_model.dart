@@ -4,54 +4,158 @@
 
 import 'dart:convert';
 
-List<Staffvoucherentrylist> staffvoucherentrylistFromJson(String str) => List<Staffvoucherentrylist>.from(json.decode(str).map((x) => Staffvoucherentrylist.fromJson(x)));
+Staffvoucherentrylist staffvoucherentrylistFromJson(String str) => Staffvoucherentrylist.fromJson(json.decode(str));
 
-String staffvoucherentrylistToJson(List<Staffvoucherentrylist> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String staffvoucherentrylistToJson(Staffvoucherentrylist data) => json.encode(data.toJson());
 
 class Staffvoucherentrylist {
+  bool? success;
+  String? message;
+  List<Result>? result;
+
   Staffvoucherentrylist({
-    this.vocId,
-    this.vocNo,
-    this.vocDate,
-    this.staff,
-    this.accName,
-    this.accType,
-    this.payFor,
-    this.vocDate1,
-    this.vocAmt,
+    this.success,
+    this.message,
+    this.result
   });
 
-  int? vocId;
-  String? vocNo;
-  String? vocDate;
-  String? staff;
-  String? accName;
-  String? accType;
-  String? payFor;
-  String? vocDate1;
-  double? vocAmt;
-
   factory Staffvoucherentrylist.fromJson(Map<String, dynamic> json) => Staffvoucherentrylist(
-    vocId: json["voc_id"],
-    vocNo: json["voc_no"],
-    vocDate: json["voc_date"],
-    staff: json["staff"],
-    accName: json["acc_name"],
-    accType: json["acc_type"],
-    payFor: json["pay_for"],
-    vocDate1: json["voc_date1"],
-    vocAmt: json["voc_amt"],
+    success: json["success"],
+    message: json["message"],
+    result: json["result"]==null?[]:List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "voc_id": vocId,
-    "voc_no": vocNo,
-    "voc_date": vocDate,
-    "staff": staff,
-    "acc_name": accName,
-    "acc_type": accType,
-    "pay_for": payFor,
-    "voc_date1": vocDate1,
-    "voc_amt": vocAmt,
+    "success": success,
+    "message": message,
+    "result": result==null?[]:List<dynamic>.from(result!.map((x) => x.toJson())),
+  };
+}
+
+class Result {
+  int? id;
+  String? staffVocNo;
+  String? vocDate;
+  String? employeeName;
+  String? accountType;
+  String? accountName;
+  String? payFor;
+  double? amount;
+  int? employeeId;
+  String? vocType;
+  int? accTypeId;
+  int? paymentMode;
+  String? payType;
+  int? paidBy;
+  int? companyId;
+  String? remarks;
+  int? bankId;
+  String? chequeNo;
+  String? chequeDate;
+  String? nameThrough;
+  int? requisitionId;
+  int? accountPayee;
+  int? projectId;
+  int? verifyBy;
+  String? verifyStatus;
+  String? verifyDate;
+  int? createdBy;
+  String? createdDate;
+  int? accountNameId;
+
+  Result({
+    this.id,
+    this.staffVocNo,
+    this.vocDate,
+    this.employeeName,
+    this.accountType,
+    this.accountName,
+    this.payFor,
+    this.amount,
+    this.employeeId,
+    this.vocType,
+    this.accTypeId,
+    this.paymentMode,
+    this.payType,
+    this.paidBy,
+    this.companyId,
+    this.remarks,
+    this.bankId,
+    this.chequeNo,
+    this.chequeDate,
+    this.nameThrough,
+    this.requisitionId,
+    this.accountPayee,
+    this.projectId,
+    this.verifyBy,
+    this.verifyStatus,
+    this.verifyDate,
+    this.createdBy,
+    this.createdDate,
+    this.accountNameId,
+  });
+
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    id: json["id"],
+    staffVocNo: json["staffVocNo"],
+    vocDate: json["vocDate"],
+    employeeName: json["employeeName"],
+    accountType: json["accountType"],
+    accountName: json["accountName"],
+    payFor: json["payFor"],
+    amount: json["amount"],
+    employeeId: json["employeeId"],
+    vocType: json["vocType"],
+    accTypeId: json["accTypeId"],
+    paymentMode: json["paymentMode"],
+    payType: json["payType"],
+    paidBy: json["paidBy"],
+    companyId: json["companyId"],
+    remarks: json["remarks"],
+    bankId: json["bankId"],
+    chequeNo: json["chequeNo"],
+    chequeDate: json["chequeDate"],
+    nameThrough: json["nameThrough"],
+    requisitionId: json["requisitionId"],
+    accountPayee: json["accountPayee"],
+    projectId: json["projectId"],
+    verifyBy: json["verifyBy"],
+    verifyStatus: json["verifyStatus"],
+    verifyDate: json["verifyDate"],
+    createdBy: json["createdBy"],
+    createdDate: json["createdDate"],
+    accountNameId: json["accountNameId"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "staffVocNo": staffVocNo,
+    "vocDate": vocDate,
+    "employeeName": employeeName,
+    "accountType": accountType,
+    "accountName": accountName,
+    "payFor": payFor,
+    "amount": amount,
+    "employeeId": employeeId,
+    "vocType": vocType,
+    "accTypeId": accTypeId,
+    "paymentMode": paymentMode,
+    "payType": payType,
+    "paidBy": paidBy,
+    "companyId": companyId,
+    "remarks": remarks,
+    "bankId": bankId,
+    "chequeNo": chequeNo,
+    "chequeDate": chequeDate,
+    "nameThrough": nameThrough,
+    "requisitionId": requisitionId,
+    "accountPayee": accountPayee,
+    "projectId": projectId,
+    "verifyBy": verifyBy,
+    "verifyStatus": verifyStatus,
+    "verifyDate": verifyDate,
+    "createdBy": createdBy,
+    "createdDate": createdDate,
+    "accountNameId": accountNameId,
   };
 }

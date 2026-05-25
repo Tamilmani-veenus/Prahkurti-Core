@@ -3,6 +3,9 @@ import '../provider/cashbook_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
+import '../utilities/baseutitiles.dart';
+import '../utilities/requestconstant.dart';
+
 
 class CashBookSiteController extends GetxController{
   final cashbooksite_frdateController = TextEditingController();
@@ -16,48 +19,46 @@ class CashBookSiteController extends GetxController{
   ProjectController projectController=Get.put(ProjectController());
 
   RxList cashsiteDatas = [].obs;
-  int checkColor = 0;
 
   Future getcashbooksitedetails() async {
-   cashsiteDatas.value=[];
-    await CashBookProvider.getcashbooksiteList(
-        projectController.selectedProjectId.value,cashbooksite_frdateController.text,cashbooksite_todateController.text)
-        .then((value) async {
-      if (value != null && value.length > 0) {
-        cashsiteDatas.value = value;
-        calculations();
-        return cashsiteDatas.value;
-      }
-      else{
-        calculations();
-      }
-    });
+    cashsiteDatas.value = [];
 
+    final value = await CashBookProvider.getcashbooksiteList(
+      projectController.selectedProjectId.value,
+      cashbooksite_frdateController.text,
+      cashbooksite_todateController.text,
+    );
+
+    if (value != null) {
+      if (value.success == true) {
+
+        // List data
+        if (value.result != null) {
+          cashsiteDatas.value = value.result!;
+        }
+        // Totals
+        totalDebit.text = value.totalDebit.toString();
+        totalCredit.text = value.totalCredit.toString();
+
+        // Closing balance logic
+        double closing =
+            double.tryParse(value.closingBalance.toString()) ?? 0.0;
+
+        if (closing >= 0) {
+          closingCredit.text = closing.toString();
+          closingDebit.text = "0.0";
+        } else {
+          closingDebit.text = closing.abs().toString();
+          closingCredit.text = "0.0";
+        }
+
+      } else {
+        BaseUtitiles.showToast(
+            value.message ?? 'Something went wrong..');
+      }
+    } else {
+      BaseUtitiles.showToast("Something Went Wrong...");
+    }
   }
 
-  calculations(){
-    totalDebit.text="0.0";
-    totalCredit.text="0.0";
-    closingDebit.text="0.0";
-    closingCredit.text="0.0";
-    cashsiteDatas.value.forEach((element) {
-      totalDebit.text=(double.parse(totalDebit.text)+element.debit).toString();
-      totalCredit.text=(double.parse(totalCredit.text)+element.credit).toString();
-      if(double.parse(totalDebit.text)>=double.parse(totalCredit.text)){
-        closingDebit.text=(double.parse(totalDebit.text)-double.parse(totalCredit.text)).toString();
-      }
-      else{
-        closingDebit.text="0.0";
-      }
-
-      if(double.parse(totalDebit.text)<=double.parse(totalCredit.text)){
-        closingCredit.text=(double.parse(totalCredit.text)-double.parse(totalDebit.text)).toString();
-      }
-      else{
-        closingCredit.text="0.0";
-      }
-    });
-    print(totalDebit.text);
-    print(totalCredit.text);
-  }
 }

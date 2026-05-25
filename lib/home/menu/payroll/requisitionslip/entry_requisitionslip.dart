@@ -38,7 +38,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
      await autoYearWiseNoController.AutoYearWiseNo("REQ SLIP");
      await reportsController.getReportProjectList();
      await requisitionSlipController.getLeaveInfo_List(loginController.user.value.empId!);
-     await staffController.get_staffDropdowntList(context);
+     // await staffController.get_staffDropdowntList(context);
      requisitionSlipController.Staffname.text = loginController.user.value.empName.toString();
      requisitionSlipController.selectedstaffId.value = loginController.user.value.empId!;
 

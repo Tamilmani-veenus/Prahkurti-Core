@@ -4,26 +4,62 @@
 
 import 'dart:convert';
 
-List<BankNamelistModel> bankNamelistModelFromJson(String str) => List<BankNamelistModel>.from(json.decode(str).map((x) => BankNamelistModel.fromJson(x)));
+BankNamelistModel bankNamelistModelFromJson(String str) => BankNamelistModel.fromJson(json.decode(str));
 
-String bankNamelistModelToJson(List<BankNamelistModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String bankNamelistModelToJson(BankNamelistModel data) => json.encode(data.toJson());
 
 class BankNamelistModel {
-  int bankId;
-  String bank;
+  bool? success;
+  String? message;
+  List<Result>? result;
 
   BankNamelistModel({
-    required this.bankId,
-    required this.bank,
+    this.success,
+    this.message,
+    this.result,
   });
 
   factory BankNamelistModel.fromJson(Map<String, dynamic> json) => BankNamelistModel(
-    bankId: json["Bank_id"],
-    bank: json["Bank"],
+    success: json["success"],
+    message: json["message"],
+    result: json["result"]==null?[]:List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "Bank_id": bankId,
-    "Bank": bank,
+    "success": success,
+    "message": message,
+    "result": result==null?[]:List<dynamic>.from(result!.map((x) => x.toJson())),
+  };
+}
+
+class Result {
+  int? id;
+  String? bankName;
+  String? active;
+  int? createdBy;
+  String? createdDt;
+
+  Result({
+    this.id,
+    this.bankName,
+    this.active,
+    this.createdBy,
+    this.createdDt,
+  });
+
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    id: json["id"],
+    bankName: json["bankName"],
+    active: json["active"],
+    createdBy: json["createdBy"],
+    createdDt: json["createdDt"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "bankName": bankName,
+    "active": active,
+    "createdBy": createdBy,
+    "createdDt": createdDt,
   };
 }

@@ -25,23 +25,11 @@ class _Staff_Voucher_EntryListScreenState
 
   @override
   void initState() {
-    staffVoucher_Controller.StaffVocEtyList.clear();
-    // staffVoucher_Controller.mainentrylist.value.clear();
-    // staffVoucher_Controller.StaffVocEtyList.value.clear();
-
-    if (staffVoucher_Controller.Active == 1) {
-      staffVoucher_Controller.Active = 0;
-    } else {
-      staffVoucher_Controller.Active = 2;
-    }
-
-    staffVoucher_Controller.editcheck = 0;
     DateTime currentDate = DateTime.now();
     DateTime lastDayOfMonth = new DateTime(currentDate.year, currentDate.month - 1, 0);
     staffVoucher_Controller.StaffVocEntrylistFrDate.text = lastDayOfMonth.toString().substring(0, 10);
     staffVoucher_Controller.StaffVocEntrylistToDate.text = currentDate.toString().substring(0, 10);
     staffVoucher_Controller.getStaffVoc_EntryList();
-    staffVoucher_Controller.StaffVocEtyList.value = staffVoucher_Controller.mainentrylist.value;
     super.initState();
   }
 
@@ -56,9 +44,9 @@ class _Staff_Voucher_EntryListScreenState
           visible: commanController.addMode.value == 1 ? true : false,
           child: FloatingActionButton.extended(
             onPressed: () {
-              staffVoucher_Controller.editcheck = 0;
-              staffVoucher_Controller.itemcheck = 0;
-              staffVoucher_Controller.Active = 0;
+              staffVoucher_Controller.delete_Sitevoucher_itemlist_Table();
+              staffVoucher_Controller.Staffvoucher_itemview_GetDbList.value=[];
+              staffVoucher_Controller.SaveButton.value=RequestConstant.SUBMIT;
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -80,7 +68,7 @@ class _Staff_Voucher_EntryListScreenState
             backgroundColor: Theme.of(context).primaryColor,
           ),
         ), ),
-      
+
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -125,7 +113,7 @@ class _Staff_Voucher_EntryListScreenState
                           child: TextFormField(
                             readOnly: true,
                             controller:
-                                staffVoucher_Controller.StaffVocEntrylistFrDate,
+                            staffVoucher_Controller.StaffVocEntrylistFrDate,
                             cursorColor: Colors.black,
                             style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
@@ -136,7 +124,7 @@ class _Staff_Voucher_EntryListScreenState
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
                               prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
+                              BoxConstraints(minWidth: 0, minHeight: 0),
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
@@ -156,12 +144,12 @@ class _Staff_Voucher_EntryListScreenState
                                           primary: Theme.of(context).primaryColor,
                                           onPrimary: Colors.white,
                                           onSurface:
-                                              Colors.black, // body text color
+                                          Colors.black, // body text color
                                         ),
                                         textButtonTheme: TextButtonThemeData(
                                           style: TextButton.styleFrom(
                                             primary:
-                                                Colors.black, // button text color
+                                            Colors.black, // button text color
                                           ),
                                         ),
                                       ),
@@ -194,7 +182,7 @@ class _Staff_Voucher_EntryListScreenState
                           child: TextFormField(
                             readOnly: true,
                             controller:
-                                staffVoucher_Controller.StaffVocEntrylistToDate,
+                            staffVoucher_Controller.StaffVocEntrylistToDate,
                             cursorColor: Colors.black,
                             style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
@@ -205,7 +193,7 @@ class _Staff_Voucher_EntryListScreenState
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
                               prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
+                              BoxConstraints(minWidth: 0, minHeight: 0),
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
@@ -227,12 +215,12 @@ class _Staff_Voucher_EntryListScreenState
                                           onPrimary: Colors.white,
                                           // header text color
                                           onSurface:
-                                              Colors.black, // body text color
+                                          Colors.black, // body text color
                                         ),
                                         textButtonTheme: TextButtonThemeData(
                                           style: TextButton.styleFrom(
                                             primary:
-                                                Colors.black, // button text color
+                                            Colors.black, // button text color
                                           ),
                                         ),
                                       ),
@@ -261,13 +249,13 @@ class _Staff_Voucher_EntryListScreenState
                           },
                           child: Center(
                               child: Padding(
-                            padding: const EdgeInsets.only(top: 13, bottom: 13),
-                            child: Text("SHOW",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: RequestConstant.App_Font_SIZE,
-                                    fontWeight: FontWeight.bold)),
-                          ))),
+                                padding: const EdgeInsets.only(top: 13, bottom: 13),
+                                child: Text("SHOW",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: RequestConstant.App_Font_SIZE,
+                                        fontWeight: FontWeight.bold)),
+                              ))),
                     ),
                   ],
                 ),
@@ -306,7 +294,7 @@ class _Staff_Voucher_EntryListScreenState
                           },
                           textInputAction: TextInputAction.search,
                           onChanged: (value) {
-                              staffVoucher_Controller.StaffVocEtyList.value = BaseUtitiles.filterSearchResultsStaffVouchers(value, staffVoucher_Controller.mainentrylist);
+                            staffVoucher_Controller.StaffVocEtyList.value = BaseUtitiles.filterSearchResultsStaffVouchers(value, staffVoucher_Controller.StaffVocEtyList);
                           },
                         ),
                       ),
@@ -331,12 +319,12 @@ class _Staff_Voucher_EntryListScreenState
             height: BaseUtitiles.getheightofPercentage(context, 68),
             child:
             Obx(
-              () => ListView.builder(
+                  () => ListView.builder(
                   shrinkWrap: true,
                   physics: BouncingScrollPhysics(),
-                  padding: EdgeInsets.zero,
+                  padding: EdgeInsets.only(bottom: BaseUtitiles.getheightofPercentage(context, 10)),
                   itemCount:
-                      staffVoucher_Controller.StaffVocEtyList.value.length,
+                  staffVoucher_Controller.StaffVocEtyList.value.length,
                   itemBuilder: (context, index) {
                     return Container(
                       margin: EdgeInsets.only(left: 3, right: 3),
@@ -356,16 +344,16 @@ class _Staff_Voucher_EntryListScreenState
                                   children: [
                                     Container(
                                       margin:
-                                          EdgeInsets.only(top: 10, left: 10),
+                                      EdgeInsets.only(top: 10, left: 10),
                                       width: BaseUtitiles.getWidthtofPercentage(
                                           context, 50),
                                       child: Text(
                                         staffVoucher_Controller
-                                            .StaffVocEtyList.value[index].staff
+                                            .StaffVocEtyList.value[index].employeeName
                                             .toString(),
                                         style: TextStyle(
                                             color:
-                                                Theme.of(context).primaryColor,
+                                            Theme.of(context).primaryColor,
                                             fontWeight: FontWeight.bold),
                                       ),
                                     )
@@ -375,10 +363,10 @@ class _Staff_Voucher_EntryListScreenState
                                   margin: EdgeInsets.only(top: 10, right: 10),
                                   child: Text(
                                     staffVoucher_Controller
-                                        .StaffVocEtyList.value[index].vocNo
+                                        .StaffVocEtyList.value[index].staffVocNo
                                         .toString(),
                                     style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                    TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 )
                               ],
@@ -429,9 +417,7 @@ class _Staff_Voucher_EntryListScreenState
                                 Expanded(
                                     flex: 8,
                                     child: Text(
-                                      staffVoucher_Controller
-                                          .StaffVocEtyList.value[index].accName
-                                          .toString(),
+                                      staffVoucher_Controller.StaffVocEtyList.value[index].accountName==""?"-":staffVoucher_Controller.StaffVocEtyList.value[index].accountName,
                                       style: TextStyle(
                                         color: Colors.black,
                                       ),
@@ -457,7 +443,7 @@ class _Staff_Voucher_EntryListScreenState
                                     flex: 8,
                                     child: Text(
                                       staffVoucher_Controller
-                                          .StaffVocEtyList.value[index].accType
+                                          .StaffVocEtyList.value[index].accountType
                                           .toString(),
                                       style: TextStyle(
                                         color: Colors.black,
@@ -484,7 +470,7 @@ class _Staff_Voucher_EntryListScreenState
                                     flex: 4,
                                     child: Text(
                                       staffVoucher_Controller
-                                          .StaffVocEtyList.value[index].vocAmt
+                                          .StaffVocEtyList.value[index].amount
                                           .toString(),
                                       style: TextStyle(color: Colors.black),
                                     )),
@@ -497,9 +483,9 @@ class _Staff_Voucher_EntryListScreenState
                                               shape: RoundedRectangleBorder(
                                                 // <-- SEE HERE
                                                 borderRadius:
-                                                    BorderRadius.vertical(
-                                                        top: Radius.circular(
-                                                            25.0)),
+                                                BorderRadius.vertical(
+                                                    top: Radius.circular(
+                                                        25.0)),
                                               ),
                                               builder: (context) {
                                                 return Container(
@@ -508,33 +494,33 @@ class _Staff_Voucher_EntryListScreenState
                                                   ),
                                                   height: BaseUtitiles
                                                       .getheightofPercentage(
-                                                          context, 25),
+                                                      context, 25),
                                                   child: Column(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                     children: [
                                                       Row(
                                                         mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                         children: [
                                                           Container(
                                                             margin:
-                                                                EdgeInsets.only(
-                                                                    right: 10),
+                                                            EdgeInsets.only(
+                                                                right: 10),
                                                             child: Text(
                                                               staffVoucher_Controller
                                                                   .StaffVocEtyList
                                                                   .value[index]
-                                                                  .vocNo
+                                                                  .staffVocNo
                                                                   .toString(),
                                                               style: TextStyle(
                                                                   fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
+                                                                  FontWeight
+                                                                      .bold,
                                                                   color: Theme.of(
-                                                                          context)
+                                                                      context)
                                                                       .primaryColor),
                                                             ),
                                                           ),
@@ -557,8 +543,8 @@ class _Staff_Voucher_EntryListScreenState
                                                                       .lightGreen,
                                                                   child: Padding(
                                                                     padding:
-                                                                        const EdgeInsets
-                                                                            .all(8),
+                                                                    const EdgeInsets
+                                                                        .all(8),
                                                                     child: Icon(
                                                                       Icons.edit,
                                                                       color: Colors
@@ -574,38 +560,30 @@ class _Staff_Voucher_EntryListScreenState
                                                                       color: Colors
                                                                           .grey,
                                                                       fontSize:
-                                                                          15),
+                                                                      15),
                                                                 )
                                                               ],
                                                             ),
                                                             onTap: () async {
                                                               staffVoucher_Controller
                                                                   .delete_Sitevoucher_itemlist_Table();
-                                                              staffVoucher_Controller
-                                                                  .getSiteDetList
-                                                                  .value
-                                                                  .clear();
-                                                              staffVoucher_Controller
-                                                                  .Sitevoucher_EditListApiValue
-                                                                  .value
-                                                                  .clear();
                                                               FocusScope.of(
-                                                                      context)
+                                                                  context)
                                                                   .unfocus();
                                                               await staffVoucher_Controller
                                                                   .StaffvoucherEntryList_EditApi(
-                                                                      staffVoucher_Controller
-                                                                          .StaffVocEtyList
-                                                                          .value[
-                                                                              index]
-                                                                          .vocId,
-                                                                      context);
+                                                                  staffVoucher_Controller
+                                                                      .StaffVocEtyList
+                                                                      .value[
+                                                                  index]
+                                                                      .id,
+                                                                  context);
                                                             }),
                                                       ),
                                                       Container(
                                                           margin:
-                                                              EdgeInsets.only(
-                                                                  right: 20),
+                                                          EdgeInsets.only(
+                                                              right: 20),
                                                           child: Divider(
                                                               thickness: 1)),
                                                       Visibility(
@@ -615,11 +593,11 @@ class _Staff_Voucher_EntryListScreenState
                                                               children: [
                                                                 Card(
                                                                   color:
-                                                                      Colors.red,
+                                                                  Colors.red,
                                                                   child: Padding(
                                                                     padding:
-                                                                        const EdgeInsets
-                                                                            .all(8),
+                                                                    const EdgeInsets
+                                                                        .all(8),
                                                                     child: Icon(
                                                                       Icons
                                                                           .delete_forever,
@@ -636,7 +614,7 @@ class _Staff_Voucher_EntryListScreenState
                                                                       color: Colors
                                                                           .grey,
                                                                       fontSize:
-                                                                          15),
+                                                                      15),
                                                                 )
                                                               ],
                                                             ),
@@ -645,8 +623,8 @@ class _Staff_Voucher_EntryListScreenState
                                                                   context);
                                                               staffVoucher_Controller
                                                                   .DeleteAlert(
-                                                                      context,
-                                                                      index);
+                                                                  context,
+                                                                  index);
                                                             }),
                                                       ),
                                                       SizedBox(height: 20)

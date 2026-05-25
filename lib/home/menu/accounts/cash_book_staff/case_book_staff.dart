@@ -4,6 +4,7 @@ import '../../../../controller/attendancecontroller.dart';
 import '../../../../controller/bottomsheet_Controllers.dart';
 import '../../../../controller/cashbookstaff_controller.dart';
 import '../../../../controller/expensencecontroller.dart';
+import '../../../../controller/logincontroller.dart';
 import '../../../../controller/staffcontroller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,14 +22,15 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
   final StaffController staffController = Get.put(StaffController());
 
   final AttendanceController attendanceController =
-      Get.put(AttendanceController());
+  Get.put(AttendanceController());
 
   final ExpensesController expensesController = Get.put(ExpensesController());
 
   CashBookStaffController cashBookStaffController =
-      Get.put(CashBookStaffController());
+  Get.put(CashBookStaffController());
   BottomsheetControllers bottomsheetControllers =
-      Get.put(BottomsheetControllers());
+  Get.put(BottomsheetControllers());
+  LoginController loginController = Get.put(LoginController());
 
   @override
   void initState() {
@@ -36,9 +38,16 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
     DateTime lastDayOfMonth = new DateTime(currentDate.year, currentDate.month - 1, 0);
     cashBookStaffController.cashbookStaff_frdateController.text = lastDayOfMonth.toString().substring(0, 10);
     cashBookStaffController.cashbookStaff_todateController.text = currentDate.toString().substring(0, 10);
-    staffController.get_staffDropdowntList(context);
-    staffController.Staffname.text = "--Select--";
-    staffController.selectedstaffId.value = 0;
+    if (loginController.user.value.userType == "A") {
+      staffController.Staffname.text = "--SELECT--";
+      staffController.selectedstaffId.value = 0;
+    } else {
+      staffController.Staffname.text =
+          loginController.user.value.empName
+              .toString();
+      staffController.selectedstaffId.value =
+      loginController.user.value.empId!;
+    }
     cashBookStaffController.totalDebit.text = "0.0";
     cashBookStaffController.totalCredit.text = "0.0";
     cashBookStaffController.closingDebit.text = "0.0";
@@ -47,9 +56,13 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
     super.initState();
   }
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
-    Widget build(BuildContext context) {
-      return SafeArea(
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: SafeArea(
         top: false,
         child: Scaffold(
           backgroundColor: Setmybackground,
@@ -112,7 +125,7 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
                                           color: Colors.grey,
                                           fontSize: RequestConstant.App_Font_SIZE),
                                       prefixIconConstraints:
-                                          BoxConstraints(minWidth: 0, minHeight: 0),
+                                      BoxConstraints(minWidth: 0, minHeight: 0),
                                       prefixIcon: Padding(
                                           padding: EdgeInsets.symmetric(
                                               vertical: 8, horizontal: 8),
@@ -139,7 +152,7 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
                                                       .black, // body text color
                                                 ),
                                                 textButtonTheme:
-                                                    TextButtonThemeData(
+                                                TextButtonThemeData(
                                                   style: TextButton.styleFrom(
                                                     primary: Colors
                                                         .black, // button text color
@@ -153,12 +166,7 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
                                           .cashbookStaff_frdateController
                                           .text = Frdate.toString();
                                     },
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Select Date';
-                                      }
-                                      return null;
-                                    },
+
                                   ),
                                 ),
                               ),
@@ -168,7 +176,7 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
                             flex: 1,
                             child: Container(
                               width:
-                                  BaseUtitiles.getWidthtofPercentage(context, 38),
+                              BaseUtitiles.getWidthtofPercentage(context, 38),
                               child: Card(
                                 shape: RoundedRectangleBorder(
                                   side: BorderSide(color: Colors.white70, width: 1),
@@ -191,7 +199,7 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
                                           color: Colors.grey,
                                           fontSize: RequestConstant.App_Font_SIZE),
                                       prefixIconConstraints:
-                                          BoxConstraints(minWidth: 0, minHeight: 0),
+                                      BoxConstraints(minWidth: 0, minHeight: 0),
                                       prefixIcon: Padding(
                                           padding: EdgeInsets.symmetric(
                                               vertical: 8, horizontal: 8),
@@ -218,7 +226,7 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
                                                       .black, // body text color
                                                 ),
                                                 textButtonTheme:
-                                                    TextButtonThemeData(
+                                                TextButtonThemeData(
                                                   style: TextButton.styleFrom(
                                                     primary: Colors
                                                         .black, // button text color
@@ -229,15 +237,10 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
                                             );
                                           });
                                       cashBookStaffController
-                                              .cashbookStaff_todateController.text =
+                                          .cashbookStaff_todateController.text =
                                           Todate.toString().substring(0, 10);
                                     },
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Select Date';
-                                      }
-                                      return null;
-                                    },
+
                                   ),
                                 ),
                               ),
@@ -256,10 +259,11 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
                         elevation: 3,
                         child: Padding(
                           padding:
-                              const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                          const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             readOnly: true,
                             controller: staffController.Staffname,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
                             cursorColor: Colors.black,
                             style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
@@ -270,22 +274,24 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
                               prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
+                              BoxConstraints(minWidth: 0, minHeight: 0),
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
                                   child: ConstIcons.staffName),
                             ),
-                            onTap: () {
-                              setState(() {
+                            onTap: () async {
+                              if (loginController.user.value.userType == "A") {
+                                await staffController
+                                    .get_staffDropdowntList(context, "cashbookStaff");
                                 bottomsheetControllers.StaffName(context,
-                                    staffController.getStaffDropdownvalue.value);
-                                FocusScope.of(context).unfocus();
-                              });
+                                    staffController.getStaffDropdownvalue.value
+                                );}
+                              FocusScope.of(context).unfocus();
                             },
                             validator: (value) {
-                              if (value!.isEmpty) {
-                                return '\u26A0 Enter user name';
+                              if (value!.isEmpty || value == "--SELECT--") {
+                                return '\u26A0 Required';
                               }
                               return null;
                             },
@@ -306,9 +312,7 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
                             height: BaseUtitiles.getheightofPercentage(context, 4),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(Radius.circular(10)),
-                              color: cashBookStaffController.checkColor == 0
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.white,
+                              color: Theme.of(context).primaryColor,
                             ),
                             alignment: Alignment.center,
                             child: Text(
@@ -316,15 +320,15 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: RequestConstant.Lable_Font_SIZE,
-                                  color: cashBookStaffController.checkColor == 0
-                                      ? Colors.white
-                                      : Theme.of(context).primaryColor),
+                                  color: Colors.white),
                             ),
                           ),
                           onTap: () async {
-                            cashBookStaffController.checkColor = 0;
-                            await cashBookStaffController.getcashbookstaffdetails();
-                            cashBookStaffController.calculations();
+                            if(_formKey.currentState!.validate()){
+                              _formKey.currentState!.save();
+                              await cashBookStaffController.getcashbookstaffdetails();
+                            }
+
                           },
                         ),
                       ],
@@ -336,307 +340,308 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
             ),
           ),
         ),
-      );
-    }
+      ),
+    );
+  }
 
-    Widget bouttomNavigation() {
-      return Card(
-        child: Container(
-          height: BaseUtitiles.getheightofPercentage(context, 10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(left: 10, right: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      "Total   ",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    Container(
-                      height: BaseUtitiles.getheightofPercentage(context, 4),
-                      width: BaseUtitiles.getWidthtofPercentage(context, 25),
-                      child: TextField(
-                        readOnly: true,
-                        cursorColor: Theme.of(context).primaryColor,
-                        textAlign: TextAlign.center,
-                        controller: cashBookStaffController.totalDebit,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                        ),
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
-                    Container(
-                      height: BaseUtitiles.getheightofPercentage(context, 4),
-                      width: BaseUtitiles.getWidthtofPercentage(context, 25),
-                      child: TextField(
-                        readOnly: true,
-                        cursorColor: Theme.of(context).primaryColor,
-                        textAlign: TextAlign.center,
-                        controller: cashBookStaffController.totalCredit,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                        ),
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 10, right: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      "Closing",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    Container(
-                      height: BaseUtitiles.getheightofPercentage(context, 4),
-                      width: BaseUtitiles.getWidthtofPercentage(context, 25),
-                      child: TextField(
-                        readOnly: true,
-                        cursorColor: Theme.of(context).primaryColor,
-                        textAlign: TextAlign.center,
-                        controller: cashBookStaffController.closingDebit,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                        ),
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
-                    Container(
-                      height: BaseUtitiles.getheightofPercentage(context, 4),
-                      width: BaseUtitiles.getWidthtofPercentage(context, 25),
-                      child: TextField(
-                        readOnly: true,
-                        cursorColor: Theme.of(context).primaryColor,
-                        textAlign: TextAlign.center,
-                        controller: cashBookStaffController.closingCredit,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                        ),
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    Widget list() {
-      return Container(
-        height: BaseUtitiles.getheightofPercentage(context, 54),
+  Widget bouttomNavigation() {
+    return Card(
+      child: Container(
+        height: BaseUtitiles.getheightofPercentage(context, 10),
         child: Column(
-          children: [
-            Expanded(
-              child: Container(
-                  margin: EdgeInsets.only(top: 5),
-                  height: BaseUtitiles.getheightofPercentage(context, 52),
-                  child: Obx(
-                    () => ListView.builder(
-                      physics: BouncingScrollPhysics(),
-                      itemCount:
-                          cashBookStaffController.cashstaffDatas.value.length,
-                      padding: EdgeInsets.zero,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Card(
-                          color: Colors.white,
-                          elevation: 5,
-                          child: Container(
-                            margin: EdgeInsets.only(left: 3, top: 2, bottom: 5),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                        flex: 3,
-                                        child: Text("Voc-Date",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold))),
-                                    Expanded(
-                                        flex: 4,
-                                        child: Text(
-                                          cashBookStaffController
-                                              .cashstaffDatas.value[index].vocdate
-                                              .toString(),
-                                        )),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 7,
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                        flex: 3,
-                                        child: Text("Descriptions",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold))),
-                                    Expanded(
-                                        flex: 4,
-                                        child: Text(
-                                          cashBookStaffController.cashstaffDatas
-                                              .value[index].descriptions
-                                              .toString(),
-                                          textAlign: TextAlign.left,
-                                        )),
-                                  ],
-                                ),
-                                Visibility(
-                                  visible: cashBookStaffController.cashstaffDatas
-                                              .value[index].descriptions ==
-                                          "OPENING BALANCE"
-                                      ? false
-                                      : true,
-                                  child: Container(
-                                    margin: EdgeInsets.only(top: 7),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                            flex: 3,
-                                            child: Text("Voucher Type",
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold))),
-                                        Expanded(
-                                            flex: 4,
-                                            child: Text(
-                                              cashBookStaffController
-                                                  .cashstaffDatas
-                                                  .value[index]
-                                                  .vocType
-                                                  .toString(),
-                                              textAlign: TextAlign.left,
-                                            )),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 7,
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                        flex: 3,
-                                        child: Text(
-                                          "Debit",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        )),
-                                    Expanded(
-                                        flex: 4,
-                                        child: Text(
-                                          cashBookStaffController
-                                              .cashstaffDatas.value[index].debit
-                                              .toString(),
-                                          textAlign: TextAlign.left,
-                                        )),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 7,
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                        flex: 3,
-                                        child: Text("Credit",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold))),
-                                    Expanded(
-                                        flex: 4,
-                                        child: Text(
-                                          cashBookStaffController
-                                              .cashstaffDatas.value[index].credit
-                                              .toString(),
-                                          textAlign: TextAlign.left,
-                                        )),
-                                  ],
-                                ),
-                                Divider(
-                                  thickness: 1,
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                        flex: 3,
-                                        child: Text("Remarks",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold))),
-                                    Expanded(
-                                        flex: 4,
-                                        child: Text(
-                                          cashBookStaffController
-                                              .cashstaffDatas.value[index].remarks
-                                              .toString(),
-                                          textAlign: TextAlign.left,
-                                        )),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(left: 10, right: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    "Total   ",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  Container(
+                    height: BaseUtitiles.getheightofPercentage(context, 4),
+                    width: BaseUtitiles.getWidthtofPercentage(context, 25),
+                    child: TextField(
+                      readOnly: true,
+                      cursorColor: Theme.of(context).primaryColor,
+                      textAlign: TextAlign.center,
+                      controller: cashBookStaffController.totalDebit,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor),
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(10))),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor),
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(10))),
+                      ),
+                      style: TextStyle(color: Colors.black),
                     ),
-                  )),
+                  ),
+                  Container(
+                    height: BaseUtitiles.getheightofPercentage(context, 4),
+                    width: BaseUtitiles.getWidthtofPercentage(context, 25),
+                    child: TextField(
+                      readOnly: true,
+                      cursorColor: Theme.of(context).primaryColor,
+                      textAlign: TextAlign.center,
+                      controller: cashBookStaffController.totalCredit,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor),
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(10))),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor),
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(10))),
+                      ),
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(left: 10, right: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    "Closing",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  Container(
+                    height: BaseUtitiles.getheightofPercentage(context, 4),
+                    width: BaseUtitiles.getWidthtofPercentage(context, 25),
+                    child: TextField(
+                      readOnly: true,
+                      cursorColor: Theme.of(context).primaryColor,
+                      textAlign: TextAlign.center,
+                      controller: cashBookStaffController.closingDebit,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor),
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(10))),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor),
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(10))),
+                      ),
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  Container(
+                    height: BaseUtitiles.getheightofPercentage(context, 4),
+                    width: BaseUtitiles.getWidthtofPercentage(context, 25),
+                    child: TextField(
+                      readOnly: true,
+                      cursorColor: Theme.of(context).primaryColor,
+                      textAlign: TextAlign.center,
+                      controller: cashBookStaffController.closingCredit,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor),
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(10))),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor),
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(10))),
+                      ),
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
-      );
-    }
+      ),
+    );
+  }
+
+  Widget list() {
+    return Container(
+      height: BaseUtitiles.getheightofPercentage(context, 54),
+      child: Column(
+        children: [
+          Expanded(
+            child: Container(
+                margin: EdgeInsets.only(top: 5),
+                height: BaseUtitiles.getheightofPercentage(context, 52),
+                child: Obx(
+                      () => ListView.builder(
+                    physics: BouncingScrollPhysics(),
+                    itemCount:
+                    cashBookStaffController.cashstaffDatas.value.length,
+                    padding: EdgeInsets.zero,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Card(
+                        color: Colors.white,
+                        elevation: 5,
+                        child: Container(
+                          margin: EdgeInsets.only(left: 3, top: 2, bottom: 5),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                      flex: 3,
+                                      child: Text("Voc-Date",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold))),
+                                  Expanded(
+                                      flex: 4,
+                                      child: Text(
+                                        cashBookStaffController
+                                            .cashstaffDatas.value[index].vocdate
+                                            .toString(),
+                                      )),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 7,
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                      flex: 3,
+                                      child: Text("Descriptions",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold))),
+                                  Expanded(
+                                      flex: 4,
+                                      child: Text(
+                                        cashBookStaffController.cashstaffDatas
+                                            .value[index].descriptions
+                                            .toString(),
+                                        textAlign: TextAlign.left,
+                                      )),
+                                ],
+                              ),
+                              Visibility(
+                                visible: cashBookStaffController.cashstaffDatas
+                                    .value[index].descriptions ==
+                                    "OPENING BALANCE"
+                                    ? false
+                                    : true,
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 7),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                          flex: 3,
+                                          child: Text("Voucher Type",
+                                              style: TextStyle(
+                                                  fontWeight:
+                                                  FontWeight.bold))),
+                                      Expanded(
+                                          flex: 4,
+                                          child: Text(
+                                            cashBookStaffController
+                                                .cashstaffDatas
+                                                .value[index]
+                                                .voucherType
+                                                .toString(),
+                                            textAlign: TextAlign.left,
+                                          )),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 7,
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                      flex: 3,
+                                      child: Text(
+                                        "Debit",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      )),
+                                  Expanded(
+                                      flex: 4,
+                                      child: Text(
+                                        cashBookStaffController
+                                            .cashstaffDatas.value[index].depitAmount
+                                            .toString(),
+                                        textAlign: TextAlign.left,
+                                      )),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 7,
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                      flex: 3,
+                                      child: Text("Credit",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold))),
+                                  Expanded(
+                                      flex: 4,
+                                      child: Text(
+                                        cashBookStaffController
+                                            .cashstaffDatas.value[index].creditAmount
+                                            .toString(),
+                                        textAlign: TextAlign.left,
+                                      )),
+                                ],
+                              ),
+                              Divider(
+                                thickness: 1,
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                      flex: 3,
+                                      child: Text("Remarks",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold))),
+                                  Expanded(
+                                      flex: 4,
+                                      child: Text(
+                                        cashBookStaffController
+                                            .cashstaffDatas.value[index].remarks
+                                            .toString(),
+                                        textAlign: TextAlign.left,
+                                      )),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                )),
+          ),
+        ],
+      ),
+    );
+  }
 }

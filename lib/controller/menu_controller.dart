@@ -317,13 +317,6 @@ class Menu_Controller extends GetxController {
         MaterialPageRoute(builder: (context) => SiteVoucher_EntryListNew()),
       );
     } else if (value == "Staff Voucher") {
-      staffVoucher_Controller.TotalAmount.text="0.00";
-      staffVoucher_Controller.editcheck=0;
-      staffVoucher_Controller.itemcheck=0;
-      staffVoucher_Controller.Active=0;
-      staffVoucher_Controller.type.value="SiteWise Payment";
-      staffVoucher_Controller.delete_Sitevoucher_itemlist_Table();
-      staffVoucher_Controller.Sitevoucher_itemview_GetDbList.clear();
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => Staff_Voucher_EntryListScreen()),

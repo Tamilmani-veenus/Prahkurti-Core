@@ -19,8 +19,6 @@ import 'package:get/get_core/src/get_main.dart';
 import '../../../../commonpopup/accountnameadd_alert.dart';
 import '../../../../commonpopup/vouchertype_alert.dart';
 
-
-
 class Staff_Voucher_EntryScreen extends StatefulWidget {
   const Staff_Voucher_EntryScreen({Key? key}) : super(key: key);
 
@@ -31,91 +29,92 @@ class Staff_Voucher_EntryScreen extends StatefulWidget {
 
 class _Subcont_Nmr_EntryScreenState_Site
     extends State<Staff_Voucher_EntryScreen> {
-  SubcontractorController subcontractorController = Get.put(SubcontractorController());
+  SubcontractorController subcontractorController =
+  Get.put(SubcontractorController());
   SiteController siteController = Get.put(SiteController());
-  AutoYearWiseNoController autoYearWiseNoController = Get.put(AutoYearWiseNoController());
+  AutoYearWiseNoController autoYearWiseNoController =
+  Get.put(AutoYearWiseNoController());
   StaffController staffController = Get.put(StaffController());
-  CommonVoucherController commonVoucherController = Get.put(CommonVoucherController());
-  StaffVoucher_Controller staffVoucher_Controller = Get.put(StaffVoucher_Controller());
+  CommonVoucherController commonVoucherController =
+  Get.put(CommonVoucherController());
+  StaffVoucher_Controller staffVoucher_Controller =
+  Get.put(StaffVoucher_Controller());
   LoginController loginController = Get.put(LoginController());
   ProjectController projectController = Get.put(ProjectController());
-  BottomsheetControllers bottomsheetControllers = Get.put(BottomsheetControllers());
+  BottomsheetControllers bottomsheetControllers =
+  Get.put(BottomsheetControllers());
 
   @override
   void initState() {
     var duration = Duration(seconds: 0);
     Future.delayed(duration, () async {
-      await autoYearWiseNoController.AutoYearWiseNo("STAFF VOUCHER");
-      // await siteController.subcontEntry_siteDropdowntList(context,0);
-      await staffController.get_staffDropdowntList(context);
-      // await commonVoucherController.getAccountTypeList(context,0);
-      await commonVoucherController.getPayforList();
-      await staffVoucher_Controller.getBankName_List(context);
-      staffVoucher_Controller.AutoYearwisestaffVoc.text = autoYearWiseNoController.StaffVoucher_autoYrsWise.value;
-      staffVoucher_Controller.netamountCalculation();
-      staffVoucher_Controller.VocID = 0;
-      if (staffVoucher_Controller.editcheck == 1) {
-        staffVoucher_Controller.SaveButton.value = RequestConstant.RESUBMIT;
+      if (staffVoucher_Controller.SaveButton.value == RequestConstant.SUBMIT) {
+        staffVoucher_Controller.type.value = "Direct Payment/Office";
+        staffVoucher_Controller.staffvocDate.text =
+            BaseUtitiles.initiateCurrentDateFormat();
+        staffVoucher_Controller.ChequeDate.text =
+            BaseUtitiles.initiateCurrentDateFormat();
+        if (loginController.user.value.userType == "A") {
+          staffController.Staffname.text = "--SELECT--";
+          staffController.selectedstaffId.value = 0;
+        } else {
+          staffController.Staffname.text =
+              loginController.user.value.empName
+                  .toString();
+          staffController.selectedstaffId.value =
+          loginController.user.value.empId!;
+        }
+        commonVoucherController.VoucherTypeController.text = "Payment";
+        commonVoucherController.VocType.value = "P";
+        commonVoucherController.AccountTypename.text = "--SELECT--";
+        commonVoucherController.Accountname.text = "--SELECT--";
+        commonVoucherController.selectedAccnameId = 0.obs;
+        commonVoucherController.Paymodename.text = "BY CASH";
+        commonVoucherController.selectedPaymodeId.value = 1;
+        commonVoucherController.AccPayforname.text = "--SELECT--";
+        staffVoucher_Controller.Remarks.text = "";
+        commonVoucherController.namethrough.text = "";
+        siteController.selectedsiteId.value = 0;
+        staffVoucher_Controller.ChequeNo.text = "";
+        staffVoucher_Controller.BankName.text = "--SELECT--";
+        staffVoucher_Controller.TotalAmount.text = "0.0";
+        staffVoucher_Controller.payeeType.value = false;
+        await autoYearWiseNoController.AutoYearWiseNo("STAFF VOUCHER");
+        staffVoucher_Controller.AutoYearwisestaffVoc.text =
+            autoYearWiseNoController.StaffVoucher_autoYrsWise.value;
+      }
+
+      if (staffVoucher_Controller.SaveButton.value == RequestConstant.RESUBMIT) {
         staffVoucher_Controller.Sitevoucher_EditListApiValue.forEach((element) {
-          staffVoucher_Controller.VocID = element.vocId;
-          staffVoucher_Controller.AutoYearwisestaffVoc.text = element.vocNo;
+          staffVoucher_Controller.AutoYearwisestaffVoc.text = element.staffVocNo;
           staffVoucher_Controller.staffvocDate.text = element.vocDate;
           commonVoucherController.VocType.value = element.vocType;
-          commonVoucherController.VoucherTypeController.text = element.vocType == "P" ? "Payment" : "Receipt";
-          staffController.Staffname.text = element.staffName;
-          staffController.selectedstaffId.value = element.staffId;
+          commonVoucherController.VoucherTypeController.text =
+          element.vocType == "P" ? "Payment" : "Receipt";
+          staffController.Staffname.text = element.createdName;
+          staffController.selectedstaffId.value = element.createdBy;
           commonVoucherController.AccountTypename.text = element.accTypeName;
           commonVoucherController.selectedAccTypeId.value = element.accTypeId;
-          commonVoucherController.Accountname.text = element.accNameName;
-          commonVoucherController.selectedAccnameId.value = element.accNameId;
+          commonVoucherController.Accountname.text = element.accountName;
+          commonVoucherController.selectedAccnameId.value = element.accountNameId;
 
           commonVoucherController.Paymodename.text = element.payModeName;
           commonVoucherController.selectedPaymodeId.value = element.payMode;
 
           commonVoucherController.AccPayforname.text = element.payForName;
           commonVoucherController.selectedAccPayId.value = element.payFor;
-          commonVoucherController.Paymodename.text = element.payModeName;
-          commonVoucherController.selectedPaymodeId.value = element.payMode;
 
           commonVoucherController.namethrough.text = element.nameThrough;
-          // staffVoucher_Controller.TotalAmount.text=element.vocAmt.toString();
+          staffVoucher_Controller.TotalAmount.text = element.vocAmount.toString();
           staffVoucher_Controller.Remarks.text = element.remarks;
-          staffVoucher_Controller.CheckNo.text = element.chqNo;
-          staffVoucher_Controller.ChequeDate.text = element.chqDate;
-          staffVoucher_Controller.BankName.text = element.bankName;
-          staffVoucher_Controller.type.value = element.payType == "SP" ? "SiteWise Payment" : "Direct Payment/Office";
-          staffVoucher_Controller.Button.value = element.payType == "SP" ? "List" : "Re-Submit";
+          staffVoucher_Controller.ChequeNo.text = element.chequeNo;
+          staffVoucher_Controller.ChequeDate.text = element.chequeDate;
+          staffVoucher_Controller.BankName.text = element.bankName == null ? "--SELECT--" : element.bankName;
+          staffVoucher_Controller.payeeType.value = element.accountPayee==0?false:true;
+          staffVoucher_Controller.type.value = element.payType == "SP"
+              ? "SiteWise Payment"
+              : "Direct Payment/Office";
         });
-      }
-      if (staffVoucher_Controller.itemcheck == 0 && staffVoucher_Controller.Active == 0) {
-        staffVoucher_Controller.SaveButton.value = RequestConstant.SUBMIT;
-        staffVoucher_Controller.Button.value = RequestConstant.SUBMIT;
-        staffVoucher_Controller.type.value = "SiteWise Payment";
-        staffVoucher_Controller.delete_Sitevoucher_itemlist_Table();
-        staffVoucher_Controller.Sitevoucher_itemview_GetDbList.clear();
-        // staffVoucher_Controller.TotalAmount.text="0.00";
-        staffVoucher_Controller.staffvocDate.text = BaseUtitiles.initiateCurrentDateFormat();
-        staffVoucher_Controller.AutoYearwisestaffVoc.text = autoYearWiseNoController.StaffVoucher_autoYrsWise.value;
-        staffController.Staffname.text = "--Select--";
-        staffController.selectedstaffId.value = 0;
-        commonVoucherController.VoucherTypeController.text = "Payment";
-        commonVoucherController.VocType.value = "P";
-        commonVoucherController.AccountTypename.text = "--Select--";
-        commonVoucherController.Accountname.text = "--Select--";
-        commonVoucherController.selectedAccnameId = 0.obs;
-        commonVoucherController.Paymodename.text = "BY CASH";
-        commonVoucherController.selectedPaymodeId.value = 1;
-        commonVoucherController.AccPayforname.text = "--Select--";
-        staffVoucher_Controller.Remarks.text = "";
-        commonVoucherController.namethrough.text = "";
-        siteController.selectedsiteId.value = 0;
-        staffVoucher_Controller.CheckNo.text = "";
-        staffVoucher_Controller.ChequeDate.text = BaseUtitiles.initiateCurrentDateFormat();
-        staffVoucher_Controller.BankName.text = "--Select--";
-
-        // commonVoucherController.acountmainlist.value.clear();
-        // commonVoucherController.acountmainlist.value=widget.list;
-
       }
     });
     super.initState();
@@ -125,11 +124,12 @@ class _Subcont_Nmr_EntryScreenState_Site
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width * 100/100;
-    final double height = MediaQuery.of(context).size.height * 50/100;
+    final double width = MediaQuery.of(context).size.width * 100 / 100;
+    final double height = MediaQuery.of(context).size.height * 50 / 100;
     return Form(
       key: _formKey,
       child: SafeArea(
+        top: false,
         child: Scaffold(
           backgroundColor: Setmybackground,
           body: Stack(
@@ -138,7 +138,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                 physics: BouncingScrollPhysics(),
                 child: Column(
                   children: [
-                    SizedBox(height: 20),
+                    SizedBox(height: 40),
                     Container(
                       margin: EdgeInsets.only(left: 15, right: 15),
                       child: Row(
@@ -156,12 +156,12 @@ class _Subcont_Nmr_EntryScreenState_Site
                               },
                               child: const Text(
                                 "Back",
-                                style: TextStyle(color: Colors.grey, fontSize: 18),
+                                style:
+                                TextStyle(color: Colors.grey, fontSize: 18),
                               ))
                         ],
                       ),
                     ),
-
                     Container(
                       margin: EdgeInsets.only(top: 10, left: 10, right: 10),
                       child: Card(
@@ -171,10 +171,12 @@ class _Subcont_Nmr_EntryScreenState_Site
                         ),
                         elevation: 3,
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                          padding: const EdgeInsets.only(
+                              top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             readOnly: true,
-                            controller: staffVoucher_Controller.AutoYearwisestaffVoc,
+                            controller:
+                            staffVoucher_Controller.AutoYearwisestaffVoc,
                             cursorColor: Colors.black,
                             style: const TextStyle(color: Colors.black),
                             decoration: const InputDecoration(
@@ -185,7 +187,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
                               prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
+                              BoxConstraints(minWidth: 0, minHeight: 0),
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
@@ -195,7 +197,6 @@ class _Subcont_Nmr_EntryScreenState_Site
                         ),
                       ),
                     ),
-
                     Container(
                       margin: EdgeInsets.only(top: 5, left: 10, right: 10),
                       child: Card(
@@ -205,7 +206,8 @@ class _Subcont_Nmr_EntryScreenState_Site
                         ),
                         elevation: 3,
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                          padding: const EdgeInsets.only(
+                              top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             readOnly: true,
                             controller: staffVoucher_Controller.staffvocDate,
@@ -219,14 +221,15 @@ class _Subcont_Nmr_EntryScreenState_Site
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
                               prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
+                              BoxConstraints(minWidth: 0, minHeight: 0),
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
                                   child: ConstIcons.date),
                             ),
                             onTap: () async {
-                              if (staffVoucher_Controller.editcheck == 1) {
+                              if (staffVoucher_Controller.SaveButton.value ==
+                                  RequestConstant.RESUBMIT) {
                               } else {
                                 var Entrydate = await showDatePicker(
                                     context: context,
@@ -234,29 +237,34 @@ class _Subcont_Nmr_EntryScreenState_Site
                                     firstDate: DateTime(1900),
                                     lastDate: DateTime.now(),
                                     builder: (context, child) {
-                                      return Theme(data: Theme.of(context).copyWith(
-                                        colorScheme: ColorScheme.light(
-                                          primary: Theme.of(context).primaryColor, // header background color
-                                          onPrimary: Colors.white, // header text color
-                                          onSurface: Colors.black, // body text color
-                                        ),
-                                        textButtonTheme: TextButtonThemeData(
-                                          style: TextButton.styleFrom(
-                                            primary: Colors.black, // button text color
+                                      return Theme(
+                                        data: Theme.of(context).copyWith(
+                                          colorScheme: ColorScheme.light(
+                                            primary: Theme.of(context)
+                                                .primaryColor, // header background color
+                                            onPrimary: Colors
+                                                .white, // header text color
+                                            onSurface:
+                                            Colors.black, // body text color
+                                          ),
+                                          textButtonTheme: TextButtonThemeData(
+                                            style: TextButton.styleFrom(
+                                              primary: Colors
+                                                  .black, // button text color
+                                            ),
                                           ),
                                         ),
-                                      ),
                                         child: child!,
                                       );
                                     });
-                                staffVoucher_Controller.staffvocDate.text =BaseUtitiles.selectDateFormat(Entrydate!);
+                                staffVoucher_Controller.staffvocDate.text =
+                                    BaseUtitiles.selectDateFormat(Entrydate!);
                               }
                             },
                           ),
                         ),
                       ),
                     ),
-
                     Container(
                       margin: EdgeInsets.only(top: 5, left: 10, right: 10),
                       child: Card(
@@ -266,11 +274,14 @@ class _Subcont_Nmr_EntryScreenState_Site
                         ),
                         elevation: 3,
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                          padding: const EdgeInsets.only(
+                              top: 3, left: 10, bottom: 5),
                           child: TextFormField(
-                            autovalidateMode:  AutovalidateMode.onUserInteraction,
+                            autovalidateMode:
+                            AutovalidateMode.onUserInteraction,
                             readOnly: true,
-                            controller: commonVoucherController.VoucherTypeController,
+                            controller:
+                            commonVoucherController.VoucherTypeController,
                             cursorColor: Colors.black,
                             style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
@@ -281,7 +292,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
                               prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
+                              BoxConstraints(minWidth: 0, minHeight: 0),
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
@@ -295,7 +306,9 @@ class _Subcont_Nmr_EntryScreenState_Site
                                   });
                             },
                             validator: (value) {
-                              if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
+                              if (value!.isEmpty ||
+                                  value == "--Select--" ||
+                                  value == "--SELECT--") {
                                 return '\u26A0 ${RequestConstant.VALIDATE}';
                               }
                               return null;
@@ -304,7 +317,6 @@ class _Subcont_Nmr_EntryScreenState_Site
                         ),
                       ),
                     ),
-
                     Container(
                       margin: EdgeInsets.only(top: 5, left: 10, right: 10),
                       child: Card(
@@ -314,9 +326,11 @@ class _Subcont_Nmr_EntryScreenState_Site
                         ),
                         elevation: 3,
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                          padding: const EdgeInsets.only(
+                              top: 3, left: 10, bottom: 5),
                           child: TextFormField(
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode:
+                            AutovalidateMode.onUserInteraction,
                             readOnly: true,
                             controller: staffController.Staffname,
                             cursorColor: Colors.black,
@@ -324,7 +338,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.zero,
                               border: InputBorder.none,
-                              labelText: "Staff Name *",
+                              labelText: "Staff Name",
                               labelStyle: TextStyle(
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
@@ -333,19 +347,17 @@ class _Subcont_Nmr_EntryScreenState_Site
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
-                                  child: ConstIcons.siteName
-                              ),
+                                  child: ConstIcons.siteName),
                             ),
-                            onTap: () {
-                              setState(() {
-                                staffController.get_staffDropdowntList(context);
-                                bottomsheetControllers.StaffName(context, staffController.getStaffDropdownvalue.value);
-                                FocusScope.of(context).unfocus();
-                              });
-
-                            },
+                            onTap: () async {
+                              if (loginController.user.value.userType == "A") {
+                                await staffController.get_staffDropdowntList(context, "staffVoucher");
+                                bottomsheetControllers.StaffName(context, staffController.getStaffDropdownvalue.value, type: "staffVoucher");
+                                  } },
                             validator: (value) {
-                              if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
+                              if (value!.isEmpty ||
+                                  value == "--Select--" ||
+                                  value == "--SELECT--") {
                                 return '\u26A0 ${RequestConstant.VALIDATE}';
                               }
                               return null;
@@ -354,7 +366,6 @@ class _Subcont_Nmr_EntryScreenState_Site
                         ),
                       ),
                     ),
-
                     Container(
                       margin: EdgeInsets.only(top: 5, left: 10, right: 10),
                       child: Card(
@@ -364,9 +375,11 @@ class _Subcont_Nmr_EntryScreenState_Site
                         ),
                         elevation: 3,
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                          padding: const EdgeInsets.only(
+                              top: 3, left: 10, bottom: 5),
                           child: TextFormField(
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode:
+                            AutovalidateMode.onUserInteraction,
                             readOnly: true,
                             controller: commonVoucherController.AccountTypename,
                             cursorColor: Colors.black,
@@ -375,16 +388,28 @@ class _Subcont_Nmr_EntryScreenState_Site
                               contentPadding: EdgeInsets.zero,
                               border: InputBorder.none,
                               labelText: "Account Type",
-                              labelStyle: TextStyle(color: Colors.grey, fontSize: RequestConstant.Lable_Font_SIZE),
-                              prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                              prefixIcon: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8), child: ConstIcons.types),
+                              labelStyle: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: RequestConstant.Lable_Font_SIZE),
+                              prefixIconConstraints:
+                              BoxConstraints(minWidth: 0, minHeight: 0),
+                              prefixIcon: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 8),
+                                  child: ConstIcons.types),
                             ),
                             onTap: () async {
-                              await commonVoucherController.getAccountTypeList();
-                              bottomsheetControllers.AccountType(context, commonVoucherController.getdropDownvalue.value);
-                              },
+                              await commonVoucherController
+                                  .getAccountTypeList();
+                              bottomsheetControllers.AccountType(
+                                  context,
+                                  commonVoucherController
+                                      .getdropDownvalue.value);
+                            },
                             validator: (value) {
-                              if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
+                              if (value!.isEmpty ||
+                                  value == "--Select--" ||
+                                  value == "--SELECT--") {
                                 return '\u26A0 ${RequestConstant.VALIDATE}';
                               }
                               return null;
@@ -393,7 +418,6 @@ class _Subcont_Nmr_EntryScreenState_Site
                         ),
                       ),
                     ),
-
                     Container(
                       margin: EdgeInsets.only(top: 10, left: 10, right: 10),
                       child: Card(
@@ -403,9 +427,11 @@ class _Subcont_Nmr_EntryScreenState_Site
                         ),
                         elevation: 3,
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                          padding: const EdgeInsets.only(
+                              top: 3, left: 10, bottom: 5),
                           child: TextFormField(
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode:
+                            AutovalidateMode.onUserInteraction,
                             readOnly: true,
                             controller: commonVoucherController.Accountname,
                             cursorColor: Colors.black,
@@ -418,19 +444,23 @@ class _Subcont_Nmr_EntryScreenState_Site
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
                               prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
+                              BoxConstraints(minWidth: 0, minHeight: 0),
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
                                   child: ConstIcons.accounttype),
                             ),
-                            onTap: () {
-                              setState(() {
-                                bottomsheetControllers.AccountName(context, commonVoucherController.getaccdropDownvalue.value);
-                              });
+                            onTap: () async {
+                              await commonVoucherController.getAccountName();
+                              bottomsheetControllers.AccountName(
+                                  context,
+                                  commonVoucherController
+                                      .getaccdropDownvalue.value);
                             },
                             validator: (value) {
-                              if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
+                              if (value!.isEmpty ||
+                                  value == "--Select--" ||
+                                  value == "--SELECT--") {
                                 return '\u26A0 ${RequestConstant.VALIDATE}';
                               }
                               return null;
@@ -439,7 +469,6 @@ class _Subcont_Nmr_EntryScreenState_Site
                         ),
                       ),
                     ),
-
                     Container(
                       margin: EdgeInsets.only(top: 5),
                       child: Row(
@@ -450,8 +479,8 @@ class _Subcont_Nmr_EntryScreenState_Site
                               child: Container(
                                 margin: EdgeInsets.only(right: 5, left: 5),
                                 alignment: Alignment.center,
-                                height:
-                                    BaseUtitiles.getheightofPercentage(context, 4),
+                                height: BaseUtitiles.getheightofPercentage(
+                                    context, 4),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(0),
                                   color: Theme.of(context).primaryColor,
@@ -466,16 +495,18 @@ class _Subcont_Nmr_EntryScreenState_Site
                                     color: Colors.white),
                               ),
                               onTap: () {
-                                if (commonVoucherController.AccountTypename.text ==
-                                        "OTHERS" ||
-                                    commonVoucherController.AccountTypename.text ==
+                                if (commonVoucherController
+                                    .AccountTypename.text ==
+                                    "OTHERS" ||
+                                    commonVoucherController
+                                        .AccountTypename.text ==
                                         "SITE-OTHERS" ||
-                                    commonVoucherController.AccountTypename.text ==
+                                    commonVoucherController
+                                        .AccountTypename.text ==
                                         "MATERIAL") {
-                                  if (commonVoucherController.Accountname.text ==
-                                          "--Select--" ||
-                                      commonVoucherController.Accountname.text ==
-                                          "--SELECT--") {
+                                  if (commonVoucherController
+                                      .Accountname.text ==
+                                      "--SELECT--") {
                                     showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
@@ -483,9 +514,9 @@ class _Subcont_Nmr_EntryScreenState_Site
                                         });
                                   } else {
                                     BaseUtitiles.showToast(
-                                        "You are Not Authorised");
+                                        "Please clear the account name");
                                   }
-                                } else {}
+                                }
                               },
                             ),
                           ),
@@ -495,8 +526,8 @@ class _Subcont_Nmr_EntryScreenState_Site
                               child: Container(
                                 margin: EdgeInsets.only(right: 5),
                                 alignment: Alignment.center,
-                                height:
-                                    BaseUtitiles.getheightofPercentage(context, 4),
+                                height: BaseUtitiles.getheightofPercentage(
+                                    context, 4),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(0),
                                   color: Theme.of(context).primaryColor,
@@ -510,79 +541,91 @@ class _Subcont_Nmr_EntryScreenState_Site
                                 child: Icon(Icons.edit, color: Colors.white),
                               ),
                               onTap: () {
-                                if (commonVoucherController.AccountTypename.text ==
-                                        "OTHERS" ||
-                                    commonVoucherController.AccountTypename.text ==
+                                if (commonVoucherController
+                                    .AccountTypename.text ==
+                                    "OTHERS" ||
+                                    commonVoucherController
+                                        .AccountTypename.text ==
                                         "SITE-OTHERS" ||
-                                    commonVoucherController.AccountTypename.text ==
+                                    commonVoucherController
+                                        .AccountTypename.text ==
                                         "MATERIAL") {
-                                  if (commonVoucherController.Accountname.text ==
-                                          "--Select--" ||
-                                      commonVoucherController.Accountname.text ==
-                                          "--SELECT--") {
-                                    BaseUtitiles.showToast(
-                                        "You are Not Authorised");
-                                  } else {
+                                  if (commonVoucherController
+                                      .Accountname.text !=
+                                      "--SELECT--") {
                                     showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AccountnameAddAlert();
                                         });
+                                  } else {
+                                    BaseUtitiles.showToast(
+                                        "Please select the account name");
                                   }
-                                } else {}
+                                }
                               },
                             ),
                           ),
                           Expanded(
                             flex: 1,
                             child: InkWell(
-                              child: Container(
-                                margin: EdgeInsets.only(right: 5),
-                                alignment: Alignment.center,
-                                height:
-                                    BaseUtitiles.getheightofPercentage(context, 4),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(0),
-                                  color: Theme.of(context).primaryColor,
-                                  boxShadow: [
-                                    BoxShadow(
-                                        offset: Offset(0, 10),
-                                        blurRadius: 50,
-                                        color: Color(0xffEEEEEE)),
-                                  ],
+                                child: Container(
+                                  margin: EdgeInsets.only(right: 5),
+                                  alignment: Alignment.center,
+                                  height: BaseUtitiles.getheightofPercentage(
+                                      context, 4),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(0),
+                                    color: Theme.of(context).primaryColor,
+                                    boxShadow: [
+                                      BoxShadow(
+                                          offset: Offset(0, 10),
+                                          blurRadius: 50,
+                                          color: Color(0xffEEEEEE)),
+                                    ],
+                                  ),
+                                  child: Icon(Icons.delete_forever,
+                                      color: Colors.white),
                                 ),
-                                child:
-                                    Icon(Icons.delete_forever, color: Colors.white)),
-                              onTap: () async {
-                                if (commonVoucherController.AccountTypename.text ==
-                                        "OTHERS" ||
-                                    commonVoucherController.AccountTypename.text ==
-                                        "SITE-OTHERS" ||
-                                    commonVoucherController.AccountTypename.text ==
-                                        "MATERIAL") {
-                                  if (commonVoucherController.Accountname.text ==
-                                          "--Select--" ||
-                                      commonVoucherController.Accountname.text ==
-                                          "--SELECT--") {
-                                  } else {
-                                   await commonVoucherController.Accountname_DeleteApi(commonVoucherController.selectedAccnameId.value);
-                                   await commonVoucherController.getAccountName();
+                                onTap: () async {
+                                  if (commonVoucherController
+                                      .AccountTypename.text ==
+                                      "OTHERS" ||
+                                      commonVoucherController
+                                          .AccountTypename.text ==
+                                          "SITE-OTHERS" ||
+                                      commonVoucherController
+                                          .AccountTypename.text ==
+                                          "MATERIAL") {
+                                    if (commonVoucherController
+                                        .Accountname.text !=
+                                        "--SELECT--") {
+                                      if (commonVoucherController
+                                          .Accountname.text.isNotEmpty) {
+                                        await commonVoucherController
+                                            .DeleteAlert(context);
+                                      } else {
+                                        BaseUtitiles.showToast(
+                                            "Something went wrong..");
+                                      }
+                                    } else {
+                                      BaseUtitiles.showToast(
+                                          "Please select the account name");
+                                    }
                                   }
-                                } else {}
-                              },
-                            ),
+                                }),
                           ),
                         ],
                       ),
                     ),
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          margin: EdgeInsets.only(top: 15),
+                          margin: EdgeInsets.all(5),
                           alignment: Alignment.center,
-                          height: BaseUtitiles.getheightofPercentage(context, 3),
+                          height:
+                          BaseUtitiles.getheightofPercentage(context, 3),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
                             color: Theme.of(context).primaryColor,
@@ -594,7 +637,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                             ],
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(5),
+                            padding: const EdgeInsets.only(left: 5, right: 5),
                             child: Text(
                               "Payment Options",
                               style: TextStyle(
@@ -605,7 +648,6 @@ class _Subcont_Nmr_EntryScreenState_Site
                         ),
                       ],
                     ),
-
                     Container(
                       margin: EdgeInsets.only(top: 10, left: 10, right: 10),
                       child: Card(
@@ -615,9 +657,11 @@ class _Subcont_Nmr_EntryScreenState_Site
                         ),
                         elevation: 3,
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                          padding: const EdgeInsets.only(
+                              top: 3, left: 10, bottom: 5),
                           child: TextFormField(
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode:
+                            AutovalidateMode.onUserInteraction,
                             controller: commonVoucherController.namethrough,
                             cursorColor: Colors.black,
                             style: TextStyle(color: Colors.black),
@@ -629,7 +673,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
                               prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
+                              BoxConstraints(minWidth: 0, minHeight: 0),
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
@@ -637,7 +681,9 @@ class _Subcont_Nmr_EntryScreenState_Site
                             ),
                             onTap: () {},
                             validator: (value) {
-                              if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
+                              if (value!.isEmpty ||
+                                  value == "--Select--" ||
+                                  value == "--SELECT--") {
                                 return '\u26A0 ${RequestConstant.VALIDATE}';
                               }
                               return null;
@@ -646,7 +692,6 @@ class _Subcont_Nmr_EntryScreenState_Site
                         ),
                       ),
                     ),
-
                     Container(
                       margin: EdgeInsets.only(top: 5, left: 10, right: 10),
                       child: Card(
@@ -656,9 +701,11 @@ class _Subcont_Nmr_EntryScreenState_Site
                         ),
                         elevation: 3,
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                          padding: const EdgeInsets.only(
+                              top: 3, left: 10, bottom: 5),
                           child: TextFormField(
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode:
+                            AutovalidateMode.onUserInteraction,
                             readOnly: true,
                             controller: commonVoucherController.AccPayforname,
                             cursorColor: Colors.black,
@@ -671,7 +718,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
                               prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
+                              BoxConstraints(minWidth: 0, minHeight: 0),
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
@@ -685,7 +732,9 @@ class _Subcont_Nmr_EntryScreenState_Site
                                       .getPayfordropDownvalue.value);
                             },
                             validator: (value) {
-                              if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
+                              if (value!.isEmpty ||
+                                  value == "--Select--" ||
+                                  value == "--SELECT--") {
                                 return '\u26A0 ${RequestConstant.VALIDATE}';
                               }
                               return null;
@@ -694,16 +743,17 @@ class _Subcont_Nmr_EntryScreenState_Site
                         ),
                       ),
                     ),
-
                     Row(
                       children: <Widget>[
                         Expanded(
                           flex: 1,
                           child: Container(
-                            margin: EdgeInsets.only(top: 5, left: 10, right: 10),
+                            margin:
+                            EdgeInsets.only(top: 5, left: 10, right: 10),
                             child: Card(
                               shape: RoundedRectangleBorder(
-                                side: BorderSide(color: Colors.white70, width: 1),
+                                side:
+                                BorderSide(color: Colors.white70, width: 1),
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               elevation: 3,
@@ -711,9 +761,11 @@ class _Subcont_Nmr_EntryScreenState_Site
                                 padding: const EdgeInsets.only(
                                     top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
-                                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                                  autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
                                   readOnly: true,
-                                  controller: commonVoucherController.Paymodename,
+                                  controller:
+                                  commonVoucherController.Paymodename,
                                   cursorColor: Colors.black,
                                   style: TextStyle(color: Colors.black),
                                   decoration: InputDecoration(
@@ -722,26 +774,27 @@ class _Subcont_Nmr_EntryScreenState_Site
                                     labelText: "Mode of Pay",
                                     labelStyle: TextStyle(
                                         color: Colors.grey,
-                                        fontSize: RequestConstant.Lable_Font_SIZE),
-                                    prefixIconConstraints:
-                                        BoxConstraints(minWidth: 0, minHeight: 0),
+                                        fontSize:
+                                        RequestConstant.Lable_Font_SIZE),
+                                    prefixIconConstraints: BoxConstraints(
+                                        minWidth: 0, minHeight: 0),
                                     prefixIcon: Padding(
                                         padding: EdgeInsets.symmetric(
                                             vertical: 8, horizontal: 8),
                                         child: ConstIcons.modeofpay),
                                   ),
                                   onTap: () async {
-                                    // await commonVoucherController
-                                    //     .getPaymodeList(context);
-                                    setState(() {
-                                      bottomsheetControllers.ModeofPay(
-                                          context,
-                                          commonVoucherController
-                                              .getpaymodedropDownvalue.value);
-                                    });
+                                    await commonVoucherController
+                                        .getPaymodeList();
+                                    bottomsheetControllers.ModeofPay(
+                                        context,
+                                        commonVoucherController
+                                            .getpaymodedropDownvalue.value);
                                   },
                                   validator: (value) {
-                                    if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
+                                    if (value!.isEmpty ||
+                                        value == "--Select--" ||
+                                        value == "--SELECT--") {
                                       return '\u26A0 ${RequestConstant.VALIDATE}';
                                     }
                                     return null;
@@ -750,37 +803,16 @@ class _Subcont_Nmr_EntryScreenState_Site
                               ),
                             ),
                           ),
-
-                          // Container(
-                          //   height: BaseUtitiles.getheightofPercentage(context, 4),
-                          //   margin: EdgeInsets.only(left: 10, right: 10),
-                          //   decoration: BoxDecoration(),
-                          //   child: TextField(
-                          //     style: TextStyle(fontSize: RequestConstant.Dropdown_Font_SIZE),
-                          //     readOnly: true,
-                          //     controller: commonVoucherController.AccPayforname,
-                          //     textAlign: TextAlign.center,
-                          //     decoration: InputDecoration(
-                          //       contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                          //       labelText: "Pay For",
-                          //       border: OutlineInputBorder(),
-                          //       enabledBorder: OutlineInputBorder(
-                          //         borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                          //       ),
-                          //     ),
-                          //     onTap: (){
-                          //       commonVoucherController.getPayforList(context);
-                          //     },
-                          //   ),
-                          // ),
                         ),
                         Expanded(
                           flex: 1,
                           child: Container(
-                            margin: EdgeInsets.only(top: 5, left: 10, right: 10),
+                            margin:
+                            EdgeInsets.only(top: 5, left: 10, right: 10),
                             child: Card(
                               shape: RoundedRectangleBorder(
-                                side: BorderSide(color: Colors.white70, width: 1),
+                                side:
+                                BorderSide(color: Colors.white70, width: 1),
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               elevation: 3,
@@ -788,10 +820,17 @@ class _Subcont_Nmr_EntryScreenState_Site
                                 padding: const EdgeInsets.only(
                                     top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
-                                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                                  readOnly:  staffVoucher_Controller.type.value == "SiteWise Payment" ? true : false,
-                                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                                  controller: staffVoucher_Controller.TotalAmount,
+                                  autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                                  readOnly:
+                                  staffVoucher_Controller.type.value ==
+                                      "SiteWise Payment"
+                                      ? true
+                                      : false,
+                                  keyboardType: TextInputType.numberWithOptions(
+                                      decimal: true),
+                                  controller:
+                                  staffVoucher_Controller.TotalAmount,
                                   cursorColor: Colors.black,
                                   style: TextStyle(color: Colors.black),
                                   decoration: InputDecoration(
@@ -800,88 +839,56 @@ class _Subcont_Nmr_EntryScreenState_Site
                                     labelText: "Amount",
                                     labelStyle: TextStyle(
                                         color: Colors.grey,
-                                        fontSize: RequestConstant.Lable_Font_SIZE),
-                                    prefixIconConstraints:
-                                        BoxConstraints(minWidth: 0, minHeight: 0),
+                                        fontSize:
+                                        RequestConstant.Lable_Font_SIZE),
+                                    prefixIconConstraints: BoxConstraints(
+                                        minWidth: 0, minHeight: 0),
                                     prefixIcon: Padding(
                                         padding: EdgeInsets.symmetric(
                                             vertical: 8, horizontal: 8),
                                         child: ConstIcons.amount),
                                   ),
                                   validator: (value) {
-                                    if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
+                                    if (value!.isEmpty ||
+                                        value == "--Select--" ||
+                                        value == "--SELECT--") {
                                       return '\u26A0 ${RequestConstant.VALIDATE}';
                                     }
                                     return null;
+                                  },
+                                  onTap: () {
+                                    setState(() {});
+                                    if (staffVoucher_Controller.type.value ==
+                                        "Direct Payment/Office") {
+                                      if (staffVoucher_Controller
+                                          .TotalAmount.text ==
+                                          "0.0" ||
+                                          staffVoucher_Controller
+                                              .TotalAmount.text ==
+                                              "0") {
+                                        staffVoucher_Controller
+                                            .TotalAmount.text = "";
+                                      }
+                                    }
                                   },
                                 ),
                               ),
                             ),
                           ),
-
-                          // Container(
-                          //   height: BaseUtitiles.getheightofPercentage(context, 4),
-                          //   margin: EdgeInsets.only(left: 10, right: 10),
-                          //   decoration: BoxDecoration(),
-                          //   child: TextField(
-                          //     style: TextStyle(fontSize: RequestConstant.Dropdown_Font_SIZE),
-                          //     readOnly: true,
-                          //     controller: commonVoucherController.AccPayforname,
-                          //     textAlign: TextAlign.center,
-                          //     decoration: InputDecoration(
-                          //       contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                          //       labelText: "Pay For",
-                          //       border: OutlineInputBorder(),
-                          //       enabledBorder: OutlineInputBorder(
-                          //         borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                          //       ),
-                          //     ),
-                          //     onTap: (){
-                          //       commonVoucherController.getPayforList(context);
-                          //     },
-                          //   ),
-                          // ),
                         ),
-
-                        // Expanded(
-                        //   flex: 1,
-                        //   child: Container(
-                        //     height: BaseUtitiles.getheightofPercentage(context, 4),
-                        //     margin: EdgeInsets.only(left: 10, right: 10),
-                        //     decoration: BoxDecoration(),
-                        //     child: TextField(
-                        //       style: TextStyle(fontSize: RequestConstant.Dropdown_Font_SIZE),
-                        //       readOnly: true,
-                        //       controller: commonVoucherController.Paymodename,
-                        //       textAlign: TextAlign.center,
-                        //       decoration: InputDecoration(
-                        //         contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                        //         labelText: "Mode of Pay",
-                        //         border: OutlineInputBorder(),
-                        //         enabledBorder: OutlineInputBorder(
-                        //           borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                        //         ),
-                        //       ),
-                        //       onTap: (){
-                        //         commonVoucherController.getPaymodeList(context);
-                        //       },
-                        //     ),
-                        //   ),
-                        // ),
-
                       ],
                     ),
-
-
-                    Visibility(
-                      visible: commonVoucherController.Paymodename.text == "BY CHEQUE" ? true : false,
-                      child: Column(
+                    Obx(
+                          () => commonVoucherController.selectedPaymodeId.value == 2
+                          ? Column(
                         children: [
                           Container(
-                            margin: EdgeInsets.only(top: 5, left: 10, right: 10),
+                            margin: EdgeInsets.only(
+                                top: 5, left: 10, right: 10),
                             child: Card(
                               shape: RoundedRectangleBorder(
-                                side: BorderSide(color: Colors.white70, width: 1),
+                                side: BorderSide(
+                                    color: Colors.white70, width: 1),
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               elevation: 3,
@@ -889,25 +896,31 @@ class _Subcont_Nmr_EntryScreenState_Site
                                 padding: const EdgeInsets.only(
                                     top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
-                                  controller: staffVoucher_Controller.CheckNo,
+                                  autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                                  controller:
+                                  staffVoucher_Controller.ChequeNo,
                                   cursorColor: Colors.black,
                                   style: TextStyle(color: Colors.black),
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.zero,
                                     border: InputBorder.none,
-                                    labelText: "No",
+                                    labelText: "Cheque No",
                                     labelStyle: TextStyle(
                                         color: Colors.grey,
-                                        fontSize: RequestConstant.Lable_Font_SIZE),
-                                    prefixIconConstraints:
-                                    BoxConstraints(minWidth: 0, minHeight: 0),
+                                        fontSize: RequestConstant
+                                            .Lable_Font_SIZE),
+                                    prefixIconConstraints: BoxConstraints(
+                                        minWidth: 0, minHeight: 0),
                                     prefixIcon: Padding(
                                         padding: EdgeInsets.symmetric(
                                             vertical: 8, horizontal: 8),
                                         child: ConstIcons.requestNo),
                                   ),
                                   validator: (value) {
-                                    if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
+                                    if (value!.isEmpty ||
+                                        value == "--Select--" ||
+                                        value == "--SELECT--") {
                                       return '\u26A0 ${RequestConstant.VALIDATE}';
                                     }
                                     return null;
@@ -916,12 +929,13 @@ class _Subcont_Nmr_EntryScreenState_Site
                               ),
                             ),
                           ),
-
                           Container(
-                            margin: EdgeInsets.only(top: 5, left: 10, right: 10),
+                            margin: EdgeInsets.only(
+                                top: 5, left: 10, right: 10),
                             child: Card(
                               shape: RoundedRectangleBorder(
-                                side: BorderSide(color: Colors.white70, width: 1),
+                                side: BorderSide(
+                                    color: Colors.white70, width: 1),
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               elevation: 3,
@@ -929,108 +943,190 @@ class _Subcont_Nmr_EntryScreenState_Site
                                 padding: const EdgeInsets.only(
                                     top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
-                                    readOnly:  true,
+                                    readOnly: true,
                                     keyboardType: TextInputType.number,
-                                    controller: staffVoucher_Controller.ChequeDate,
+                                    controller: staffVoucher_Controller
+                                        .ChequeDate,
                                     cursorColor: Colors.black,
                                     style: TextStyle(color: Colors.black),
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.zero,
                                       border: InputBorder.none,
-                                      labelText: "Date",
+                                      labelText: "Cheque Date",
                                       labelStyle: TextStyle(
                                           color: Colors.grey,
-                                          fontSize: RequestConstant.Lable_Font_SIZE),
+                                          fontSize: RequestConstant
+                                              .Lable_Font_SIZE),
                                       prefixIconConstraints:
-                                      BoxConstraints(minWidth: 0, minHeight: 0),
+                                      BoxConstraints(
+                                          minWidth: 0, minHeight: 0),
                                       prefixIcon: Padding(
                                           padding: EdgeInsets.symmetric(
                                               vertical: 8, horizontal: 8),
                                           child: ConstIcons.date),
                                     ),
                                     onTap: () async {
-                                      if (staffVoucher_Controller.editcheck == 1) {
+                                      if (staffVoucher_Controller
+                                          .SaveButton.value ==
+                                          RequestConstant.RESUBMIT) {
                                       } else {
-                                        var Entrydate = await showDatePicker(
+                                        var Entrydate =
+                                        await showDatePicker(
                                             context: context,
-                                            initialDate: DateTime.now(),
+                                            initialDate:
+                                            DateTime.now(),
                                             firstDate: DateTime(1900),
                                             lastDate: DateTime.now(),
-                                            builder: (context, child) {
-                                              return Theme(data: Theme.of(context).copyWith(
-                                                colorScheme: ColorScheme.light(
-                                                  primary: Theme.of(context).primaryColor, // header background color
-                                                  onPrimary: Colors.white, // header text color
-                                                  onSurface: Colors.black, // body text color
-                                                ),
-                                                textButtonTheme: TextButtonThemeData(
-                                                  style: TextButton.styleFrom(
-                                                    primary: Colors.black, // button text color
+                                            builder:
+                                                (context, child) {
+                                              return Theme(
+                                                data:
+                                                Theme.of(context)
+                                                    .copyWith(
+                                                  colorScheme:
+                                                  ColorScheme
+                                                      .light(
+                                                    primary: Theme.of(
+                                                        context)
+                                                        .primaryColor, // header background color
+                                                    onPrimary: Colors
+                                                        .white, // header text color
+                                                    onSurface: Colors
+                                                        .black, // body text color
+                                                  ),
+                                                  textButtonTheme:
+                                                  TextButtonThemeData(
+                                                    style: TextButton
+                                                        .styleFrom(
+                                                      primary: Colors
+                                                          .black, // button text color
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
                                                 child: child!,
                                               );
                                             });
-                                        staffVoucher_Controller.ChequeDate.text =BaseUtitiles.selectDateFormat(Entrydate!);
+                                        staffVoucher_Controller
+                                            .ChequeDate.text =
+                                            BaseUtitiles.selectDateFormat(
+                                                Entrydate!);
                                       }
-                                    }
-                                ),
+                                    }),
                               ),
                             ),
                           ),
-
-                          Container(
-                            margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(color: Colors.white70, width: 1),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 3,
-                              child: Padding(
-                                padding:
-                                const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                child: TextFormField(
-                                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                                  readOnly: true,
-                                  controller: staffVoucher_Controller.BankName,
-                                  cursorColor: Colors.black,
-                                  style: TextStyle(color: Colors.black),
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.zero,
-                                    border: InputBorder.none,
-                                    labelText: "Bank Name",
-                                    labelStyle: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: RequestConstant.Lable_Font_SIZE),
-                                    prefixIconConstraints:
-                                    BoxConstraints(minWidth: 0, minHeight: 0),
-                                    prefixIcon: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 8, horizontal: 8),
-                                        child: ConstIcons.payfor),
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                      top: 5, left: 10, right: 10),
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                          color: Colors.white70,
+                                          width: 1),
+                                      borderRadius:
+                                      BorderRadius.circular(15),
+                                    ),
+                                    elevation: 3,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 3, left: 10, bottom: 5),
+                                      child: TextFormField(
+                                        autovalidateMode: AutovalidateMode
+                                            .onUserInteraction,
+                                        readOnly: true,
+                                        controller:
+                                        staffVoucher_Controller
+                                            .BankName,
+                                        cursorColor: Colors.black,
+                                        style: TextStyle(
+                                            color: Colors.black),
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.zero,
+                                          border: InputBorder.none,
+                                          labelText: "Bank Name",
+                                          labelStyle: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: RequestConstant
+                                                  .Lable_Font_SIZE),
+                                          prefixIconConstraints:
+                                          BoxConstraints(
+                                              minWidth: 0,
+                                              minHeight: 0),
+                                          prefixIcon: Padding(
+                                              padding:
+                                              EdgeInsets.symmetric(
+                                                  vertical: 8,
+                                                  horizontal: 8),
+                                              child:
+                                              ConstIcons.accountName),
+                                        ),
+                                        onTap: () async {
+                                          await staffVoucher_Controller
+                                              .getBankName_List();
+                                          bottomsheetControllers.BankName(
+                                              context,
+                                              staffVoucher_Controller
+                                                  .getbankNameList.value);
+                                        },
+                                        validator: (value) {
+                                          if (value!.isEmpty ||
+                                              value == "--Select--" ||
+                                              value == "--SELECT--") {
+                                            return '\u26A0 ${RequestConstant.VALIDATE}';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                    ),
                                   ),
-                                  onTap: () {
-                                    // staffVoucher_Controller.getBankName_List(context);
-                                    bottomsheetControllers.BankName(context, staffVoucher_Controller.getbankNameList.value);
-                                    FocusScope.of(context).unfocus();
-                                  },
-                                  validator: (value) {
-                                    if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
-                                      return '\u26A0 ${RequestConstant.VALIDATE}';
-                                    }
-                                    return null;
-                                  },
                                 ),
                               ),
-                            ),
+                              Expanded(
+                                  flex: 1,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: 15),
+                                    child: Row(
+                                      children: [
+                                        Checkbox(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  2.0),
+                                            ),
+                                            side: MaterialStateBorderSide
+                                                .resolveWith(
+                                                  (states) => BorderSide(
+                                                width: 1.0,
+                                                // color: Colors.white
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                              ),
+                                            ),
+                                            checkColor: Colors.white,
+                                            activeColor: Theme.of(context)
+                                                .primaryColor,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                staffVoucher_Controller
+                                                    .payeeType
+                                                    .value = value!;
+                                              });
+                                            },
+                                            value: staffVoucher_Controller.payeeType.value),
+                                        Text('A/C Payee')
+                                      ],
+                                    ),
+                                  )),
+                            ],
                           ),
                         ],
-                      ),
+                      )
+                          : SizedBox(),
                     ),
-
-
                     Container(
                       margin: EdgeInsets.only(top: 5, left: 10, right: 10),
                       child: Card(
@@ -1040,9 +1136,11 @@ class _Subcont_Nmr_EntryScreenState_Site
                         ),
                         elevation: 3,
                         child: Padding(
-                          padding:
-                              const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                          padding: const EdgeInsets.only(
+                              top: 3, left: 10, bottom: 5),
                           child: TextFormField(
+                            autovalidateMode:
+                            AutovalidateMode.onUserInteraction,
                             controller: staffVoucher_Controller.Remarks,
                             cursorColor: Colors.black,
                             style: TextStyle(color: Colors.black),
@@ -1054,7 +1152,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
                               prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
+                              BoxConstraints(minWidth: 0, minHeight: 0),
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
@@ -1070,45 +1168,47 @@ class _Subcont_Nmr_EntryScreenState_Site
                         ),
                       ),
                     ),
-
                     SizedBox(height: 5),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children:<Widget> [
-                        Radio<String>(
-                          value: 'Direct Payment/Office',
-                          groupValue: staffVoucher_Controller.type.value,
-                          fillColor: MaterialStateColor.resolveWith((states) => Theme.of(context).primaryColor),
-                          onChanged: (value) {
-                            setState(() {
-                              staffVoucher_Controller.type.value = value!;
-                              staffVoucher_Controller.Button=RequestConstant.SUBMIT.obs;
-                            });
-                          },
-                        ),
-                        Container(
-                            child: const Text('Direct Payment/Office')),
-
-                        Radio<String>(
-                          value: 'SiteWise Payment',
-                          groupValue: staffVoucher_Controller.type.value,
-                          fillColor: MaterialStateColor.resolveWith((states) => Theme.of(context).primaryColor),
-                          onChanged: (value) {
-                            setState(() {
-                              staffVoucher_Controller.type.value = value!;
-                              staffVoucher_Controller.Button=RequestConstant.LIST.obs;
-                            });
-                          },
-                        ),
-                        Container(child: const Text('SiteWise Payment')),
-
-                      ],
+                    Obx(
+                          () => Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Radio<String>(
+                            value: 'Direct Payment/Office',
+                            groupValue: staffVoucher_Controller.type.value,
+                            fillColor: MaterialStateColor.resolveWith(
+                                    (states) => Theme.of(context).primaryColor),
+                            onChanged: (value) {
+                              setState(() {
+                                staffVoucher_Controller.type.value = value!;
+                                staffVoucher_Controller.Staffvoucher_itemview_GetDbList.value = [];
+                                staffVoucher_Controller.TotalAmount.text = "0.0";
+                              });
+                            },
+                          ),
+                          Container(child: const Text('Direct Payment/Office')),
+                          Radio<String>(
+                            value: 'SiteWise Payment',
+                            groupValue: staffVoucher_Controller.type.value,
+                            fillColor: MaterialStateColor.resolveWith(
+                                    (states) => Theme.of(context).primaryColor),
+                            onChanged: (value) {
+                              setState(() {
+                                staffVoucher_Controller.type.value = value!;
+                                staffVoucher_Controller.TotalAmount.text = "0.0";
+                              });
+                            },
+                          ),
+                          Container(child: const Text('SiteWise Payment')),
+                        ],
+                      ),
                     ),
-
                     SizedBox(height: 5),
-
                     Obx(() => Visibility(
-                      visible: staffVoucher_Controller.type.value == "Direct Payment/Office" ? false : true,
+                      visible: staffVoucher_Controller.type.value ==
+                          "Direct Payment/Office"
+                          ? false
+                          : true,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -1117,13 +1217,18 @@ class _Subcont_Nmr_EntryScreenState_Site
                                 primary: Setmybackground,
                               ),
                               onPressed: () {
-                                if(_formKey.currentState!.validate()){
+                                if (_formKey.currentState!.validate()) {
                                   _formKey.currentState!.save();
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => staff_voucher_sitewise()));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              staff_voucher_sitewise()));
                                 }
                               },
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Icon(
                                     Icons.add,
@@ -1133,42 +1238,46 @@ class _Subcont_Nmr_EntryScreenState_Site
                                   Text(
                                     "Add List",
                                     style: TextStyle(
-                                        color: Theme.of(context).primaryColor),
+                                        color:
+                                        Theme.of(context).primaryColor),
                                   ),
                                 ],
                               )),
                         ],
                       ),
-                    ) ),
-
-                    SizedBox(height: BaseUtitiles.getheightofPercentage(context, 10)),
+                    )),
+                    SizedBox(
+                        height:
+                        BaseUtitiles.getheightofPercentage(context, 10)),
                     SizedBox(height: height),
                   ],
                 ),
               ),
-
               Obx(() => Visibility(
-                    visible: staffVoucher_Controller.Sitevoucher_itemview_GetDbList.value.isEmpty ? false : true,
-                    child: Container(
-                      height: BaseUtitiles.getheightofPercentage(context, 100),
-                      child: DraggableScrollableSheet(
-                        minChildSize: 0.1,
-                        maxChildSize: 0.9,
-                        initialChildSize: 0.3,
-                        builder: (BuildContext context,
-                            ScrollController scrollController) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: Setmybackground,
-                              borderRadius: new BorderRadius.only(
-                                topLeft: const Radius.circular(40.0),
-                                topRight: const Radius.circular(40.0),
-                              ),
-                            ),
-                            child: Stack(
-                              children: [
-                                Container(
-                                    child: SingleChildScrollView(
+                visible: staffVoucher_Controller
+                    .Staffvoucher_itemview_GetDbList.value.isEmpty
+                    ? false
+                    : true,
+                child: Container(
+                  height: BaseUtitiles.getheightofPercentage(context, 100),
+                  child: DraggableScrollableSheet(
+                    minChildSize: 0.1,
+                    maxChildSize: 0.9,
+                    initialChildSize: 0.3,
+                    builder: (BuildContext context,
+                        ScrollController scrollController) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Setmybackground,
+                          borderRadius: new BorderRadius.only(
+                            topLeft: const Radius.circular(40.0),
+                            topRight: const Radius.circular(40.0),
+                          ),
+                        ),
+                        child: Stack(
+                          children: [
+                            Container(
+                                child: SingleChildScrollView(
                                   controller: scrollController,
                                   child: Column(
                                     children: [
@@ -1177,39 +1286,40 @@ class _Subcont_Nmr_EntryScreenState_Site
                                     ],
                                   ),
                                 )),
-                                IgnorePointer(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: new BorderRadius.only(
-                                        topLeft: const Radius.circular(40.0),
-                                        topRight: const Radius.circular(40.0),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          margin:
-                                              EdgeInsets.only(top: 20, bottom: 20),
-                                          height: 5,
-                                          width: 60,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              color: Colors.grey),
-                                        ),
-                                      ],
-                                    ),
+                            IgnorePointer(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: new BorderRadius.only(
+                                    topLeft: const Radius.circular(40.0),
+                                    topRight: const Radius.circular(40.0),
                                   ),
                                 ),
-                              ],
+                                child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.only(
+                                          top: 20, bottom: 20),
+                                      height: 5,
+                                      width: 60,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(10),
+                                          color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                  )),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              )),
             ],
           ),
           bottomNavigationBar: Container(
@@ -1224,25 +1334,19 @@ class _Subcont_Nmr_EntryScreenState_Site
                       margin: EdgeInsets.only(left: 20, right: 20),
                       height: BaseUtitiles.getheightofPercentage(context, 4),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        color: staffVoucher_Controller.checkColor == 0
-                            ? Colors.white
-                            : Theme.of(context).primaryColor,
-                      ),
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          color: Colors.white),
                       alignment: Alignment.center,
                       child: Text(
                         "Reset",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: RequestConstant.Lable_Font_SIZE,
-                            color: staffVoucher_Controller.checkColor == 0
-                                ? Theme.of(context).primaryColor
-                                : Colors.white),
+                            color: Theme.of(context).primaryColor),
                       ),
                     ),
                     onTap: () {
                       setState(() {
-                        staffVoucher_Controller.checkColor = 1;
                         ResetAlert(context);
                       });
                     },
@@ -1254,30 +1358,23 @@ class _Subcont_Nmr_EntryScreenState_Site
                       margin: EdgeInsets.only(left: 20, right: 20),
                       height: BaseUtitiles.getheightofPercentage(context, 4),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        color: staffVoucher_Controller.checkColor == 0
-                            ? Theme.of(context).primaryColor
-                            : Colors.white,
-                      ),
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          color: Theme.of(context).primaryColor),
                       alignment: Alignment.center,
-                      child: Text(staffVoucher_Controller.editcheck == 1 ? RequestConstant.RESUBMIT : RequestConstant.SUBMIT,
+                      child: Text(
+                        staffVoucher_Controller.SaveButton.value,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: RequestConstant.Lable_Font_SIZE,
-                            color: staffVoucher_Controller.checkColor == 0
-                                ? Colors.white
-                                : Theme.of(context).primaryColor),
+                            color: Colors.white),
                       ),
                     ),
                     onTap: () {
-                      setState(() {
-                        staffVoucher_Controller.checkColor = 0;
-                        if(_formKey.currentState!.validate()){
-                          _formKey.currentState!.save();
-                          SubmitAlert(context);
-                        }
-                      });
-                        },
+                      if (_formKey.currentState!.validate()) {
+                        _formKey.currentState!.save();
+                        SubmitAlert(context);
+                      }
+                    },
                   ),
                 ),
               ],
@@ -1304,8 +1401,40 @@ class _Subcont_Nmr_EntryScreenState_Site
             child: ListView.builder(
               physics: BouncingScrollPhysics(),
               padding: EdgeInsets.zero,
-              itemCount: staffVoucher_Controller.Sitevoucher_itemview_GetDbList.value.length,
+              itemCount: staffVoucher_Controller.Staffvoucher_itemview_GetDbList.value.length,
               itemBuilder: (BuildContext context, int index) {
+                Map<String, String> paymentTypeMap = {};
+
+                if (staffVoucher_Controller.SaveButton.value ==
+                    RequestConstant.SUBMIT) {
+                  paymentTypeMap = {
+                    for (var item in commonVoucherController.paymentTypeList)
+                      item.paymentTypeValue: item.paymentTypeName
+                  };
+                } else {
+                  if (staffVoucher_Controller
+                      .Sitevoucher_EditListApiValue.isNotEmpty) {
+                    paymentTypeMap.addAll({
+                      for (var item in staffVoucher_Controller
+                          .Sitevoucher_EditListApiValue[0]
+                          .accStaffVocSWpaymentS)
+                        item.payType: item.payTypeName
+                    });
+                  }
+                  if (staffVoucher_Controller.SaveButton.value ==
+                      RequestConstant.RESUBMIT) {
+                    paymentTypeMap.addAll({
+                      for (var item in commonVoucherController.paymentTypeList)
+                        item.paymentTypeValue: item.paymentTypeName
+                    });
+                  }
+                }
+
+                final payType = staffVoucher_Controller
+                    .Staffvoucher_itemview_GetDbList[index].paytype;
+
+                final payTypeName = paymentTypeMap[payType] ?? "";
+
                 return Card(
                   margin: EdgeInsets.only(left: 5, right: 5, bottom: 5),
                   elevation: 3,
@@ -1318,16 +1447,20 @@ class _Subcont_Nmr_EntryScreenState_Site
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Container(
-                              width: BaseUtitiles.getWidthtofPercentage(context, 80),
+                              width: BaseUtitiles.getWidthtofPercentage(
+                                  context, 80),
                               child: Text(
-                                staffVoucher_Controller.Sitevoucher_itemview_GetDbList.value[index].projectname.toString(),
+                                staffVoucher_Controller
+                                    .Staffvoucher_itemview_GetDbList
+                                    .value[index]
+                                    .projectname
+                                    .toString(),
                                 style: TextStyle(
                                     fontSize: RequestConstant.App_Font_SIZE,
                                     color: Theme.of(context).primaryColor,
                                     fontWeight: FontWeight.bold),
                               ),
                             ),
-
                             Container(
                               height: BaseUtitiles.getheightofPercentage(
                                   context, 2),
@@ -1349,8 +1482,8 @@ class _Subcont_Nmr_EntryScreenState_Site
                                             child: IntrinsicHeight(
                                               child: Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
+                                                MainAxisAlignment
+                                                    .spaceBetween,
                                                 children: [
                                                   Expanded(
                                                     child: TextButton(
@@ -1361,13 +1494,13 @@ class _Subcont_Nmr_EntryScreenState_Site
                                                         child: Text("Cancel",
                                                             style: TextStyle(
                                                                 color:
-                                                                    Colors.grey,
+                                                                Colors.grey,
                                                                 fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
+                                                                FontWeight
+                                                                    .bold,
                                                                 fontSize:
-                                                                    RequestConstant
-                                                                        .Lable_Font_SIZE))),
+                                                                RequestConstant
+                                                                    .Lable_Font_SIZE))),
                                                   ),
                                                   VerticalDivider(
                                                     color: Colors.grey.shade400,
@@ -1375,21 +1508,21 @@ class _Subcont_Nmr_EntryScreenState_Site
                                                     thickness: 2,
                                                     indent: 15,
                                                     endIndent:
-                                                        15, //Spacing at the bottom of divider.
+                                                    15, //Spacing at the bottom of divider.
                                                   ),
                                                   Expanded(
                                                     child: TextButton(
                                                         onPressed: () async {
                                                           staffVoucher_Controller
                                                               .deleteParticularList(
-                                                                  staffVoucher_Controller
-                                                                          .Sitevoucher_itemview_GetDbList[
-                                                                      index]);
+                                                              staffVoucher_Controller
+                                                                  .Staffvoucher_itemview_GetDbList[
+                                                              index]);
                                                           staffVoucher_Controller
-                                                                  .Sitevoucher_itemview_GetDbList
+                                                              .Staffvoucher_itemview_GetDbList
                                                               .remove(staffVoucher_Controller
-                                                                      .Sitevoucher_itemview_GetDbList[
-                                                                  index]);
+                                                              .Staffvoucher_itemview_GetDbList[
+                                                          index]);
                                                           await staffVoucher_Controller
                                                               .getstaffvouchersiteTablesDatas();
                                                           Navigator.pop(
@@ -1398,13 +1531,13 @@ class _Subcont_Nmr_EntryScreenState_Site
                                                         child: Text("Delete",
                                                             style: TextStyle(
                                                                 color:
-                                                                    Colors.red,
+                                                                Colors.red,
                                                                 fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
+                                                                FontWeight
+                                                                    .bold,
                                                                 fontSize:
-                                                                    RequestConstant
-                                                                        .Lable_Font_SIZE))),
+                                                                RequestConstant
+                                                                    .Lable_Font_SIZE))),
                                                   )
                                                 ],
                                               ),
@@ -1415,47 +1548,8 @@ class _Subcont_Nmr_EntryScreenState_Site
                                     );
                                   },
                                   child: Icon(Icons.remove_circle,
-                                      color: Colors.red
-                                      // color: Theme.of(context).primaryColor
-
-                                      )
-                                  // Image.asset('assets/cancle.png'),
-                                  ),
+                                      color: Colors.red)),
                             ),
-
-                            // Container(
-                            //   height: BaseUtitiles.getheightofPercentage(context,2 ),
-                            //   width: BaseUtitiles.getWidthtofPercentage(context, 10),
-                            //   child: InkWell(
-                            //     onTap: () {
-                            //       showDialog(
-                            //         context: context,
-                            //         builder: (context) =>
-                            //             AlertDialog(
-                            //               title: Text(RequestConstant.DO_YOU_WANT_DELETE,style: TextStyle(color: Colors.black),),
-                            //               actions: <Widget>[
-                            //                 ElevatedButton(
-                            //                     child: Text(RequestConstant.NO,style: TextStyle(color: Colors.white)),
-                            //                     onPressed: () {
-                            //                       Navigator.pop(context);
-                            //                     }
-                            //                 ),
-                            //                 ElevatedButton(
-                            //                     child: Text(RequestConstant.YES,style: TextStyle(color: Colors.white)),
-                            //                     onPressed : () async{
-                            //                       staffVoucher_Controller.deleteParticularList(staffVoucher_Controller.Sitevoucher_itemview_GetDbList[index]);
-                            //                       staffVoucher_Controller.Sitevoucher_itemview_GetDbList.remove(staffVoucher_Controller.Sitevoucher_itemview_GetDbList[index]);
-                            //                       await staffVoucher_Controller.getstaffvouchersiteTablesDatas();
-                            //                       Navigator.pop(context);
-                            //                     }
-                            //                 ),
-                            //               ],
-                            //             ),
-                            //       );
-                            //     },
-                            //     child: Image.asset('assets/cancle.png'),
-                            //   ),
-                            // ),
                           ],
                         ),
                       ),
@@ -1465,7 +1559,8 @@ class _Subcont_Nmr_EntryScreenState_Site
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Container(
-                                width: BaseUtitiles.getWidthtofPercentage(context, 25),
+                                width: BaseUtitiles.getWidthtofPercentage(
+                                    context, 25),
                                 margin: EdgeInsets.only(left: 5),
                                 child: Text(
                                   "Site Name",
@@ -1475,10 +1570,15 @@ class _Subcont_Nmr_EntryScreenState_Site
                                       color: Colors.black),
                                 )),
                             Container(
-                                width: BaseUtitiles.getWidthtofPercentage(context, 65),
+                                width: BaseUtitiles.getWidthtofPercentage(
+                                    context, 65),
                                 margin: EdgeInsets.only(right: 5),
                                 child: Text(
-                                  staffVoucher_Controller.Sitevoucher_itemview_GetDbList.value[index].sitename.toString(),
+                                  staffVoucher_Controller
+                                      .Staffvoucher_itemview_GetDbList
+                                      .value[index]
+                                      .sitename
+                                      .toString(),
                                   style: TextStyle(
                                     fontSize: RequestConstant.App_Font_SIZE,
                                     color: Colors.black,
@@ -1508,13 +1608,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                 width: BaseUtitiles.getWidthtofPercentage(
                                     context, 65),
                                 child: Text(
-                                  staffVoucher_Controller
-                                              .Sitevoucher_itemview_GetDbList
-                                              .value[index]
-                                              .paytype ==
-                                          "A"
-                                      ? "Advance"
-                                      : "Payment",
+                                  payTypeName,
                                   style: TextStyle(
                                       fontSize: RequestConstant.App_Font_SIZE,
                                       color: Colors.black),
@@ -1544,7 +1638,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                 margin: EdgeInsets.only(right: 5),
                                 child: Text(
                                   staffVoucher_Controller
-                                      .Sitevoucher_itemview_GetDbList
+                                      .Staffvoucher_itemview_GetDbList
                                       .value[index]
                                       .amt
                                       .toString(),
@@ -1577,7 +1671,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                 margin: EdgeInsets.only(right: 5),
                                 child: Text(
                                   staffVoucher_Controller
-                                      .Sitevoucher_itemview_GetDbList
+                                      .Staffvoucher_itemview_GetDbList
                                       .value[index]
                                       .NetAmt
                                       .toString(),
@@ -1600,101 +1694,74 @@ class _Subcont_Nmr_EntryScreenState_Site
   }
 
   Future SubmitAlert(BuildContext context) async {
-    staffVoucher_Controller.buttonControl = 0;
     return await showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Alert!'),
         content: Text(
-            staffVoucher_Controller.editcheck == 1 ? 'Are you sure to Re-Submit?' : 'Are you sure to submit?' ),
-        actions:[
+            'Are you sure to ${staffVoucher_Controller.SaveButton.value}?'),
+        actions: [
           Container(
-            margin: EdgeInsets.only(left: 20,right: 20),
+            margin: EdgeInsets.only(left: 20, right: 20),
             child: IntrinsicHeight(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: TextButton(onPressed: (){
-                      Navigator.pop(context);
-                    }, child: Text("Cancel", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE))),
+                    child: TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text("Cancel",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                                fontSize: RequestConstant.Lable_Font_SIZE))),
                   ),
                   VerticalDivider(
-                    color: Colors.grey.shade400,  //color of divider
+                    color: Colors.grey.shade400, //color of divider
                     width: 5, //width space of divider
                     thickness: 2, //thickness of divier line
                     indent: 15, //Spacing at the top of divider.
                     endIndent: 15, //Spacing at the bottom of divider.
                   ),
-                  // Expanded(
-                  //   child: TextButton(
-                  //       onPressed: () async {
-                  //         // BaseUtitiles.showLoadingDialog(context, Theme.of(context).primaryColor);
-                  //         if(staffVoucher_Controller.buttonControl == 0){
-                  //           if (staffController.selectedstaffId.value == 0 ||
-                  //               commonVoucherController.AccountTypename.text ==
-                  //                   "--Select--" ||
-                  //               commonVoucherController.Accountname.text ==
-                  //                   "--Select--" ||
-                  //               commonVoucherController.Paymodename.text ==
-                  //                   "--Select--" ||
-                  //               commonVoucherController.AccPayforname.text ==
-                  //                   "--Select--" ||
-                  //               double.parse(
-                  //                   staffVoucher_Controller.TotalAmount.text) ==
-                  //                   0.0) {
-                  //             BaseUtitiles.showToast("Some field is missing");
-                  //           } else {
-                  //             staffVoucher_Controller.SaveButtonSitevoucher_ItemlistScreen(context, staffVoucher_Controller.VocID != 0 ? staffVoucher_Controller.VocID : 0);
-                  //           }
-                  //         }else if(staffVoucher_Controller.buttonControl == 1){
-                  //           staffVoucher_Controller.buttonControl = 0;
-                  //           BaseUtitiles.showToast("Please wait... processing.");
-                  //         }
-                  //       },
-                  //       child: Text(
-                  //           staffVoucher_Controller.editcheck == 1 ? RequestConstant.RESUBMIT : RequestConstant.SUBMIT,
-                  //           style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE))),
-                  // ),
-
                   Expanded(
                     child: StatefulBuilder(
                       builder: (context, setState) => TextButton(
-                        onPressed:() async {
-                          // setState(() {
-                          //   staffVoucher_Controller.buttonControl = 1; // Disable the button
-                          // });
-
-                          if (staffController.selectedstaffId.value == 0 ||
-                              commonVoucherController.AccountTypename.text == "--Select--" ||
-                              commonVoucherController.Accountname.text == "--Select--" ||
-                              commonVoucherController.Paymodename.text == "--Select--" ||
-                              commonVoucherController.AccPayforname.text == "--Select--" ||
-                              double.parse(staffVoucher_Controller.TotalAmount.text) == 0.0) {
+                        onPressed: () async {
+                          if (
+                          commonVoucherController.AccountTypename.text ==
+                              "--SELECT--" ||
+                              commonVoucherController.Accountname.text ==
+                                  "--SELECT--" ||
+                              commonVoucherController.Paymodename.text ==
+                                  "--SELECT--" ||
+                              commonVoucherController.AccPayforname.text ==
+                                  "--SELECT--" ||
+                              double.parse(staffVoucher_Controller
+                                  .TotalAmount.text) ==
+                                  0.0) {
                             BaseUtitiles.showToast("Some field is missing");
                           } else {
-                            if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
-                              await staffVoucher_Controller.SaveButtonSitevoucher_ItemlistScreen(
+                            if (staffVoucher_Controller.type.value ==
+                                "SiteWise Payment") {
+                              await staffVoucher_Controller
+                                  .getstaffvouchersiteTablesDatas();
+                            }
+                            if (await BaseUtitiles.checkNetworkAndShowLoader(
+                                context)) {
+                              await staffVoucher_Controller
+                                  .SaveButtonSitevoucher_ItemlistScreen(
                                   context,
-                                  staffVoucher_Controller.VocID != 0
-                                      ? staffVoucher_Controller.VocID
-                                      : 0);
-                            }  }
-                        //   setState(() {
-                        //     staffVoucher_Controller.buttonControl = 0; // Re-enable the button
-                        //   });
-                        // }
-                        //     : () {
-                        //   BaseUtitiles.showToast("Please wait... processing.");
+                                  staffVoucher_Controller.SaveButton.value==RequestConstant.RESUBMIT?staffVoucher_Controller
+                                      .Sitevoucher_EditListApiValue[0].id:0);
+                            }
+                          }
                         },
                         child: Text(
-                          staffVoucher_Controller.editcheck == 1
-                              ? RequestConstant.RESUBMIT
-                              : RequestConstant.SUBMIT,
+                          staffVoucher_Controller.SaveButton.value,
                           style: TextStyle(
-                            color: staffVoucher_Controller.buttonControl == 0
-                                ? Theme.of(context).primaryColor
-                                : Colors.grey, // Change color when disabled
+                            color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,
                             fontSize: RequestConstant.Lable_Font_SIZE,
                           ),
@@ -1702,7 +1769,6 @@ class _Subcont_Nmr_EntryScreenState_Site
                       ),
                     ),
                   ),
-
                 ],
               ),
             ),
@@ -1718,20 +1784,26 @@ class _Subcont_Nmr_EntryScreenState_Site
       builder: (context) => AlertDialog(
         title: Text('Alert!'),
         content: Text('Are you sure to Reset?'),
-        actions:[
+        actions: [
           Container(
-            margin: EdgeInsets.only(left: 20,right: 20),
+            margin: EdgeInsets.only(left: 20, right: 20),
             child: IntrinsicHeight(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: TextButton(onPressed: (){
-                      Navigator.pop(context);
-                    }, child: Text("Cancel", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE))),
+                    child: TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text("Cancel",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                                fontSize: RequestConstant.Lable_Font_SIZE))),
                   ),
                   VerticalDivider(
-                    color: Colors.grey.shade400,  //color of divider
+                    color: Colors.grey.shade400, //color of divider
                     width: 5, //width space of divider
                     thickness: 2, //thickness of divier line
                     indent: 15, //Spacing at the top of divider.
@@ -1740,81 +1812,58 @@ class _Subcont_Nmr_EntryScreenState_Site
                   Expanded(
                     child: TextButton(
                         onPressed: () async {
-                          Future.delayed(Duration(seconds: 0), (){
-                            staffVoucher_Controller.SaveButton.value = RequestConstant.SUBMIT;
-                            staffVoucher_Controller.Button.value = RequestConstant.SUBMIT;
-                            staffVoucher_Controller.type.value = "SiteWise Payment";
-                            staffVoucher_Controller.delete_Sitevoucher_itemlist_Table();
-                            staffVoucher_Controller.Sitevoucher_itemview_GetDbList.clear();
-                            // staffVoucher_Controller.TotalAmount.text="0.00";
-                            staffVoucher_Controller.staffvocDate.text = BaseUtitiles.initiateCurrentDateFormat();
-                            staffVoucher_Controller.AutoYearwisestaffVoc.text = autoYearWiseNoController.StaffVoucher_autoYrsWise.value;
-                            staffController.Staffname.text = "--Select--";
+                          Future.delayed(Duration(seconds: 0), () {
+                            staffVoucher_Controller.SaveButton.value =
+                                RequestConstant.SUBMIT;
+                            staffVoucher_Controller.type.value =
+                            "SiteWise Payment";
+                            staffVoucher_Controller
+                                .delete_Sitevoucher_itemlist_Table();
+                            staffVoucher_Controller
+                                .Staffvoucher_itemview_GetDbList.clear();
+                            staffVoucher_Controller.TotalAmount.text = "0.00";
+                            staffVoucher_Controller.staffvocDate.text =
+                                BaseUtitiles.initiateCurrentDateFormat();
+                            staffVoucher_Controller.AutoYearwisestaffVoc.text =
+                                autoYearWiseNoController
+                                    .StaffVoucher_autoYrsWise.value;
+                            staffController.Staffname.text = "--SELECT--";
                             staffController.selectedstaffId.value = 0;
-                            commonVoucherController.VoucherTypeController.text = "Payment";
+                            commonVoucherController.VoucherTypeController.text =
+                            "Payment";
                             commonVoucherController.VocType.value = "P";
-                            commonVoucherController.AccountTypename.text = "--Select--";
-                            commonVoucherController.Accountname.text = "--Select--";
+                            commonVoucherController.AccountTypename.text =
+                            "--SELECT--";
+                            commonVoucherController.Accountname.text =
+                            "--SELECT--";
                             commonVoucherController.selectedAccnameId = 0.obs;
-                            commonVoucherController.Paymodename.text = "BY CASH";
+                            commonVoucherController.Paymodename.text =
+                            "BY CASH";
                             commonVoucherController.selectedPaymodeId.value = 1;
-                            commonVoucherController.AccPayforname.text = "--Select--";
+                            commonVoucherController.AccPayforname.text =
+                            "--SELECT--";
                             staffVoucher_Controller.Remarks.text = "";
                             commonVoucherController.namethrough.text = "";
                             siteController.selectedsiteId.value = 0;
-                            staffVoucher_Controller.CheckNo.text = "";
+                            staffVoucher_Controller.ChequeNo.text = "";
                             staffVoucher_Controller.ChequeDate.text = BaseUtitiles.initiateCurrentDateFormat();
-                            staffVoucher_Controller.BankName.text = "--Select--";
+                            staffVoucher_Controller.BankName.text = "--SELECT--";
+                            staffVoucher_Controller.payeeType.value = false;
                           });
-
-                          // staffVoucher_Controller.SaveButton.value = RequestConstant.SUBMIT;
-                          // staffVoucher_Controller.Button.value = RequestConstant.SUBMIT;
-                          // staffVoucher_Controller.type.value = "SiteWise Payment";
-                          // staffVoucher_Controller.delete_Sitevoucher_itemlist_Table();
-                          // staffVoucher_Controller.Sitevoucher_itemview_GetDbList.clear();
-                          // // staffVoucher_Controller.TotalAmount.text="0.00";
-                          // staffVoucher_Controller.staffvocDate.text =
-                          //     BaseUtitiles.initiateCurrentDateFormat();
-                          // staffVoucher_Controller.AutoYearwisestaffVoc.text =
-                          //     autoYearWiseNoController.StaffVoucher_autoYrsWise.value;
-                          // staffController.Staffname.text = "--Select--";
-                          // staffController.selectedstaffId.value = 0;
-                          // commonVoucherController.VoucherTypeController.text = "Payment";
-                          // commonVoucherController.VocType.value = "P";
-                          // commonVoucherController.AccountTypename.text = "--Select--";
-                          // commonVoucherController.Accountname.text = "--Select--";
-                          // commonVoucherController.selectedAccnameId = 0.obs;
-                          // commonVoucherController.Paymodename.text = "--Select--";
-                          // commonVoucherController.AccPayforname.text = "--Select--";
-                          // staffVoucher_Controller.Remarks.text = "";
-                          // commonVoucherController.namethrough.text = "";
                           Navigator.pop(context);
                         },
-                        child: Text("Reset", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE))),
+                        child: Text("Reset",
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: RequestConstant.Lable_Font_SIZE))),
                   )
                 ],
               ),
             ),
           ),
-
-          // ElevatedButton(
-          //   onPressed: () => Navigator.of(context).pop(),
-          //   child:Text('No'),
-          // ),
-          // ElevatedButton(
-          //   onPressed: () {
-          //     entrycheck=0;
-          //     editCheck=0;
-          //     Material_EntryList_DeleteApi(MrnReqEtyList.value[index].reqMasId,MrnReqEtyList.value[index].reqOrdNo);
-          //     MrnReqEtyList.removeAt(index);
-          //     Navigator.of(context).pop();
-          //   },
-          //   child:Text('Yes'),
-          // ),
-
         ],
       ),
     );
   }
-
 }

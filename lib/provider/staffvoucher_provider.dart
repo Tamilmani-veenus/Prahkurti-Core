@@ -15,115 +15,76 @@ import '../utilities/requestconstant.dart';
 
 class StaffVoucher_provider{
 
-  static Future<List<Staffvoucherentrylist>> getStaffVouc_Entry_List(
-      int? Userid, String UserType, String frdate, String todate) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GETSTAFFVOC_ENTRY_LIST +
-        "?UserId=$Userid&UserType=$UserType&Frdate=$frdate&Todate=$todate")
-        .then((value) {
-      print("StaffvocEntryList:" + value);
-      data = staffvoucherentrylistFromJson(value);
-      if (data != null && data.length > 0) {
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return data;
+  static Future<Staffvoucherentrylist?> getStaffVouc_Entry_List(String frdate, String todate) async {
+    try{
+      final value = await ApiManager.getAPICall(ApiConstant.GETSTAFFVOC_ENTRY_LIST + "?fromDate=$frdate&toDate=$todate");
+      print("SitevocEntryList:" + value);
+      return staffvoucherentrylistFromJson(value);
+    }
+    catch(e){
+      print("ERROR.....$e");
+      return null;
+    }
   }
 
   //--------BankName List--------------
 
-  static Future<List<BankNamelistModel>> getBankName_List() async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GET_STAFFVOUCHER_BankNAMELIST_API).then((value) {
-      print("BankNameList:" + value);
-      data = bankNamelistModelFromJson(value);
-      if (data != null && data.length > 0) {
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return data;
+  static Future<BankNamelistModel?> getBankName_List() async {
+    try{
+      final value = await ApiManager.getAPICall(ApiConstant.GET_STAFFVOUCHER_BANKNAMELIST_API);
+      print("SitevocEntryList:" + value);
+      return bankNamelistModelFromJson(value);
+    }
+    catch(e){
+      print("ERROR.....$e");
+      return null;
+    }
   }
-
-
 
 
   // -----------Save API------------
 
-  static Future<String?> SaveSitevoucherScreenEntryAPI(String body, int vocid, int buttonControl,context) async {
-    String? ratingRes;
-
+  static SaveSitevoucherScreenEntryAPI(String body, int id) async {
     try {
-      if (vocid != 0) {
-        // PUT request
-        final value = await ApiManager.putUpdateAPIButton(ApiConstant.PUT_STAFFVOUCHER_UPDATE_API, body);
-        var response = saveDeduction_SaveResponseFromJson(value);
-        if (response.RetString != null) {
-          ratingRes = response.RetString;
-        }
-      } else {
-        // POST request
-        final value = await ApiManager.postAPICall(ApiConstant.STAFFVOUCHER_SAVE, body);
-        var response = saveDeduction_SaveResponseFromJson(value);
-        if (response.RetString != null) {
-          ratingRes = response.RetString;
-        }
-      }
-    }on SocketException catch (_) {
-      BaseUtitiles.showToast(RequestConstant.NOINTERNETCONNECTION);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      return null;
-    }
-    on TimeoutException catch (_) {
-      BaseUtitiles.showToast(RequestConstant.REQUESTTIMEOUT);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      return null;
-    }
-    on FormatException catch (_) {
-      BaseUtitiles.showToast(RequestConstant.BADRESPONSE);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      return null;
-    } catch (error) {
-      print(' Error in SaveSitevoucherScreenEntryAPI: $error');
-      buttonControl = 0;
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      BaseUtitiles.showToast(RequestConstant.NETWORKERROR);
-      return null;
-    }
+      var response;
 
-    return ratingRes;
+      if (id != 0) {
+        response = await ApiManager.putUpdateAPIButton("${ApiConstant.PUT_STAFFVOUCHER_UPDATE_API}?id=$id", body);
+      } else {
+        response = await ApiManager.postAPICall(ApiConstant.STAFFVOUCHER_SAVE, body);
+      }
+      return jsonDecode(response);
+
+    }  catch (error) {
+      print("Error == $error");
+      return null;
+    }
   }
 
-//---Save API---
-
 //---Delete API----
-  static Future Staffvoucher_entryList_deleteAPI(int VocId, String VocNo,String UserId, String DeviceName) async {
-    var data = null;
-    await ApiManager.deleteAPICall(ApiConstant.DELETE_STAFFVOUCHERSITE_ENTRYLIST_API + "?VocId=$VocId&VocNo=$VocNo&UserId=$UserId&DeviceName=$DeviceName")
-        .then((value) {
-      final res = json.decode(value);
-      if (res != null) {
-        data = res;
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG+error);
-    });
-    return data;
+
+  static Future<bool> Staffvoucher_entryList_deleteAPI(int vocId) async {
+    try {
+      final response = await ApiManager.deleteAPICall(
+          "${ApiConstant.DELETE_STAFFVOUCHERSITE_ENTRYLIST_API}?id=$vocId");
+
+      final Map<String, dynamic> decoded = jsonDecode(response);
+
+
+      bool isSuccess = decoded["success"] == true;
+
+      final message = decoded["message"] ??
+          (isSuccess
+              ? "Deleted successfully"
+              : "Something went wrong");
+
+      BaseUtitiles.showToast(message);
+      return isSuccess;
+    } catch (error) {
+      print("Delete API Error: $error");
+      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
+      return false;
+    }
   }
 
   //---Delete API----
@@ -143,19 +104,17 @@ class StaffVoucher_provider{
     return data;
   }
   //--EditAPI
-  static Future<List<StaffvouchereditResponse>> SitevoucherSite_entryList_editAPI(int VocId) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GET_STAFFVOUCHERSITE_EDIT_API + "?VocId=$VocId").then((value) {
-      final res = staffvouchereditResponseFromJson(value);
-      if (res != null && res.length > 0) {
-        data = res;
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG+error);
-    });
-    return data;
+
+  static Future<StaffvouchereditResponse?> SitevoucherSite_entryList_editAPI(int VocId) async {
+    try{
+      final value = await ApiManager.getAPICall(ApiConstant.GET_STAFFVOUCHERSITE_EDIT_API + "?id=$VocId");
+      print("SitevocEntryList:" + value);
+      return staffvouchereditResponseFromJson(value);
+    }
+    catch(e){
+      print("ERROR.....$e");
+      return null;
+    }
   }
 
 }

@@ -56,6 +56,7 @@ class _SiteVoucher_EntryScreenState extends State<SiteVoucher_EntryScreen> {
     var duration = const Duration(seconds: 0);
     Future.delayed(duration, () async {
       if (siteVoucher_Controller.SaveButton.value == RequestConstant.SUBMIT) {
+        siteVoucher_Controller.imageFiles.value = [];
         siteVoucher_Controller.gettingNetworkImages.value = [];
         projectController.projectname.text = "--SELECT--";
         projectController.selectedProjectId.value = 0;
@@ -78,7 +79,8 @@ class _SiteVoucher_EntryScreenState extends State<SiteVoucher_EntryScreen> {
         await autoYearWiseNoController.AutoYearWiseNo("SITE VOUCHER");
         siteVoucher_Controller.AutoYearwiseSiteVoc.text =
             autoYearWiseNoController.SiteVoucher_autoYrsWise.value;
-      } else if (siteVoucher_Controller.SaveButton.value ==
+      }
+      else if (siteVoucher_Controller.SaveButton.value ==
           RequestConstant.RESUBMIT) {
         await siteVoucher_Controller.gettingImage();
         siteVoucher_Controller.Sitevoucher_EditListApiValue.forEach((element) {

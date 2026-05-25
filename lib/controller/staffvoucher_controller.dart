@@ -17,153 +17,150 @@ import '../utilities/requestconstant.dart';
 import 'commonvoucher_controller.dart';
 import 'logincontroller.dart';
 
-class StaffVoucher_Controller extends GetxController{
+class StaffVoucher_Controller extends GetxController {
   final StaffVocEntrylistFrDate = TextEditingController();
   final StaffVocEntrylistToDate = TextEditingController();
-  final AutoYearwisestaffVoc=new TextEditingController();
-  final staffvocDate=new TextEditingController();
-  final DetAmount=TextEditingController();
-  final Tds=TextEditingController();
-  final Tdsamount=TextEditingController();
-  final NetAmount=TextEditingController();
-  final TotalAmount=TextEditingController();
-  final Remarks=TextEditingController();
-  final BankName=TextEditingController();
-  final ChequeDate=TextEditingController();
-  final CheckNo=TextEditingController();
-
-  int checkColor = 0;
-
-
+  final AutoYearwisestaffVoc = new TextEditingController();
+  final staffvocDate = new TextEditingController();
+  final DetAmount = TextEditingController();
+  final Tds = TextEditingController();
+  final Tdsamount = TextEditingController();
+  final NetAmount = TextEditingController();
+  final TotalAmount = TextEditingController();
+  final Remarks = TextEditingController();
+  final BankName = TextEditingController();
+  final ChequeDate = TextEditingController();
+  final ChequeNo = TextEditingController();
 
   LoginController loginController = Get.put(LoginController());
-  ProjectController projectController=Get.put(ProjectController());
+  ProjectController projectController = Get.put(ProjectController());
 
   RxList StaffVocEtyList = [].obs;
-  RxList mainentrylist = [].obs;
-
   RxList getbankNameList = [].obs;
   RxList SearchBar_bankNameList = [].obs;
-  RxList bankDropdownName = [].obs;
   RxInt selectedbankId = 0.obs;
   RxString selectedbankdropdownName = "".obs;
-  int buttonControl = 0;
 
-  SiteController siteController=Get.put(SiteController());
-  CommonVoucherController commonVoucherController=Get.put(CommonVoucherController());
-  StaffController staffController=Get.put(StaffController());
+  SiteController siteController = Get.put(SiteController());
+  CommonVoucherController commonVoucherController =
+  Get.put(CommonVoucherController());
+  StaffController staffController = Get.put(StaffController());
 
   var staffvouchersiteItemListTableModel = StaffvouchersiteDetlist();
-  late List<StaffvouchersiteDetlist> staffvouchersiteTableList = <StaffvouchersiteDetlist>[];
-  late List<StaffvouchersiteDetlist> deleteModelList = <StaffvouchersiteDetlist>[];
-  RxList<VocDet> getSiteDetList = <VocDet>[].obs;
+  late List<StaffvouchersiteDetlist> staffvouchersiteTableList =
+  <StaffvouchersiteDetlist>[];
+  late List<StaffvouchersiteDetlist> deleteModelList =
+  <StaffvouchersiteDetlist>[];
+  RxList<AccStaffVocSWpayment> getSiteDetList = <AccStaffVocSWpayment>[].obs;
   var staffvouchersitelistService = StaffvouchersitelistService();
 
+  RxList Staffvoucher_itemview_GetDbList = [].obs;
+  RxList Sitevoucher_EditListApiValue = [].obs;
 
-  RxList Sitevoucher_itemview_GetDbList = [].obs;
-  RxList Sitevoucher_EditListApiValue=[].obs;
-  int editcheck=0;
-  int itemcheck=0;
-  int Active=0;
-  int VocID=0;
-  RxString type="SiteWise Payment".obs;
-  String edittype="";
-  RxString Button=RequestConstant.SUBMIT.obs;
-  RxString SaveButton=RequestConstant.SUBMIT.obs;
+  RxString type = "Direct Payment/Office".obs;
+  RxBool payeeType = false.obs;
+  RxString SaveButton = RequestConstant.SUBMIT.obs;
 
-
-  clearDatas(){
-    SaveButton.value=RequestConstant.SUBMIT;
-    Button.value=RequestConstant.SUBMIT;
-    type.value="SiteWise Payment";
+  clearDatas() {
+    SaveButton.value = RequestConstant.SUBMIT;
+    type.value = "SiteWise Payment";
     delete_Sitevoucher_itemlist_Table();
-    Sitevoucher_itemview_GetDbList.clear();
-    TotalAmount.text="0.00";
-    staffvocDate.text=BaseUtitiles.initiateCurrentDateFormat();
+    Staffvoucher_itemview_GetDbList.clear();
+    TotalAmount.text = "0.00";
+    staffvocDate.text = BaseUtitiles.initiateCurrentDateFormat();
 
-    staffController.Staffname.text="--Select--";
-    commonVoucherController.VoucherTypeController.text="Payment";
+    staffController.Staffname.text = "--Select--";
+    commonVoucherController.VoucherTypeController.text = "Payment";
     commonVoucherController.VocType.value = "P";
-    commonVoucherController.AccountTypename.text="--Select--";
-    commonVoucherController.Accountname.text="--Select--";
-    commonVoucherController.selectedAccnameId=0.obs;
-    commonVoucherController.Paymodename.text="--Select--";
-    commonVoucherController.AccPayforname.text="--Select--";
-    Remarks.text="";
+    commonVoucherController.AccountTypename.text = "--Select--";
+    commonVoucherController.Accountname.text = "--Select--";
+    commonVoucherController.selectedAccnameId = 0.obs;
+    commonVoucherController.Paymodename.text = "--Select--";
+    commonVoucherController.AccPayforname.text = "--Select--";
+    Remarks.text = "";
   }
-
-
 
   Future getStaffVoc_EntryList() async {
-    mainentrylist.value.clear();
-    StaffVocEtyList.value.clear();
-    await StaffVoucher_provider.getStaffVouc_Entry_List(
-        loginController.user.value.userId,
-        loginController.UserType(),
-        StaffVocEntrylistFrDate.text,
-        StaffVocEntrylistToDate.text)
-        .then((value) async {
-      if (value != null && value.length > 0) {
-        mainentrylist.value = value;
-        StaffVocEtyList.value = mainentrylist.value;
-        return mainentrylist.value;
+    StaffVocEtyList.value = [];
+    final value = await StaffVoucher_provider.getStaffVouc_Entry_List(
+        StaffVocEntrylistFrDate.text, StaffVocEntrylistToDate.text);
+    if (value != null) {
+      if (value.success == true) {
+        if (value.result!.isNotEmpty) {
+          StaffVocEtyList.value = value.result!;
+        } else {
+          BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+        }
+      } else {
+        BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
       }
-      else {
-        BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
-      }
-    });
+    } else {
+      BaseUtitiles.showToast("Something Went Wrong...");
+    }
   }
-  calculation(double? amt,double? tds){
-    Tdsamount.text=(amt! * tds!/100).toString();
-    NetAmount.text=(amt - double.parse(Tdsamount.text)).toString();
 
+  calculation(double? amt, double? tds) {
+    Tdsamount.text = (amt! * tds! / 100).toString();
+    NetAmount.text = (amt - double.parse(Tdsamount.text)).toString();
   }
+
 //---Save to Db
   Sitevoucher_Save_DB(BuildContext context) async {
     staffvouchersiteTableList.clear();
-    int j=0;
-    int amt=0;
-    int netAmount=0;
+    int j = 0;
+    int amt = 0;
+    int netAmount = 0;
     if (NetAmount.text == "0.0" ||
         NetAmount.text == "0.00" ||
         NetAmount.text == "0") {
     } else {
-      staffvouchersiteItemListTableModel =new StaffvouchersiteDetlist();
-      staffvouchersiteItemListTableModel.siteid = siteController.selectedsiteId.value;
-      staffvouchersiteItemListTableModel.projectid = projectController.selectedProjectId.value;
-      staffvouchersiteItemListTableModel.sitename = siteController.Sitename.text;
-      staffvouchersiteItemListTableModel.projectname = projectController.projectname.text;
-      staffvouchersiteItemListTableModel.paytype = commonVoucherController.detVocType;
-      amt=double.parse(DetAmount.text).round();
+      staffvouchersiteItemListTableModel = new StaffvouchersiteDetlist();
+      staffvouchersiteItemListTableModel.reqDetId = 0;
+      staffvouchersiteItemListTableModel.siteid =
+          siteController.selectedsiteId.value;
+      staffvouchersiteItemListTableModel.projectid =
+          projectController.selectedProjectId.value;
+      staffvouchersiteItemListTableModel.sitename =
+          siteController.Sitename.text;
+      staffvouchersiteItemListTableModel.projectname =
+          projectController.projectname.text;
+      staffvouchersiteItemListTableModel.paytype =
+          commonVoucherController.detVocType;
+      amt = double.parse(DetAmount.text).round();
       staffvouchersiteItemListTableModel.amt = amt.toDouble();
       staffvouchersiteItemListTableModel.TdsPer = double.parse(Tds.text);
       staffvouchersiteItemListTableModel.TdsAmt = double.parse(Tdsamount.text);
-      netAmount= double.parse(NetAmount.text).round();
-      staffvouchersiteItemListTableModel.NetAmt =netAmount.toDouble();
-      Sitevoucher_itemview_GetDbList.value.forEach((element) {
-        if(element.siteid ==staffvouchersiteItemListTableModel.siteid){
-          j=1;
+      netAmount = double.parse(NetAmount.text).round();
+      staffvouchersiteItemListTableModel.NetAmt = netAmount.toDouble();
+      for (var element in Staffvoucher_itemview_GetDbList.value) {
+        if (element.siteid == staffvouchersiteItemListTableModel.siteid &&
+            element.paytype == staffvouchersiteItemListTableModel.paytype) {
+          j = 1;
+          BaseUtitiles.showToast("Entry already exist");
         }
-      });
-      if(j==0){
-        staffvouchersiteTableList.add(staffvouchersiteItemListTableModel);
       }
-      else{
-        j=0;
+      if (j == 0) {
+        staffvouchersiteTableList.add(staffvouchersiteItemListTableModel);
+      } else {
+        j = 0;
       }
     }
 
-    var savedatas = await staffvouchersitelistService.StaffvoucherSiteItemlist_table_Save(staffvouchersiteTableList);
+    var savedatas =
+    await staffvouchersitelistService.StaffvoucherSiteItemlist_table_Save(
+        staffvouchersiteTableList);
     return Navigator.pop(context, savedatas);
   }
 
   //Get Values
 
   Future getstaffvouchersiteTablesDatas() async {
-    Sitevoucher_itemview_GetDbList.clear();
-    var siteItem = await staffvouchersitelistService.StaffvoucherSiteItemlist_table_readAll();
+    Staffvoucher_itemview_GetDbList.clear();
+    var siteItem = await staffvouchersitelistService
+        .StaffvoucherSiteItemlist_table_readAll();
     siteItem.forEach((user) {
-      var StaffvouchersiteItemlist =StaffvouchersiteDetlist();
+      var StaffvouchersiteItemlist = StaffvouchersiteDetlist();
+      StaffvouchersiteItemlist.reqDetId = user['reqDetId'];
       StaffvouchersiteItemlist.siteid = user['siteid'];
       StaffvouchersiteItemlist.projectid = user['projectid'];
       StaffvouchersiteItemlist.sitename = user['sitename'];
@@ -173,25 +170,22 @@ class StaffVoucher_Controller extends GetxController{
       StaffvouchersiteItemlist.TdsPer = user['TdsPer'];
       StaffvouchersiteItemlist.TdsAmt = user['TdsAmt'];
       StaffvouchersiteItemlist.NetAmt = user['NetAmt'];
-      Sitevoucher_itemview_GetDbList.add(StaffvouchersiteItemlist);
+      Staffvoucher_itemview_GetDbList.add(StaffvouchersiteItemlist);
     });
   }
 
-  netamountCalculation(){
-    TotalAmount.text="0.0";
-    int count=0;
-    if(Sitevoucher_itemview_GetDbList.value.isNotEmpty) {
-      Sitevoucher_itemview_GetDbList.forEach((element) {
-        count=(double.parse(TotalAmount.text) + element.NetAmt).round();
+  netamountCalculation() {
+    TotalAmount.text = "0.0";
+    int count = 0;
+    if (Staffvoucher_itemview_GetDbList.value.isNotEmpty) {
+      Staffvoucher_itemview_GetDbList.forEach((element) {
+        count = (double.parse(TotalAmount.text) + element.NetAmt).round();
         TotalAmount.text = count.toString();
       });
-    }
-    else{
-      TotalAmount.text="0.0";
+    } else {
+      TotalAmount.text = "0.0";
     }
   }
-
-
 
   //Particular delete
   Future deleteParticularList(StaffvouchersiteDetlist data) async {
@@ -199,257 +193,191 @@ class StaffVoucher_Controller extends GetxController{
     staffvouchersiteItemListTableModel = new StaffvouchersiteDetlist();
     staffvouchersiteItemListTableModel.siteid = data.siteid;
     deleteModelList.add(staffvouchersiteItemListTableModel);
-    await staffvouchersitelistService.StaffvoucherSitedeleteById(deleteModelList);
+    await staffvouchersitelistService.StaffvoucherSitedeleteById(
+        deleteModelList);
   }
 
   delete_Sitevoucher_itemlist_Table() async {
     await staffvouchersitelistService.StaffvoucherSiteItemlist_table_delete();
   }
 
-
-  //---------BankName List----------------
-  // Future getBankName_List() async {
-  //   bankNameList.value.clear();
-  //   // SearchBar_bankNameList.clear();
-  //   await StaffVoucher_provider.getBankName_List().then((value) async {
-  //     if (value != null && value.length > 0) {
-  //       bankNameList.value = value;
-  //       // SearchBar_bankNameList.value = bankNameList.value;
-  //       return bankNameList.value;
-  //     }
-  //     else {
-  //       BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
-  //     }
-  //   });
-  // }
-
-
-
-  Future getBankName_List(BuildContext context) async {
-    getbankNameList.value = await StaffVoucher_provider.getBankName_List();
-    getbankNameList.value.forEach((element) {
-      return bankDropdownName.add(element.bank);
-    });
-    // showDialog(
-    //     context: context,
-    //     builder: (BuildContext context) {
-    //       return StaffShowPopup(list:getStaffDropdownvalue.value,value: 0,);
-    //     });
-  }
-
-  setSelectedBankID(String value) {
-    if (getbankNameList.value.length>0) {
-      getbankNameList.forEach((element) {
-        if(value == element.bank){
-          selectedbankId(element.bankId);
+  Future getBankName_List() async {
+    getbankNameList.value = [];
+    final value = await StaffVoucher_provider.getBankName_List();
+    if (value != null) {
+      if (value.success == true) {
+        if (value.result!.isNotEmpty) {
+          getbankNameList.value = value.result!;
+        } else {
+          BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
         }
-      });
+      } else {
+        BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
+      }
+    } else {
+      BaseUtitiles.showToast("Something Went Wrong...");
     }
-    setSelectedstafftName(selectedbankId.value);
   }
-
-  setSelectedstafftName(int? id) {
-    if (getbankNameList.value != null) {
-      getbankNameList.value.forEach((element) {
-        if (id == element.bankId) {
-          selectedbankdropdownName(element.bank.toString());
-        }
-      });
-    }
-    BankName.text=selectedbankdropdownName.value;
-  }
-
-
-
-
-
 
   //----- POST and PUT JSON Values----
-  Future SaveButtonSitevoucher_ItemlistScreen(BuildContext context, int id) async {
-    buttonControl = 1;
-    getSiteDetList.value.clear();
-    if (type.value == "SiteWise Payment") {
-      await getstaffvouchersiteTablesDatas();
-    }
+  Future SaveButtonSitevoucher_ItemlistScreen(
+      BuildContext context, int id) async {
     String body = staffvouchersiteRequestToJson(StaffvouchersiteRequest(
-      vocId: id != 0 ? id.toString() : "0",
-      vocNo: AutoYearwisestaffVoc.text,
-      vocDate: staffvocDate.text,
+      id: SaveButton.value == RequestConstant.RESUBMIT ? id : 0,
+      staffVocNo: AutoYearwisestaffVoc.text,
+      employeeId: staffController.selectedstaffId.value,
       vocType: commonVoucherController.VocType.value,
-      staffId: staffController.selectedstaffId.value.toString(),
-      accTypeId: commonVoucherController.selectedAccTypeId.value.toString(),
-      accNameId: commonVoucherController.selectedAccnameId.value.toString(),
-      payFor: commonVoucherController.selectedAccPayId.value.toString(),
-      payMode: commonVoucherController.selectedPaymodeId.value.toString(),
+      vocDate: staffvocDate.text,
+      accTypeId: commonVoucherController.selectedAccTypeId.value,
+      payFor: commonVoucherController.selectedAccPayId.value,
+      paymentMode: commonVoucherController.selectedPaymodeId.value,
       payType: type.value == "Direct Payment/Office" ? "DP" : "SP",
-      vocAmt: TotalAmount.text,
-      companyId: "0",
-      bankId: selectedbankId.value.toString(),
-      chqNo: CheckNo.text,
-      chqDate: ChequeDate.text,
-      nameThrough: commonVoucherController.namethrough.text,
+      vocAmount: double.tryParse(TotalAmount.text),
+      paidBy: 0,
+      companyId: 0,
       remarks: Remarks.text,
-      preparedby: loginController.EmpId(),
-      userId: loginController.UserId(),
-      deviceName: BaseUtitiles.deviceName,
-      entryMode: SaveButton.value == "Submit" ? "ADD" : SaveButton.value ==
-          "Re-Submit" ? "UPDATE" : SaveButton.value == "Verify"
-          ? "VERIFY"
-          : SaveButton.value == "Approve" ? "APPROVE" : "",
-      vocDet: getSiteDetList.value.length == 0
-          ? getSitevoucherDet()
-          : getSiteDetList.value,
+      bankId: selectedbankId.value,
+      chequeNo: ChequeNo.text,
+      chequeDate: ChequeDate.text,
+      nameThrough: commonVoucherController.namethrough.text,
+      requisitionId: 0,
+      accountPayee: payeeType.value==true? 1 : 0,
+      projectId: projectController.selectedProjectId.value,
+      createdBy: int.tryParse(loginController.EmpId()),
+      createdDate: BaseUtitiles().convertToUtcIso(staffvocDate.text),
+      accountNameId: commonVoucherController.selectedAccnameId.value,
+      accStaffVocSWpaymentS: getSitevoucherDet(id),
     ));
 
-    final list = await StaffVoucher_provider.SaveSitevoucherScreenEntryAPI(
-        body, id, buttonControl, context);
-    if (list != null) {
-      if (id != 0) {
-        Navigator.pop(context);
-        Navigator.pop(context);
-        Navigator.pop(context);
-        // Navigator.pushReplacement(
-        //     context,
-        //     new MaterialPageRoute(
-        //         builder: (BuildContext context) =>
-        //         new Staff_Voucher_EntryListScreen()));
-        buttonControl = 0;
-        editcheck = 0;
-        BaseUtitiles.showToast(list);
-        delete_Sitevoucher_itemlist_Table();
-        Sitevoucher_itemview_GetDbList.clear();
-        itemcheck = 0;
-        Active = 1;
-        clearDatas();
-        Clear();
+    final list = await StaffVoucher_provider.SaveSitevoucherScreenEntryAPI(body, id);
+
+    if (list != null ) {
+      if(list["success"] == true){
+        BaseUtitiles.showToast(list["message"]);
         await getStaffVoc_EntryList();
-        // return Navigator.of(context).pop();
+        clearDatas();
+        delete_Sitevoucher_itemlist_Table();
+        BaseUtitiles.popMultiple(context, count: 3);
       }
       else {
-        if (list == RequestConstant.DUPLICATE_OCCURED) {
-          Navigator.pop(context);
-          Navigator.pop(context);
-          buttonControl = 0;
-          return BaseUtitiles.showToast(list!);
-        } else {
-          Navigator.pop(context);
-          Navigator.pop(context);
-          Navigator.pop(context);
-          // Navigator.pushReplacement(
-          //     context,
-          //     new MaterialPageRoute(
-          //         builder: (BuildContext context) =>
-          //         new Staff_Voucher_EntryListScreen()));
-          buttonControl = 0;
-          editcheck = 0;
-          itemcheck = 0;
-          Active = 1;
-          clearDatas();
-          BaseUtitiles.showToast(list!);
-          delete_Sitevoucher_itemlist_Table();
-          Clear();
-          Sitevoucher_itemview_GetDbList.clear();
-          await getStaffVoc_EntryList();
-          // return Navigator.of(context).pop();
-        }
+        BaseUtitiles.showToast(list["message"] ?? 'Something went wrong..');
+        BaseUtitiles.popMultiple(context, count: 2);
       }
+    } else {
+      BaseUtitiles.showToast("Something went wrong..");
+      BaseUtitiles.popMultiple(context, count: 2);
     }
   }
 
-
-  List<VocDet>? getSitevoucherDet() {
-    Sitevoucher_itemview_GetDbList.value.forEach((element) {
-      var list = new VocDet(
-        siteId: element.siteid.toString(),
-        projectId: element.projectid.toString(),
-        payType: element.paytype.toString(),
-        amt:element.amt.toString(),
-        tdsPer:element.TdsPer.toString(),
-        tdsAmt: element.TdsAmt.toString(),
-        netAmt: element.NetAmt.toString(),
-      );
+  List<AccStaffVocSWpayment>? getSitevoucherDet(id) {
+    getSiteDetList.value=[];
+    Staffvoucher_itemview_GetDbList.value.forEach((element) {
+      var list = new AccStaffVocSWpayment(
+          id: SaveButton.value == RequestConstant.RESUBMIT ?element.reqDetId:0,
+          staffVocherId: SaveButton.value == RequestConstant.RESUBMIT ? id : 0,
+          payType: element.paytype.toString(),
+          amount: element.amt,
+          tdsPercentage: element.TdsPer,
+          tdsAmount: element.TdsAmt,
+          netAmount: element.NetAmt,
+          purOrdMasId: 0,
+          purOrdBillMasId: 0,
+          workOrderId: 0,
+          workId: 0,
+          nmrWorkId: 0,
+          nmrWorkDetId: 0,
+          siteId: element.siteid,
+          projectId: element.projectid,
+          reqAmount: element.amt,
+          paymentReqId: 0);
       getSiteDetList.value.add(list);
     });
     return getSiteDetList.value;
   }
 
   //----Delete---
-  Future SitevoucherList_DeleteApi(int VocId, String VocNo) async {
-    await StaffVoucher_provider.Staffvoucher_entryList_deleteAPI(VocId,VocNo, loginController.UserId(), BaseUtitiles.deviceName)
-        .then((value) async {
-      if (value != null && value.length > 0) {
-        return value;
-      }
-    });
+  Future<bool> StaffvoucherList_DeleteApi(int vocId) async {
+    return StaffVoucher_provider.Staffvoucher_entryList_deleteAPI(vocId);
   }
 
   // ---------Edit Call API----------
 
-
   Future Sitevoucher_entrylist_editSaveDetTable() async {
     staffvouchersiteTableList.clear();
     Sitevoucher_EditListApiValue.forEach((element) {
-      element.vocEditDet.forEach((val) {
-        staffvouchersiteItemListTableModel =new StaffvouchersiteDetlist();
+      element.accStaffVocSWpaymentS.forEach((val) {
+        staffvouchersiteItemListTableModel = new StaffvouchersiteDetlist();
+        staffvouchersiteItemListTableModel.reqDetId = val.id;
         staffvouchersiteItemListTableModel.siteid = val.siteId;
         staffvouchersiteItemListTableModel.projectid = val.projectId;
         staffvouchersiteItemListTableModel.sitename = val.siteName.toString();
-        staffvouchersiteItemListTableModel.projectname = val.projectName.toString();
+        staffvouchersiteItemListTableModel.projectname =
+            val.projectName.toString();
         staffvouchersiteItemListTableModel.paytype = val.payType.toString();
-        staffvouchersiteItemListTableModel.amt = val.amt;
-        staffvouchersiteItemListTableModel.TdsPer = val.tdsPer;
-        staffvouchersiteItemListTableModel.TdsAmt = val.tdsAmt;
-        staffvouchersiteItemListTableModel.NetAmt = val.netAmt;
+        staffvouchersiteItemListTableModel.amt = val.amount;
+        staffvouchersiteItemListTableModel.TdsPer = val.tdsPercentage;
+        staffvouchersiteItemListTableModel.TdsAmt = val.tdsAmount;
+        staffvouchersiteItemListTableModel.NetAmt = val.netAmount;
         staffvouchersiteTableList.add(staffvouchersiteItemListTableModel);
       });
     });
-    var savedatas = await staffvouchersitelistService.StaffvoucherSiteItemlist_table_Save(staffvouchersiteTableList);
-    return  savedatas;
+    var savedatas =
+    await staffvouchersitelistService.StaffvoucherSiteItemlist_table_Save(
+        staffvouchersiteTableList);
+    return savedatas;
   }
 
   Future StaffvoucherEntryList_EditApi(int VocId, BuildContext context) async {
-    await StaffVoucher_provider.SitevoucherSite_entryList_editAPI(VocId).then((value) async {
-      if (value != null && value.length > 0) {
-        Sitevoucher_EditListApiValue.value.clear();
-        editcheck = 1;
-        itemcheck=1;
-        Sitevoucher_EditListApiValue.value = value;
-        await Sitevoucher_entrylist_editSaveDetTable();
-        await getstaffvouchersiteTablesDatas();
-        return Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Staff_Voucher_EntryScreen()),
-        );
+    Sitevoucher_EditListApiValue.value = [];
+    final value = await StaffVoucher_provider.SitevoucherSite_entryList_editAPI(VocId);
+    if (value != null) {
+      if (value.success == true) {
+        Sitevoucher_EditListApiValue.value = [value.result];
+        if (Sitevoucher_EditListApiValue.value.isNotEmpty) {
+          SaveButton.value = RequestConstant.RESUBMIT;
+          await Sitevoucher_entrylist_editSaveDetTable();
+          await getstaffvouchersiteTablesDatas();
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => Staff_Voucher_EntryScreen()),
+          );
+        } else {
+          BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+        }
+      } else {
+        BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
       }
-    });
+    } else {
+      BaseUtitiles.showToast("Something Went Wrong...");
+    }
   }
 
-  Clear(){
-    TotalAmount.text="0.00";
-  }
-
-
-  Future DeleteAlert(BuildContext context,int index) async {
+  Future DeleteAlert(BuildContext context, int index) async {
     return await showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Alert!'),
         content: Text('Do you want to Delete?'),
-        actions:[
+        actions: [
           Container(
-            margin: EdgeInsets.only(left: 20,right: 20),
+            margin: EdgeInsets.only(left: 20, right: 20),
             child: IntrinsicHeight(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: TextButton(onPressed: (){
-                      Navigator.pop(context);
-                    }, child: Text("Cancel", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE))),
+                    child: TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text("Cancel",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                                fontSize: RequestConstant.Lable_Font_SIZE))),
                   ),
                   VerticalDivider(
-                    color: Colors.grey.shade400,  //color of divider
+                    color: Colors.grey.shade400, //color of divider
                     width: 5, //width space of divider
                     thickness: 2, //thickness of divier line
                     indent: 15, //Spacing at the top of divider.
@@ -457,17 +385,21 @@ class StaffVoucher_Controller extends GetxController{
                   ),
                   Expanded(
                     child: TextButton(
-                        onPressed: () {
-                          editcheck=0;
-                          itemcheck=0;
-                          Active=0;
-                          delete_Sitevoucher_itemlist_Table();
-                          Sitevoucher_itemview_GetDbList.value.clear();
-                          SitevoucherList_DeleteApi(StaffVocEtyList[index].vocId,StaffVocEtyList[index].vocNo);
-                          StaffVocEtyList.removeAt(index);
-                          Navigator.of(context).pop();
+                        onPressed: () async {
+                          bool result = await StaffvoucherList_DeleteApi(
+                              StaffVocEtyList[index].id);
+                          if (result) {
+                            StaffVocEtyList.removeAt(index);
+                            Navigator.of(context).pop();
+                          } else {
+                            Navigator.of(context).pop();
+                          }
                         },
-                        child: Text("Delete", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE))),
+                        child: Text("Delete",
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                                fontSize: RequestConstant.Lable_Font_SIZE))),
                   )
                 ],
               ),
@@ -495,5 +427,4 @@ class StaffVoucher_Controller extends GetxController{
       ),
     );
   }
-
 }
