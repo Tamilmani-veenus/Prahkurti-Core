@@ -152,8 +152,8 @@ class ApiConstant{
   static String GETTRANSITEMLIST = BASE_URL + "api/MaterialTransferProject/GetMaterialList";
   static String GETMATTRANSREQ = BASE_URL + "api/MaterialTransferRequest/GetMaterialListbyPRJSIT";
   static String GET_TRANSBETSITE_ENTRYLIST = BASE_URL_CORE + "api/MaterialSitetosite/GetAllSitetoSiteMas";
-  static String GETCASHBOOK_SITE = BASE_URL + "api/Report/GetCashBookSite";
-  static String GETCASHBOOK_STAFF = BASE_URL + "api/Report/GetCashBookStaff";
+  static String GETCASHBOOK_SITE =  BASE_URL_CORE + "api/AccountsReports/getCashBookSite";
+  static String GETCASHBOOK_STAFF = BASE_URL_CORE + "api/AccountsReports/getCashBookStaff";
   static String GETACCOUNTTYPEDROPDOWNLIST = BASE_URL_CORE + "api/SiteVoucher/GetAccountType";
   static String GETACCOUNTTYPEDROPDOWNLISTADVREQ = BASE_URL + "api/CommonFile/GetAccTypeAdvReq";
   static String GetADVREQ_SITEWIEPAYMENTLIST = BASE_URL + "api/AdvRequisitionVoucher/GetAdvreq_sitewisePayment";

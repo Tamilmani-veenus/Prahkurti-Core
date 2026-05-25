@@ -1,63 +1,94 @@
-// To parse this JSON data, do
-//
-//     final casebookstaff = casebookstaffFromJson(jsonString);
-
 import 'dart:convert';
 
-List<Casebookstaff> casebookstaffFromJson(String str) => List<Casebookstaff>.from(json.decode(str).map((x) => Casebookstaff.fromJson(x)));
+Casebookstaff casebookstaffFromJson(String str) => Casebookstaff.fromJson(json.decode(str));
 
-String casebookstaffToJson(List<Casebookstaff> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String casebookstaffToJson(Casebookstaff data) => json.encode(data.toJson());
 
 class Casebookstaff {
-  Casebookstaff({
-    this.sno,
-    this.staffid,
-    this.vocDate,
-    this.vocdate,
-    this.vocNo,
-    this.descriptions,
-    this.vocType,
-    this.debit,
-    this.credit,
-    this.remarks,
-  });
+  bool? success;
+  List<Result>? result;
+  String? message;
+  double? totalCredit;
+  double? totalDebit;
+  double? closingBalance;
 
-  int? sno;
-  int? staffid;
-  String? vocDate;
-  String? vocdate;
-  String? vocNo;
-  String? descriptions;
-  String? vocType;
-  double? debit;
-  double? credit;
-  String? remarks;
+  Casebookstaff({
+    this.success,
+    this.result,
+    this.message,
+    this.totalCredit,
+    this.totalDebit,
+    this.closingBalance,
+  });
 
 
   factory Casebookstaff.fromJson(Map<String, dynamic> json) => Casebookstaff(
-    sno: json["sno"],
-    staffid: json["staffid"],
-    vocDate: json["voc_date"],
-    vocdate: json["vocdate"],
-    vocNo: json["voc_no"],
-    descriptions: json["Descriptions"],
-    vocType: json["VOC_TYPE"],
-    debit: json["Debit"],
-    credit: json["credit"],
-    remarks: json["remarks"],
-
+    success: json["success"],
+    result: json["result"]==null?[]:List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
+    message: json["message"],
+    totalCredit: json["totalCredit"],
+    totalDebit: json["totalDebit"],
+    closingBalance: json["closingBalance"],
   );
 
   Map<String, dynamic> toJson() => {
-    "sno": sno,
-    "staffid": staffid,
-    "voc_date": vocDate,
-    "vocdate": vocdate,
-    "voc_no": vocNo,
+    "success": success,
+    "result": result==null?[]:List<dynamic>.from(result!.map((x) => x.toJson())),
+    "message": message,
+    "totalCredit": totalCredit,
+    "totalDebit": totalDebit,
+    "closingBalance": closingBalance,
+  };
+}
+
+class Result {
+  int? sno;
+  int? employeeId;
+  String? voucherNo;
+  String? vocdate;
+  String? voucherDate;
+  String? voucherType;
+  String? descriptions;
+  double? creditAmount;
+  double? depitAmount;
+  String? remarks;
+
+  Result({
+    this.sno,
+    this.employeeId,
+    this.voucherNo,
+    this.vocdate,
+    this.voucherDate,
+    this.voucherType,
+    this.descriptions,
+    this.creditAmount,
+    this.depitAmount,
+    this.remarks,
+  });
+
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    sno: json["SNO"],
+    employeeId: json["EmployeeId"],
+    voucherNo: json["VoucherNo"],
+    vocdate: json["Vocdate"],
+    voucherDate: json["VoucherDate"],
+    voucherType: json["VoucherType"],
+    descriptions: json["Descriptions"],
+    creditAmount: json["CreditAmount"],
+    depitAmount: json["DepitAmount"],
+    remarks: json["Remarks"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "SNO": sno,
+    "EmployeeId": employeeId,
+    "VoucherNo": voucherNo,
+    "Vocdate": vocdate,
+    "VoucherDate": voucherDate,
+    "VoucherType": voucherType,
     "Descriptions": descriptions,
-    "VOC_TYPE": vocType,
-    "Debit": debit,
-    "credit": credit,
-    "remarks": remarks,
+    "CreditAmount": creditAmount,
+    "DepitAmount": depitAmount,
+    "Remarks": remarks,
   };
 }

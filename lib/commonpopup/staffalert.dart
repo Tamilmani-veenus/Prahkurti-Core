@@ -72,7 +72,7 @@ class _StaffShowPopupState extends State<StaffShowPopup> {
                         onTap: () async{
                           staffController.setSelectedStaffID(staffController.mainlist.value[index].empName!);
                           await cashBookStaffController.getcashbookstaffdetails();
-                          cashBookStaffController.calculations();
+                          // cashBookStaffController.calculations();
                           Navigator.pop(context);
 
                         },

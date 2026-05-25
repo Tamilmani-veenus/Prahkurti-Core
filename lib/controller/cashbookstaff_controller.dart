@@ -3,6 +3,8 @@ import '../provider/cashbook_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
+import '../utilities/baseutitiles.dart';
+
 
 class CashBookStaffController extends GetxController{
   final cashbookStaff_frdateController = TextEditingController();
@@ -18,44 +20,46 @@ class CashBookStaffController extends GetxController{
   StaffController staffController=Get.put(StaffController());
 
   RxList cashstaffDatas = [].obs;
-  int checkColor = 0;
 
   Future getcashbookstaffdetails() async {
-    cashstaffDatas.clear();
-    await CashBookProvider.getcashbookstaffList(
-        staffController.selectedstaffId.value,cashbookStaff_frdateController.text,cashbookStaff_todateController.text)
-        .then((value) async {
-      if (value != null && value.length > 0) {
-        cashstaffDatas.value = value;
-        return cashstaffDatas.value;
+    cashstaffDatas.value = [];
+
+    final value = await CashBookProvider.getcashbookstaffList(
+        staffController.selectedstaffId.value,cashbookStaff_frdateController.text,cashbookStaff_todateController.text
+    );
+
+    if (value != null) {
+      if (value.success == true) {
+
+        // List data
+        if (value.result != null) {
+          cashstaffDatas.value = value.result!;
+        }
+
+        // Totals
+        totalDebit.text = value.totalDebit.toString();
+        totalCredit.text = value.totalCredit.toString();
+
+        // Closing balance logic
+        double closing =
+            double.tryParse(value.closingBalance.toString()) ?? 0.0;
+
+        if (closing >= 0) {
+          closingCredit.text = closing.toString();
+          closingDebit.text = "0.0";
+        } else {
+          closingDebit.text = closing.abs().toString();
+          closingCredit.text = "0.0";
+        }
+
+      } else {
+        BaseUtitiles.showToast(
+            value.message ?? 'Something went wrong..');
       }
-    });
+    } else {
+      BaseUtitiles.showToast("Something Went Wrong...");
+    }
   }
 
-  calculations(){
-    totalDebit.text="0.0";
-    totalCredit.text="0.0";
-    closingDebit.text="0.0";
-    closingCredit.text="0.0";
-    cashstaffDatas.value.forEach((element) {
-      totalDebit.text=(double.parse(totalDebit.text)+element.debit).toString();
-      totalCredit.text=(double.parse(totalCredit.text)+element.credit).toString();
-      if(double.parse(totalDebit.text)>=double.parse(totalCredit.text)){
-        closingDebit.text=(double.parse(totalDebit.text)-double.parse(totalCredit.text)).toString();
-      }
-      else{
-        closingDebit.text="0.0";
-      }
-
-      if(double.parse(totalDebit.text)<=double.parse(totalCredit.text)){
-        closingCredit.text=(double.parse(totalCredit.text)-double.parse(totalDebit.text)).toString();
-      }
-      else{
-        closingCredit.text="0.0";
-      }
-    });
-    print(totalDebit.text);
-    print(totalCredit.text);
-  }
 
 }

@@ -54,8 +54,16 @@ class _Subcont_Nmr_EntryScreenState_Site
             BaseUtitiles.initiateCurrentDateFormat();
         staffVoucher_Controller.ChequeDate.text =
             BaseUtitiles.initiateCurrentDateFormat();
-        staffController.Staffname.text = "--SELECT--";
-        staffController.selectedstaffId.value = 0;
+        if (loginController.user.value.userType == "A") {
+          staffController.Staffname.text = "--SELECT--";
+          staffController.selectedstaffId.value = 0;
+        } else {
+          staffController.Staffname.text =
+              loginController.user.value.empName
+                  .toString();
+          staffController.selectedstaffId.value =
+          loginController.user.value.empId!;
+        }
         commonVoucherController.VoucherTypeController.text = "Payment";
         commonVoucherController.VocType.value = "P";
         commonVoucherController.AccountTypename.text = "--SELECT--";
@@ -342,12 +350,10 @@ class _Subcont_Nmr_EntryScreenState_Site
                                   child: ConstIcons.siteName),
                             ),
                             onTap: () async {
-                              await staffController.get_staffDropdowntList(
-                                  context, "staffVoucher");
-                              bottomsheetControllers.StaffName(context,
-                                  staffController.getStaffDropdownvalue.value,
-                                  type: "staffVoucher");
-                            },
+                              if (loginController.user.value.userType == "A") {
+                                await staffController.get_staffDropdowntList(context, "staffVoucher");
+                                bottomsheetControllers.StaffName(context, staffController.getStaffDropdownvalue.value, type: "staffVoucher");
+                                  } },
                             validator: (value) {
                               if (value!.isEmpty ||
                                   value == "--Select--" ||
