@@ -19,6 +19,7 @@ import '../home/menu/accounts/cash_book_staff/case_book_staff.dart';
 import '../home/menu/accounts/site_voucher/site_voucher_new/site_voucher_entrylist_new.dart';
 import '../home/menu/accounts/staff_voucher/staff_voucher_entrylist.dart';
 import '../home/menu/daily_entries/advancereques_voucher_new/advance_req_entrylist_new.dart';
+import '../home/menu/daily_entries/bill_generation/bill_generation_boq_entrylist.dart';
 import '../home/menu/daily_entries/bill_generation_direct/bill_generation_entrylist.dart';
 import '../home/menu/daily_entries/company_nmr_attendance/company_nmr_main.dart';
 import '../home/menu/daily_entries/daily_wrk_done_dpr(labour)/daily_wrkdone_dpr_labour.dart';
@@ -91,6 +92,7 @@ class Menu_Controller extends GetxController {
   List<Menu> dailyEntryList = [];
   List<Menu> accountsList = [];
   List<Menu> payrollList = [];
+  List<Menu> projPlanningList = [];
 
 
   Future getMenuList(BuildContext context) async {
@@ -122,6 +124,10 @@ class Menu_Controller extends GetxController {
               if (element.moduleName == "Payroll") {
                 payrollList.clear();
                 payrollList.addAll(element.menu!);
+              }
+              if (element.moduleName == "Project Planning") {
+                projPlanningList.clear();
+                projPlanningList.addAll(element.menu!);
               }
             });
           }else {
@@ -191,9 +197,6 @@ class Menu_Controller extends GetxController {
       Navigator.push(context, MaterialPageRoute(builder: (context) => MRNRequest_PreIndent_List()),);
     }
     else if (value == "Inward") {
-      inward_controller.inwardAllDatasList.value.clear();
-      inward_controller.itemlistTable_Delete();
-      inward_controller.ItemGetTableListdata.value.clear();
       Navigator.push(context, MaterialPageRoute(builder: (context) => Inward_ListScreen()),);
 
       // Navigator.push(
@@ -202,9 +205,6 @@ class Menu_Controller extends GetxController {
       // );
 
     } else if (value == "Transfer Between Projects") {
-      transferBW_project_Controller.type.value="Direct";
-      transferBW_project_Controller.itemlistTable_Delete();
-      transferBW_project_Controller.ItemGetTableListdata.value.clear();
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) =>  TransferBtweenProjects_Entrylist()),
@@ -214,8 +214,6 @@ class Menu_Controller extends GetxController {
       //   MaterialPageRoute(builder: (context) => Transfer_Between_Projects(0)),
       // );
     } else if (value == "Transfer Between Sites") {
-      transferBt_Site_Controller.itemlistTable_Delete();
-      transferBt_Site_Controller.ItemGetTableListdata.value.clear();
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => TransferBetweenSites_Entrylist()),
@@ -240,40 +238,24 @@ class Menu_Controller extends GetxController {
 
   NavigateScreen(String value, BuildContext context) async {
     if (value == "SubContractor Attendance") {
-      dailyEntriesController.deleteSubcontDetTableDatas();
-      dailyEntriesController.readListdata.value=[];
       Navigator.push(context, MaterialPageRoute(builder: (context) => SubAttendanceSiteEntryList()));
 
     }
     else if(value=="Company NMR Attendance"){
-      companyNmrAttendanceController.entrycheck=0;
-      companyNmrAttendanceController.edicheck=0;
       Navigator.push(context, MaterialPageRoute(builder: (context) =>  CompanyNmrMain(0)),);
     }
 
     else if (value == "SubCont NMR Wkly Bill - Generation") {
-      nmrWklyController.editCheck = 0;
-      nmrWklyController.submitCheck = 0;
-      nmrWklyController.NmritemList.value.clear();
       Navigator.push(
         context, MaterialPageRoute(
             builder: (context) => Subcont_NMR_EntryListScreen_Site()),
       );
     } else if (value == "Daily Work Done (DPR)") {
-      dailyWrkDone_DPR_Controller.editCheck = 0;
-      dailyWrkDone_DPR_Controller.entrycheck = 0;
-      dailyWrkDone_DPR_Controller.addwrkCheck = 0;
-      dailyWrkDone_DPR_Controller.screenchek.value=0;
-      dailyWrkDone_DPR_Controller.dpr_itemview_DbList.value.clear();
-
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => DailyWork_done_DPR_EntryList()),
       );
-    } else if (value == "Daily Work Done (DPR New)") {
-        dailyWrkDone_DPRNEW_Controller. entrycheck=0;
-        dailyWrkDone_DPRNEW_Controller.editcheck=0;
-        dailyWrkDone_DPRNEW_Controller.check=0;
+    } else if (value == "Daily Work Done [DPR New]") {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => DailyWork_done_DPR_EntryListNew()),
@@ -281,30 +263,26 @@ class Menu_Controller extends GetxController {
     }
 
     else if (value == "Daily Work Done (DPR Labour)") {
-      dailyWrkDone_DPRLabour_Controller.screencheck=0;
-      dailyWrkDone_DPRLabour_Controller.editCheck=0;
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => DailyWrk_Done_DPR_Labour(0)),
       );
     }
+    else if (value == "Bill Generation") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Bill_Generation_Boq_Entrylist()),
+      );
 
+    }
 
     else if (value == "Bill Generation - Direct") {
-      billGenerationDirectController.entrycheck=0;
-      billGenerationDirectController.editCheck=0;
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => Bill_Generation_direct_Entrylist()),
       );
 
     } else if (value == "Advance Requisition Voucher") {
-      advanceReqVoucherController_new.itemlistTable_Delete();
-      advanceReqVoucherController_new.ItemGetTableListdata.value.clear();
-      advanceReqVoucherController_new.delete_ListTable();
-      advanceReqVoucherController_new. GetTableList.value.clear();
-      advanceReqVoucherController_new.entrycheck=0;
-      advanceReqVoucherController_new.editcheck=0;
       Navigator.push(context, MaterialPageRoute(builder: (context) => AdvReq_Voucher_EntryList_new()),
       );
     }
@@ -328,7 +306,6 @@ class Menu_Controller extends GetxController {
       );
     }
     else if (value == "Cash Book/Site") {
-      cashBookSiteController.cashsiteDatas.value.clear();
       Navigator.push(
         // context, MaterialPageRoute(builder: (context) => Case_Book_Site()),
         context, MaterialPageRoute(builder: (context) => CashBook_Site()),
@@ -337,8 +314,6 @@ class Menu_Controller extends GetxController {
   }
 
   MainmenuScreen(String value, BuildContext context) {
-    boq_revised_controller.editCheck=0;
-    boq_revised_controller.itemCheck=0;
     if (value == "BOQ - Revised") {
       Navigator.push(
         context,
@@ -347,11 +322,7 @@ class Menu_Controller extends GetxController {
     }
   }
   PayrollScreen(String value, BuildContext context) {
-    if (value == "Staff Requisition Slip") {
-      requisitionSlipController.reqSlip = 0;
-      requisitionSlipController.entryCheck = 0;
-      requisitionSlipController.editCheck = 0;
-      requisitionSlipController.buttonControl = 0;
+    if (value == "Staff L & P Slip") {
       Navigator.push(context, MaterialPageRoute(builder: (context) => Requisitionslip_EntryList()));
     }
   }

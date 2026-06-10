@@ -44,9 +44,9 @@ class Result {
   });
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
-      id: json["id"],
-      staffName: json["staffName"],
-      employeeName: json["employeeName"]
+    id: json["id"],
+    staffName: json["staffName"],
+    employeeName: json["employeeName"]
   );
 
   Map<String, dynamic> toJson() => {

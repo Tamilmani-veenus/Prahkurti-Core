@@ -34,7 +34,7 @@ class CompanyNmrAttendanceController extends GetxController{
   RxList list=[].obs;
   RxList CompanyEntrylist=[].obs;
   RxList EditListApiValue=[].obs;
-  RxString saveButton=RequestConstant.SAVE.obs;
+  RxString saveButton=RequestConstant.SUBMIT.obs;
   RxList Entrylist=[].obs;
   RxList pendingAllDatasList = [].obs;
   late List<bool> isChecked;

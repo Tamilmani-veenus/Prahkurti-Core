@@ -33,91 +33,94 @@ class _MatTransReqAddItemsState extends State<MatTransReqAddItems> {
           FocusManager.instance.primaryFocus?.unfocus();
         }
       },
-      child: Scaffold(
-        backgroundColor: Setmybackground,
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () async {
-            await materialTransferReqController.itemlistSaveTable(context);
-            await materialTransferReqController.getItemlistTablesDatas();
-          },
-          label: const Text(
-            "Done", style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: RequestConstant.Lable_Font_SIZE,
+      child: SafeArea(
+        top: false,
+        child: Scaffold(
+          backgroundColor: Setmybackground,
+          floatingActionButton: FloatingActionButton.extended(
+            onPressed: () async {
+              await materialTransferReqController.itemlistSaveTable(context);
+              await materialTransferReqController.getItemlistTablesDatas();
+            },
+            label: const Text(
+              "Done", style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: RequestConstant.Lable_Font_SIZE,
+              ),
             ),
+            icon: const Icon(
+              Icons.library_add_check_outlined,
+              color: Colors.white,
+              size: RequestConstant.Heading_Font_SIZE,
+            ),
+            backgroundColor: Theme.of(context).primaryColor,
           ),
-          icon: const Icon(
-            Icons.library_add_check_outlined,
-            color: Colors.white,
-            size: RequestConstant.Heading_Font_SIZE,
-          ),
-          backgroundColor: Theme.of(context).primaryColor,
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 40),
-              Container(
-                margin: EdgeInsets.only(left: 15, right: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Expanded(
-                      flex: 2,
-                      child: Text(
-                        "Add Items",
-                        style: TextStyle(
-                            fontSize: RequestConstant.Heading_Font_SIZE,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Container(
-                        height: BaseUtitiles.getheightofPercentage(context, 5),
-                        width: BaseUtitiles.getWidthtofPercentage(context, 40),
-                        margin: EdgeInsets.only(left: 15),
-                        child: TextField(
-                          cursorColor: Theme.of(context).primaryColor,
-                          controller: editingController,
-                          decoration: InputDecoration(
-                            filled: true,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide.none,
-                            ),
-                            prefixIcon: const Icon(
-                              Icons.search,
-                              color: Colors.black,
-                            ),
-                            hintText: "Search..",
-                            hintStyle: TextStyle(color: Colors.black),
-                            isDense: true,
-                            // fillColor: Setmybackground,
-                            fillColor: Colors.white,
-                          ),
-                          onEditingComplete: () {
-                            FocusScope.of(context).unfocus();
-                            // if (onSearch != null) onSearch!(searchcontroller.text);
-                          },
-                          textInputAction: TextInputAction.search,
-                          onChanged: (value) {
-                            setState(() {
-                              materialTransferReqController.mainListAddItems.value = BaseUtitiles.materialPopupAlert(value, materialTransferReqController.mattransreqItemList);
-                            });
-                          },
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: 40),
+                Container(
+                  margin: EdgeInsets.only(left: 15, right: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Expanded(
+                        flex: 2,
+                        child: Text(
+                          "Add Items",
+                          style: TextStyle(
+                              fontSize: RequestConstant.Heading_Font_SIZE,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
-                    ),
-                  ],
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          height: BaseUtitiles.getheightofPercentage(context, 5),
+                          width: BaseUtitiles.getWidthtofPercentage(context, 40),
+                          margin: EdgeInsets.only(left: 15),
+                          child: TextField(
+                            cursorColor: Theme.of(context).primaryColor,
+                            controller: editingController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide.none,
+                              ),
+                              prefixIcon: const Icon(
+                                Icons.search,
+                                color: Colors.black,
+                              ),
+                              hintText: "Search..",
+                              hintStyle: TextStyle(color: Colors.black),
+                              isDense: true,
+                              // fillColor: Setmybackground,
+                              fillColor: Colors.white,
+                            ),
+                            onEditingComplete: () {
+                              FocusScope.of(context).unfocus();
+                              // if (onSearch != null) onSearch!(searchcontroller.text);
+                            },
+                            textInputAction: TextInputAction.search,
+                            onChanged: (value) {
+                              setState(() {
+                                materialTransferReqController.mainListAddItems.value = BaseUtitiles.materialPopupAlert(value, materialTransferReqController.mattransreqItemList);
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: 10),
+                SizedBox(height: 10),
 
-              ListDetails(),
+                ListDetails(),
 
-            ],
+              ],
+            ),
           ),
         ),
       ),

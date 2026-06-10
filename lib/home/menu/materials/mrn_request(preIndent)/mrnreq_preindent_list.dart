@@ -23,22 +23,11 @@ class _MRNRequest_PreIndent_ListState extends State<MRNRequest_PreIndent_List> {
 
   @override
   void initState() {
-    if (mrnRequest_PreIndent_Controller.entrycheck == 2) {
-      mrnRequest_PreIndent_Controller.entrycheck = 0;
-    } else if (mrnRequest_PreIndent_Controller.entrycheck == 0) {
-    } else {
-      mrnRequest_PreIndent_Controller.entrycheck = 1;
-    }
-    setState(() {
-      mrnRequest_PreIndent_Controller.mainEtyList.value.clear();
-      mrnRequest_PreIndent_Controller.MrnReqPreIndentList.value.clear();
-    });
     DateTime currentDate = DateTime.now();
     DateTime lastDayOfMonth = new DateTime(currentDate.year, currentDate.month - 1, 0);
     mrnRequest_PreIndent_Controller.MrnReqPreIndent_FrDate.text = lastDayOfMonth.toString().substring(0, 10);
     mrnRequest_PreIndent_Controller.MrnReqPreIndent_ToDate.text = currentDate.toString().substring(0, 10);
     mrnRequest_PreIndent_Controller.getMrnReq_PreIndent_EntryList();
-    mrnRequest_PreIndent_Controller.MrnReqPreIndentList.value = mrnRequest_PreIndent_Controller.mainEtyList.value;
     super.initState();
   }
 
@@ -551,7 +540,6 @@ class _MRNRequest_PreIndent_ListState extends State<MRNRequest_PreIndent_List> {
                                                                     ],
                                                                   ),
                                                                   onTap: () async {
-                                                                    mrnRequest_PreIndent_Controller.entrycheck = 1;
                                                                     mrnRequest_PreIndent_Controller.delete_MaterialIntent_itemlist_Table();
                                                                     mrnRequest_PreIndent_Controller.Material_itemview_GetDbList.clear();
                                                                     mrnRequest_PreIndent_Controller.getRequestDetList.clear();

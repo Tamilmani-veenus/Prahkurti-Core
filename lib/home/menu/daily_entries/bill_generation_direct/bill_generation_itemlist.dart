@@ -20,12 +20,6 @@ class _Bill_Generation_ItemlistState extends State<Bill_Generation_Itemlist> {
 
   @override
   void initState() {
-    if (billGenerationDirectController.entrycheck == 0) {
-      billGenerationDirectController.entrycheck = 0;
-    } else {
-      billGenerationDirectController.entrycheck = 1;
-    }
-
     super.initState();
   }
 
@@ -84,6 +78,8 @@ class _Bill_Generation_ItemlistState extends State<Bill_Generation_Itemlist> {
                       child: TextFormField(
                         controller: billGenerationDirectController.itemDescController,
                         cursorColor: Colors.black,
+                        enabled: billGenerationDirectController
+                            .ItemGetTableListdata.value.isEmpty,
                         style: const TextStyle(color: Colors.black),
                         decoration: const InputDecoration(
                           contentPadding: EdgeInsets.zero,
@@ -131,6 +127,9 @@ class _Bill_Generation_ItemlistState extends State<Bill_Generation_Itemlist> {
                                 controller: billGenerationDirectController
                                     .itemUnitController,
                                 cursorColor: Colors.black,
+                                enabled: billGenerationDirectController
+                                    .ItemGetTableListdata.value.isEmpty,
+
                                 style: const TextStyle(color: Colors.black),
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.zero,
@@ -176,6 +175,8 @@ class _Bill_Generation_ItemlistState extends State<Bill_Generation_Itemlist> {
                                 controller: billGenerationDirectController
                                     .itemQuantityController,
                                 cursorColor: Colors.black,
+                                enabled: billGenerationDirectController
+                                    .ItemGetTableListdata.value.isEmpty,
                                 style: const TextStyle(color: Colors.black),
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.zero,
@@ -220,6 +221,8 @@ class _Bill_Generation_ItemlistState extends State<Bill_Generation_Itemlist> {
                                 keyboardType: TextInputType.numberWithOptions(decimal: true),
                                 controller: billGenerationDirectController
                                     .itemRateController,
+                                enabled: billGenerationDirectController
+                                    .ItemGetTableListdata.value.isEmpty,
                                 cursorColor: Colors.black,
                                 style: const TextStyle(color: Colors.black),
                                 decoration: const InputDecoration(
@@ -262,9 +265,7 @@ class _Bill_Generation_ItemlistState extends State<Bill_Generation_Itemlist> {
                         width: BaseUtitiles.getWidthtofPercentage(context, 15),
                         decoration: BoxDecoration(
                           borderRadius: const BorderRadius.all(Radius.circular(10)),
-                          color: billGenerationDirectController.checkColor == 0
-                              ? Theme.of(context).primaryColor
-                              : Colors.white,
+                          color:  Theme.of(context).primaryColor
                         ),
                         alignment: Alignment.center,
                         child: Text(
@@ -272,16 +273,12 @@ class _Bill_Generation_ItemlistState extends State<Bill_Generation_Itemlist> {
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: RequestConstant.Lable_Font_SIZE,
-                              color:
-                                  billGenerationDirectController.checkColor == 0
-                                      ? Colors.white
-                                      : Theme.of(context).primaryColor),
+                              color: Colors.white
+                          ),
                         ),
                       ),
                       onTap: () {
                         setState(() {
-                          billGenerationDirectController.checkColor = 0;
-
                           if (billGenerationDirectController.itemDescController.text == "" ||
                               billGenerationDirectController.itemUnitController.text ==
                                   "" ||
@@ -342,32 +339,7 @@ class _Bill_Generation_ItemlistState extends State<Bill_Generation_Itemlist> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
 
-                // Expanded(
-                //   child: InkWell(
-                //     child: Container(
-                //       margin: EdgeInsets.only(left: 20,right: 20),
-                //       height: BaseUtitiles.getheightofPercentage(context, 4),
-                //       decoration: BoxDecoration(
-                //         borderRadius: BorderRadius.all(Radius.circular(10)),
-                //         color:  billGenerationDirectController.checkColor == 0 ? Colors.white : Theme.of(context).primaryColor ,
-                //       ),
-                //       alignment: Alignment.center,
-                //       child: Text("Reset",
-                //         style: TextStyle(
-                //             fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,
-                //             color:  billGenerationDirectController.checkColor == 0 ?  Theme.of(context).primaryColor : Colors.white ),
-                //       ),
-                //     ),
-                //     onTap: (){
-                //       setState(() {
-                //         billGenerationDirectController.checkColor = 1;
-                //       });
-                //     },
-                //   ),
-                // ),
 
-                // Expanded(
-                //   child:
 
                 InkWell(
                   child: Container(
@@ -376,9 +348,7 @@ class _Bill_Generation_ItemlistState extends State<Bill_Generation_Itemlist> {
                     height: BaseUtitiles.getheightofPercentage(context, 4),
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      color: billGenerationDirectController.checkColor == 0
-                          ? Theme.of(context).primaryColor
-                          : Colors.white,
+                      color:  Theme.of(context).primaryColor
                     ),
                     alignment: Alignment.center,
                     child: Text(
@@ -386,14 +356,12 @@ class _Bill_Generation_ItemlistState extends State<Bill_Generation_Itemlist> {
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: RequestConstant.Lable_Font_SIZE,
-                          color: billGenerationDirectController.checkColor == 0
-                              ? Colors.white
-                              : Theme.of(context).primaryColor),
+                          color:  Colors.white
+                             ),
                     ),
                   ),
                   onTap: () {
                     setState(() {
-                      billGenerationDirectController.checkColor = 0;
                       // billGenerationDirectController.deductionPaymentCalculation();
                       Navigator.push(
                           context,

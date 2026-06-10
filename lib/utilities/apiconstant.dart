@@ -4,8 +4,8 @@ class ApiConfig {
   // static const String LIVE_ENDPOINT_CORE = "http://192.168.0.250:8080/";  //local
   static const String LIVE_ENDPOINT_CORE = "http://49.204.233.151:8080/";    //local
 
-  static const String DEFAULT_BASE_URL_CORE = LIVE_ENDPOINT_CORE + "PrakruthiAPI/";
   // static const String DEFAULT_BASE_URL_CORE = LIVE_ENDPOINT_CORE + "VeenusAPI/";
+  static const String DEFAULT_BASE_URL_CORE = LIVE_ENDPOINT_CORE + "PrakruthiAPI/";
   static late final String APIURL;
   static late final String APIURL_CORE;
   static late final String WebURL;
@@ -66,8 +66,10 @@ class ApiConstant{
   static String GETSUBCONTRACTDROPDOWNLIST = BASE_URL + "api/CommonFile/GetSubContractorAll";
   static String GETSUBCONTRACTLIST = BASE_URL_CORE + "api/GenericMaster/GetSubContractorByProject";
   static String GETSUBCONTRACTLISTRPT = BASE_URL_CORE + "api/GenericMaster/GetSubContract";
-  static String GETWRKORDERNOLIST = BASE_URL + "api/SubContDirectBill/GetWorkorderNo";
-  static String GETINVOICENOLIST = BASE_URL + "api/SubContDirectBill/GetinvoiceNo";
+  static String GETWRKORDERNOLIST = BASE_URL_CORE + "api/SubContractorWorkQty/GetWorkOrderNoDd";
+  static String GETBOQWRKORDERNOLIST = BASE_URL_CORE + "api/SubContractorWorkQtyBOQ/GetWorkOrderNoDd";
+
+  static String GETINVOICENOLIST = BASE_URL_CORE + "api/SubContractorNMRBill/GetBillNo";
   static String GETNMRBILLNO = BASE_URL + "api/SubcontNMR/GetProjectCumContractorNo";
   static String GETSUBCONTRACTBILLDIRLIST = BASE_URL + "api/SubContDirectBill/GetSubcontList";
   static String GETNMRREPORT = BASE_URL + "api/Report/GetNmrReportMas";
@@ -95,6 +97,8 @@ class ApiConstant{
   static String GETMATERIAL_DETAILS_LIST = BASE_URL + "api/MaterialOpenStock/GetStockAtSiteDetails";
   static String GETMATERIAL_SUBHAED_DROPDOWNLIST = BASE_URL + "api/CommonFile/GetMaterialHead";
   static String GETMATERIALHEAD_REPORT = BASE_URL_CORE + "api/GenericMaster/GetMaterialHeadItem";
+  static String GETDPRNEWHEAD_LIST = BASE_URL_CORE + "api/SubContractorDailyWorkNew/GetHeadNameDd";
+  static String GETBOQHEAD_LIST = BASE_URL_CORE + "api/BOQRevised/GetHeadItemBySite";
   static String GETMATERIALSUBHEAD_REPORT = BASE_URL_CORE + "api/GenericMaster/GetMaterialSubByHead";
   static String GETMATERIALBASEDSUBHEAD_REPORT = BASE_URL_CORE + "api/GenericMaster/GetMaterialSubItemWiseMaterial";
 
@@ -103,7 +107,7 @@ class ApiConstant{
   static String GETMATERIALWISEDROPDOWNLIST = BASE_URL + "api/CommonFile/GetMaterialSubAll";
   static String GETMATERIALWISEREPORTLIST = BASE_URL + "api/CommonFile/GetMaterialSubAllReport";
   static String GETMATERIALWISE_SHOW_LIST = BASE_URL + "api/Report/GetStockAbstract";
-  static String GETSUBCONT_ENTRY_SHOW_CLICK = BASE_URL + "api/CommonFile/GetSubContCategory";
+  static String GETSUBCONT_ENTRY_SHOW_CLICK = BASE_URL_CORE + "api/SubContractorDailyWorkNew/GetLabourData";
   static String GETSUBCONTATTEND_CLICK = BASE_URL_CORE + "api/SubContLabourAttendance/SubContLabcatBasedOnSubContDLR";
   static String GETAUTONO_YEAR_WISE = BASE_URL_CORE + "api/GenericMaster/GetAutoNumber";
   static String GETSUBCONT_ATTEN_ENTRY_LIST = BASE_URL_CORE + "api/SubContLabourAttendance/GetAllSubContLabAtt";
@@ -113,26 +117,36 @@ class ApiConstant{
   static String GETCONTROLL_RIGHTS_ENTRYLIST = BASE_URL_CORE + "api/Admin/GetMenuRightsBasedonMenuIdUserID";
   static String EDIT_SUBCONT_ENTRYLIST_API = BASE_URL_CORE + "api/SubContLabourAttendance/GetSubContLabAttById";
   // static String EDIT_SUBCONT_ENTRYLIST_API = BASE_URL + "api/SubContLabAttendanceShiftBasis/GetShiftBasisAttendanceById";
-  static String GETSUBCONT_NMR_ENTRY_LIST = BASE_URL + "api/SubcontNMR/GetNMRWklyBillEntryList";
-  static String GETSUBCONT_NMR_ITEM_LIST = BASE_URL + "api/SubcontNMR/GETNMRWklyBill";
-  static String GETSUBCONT_NMR_CHECKSTATUS = BASE_URL + "api/SubcontNMR/GetNMRDetails";
-  static String GETSUBCONT_NMR_COUNT_CHECKSTATUS = BASE_URL + "api/SubcontNMR/GetNMRCount";
+  static String GETSUBCONT_NMR_ENTRY_LIST = BASE_URL_CORE + "api/SubContractorNMRBill/GetAllNMRBill";
+  static String GETSUBCONT_NMR_ITEM_LIST = BASE_URL_CORE + "api/SubContractorNMRBill/GetSubContNMRPaymentGeneration";
+  static String GETSUBCONT_NMR_CHECKSTATUS = BASE_URL_CORE + "api/SubContractorNMRBill/GetDetailsNmrBill";
+  static String GETSUBCONT_NMR_COUNT_CHECKSTATUS = BASE_URL_CORE + "api/SubContractorNMRBill/GetNMRBillCount";
   static String GETSUBCONT_NMR_ADVANCE_BALANCE = BASE_URL + "api/SubcontNMR/GetSubContNMRAdvBalance";
-  static String EDIT_NMR_DEDUCTION = BASE_URL + "api/SubcontNMR/GetNMRBillId";
-  static String GET_DPR_ENTRY_LIST = BASE_URL + "api/SubContDPR/GetDPREntryList";
-  static String GET_DPR_SUBCONTRACTOR_LIST = BASE_URL + "api/SubContDPR/GetSubContractorsList";
-  static String GET_DPR_ITEM_LIST = BASE_URL + "api/SubContDPR/GetItemsList";
-  static String GET_DPR_EDIT_API = BASE_URL + "api/SubContDPR/GetDprById";
-  static String GET_DPRNEW_MATERIAL_API = BASE_URL + "api/CommonFile/GetMaterial";
-  static String GET_DPR_NEW_ENTRY_LIST = BASE_URL + "api/SubContDPRNew/GetDPREntryList";
-  static String GET_DPRNEW_BOQDETAILSLIST = BASE_URL + "api/SubContDPRNew/GetItemsList";
-  static String GET_DPRNEW_EDIT_API = BASE_URL + "api/SubContDPRNew/GetDprById";
+  static String EDIT_NMR_DEDUCTION = BASE_URL_CORE + "api/SubContractorNMRBill/GetNMRBillById";
+  static String GET_DPR_ENTRY_LIST = BASE_URL_CORE + "api/SubContractorDailyWork/GetAllDailyWorkMas";
+  static String GET_DPR_SUBCONTRACTOR_LIST = BASE_URL_CORE + "api/SubContractorDailyWork/GetSubcontractorNameDailyWrk";
+  static String GET_DPR_ITEM_LIST = BASE_URL_CORE + "api/SubContractorDailyWork/GetDPRDetLoad";
+  static String GET_DPR_EDIT_API = BASE_URL_CORE + "api/SubContractorDailyWork/GetDPRDetById";
+  static String GET_DPRNEW_SUBCONTRACTOR_LIST = BASE_URL_CORE + "api/SubContractorDailyWorkNew/GetDPRNewSubcontractor";
+  static String GET_DPRNEW_MATERIAL_API = BASE_URL_CORE + "api/SubContractorDailyWorkNew/GetMaterialNameDd";
+  static String GET_DPR_NEW_ENTRY_LIST = BASE_URL + "api/SubContractorDailyWorkNew/GetAllDailyWorkMasNew";
+  static String GET_DPRNEW_BOQDETAILSLIST = BASE_URL_CORE + "api/SubContractorDailyWorkNew/GetDetLoad";
+  static String GET_DPRNEW_EDIT_API = BASE_URL_CORE + "api/SubContractorDailyWorkNew/GetDPRByIdNew";
+  static String GET_DPRNEW_DET_EDIT_API = BASE_URL_CORE + "api/SubContractorDailyWorkNew/GetDPRDetByIdNew";
   static String GET_DPR_LABOUR_ENTRY_LIST = BASE_URL + "api/SubContDPRNewLabour/GetDPREntryList";
   static String GET_DPR_LABOUR_EDIT_API = BASE_URL + "api/SubContDPRNewLabour/GetDprById";
-  static String GET_DIRECTBILL_ADVANCE_BALANCE = BASE_URL + "api/SubContDirectBill/GetSubContAdvBalance";
-  static String GET_DIRECTBILL_ENTRY_LIST = BASE_URL + "api/SubContDirectBill/GetDirectBillEntryList";
-  static String GET_WORKORDER_ENTRY_LIST = BASE_URL + "api/SubContDirectBill/GetWorkOrderList";
-  static String EDIT_DIRECTBILL_API = BASE_URL + "api/SubContDirectBill/GetDirectBillById";
+  static String GET_DIRECTBILL_ADVANCE_BALANCE = BASE_URL_CORE + "api/SubContractorNMRBill/GetSubContractorAdvanceAmount";
+  static String GET_DIRECTBILL_ENTRY_LIST = BASE_URL_CORE + "api/SubContractorWorkQty/GetAllSubContractorWorkQty";
+  static String GET_BOQBILL_ENTRY_LIST = BASE_URL_CORE + "api/SubContractorWorkQtyBOQ/GetAllSubContractorWorkQty";
+
+  static String GET_DIRECTBILL_CALCULATION_LIST = BASE_URL_CORE + "api/GenericMaster/GetAddLess";
+
+  static String GET_WORKORDER_ENTRY_LIST = BASE_URL_CORE + "api/SubContractorWorkQty/GetWorkOrderDet";
+  static String GET_WORKORDERBOQ_ENTRY_LIST = BASE_URL_CORE + "api/SubContractorWorkQtyBOQ/GetBillBOQDetLoad";
+
+  static String EDIT_DIRECTBILL_API = BASE_URL_CORE + "api/SubContractorWorkQty/GetSubContractorWorkQtyById";
+  static String EDIT_BILLBOQ_API = BASE_URL_CORE + "api/SubContractorWorkQtyBOQ/GetSubContractorWorkQtyById";
+
   static String EDIT_INWARDPENDING_API = BASE_URL_CORE + "api/MaterialInward/GetInwardDetById";
   static String EDIT_TRANSFERBET_API = BASE_URL_CORE + "api/MaterialTransfer/GetMaterialTransferbtnProById";
   // static String EDIT_TRANSFERBET_SITE_API = BASE_URL_CORE + "api/MaterialSitetosite/GetMaterialTransferById";
@@ -152,7 +166,7 @@ class ApiConstant{
   static String GETTRANSITEMLIST = BASE_URL + "api/MaterialTransferProject/GetMaterialList";
   static String GETMATTRANSREQ = BASE_URL + "api/MaterialTransferRequest/GetMaterialListbyPRJSIT";
   static String GET_TRANSBETSITE_ENTRYLIST = BASE_URL_CORE + "api/MaterialSitetosite/GetAllSitetoSiteMas";
-  static String GETCASHBOOK_SITE =  BASE_URL_CORE + "api/AccountsReports/getCashBookSite";
+  static String GETCASHBOOK_SITE = BASE_URL_CORE + "api/AccountsReports/getCashBookSite";
   static String GETCASHBOOK_STAFF = BASE_URL_CORE + "api/AccountsReports/getCashBookStaff";
   static String GETACCOUNTTYPEDROPDOWNLIST = BASE_URL_CORE + "api/SiteVoucher/GetAccountType";
   static String GETACCOUNTTYPEDROPDOWNLISTADVREQ = BASE_URL + "api/CommonFile/GetAccTypeAdvReq";
@@ -162,14 +176,13 @@ class ApiConstant{
   static String GETPAYFORDROPDOWNLIST = BASE_URL_CORE + "api/SiteVoucher/GetAccountPayFor";
   static String ACCOUNTNAMEDROPDWONLISTAPI = BASE_URL_CORE + "api/SiteVoucher/GetAccountName";
   static String STAFFDROPDWONLISTAPI = BASE_URL_CORE + "api/StaffRequisition/GetStaffDd";
+  static String STAFFVOUSTAFFLISTAPI = BASE_URL_CORE + "api/StaffVoucher/GetAllStaffNameDropDown";
   static String GET_ADVREQ_ENTRY_LIST = BASE_URL + "api/AdvRequisitionVoucher/GetVoucherProjectEntryList";
   static String GETSITEVOC_ENTRY_LIST = BASE_URL_CORE + "api/SiteVoucher/GetAllAccountSiteVoucher";
   static String GETSTAFFVOC_ENTRY_LIST = BASE_URL_CORE + "api/StaffVoucher/GetAllStaffVoucher";
-  static String STAFFVOUSTAFFLISTAPI = BASE_URL_CORE + "api/StaffVoucher/GetAllStaffNameDropDown";
-  static String GET_STAFFVOUCHER_BANKNAMELIST_API = BASE_URL_CORE + "api/GenericMaster/GetBank";
   static String GET_SITEVOUCHER_EDIT_API = BASE_URL_CORE + "api/SiteVoucher/GetAccountSiteVoucherById";
   static String GET_STAFFVOUCHERSITE_EDIT_API = BASE_URL_CORE + "api/StaffVoucher/GetStafVoucherById";
-  static String GET_STAFFVOUCHER_BankNAMELIST_API = BASE_URL + "api/commonfile/GetBankName";
+  static String GET_STAFFVOUCHER_BANKNAMELIST_API = BASE_URL_CORE + "api/GenericMaster/GetBank";
   static String GETMRNREQUEST_ENTRY_LIST = BASE_URL_CORE + "api/MaterialReqOrdMas/GetAllReqOrdMas";
   static String GET_MATERIAL_EDIT_API = BASE_URL_CORE + "api/MaterialReqOrdMas/GetReqOrdMasById";
   static String GET_MATTRANSREQ_EDIT_API = BASE_URL_CORE + "api/MaterialTransferRequest/GetByIdMTR";
@@ -186,11 +199,12 @@ class ApiConstant{
   static String GETSTOCKLISTMATERIALWISE = BASE_URL_CORE + "api/MaterialReqOrdMas/MrnApprovalStockList";
   static String GET_MRNREQ_ADD_QTY = BASE_URL + "api/CommonFile/GetScale";
   static String GET_CONSUM_EDIT_API = BASE_URL_CORE + "api/MaterialExpenseMas/GetMaterialExpensesById";
-  static String GET_BOQ_ENTRY_LIST = BASE_URL + "api/BOQRevised/GetBOQRevisedEntryList";
-  static String GETREVISEDITEMLIST = BASE_URL + "api/BOQRevised/GetItemsList";
-  static String GET_BOQREVISED_EDIT_API = BASE_URL + "api/BOQRevised/GetBOQRevisedById";
-  static String GETREQUISITIONSLIP_ENTRY_LIST = BASE_URL + "api/HR/GetRequisitionEntryList";
-  static String GET_REQUISITION_EDIT_API = BASE_URL + "api/HR/GetRequisitionById";
+  static String GET_BOQ_ENTRY_LIST = BASE_URL_CORE + "api/BOQRevised/GetAllBOQRevise";
+  static String GET_APP_DET_LIST = BASE_URL_CORE + "api/BOQRevised/GetBOQRevisedByIdApprove";
+  static String GETREVISEDITEMLIST = BASE_URL_CORE + "api/BOQRevised/GetBOQItemDescription";
+  static String GET_BOQREVISED_EDIT_API = BASE_URL_CORE + "api/BOQRevised/GetBOQRevisedById";
+  static String GETREQUISITIONSLIP_ENTRY_LIST = BASE_URL_CORE + "api/StaffRequisition/GetAllStaffRequisitionSlip";
+  static String GET_REQUISITION_EDIT_API = BASE_URL_CORE + "api/StaffRequisition/GetStaffRequisitionSlipById";
   static String GET_TRAACK_PENDING_ALLDATAS_API = BASE_URL_CORE + "api/MaterialAckMas/getByIdAckTransferPending";
   static String GET_TRAACK_ENTYLIST_API = BASE_URL + "api/MaterialTransferAck/GetTransferAckEntryList";
   static String GETONCLICK_PENDINGLISTDetAPI = BASE_URL + "api/CommonFile/GetPendingRecordsItemsList";
@@ -206,6 +220,8 @@ class ApiConstant{
   // static const String GET_PUNCHIN_STATUS = BASE_URL + "api/StaffPunching/GetPunchInandoutStatus";
   static String TODAY_PUNCHIN_STATUS = BASE_URL + "api/StaffPunching/GetPunchInandOutTodayWiseReports";
   static String OLDTODAY_PUNCHIN_STATUS = BASE_URL_CORE + "api/PunchInandOut/GetAllPunInAndOut";
+  static String GET_PUNCH_TYPE_LIST = BASE_URL_CORE + "api/PunchInandOut/GetAllPunchInandOutType";
+  static String GET_STAFF_REQ_TYPE_LIST = BASE_URL_CORE + "api/StaffRequisition/GetStaffReqType";
 
   static String PUNCH_FILTER_STATUS = BASE_URL + "api/StaffPunching/GetPunchInandOutReports";
   static String GET_INVOICEANDDCNOCHECK = BASE_URL + "api/MaterialInward/GetCheckNo";
@@ -231,18 +247,22 @@ class ApiConstant{
   static String GET_VERIFY_QUOTE_LIST = BASE_URL_CORE + "api/MaterialQuote/GetQuoteVerificationPending";
   static String GET_APPROVE_QUOTE_LIST = BASE_URL_CORE + "api/MaterialQuote/GetQuoteApprovalPending";
   static String GET_STORETRANS_PEND_LIST = BASE_URL_CORE + "api/StoreTransferPending/GetAllStoreTransferPending";
+  static String GETSUBCONT_DPRAPPROVAL = BASE_URL_CORE + "api/SubContractorDailyWork/GetToBeApprovedDPR";
+  static String GETNMRBILLVERIFYLIST = BASE_URL_CORE + "api/SubContractorNMRBill/GetNMRVerificationPending";
+  static String GETNMRBILLAPPROVELIST = BASE_URL_CORE + "api/SubContractorNMRBill/GetNMRApprovalPending";
+  static String GETBILLDIRECTVERIFYLIST = BASE_URL_CORE + "api/SubContractorWorkQty/GetSubContractorBillVerificationPending";
+  static String GETBILLBOQVERIFYLIST = BASE_URL_CORE + "api/SubContractorWorkQtyBOQ/GetToBeVerifiedBillBoq";
+  static String GETBILLBOQAPPROVELIST = BASE_URL_CORE + "api/SubContractorWorkQtyBOQ/GetToBeApprovedBillBoq";
+  static String GETBILLDIRECTAPPROVELIST = BASE_URL_CORE + "api/SubContractorWorkQty/GetSubContractorToBeApproved";
+  static String GETSTAFFREQVERIFYLIST = BASE_URL_CORE + "api/StaffRequisition/GetToBeVerified";
+  static String GETSTAFFREQAPPLIST = BASE_URL_CORE + "api/StaffRequisition/GetToBeApproved";
   static String GETSTORETRANSPENDINGVIEWLIST = BASE_URL_CORE + "api/StoreTransferPending/GetReqordDetailsById";
-
-
+  static String GETBOQAPPROLIST = BASE_URL_CORE + "api/BOQRevised/GetBOQRevisedToBeApproved";
 
   static String GETMRNREQUEST_PREINDENT_ENTRYLIST = BASE_URL_CORE + "api/SiteRequest/GetAllPreIndent";
   static String GET_MATERIALREQPREINDEDNT_EDIT_API = BASE_URL_CORE + "api/SiteRequest/GetPreIndentByID";
   static String GET_PENDING_QUOTE_MORE_API = BASE_URL_CORE + "api/MaterialQuote/GetQuoteDetView";
   static String GET_STORETRANFER_MORE_API = BASE_URL_CORE + "api/StoreTransferPending/GetStoreTransferPendingView";
-
-
-
-
 
   static String MRN_VERIFICATION_MOREDETAILS = BASE_URL_CORE + "api/MaterialReqOrdMas/GetReqOrdMasById";
   static String MRN_PREAPPROVAL_MOREDETAILS = BASE_URL_CORE + "api/MaterialPreApprovalRequest/GetTobeApprovalByIDS";
@@ -281,12 +301,13 @@ class ApiConstant{
   static  String GETSUBCONTACTOR_REPORTS = BASE_URL + "api/CommonFile/GetSubCont_ProjwiseReport";
   // static const String GET_SITE_LOCATION = BASE_URL + "api/CommonFile/GetSite_PinAllocation";
   // static String GET_SITE_LOCATION = BASE_URL + "api/commonfile/GetSite_PinAllocationStatus";
-  static String GET_SITE_LOCATION = BASE_URL + "api/PunchInandOut/GetProjectForPinLoc";
+  static String GET_SITE_LOCATION = BASE_URL_CORE + "api/PunchInandOut/GetProjectForPinLoc";
   static String GET_INWARD_IMAGE_LIST = BASE_URL_CORE + "api/MaterialInward/GetInwardImageList";
   static String GET_DLR_IMAGE_LIST = BASE_URL_CORE + "api/SubContLabourAttendance/GetDLRImageList";
   static String GET_VOC_IMAGE_LIST = BASE_URL_CORE + "api/SiteVoucher/GetSiteVoucherImageList";
+
   static String GET_ATTEN_IMAGE_LIST = BASE_URL + "api/Image/GetSubContAttImageList";
-  static String GET_DPR_IMAGE_LIST = BASE_URL + "api/image/GetDprImageList";
+  static String GET_DPR_IMAGE_LIST = BASE_URL_CORE + "api/SubContractorDailyWork/GetDPRImageList";
   static String GET_REQLEAVETYPE_LIST = BASE_URL + "api/Report/GetStaffAttdReportMas";
   static String GETSTAFFLEAVECAL = BASE_URL + "api/CommonFile/GetStaffLeaveDetails";
   static String GETPUNCHREPORTSTAFF = BASE_URL_CORE + "api/GenericMaster/GetEmployee";
@@ -302,14 +323,14 @@ class ApiConstant{
   // static String PUT_UPPDATE_API = BASE_URL + "api/SubContLabAttendanceShiftBasis/PUTShiftBasisAttendanceUpdate";
   static String PUT_APROVAL_API = BASE_URL + "api/SubContLabAttendance/PUTAttendanceApprove";
   // static String PUT_APROVAL_API = BASE_URL + "api/SubContLabAttendanceShiftBasis/PUTShiftBasisAttendanceApprove";
-  static String PUT_NMR_UPDATE_API = BASE_URL + "api/SubcontNMR/PUTNMRBillUpdate";
-  static String PUT_DPR_UPDATE_API = BASE_URL + "api/SubContDPR/PUTDprUpdate";
-  static String PUT_DPR_NEW_UPDATE_API = BASE_URL + "api/SubContDPRNew/PUTDprUpdate";
+  static String PUT_NMR_UPDATE_API = BASE_URL_CORE + "api/SubContractorNMRBill/UpdateNMRBill";
+  static String PUT_DPR_UPDATE_API = BASE_URL_CORE + "api/SubContractorDailyWork/UpdateDailyWork";
+  static String PUT_DPR_NEW_UPDATE_API = BASE_URL_CORE + "api/SubContractorDailyWorkNew/UpdateDailyWorkNew";
   static String PUT_DPR_APROVE_API = BASE_URL + "api/SubContDPR/PUTDprApprove";
   static String PUT_DPR_NEW_APROVE_API = BASE_URL + "api/SubContDPRNew/PUTDprApprove";
   static String PUT_DPR_LABOUR_APROVE_API = BASE_URL + "api/SubContDPRNewLabour/PUTDprApprove";
   static String PUT_DPR_LABOUR_UPDATE_API = BASE_URL + "api/SubContDPRNewLabour/PUTDprUpdate";
-  static String PUT_DIRECTBILL_UPDATE_API = BASE_URL + "api/SubContDirectBill/PUTDirectBillUpdate";
+  static String PUT_DIRECTBILL_UPDATE_API = BASE_URL_CORE + "api/SubContractorWorkQty/UpdateSubContractorWorkQty";
   static String PUT_SUBCONTNMRBILL_APPROVAL_API = BASE_URL + "api/SubcontNMR/PUTNMRApprove";
   static String PUT_BILLGEN_APPROVAL_API = BASE_URL + "api/SubContDirectBill/PUTDirectBillApprove";
   static String PUT_POAPPROVAL_API = BASE_URL_CORE + "api/MaterialPurOrdMas/ApproveSelectedRowById";
@@ -328,8 +349,9 @@ class ApiConstant{
   static String PUT_COMPANYNMR_UPDATE_API = BASE_URL + "api/CompanyLabAttendance/PUTAttendanceUpdate";
   static String PUT_COMPANYNMR_APPROVAL_API = BASE_URL + "api/CompanyLabAttendance/PUTAttendanceApprove";
   static String PUT_Conum_UPDATE_API = BASE_URL_CORE + "api/MaterialExpenseMas/UpdateMaterialExpenses";
-  static String PUT_BOQREVISED_UPDATE_API = BASE_URL + "api/BOQRevised/PUTBOQRevisedUpdate";
-  static String PUT_REQUISITIONSLIP_UPDATE_API = BASE_URL + "api/HR/PUTRequisitionUpdate";
+  static String PUT_BOQREVISED_UPDATE_API = BASE_URL_CORE + "api/BOQRevised/UpdateBoqRevise";
+  static String PUT_BOQREVISED_APPROVE_API = BASE_URL_CORE + "api/BOQRevised/ApproveBoqRevise";
+  static String PUT_REQUISITIONSLIP_UPDATE_API = BASE_URL_CORE + "api/StaffRequisition/UpdateStaffRequisitionSlip";
   static String PUT_TRANSFERACKNOW_UPDATE_API = BASE_URL + "api/MaterialTransferAck/PUTTransferAckUpdate";
   static String PUT_ACCOUNTNAME_UPDATE_API = BASE_URL + "api/CommonFile/PUTAccountNameUpdate";
   static String PUT_PREAPPROVAL_UPDATE_API = BASE_URL + "api/PreApproval/PUTPreApprovalUpdate";
@@ -351,11 +373,11 @@ class ApiConstant{
   static String SUBCONTLABATTAENDANCE_SAVE_API = BASE_URL_CORE + "api/SubContLabourAttendance/AddOrUpdateSubContLabAtt";
   // static String SUBCONTLABATTAENDANCE_SAVE_API = BASE_URL + "api/SubContLabAttendanceShiftBasis/POSTShiftBasisAttendanceSave";
   static String SUBCONTLABATTAENDANCE_SAVE_SITE_API = BASE_URL + "api/SubContLabAttendance/POSTAttendanceSavesite";
-  static String NMR_SAVE_DEDUCTION = BASE_URL + "api/SubcontNMR/POSTNMRBillSave";
-  static String DPR_SAVE_API = BASE_URL + "api/SubContDPR/POSTDprSave";
-  static String DPR_NEW_SAVE_API = BASE_URL + "api/SubContDPRNew/POSTDprSave";
+  static String NMR_SAVE_DEDUCTION = BASE_URL_CORE + "api/SubContractorNMRBill/AddSubContractorNMRBill";
+  static String DPR_SAVE_API = BASE_URL_CORE + "api/SubContractorDailyWork/AddDailyWorkMas";
+  static String DPR_NEW_SAVE_API = BASE_URL_CORE + "api/SubContractorDailyWorkNew/AddDailyWorkMasNew";
   static String DPR_LABOUR_SAVE_API = BASE_URL + "api/SubContDPRNewLabour/POSTDprSave";
-  static String DIRECTBILL_SAVE_API = BASE_URL + "api/SubContDirectBill/POSTDirectBillSave";
+  static String DIRECTBILL_SAVE_API = BASE_URL_CORE + "api/SubContractorWorkQty/AddSubContractorWorkQty";
   static String INWARDPENDING_SAVE_API = BASE_URL_CORE + "api/MaterialInward/AddMaterialInward";
   static String TRANSFERBET_SAVE_API = BASE_URL_CORE + "api/MaterialTransfer/AddOrUpdateMaterialTransfer";
   static String MatTransReq_SAVE_API = BASE_URL_CORE + "api/MaterialTransferRequest/AddOrUpdateTransferReq";
@@ -370,8 +392,8 @@ class ApiConstant{
   static String MATERIALREQUEST_SAVE = BASE_URL_CORE + "api/MaterialReqOrdMas/AddReqOrdMas";
   static String COMPANY_NMR_SAVE_API = BASE_URL + "api/CompanyLabAttendance/POSTAttendanceSave";
   static String CONSUM_SAVE = BASE_URL_CORE + "api/MaterialExpenseMas/AddMaterialExpenses";
-  static String BOQREVISED_SAVE = BASE_URL + "api/BOQRevised/POSTBOQRevisedSave";
-  static String REQUISITION_SAVE = BASE_URL + "api/HR/POSTRequisitionSave";
+  static String BOQREVISED_SAVE = BASE_URL_CORE + "api/BOQRevised/AddBoqRevised";
+  static String REQUISITION_SAVE = BASE_URL_CORE + "api/StaffRequisition/AddStaffRequisitionSlip";
   static String ACCOUNTNAME_SAVE = BASE_URL_CORE + "api/SiteVoucher/AddAccountName";
   static String ACCOUNTNAME_UPDATE = BASE_URL_CORE + "api/SiteVoucher/UpdateAccountName";
   static String POSTMATERIALSAVEAPI = BASE_URL + "api/CommonFile/POSTMaterial";
@@ -397,10 +419,13 @@ class ApiConstant{
   static String DELETE_SUBCONT_ENTRYLIST_API = BASE_URL_CORE + "api/SubContLabourAttendance/DeleteSubContLabAtt";
   // static String DELETE_SUBCONT_ENTRYLIST_API = BASE_URL + "api/SubContLabAttendanceShiftBasis/DeleteShiftBasisAttendance";
   static String DELETE_PREAPPROVAL_ENTRYLIST_API = BASE_URL + "api/PreApproval/DeletePreApproval";
-  static String DELETE_NMR_ENTRYLIST_API = BASE_URL + "api/SubcontNMR/DeleteNMRBill";
-  static String DELETE_DPR_ENTRYLIST_API = BASE_URL + "api/SubContDPR/DeleteDPR";
+  static String DELETE_NMR_ENTRYLIST_API = BASE_URL_CORE + "api/SubContractorNMRBill/DeleteNMRBill";
+  static String DELETE_DPR_ENTRYLIST_API = BASE_URL_CORE + "api/SubContractorDailyWork/DeleteDailyWork";
+  static String DELETE_DPRNEW_ENTRYLIST_API = BASE_URL_CORE + "api/SubContractorDailyWorkNew/DeleteDailyWorkNew";
   static String DELETE_DPRLABOUR_ENTRYLIST_API = BASE_URL + "api/SubContDPRNewLabour/DeleteDPR";
-  static String DELETE_DIRECTBILL_API = BASE_URL + "api/SubContDirectBill/DeleteDirectBill";
+  static String DELETE_DIRECTBILL_API = BASE_URL_CORE + "api/SubContractorWorkQty/DeleteSubContractorWorkQty";
+  static String DELETE_BOQBILL_API = BASE_URL_CORE + "api/SubContractorWorkQtyBOQ/DeleteSubContractorWorkQty";
+
   static String DELETE_INWARDPENDINGLIST_API = BASE_URL_CORE + "api/MaterialInward/DeleteMaterialInward";
   static String DELETE_TRANSFERBET_API = BASE_URL_CORE + "api/MaterialTransfer/DeleteMaterialTransfer";
   static String DELETE_TRANSFERBET_SITE_API = BASE_URL_CORE + "api/MaterialSitetosite/DeleteMaterialTransfer";
@@ -411,8 +436,8 @@ class ApiConstant{
   static String DELETE_MATERIAL_ENTRYLIST_API = BASE_URL_CORE + "api/MaterialReqOrdMas/Delete";
   static String DELETE_MATTRANSREQLIST_API = BASE_URL_CORE + "api/MaterialTransferRequest/DeleteTransferReq";
   static String DELETE_CONSUM_ENTRYLIST_API = BASE_URL_CORE + "api/MaterialExpenseMas/DeleteMaterialExpenses";
-  static String DELETE_BOQREVISED_ENTRYLIST_API = BASE_URL + "api/BOQRevised/DeleteBOQ";
-  static String DELETE_REQUISITION_ENTRYLIST_API = BASE_URL + "api/HR/DeleteRequisition";
+  static String DELETE_BOQREVISED_ENTRYLIST_API = BASE_URL_CORE + "api/BOQRevised/DeleteBOQRevised";
+  static String DELETE_REQUISITION_ENTRYLIST_API = BASE_URL_CORE + "api/StaffRequisition/DeleteStaffRequisitionSlip";
   static String DELETE_TRANSACKENTRYLIST_API = BASE_URL + "api/MaterialTransferAck/DeleteTransferAck";
   static String DELETE_ACCOUNTNAME_API = BASE_URL_CORE + "api/SiteVoucher/DeleteAccountName";
   static String DELETE_COMPANYNMRLIST_API = BASE_URL + "api/CompanyLabAttendance/DeleteAttendance";
@@ -420,7 +445,7 @@ class ApiConstant{
   static String DELETE_DLR_IMAGE_API = BASE_URL_CORE + "api/SubContLabourAttendance/DeleteDLRImg";
   static String SITE_VOC_IMAGE_DELETE = BASE_URL_CORE + "api/SiteVoucher/DeleteSitVoucherImg";
   static String LABR_ATTEN_IMAGE_DELETE = BASE_URL + "api/Image/DeleteSubcontAttImage";
-  static String DPR_IMAGE_DELETE = BASE_URL + "api/Image/DeleteDprImage";
+  static String DPR_IMAGE_DELETE = BASE_URL_CORE + "api/SubContractorDailyWork/DeleteDPRImage";
   static String DELETE_MATERIALREQPREINDENT_ENTRYLIST_API = BASE_URL_CORE + "api/SiteRequest/DeletePreIndent";
 
 }

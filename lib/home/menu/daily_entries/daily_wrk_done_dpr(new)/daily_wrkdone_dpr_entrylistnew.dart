@@ -24,26 +24,11 @@ class _DailyWork_done_DPR_EntryListNewState extends State<DailyWork_done_DPR_Ent
 
   @override
   void initState() {
-    if(dailyWrkDone_DPRNEW_Controller.entrycheck==2){
-      dailyWrkDone_DPRNEW_Controller.entrycheck=0;
-    }
-    else if( dailyWrkDone_DPRNEW_Controller.entrycheck==0){
-
-    }
-    else{
-      dailyWrkDone_DPRNEW_Controller.entrycheck=1;
-    }
-    setState(() {
-      dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value.clear();
-      dailyWrkDone_DPRNEW_Controller.main_entryList.value.clear();
-    });
-    dailyWrkDone_DPRNEW_Controller.editcheck=0;
     DateTime currentDate = DateTime.now();
     DateTime lastDayOfMonth = new DateTime(currentDate.year, currentDate.month - 1, 0);
     dailyWrkDone_DPRNEW_Controller.dpr_New_entryList_frdateController.text = lastDayOfMonth.toString().substring(0, 10);
     dailyWrkDone_DPRNEW_Controller.dpr_New_entryList_todateController.text = BaseUtitiles.initiateCurrentDateFormat();
     dailyWrkDone_DPRNEW_Controller.dpr_New_getEntryList();
-    dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value = dailyWrkDone_DPRNEW_Controller.main_entryList.value;
     super.initState();
   }
   @override
@@ -65,12 +50,8 @@ class _DailyWork_done_DPR_EntryListNewState extends State<DailyWork_done_DPR_Ent
             visible: commanController.addMode.value == 1 ? true : false,
             child: FloatingActionButton.extended(
               onPressed: (){
-                setState(() {
-                  dailyWrkDone_DPRNEW_Controller.entrycheck =0;
-                  dailyWrkDone_DPRNEW_Controller.editcheck =0;
-                  dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value.clear();
+                dailyWrkDone_DPRNEW_Controller.saveButton.value=RequestConstant.SUBMIT;
                   Navigator.push(context, MaterialPageRoute(builder: (context) => DailyWork_done_DPR_Entry_New()));
-                });
               },
               label: Text("Add", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,),),
               icon: Icon(Icons.add, color: Colors.white, size: RequestConstant.Heading_Font_SIZE, ),
@@ -328,8 +309,8 @@ class _DailyWork_done_DPR_EntryListNewState extends State<DailyWork_done_DPR_Ent
             child: Obx(
                   () => ListView.builder(
                   shrinkWrap: true,
-                  padding: EdgeInsets.zero,
-                  physics: BouncingScrollPhysics(),
+                      padding: EdgeInsets.only(bottom:BaseUtitiles.getheightofPercentage(context, 10) ),
+                      physics: BouncingScrollPhysics(),
                       itemCount: dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value.length,
                   itemBuilder: (context, index) {
                     return Container(
@@ -397,7 +378,7 @@ class _DailyWork_done_DPR_EntryListNewState extends State<DailyWork_done_DPR_Ent
                                   Expanded(
                                       flex: 8,
                                       child: Text(
-                                        dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].project.toString(),
+                                        dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].projectName.toString(),
                                         style: TextStyle(
                                           color: Colors.black,
                                         ),
@@ -446,7 +427,7 @@ class _DailyWork_done_DPR_EntryListNewState extends State<DailyWork_done_DPR_Ent
                                   Expanded(
                                       flex: 8,
                                       child: Text(
-                                        dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].subconName.toString(),
+                                        dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].subcontractorName.toString(),
                                         style: TextStyle(
                                           color: Colors.black,),
                                       )),
@@ -470,7 +451,7 @@ class _DailyWork_done_DPR_EntryListNewState extends State<DailyWork_done_DPR_Ent
                                   Expanded(
                                       flex: 8,
                                       child: Text(
-                                        dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].entrytype=="BOQ"?"RATE":dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].entrytype,
+                                        dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].entryTypeDesc,
                                         style: TextStyle(
                                           color: Colors.black,),
                                       )),
@@ -494,9 +475,9 @@ class _DailyWork_done_DPR_EntryListNewState extends State<DailyWork_done_DPR_Ent
                                   Expanded(
                                       flex: 8,
                                       child: Text(
-                                        dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].AppStatusName.toString(),
+                                        dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].status.toString(),
                                         style: TextStyle(
-                                          color: dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].AppStatusName.toString() == "Approved" ? Colors.green : Colors.black,),
+                                          color: dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].status.toString() == "Approved" ? Colors.green : Colors.black,),
                                       )),
                                 ],
                               ),
@@ -512,7 +493,7 @@ class _DailyWork_done_DPR_EntryListNewState extends State<DailyWork_done_DPR_Ent
                                   Expanded(
                                       flex: 2,
                                       child: Text(
-                                        "Prepared By :",
+                                        "Prepared By ",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black),
@@ -520,15 +501,16 @@ class _DailyWork_done_DPR_EntryListNewState extends State<DailyWork_done_DPR_Ent
                                   Expanded(
                                       flex: 4,
                                       child: Text(
-                                          dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].preparedbyName.toString(),
+                                          dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].createdName.toString(),
                                         style: TextStyle(color: Colors.black),
                                       )),
                                   Expanded(
                                       flex: 1,
                                       child: IconButton(
                                           onPressed: () {
-                                            if( dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].appStatus.toString() == "Y"){
-                                              BaseUtitiles.showToast("${ dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].AppStatusName.toString()} list can not be edit or delete");
+                                            WorkId = dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].id;
+                                            if( dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].status.toString() == "Approved" || dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].status.toString() == "Verified"){
+                                              BaseUtitiles.showToast("${ dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].status.toString()} list can not be edit or delete");
                                             }else{
                                               showModalBottomSheet(
                                                   context: context,
@@ -606,8 +588,6 @@ class _DailyWork_done_DPR_EntryListNewState extends State<DailyWork_done_DPR_Ent
                                                                   ],
                                                                 ),
                                                                 onTap: () async {
-                                                                  dailyWrkDone_DPRNEW_Controller.entrycheck=1;
-                                                                  dailyWrkDone_DPRNEW_Controller.editcheck=0;
                                                                   dailyWrkDone_DPRNEW_Controller.dprNew_DetTable_Delete();
                                                                   dailyWrkDone_DPRNEW_Controller.dprNew_EntryDetReadList.clear();
                                                                   dailyWrkDone_DPRNEW_Controller.dprNew_LabourTable_Delete();
@@ -619,11 +599,12 @@ class _DailyWork_done_DPR_EntryListNewState extends State<DailyWork_done_DPR_Ent
                                                                   dailyWrkDone_DPRNEW_Controller.dprNewGetMSRreadListdata.value.clear();
                                                                   dailyWrkDone_DPRNEW_Controller.getDprNewDetList.value.clear();
                                                                   dailyWrkDone_DPRNEW_Controller.getDprNewLabList.value.clear();
-                                                                  // dailyWrkDone_DPRNEW_Controller.getDprNewMatList.value.clear();
-                                                                  // dailyWrkDone_DPRNEW_Controller.getDprNewMSRList.value.clear();
+                                                                  dailyWrkDone_DPRNEW_Controller.getDprNewMatList.value.clear();
+                                                                  dailyWrkDone_DPRNEW_Controller.getDprNewMSRList.value.clear();
                                                                   dailyWrkDone_DPRNEW_Controller.dprNew_EditApiList.value.clear();
                                                                   FocusScope.of(context).unfocus();
-                                                                  await dailyWrkDone_DPRNEW_Controller.Dpr_New_EntryList_EditApi(dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].workId,context,0);
+                                                                  dailyWrkDone_DPRNEW_Controller.saveButton.value=RequestConstant.RESUBMIT;
+                                                                  await dailyWrkDone_DPRNEW_Controller.Dpr_New_EntryList_EditApi(dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].id,context);
                                                                 }),
                                                           ),
                                                           Container(
@@ -661,14 +642,8 @@ class _DailyWork_done_DPR_EntryListNewState extends State<DailyWork_done_DPR_Ent
                                                                 onTap: ()  {
                                                                   setState(() {
                                                                     Navigator.pop(context);
-                                                                    DeleteAlert(context,index);
+                                                                    dailyWrkDone_DPRNEW_Controller.DeleteAlert(context,index);
                                                                   });
-
-                                                                  // setState(() {
-                                                                  //   Navigator.pop(context);
-                                                                  //   dailyWrkDone_DPR_Controller.DeleteAlert(context, index);
-                                                                  // });
-
                                                                 }),
                                                           ),
                                                           SizedBox(height: 20)
@@ -697,78 +672,4 @@ class _DailyWork_done_DPR_EntryListNewState extends State<DailyWork_done_DPR_Ent
     );
   }
 
-  Future DeleteAlert(BuildContext context,int index) async {
-    return await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Alert!'),
-        content: Text('Do you want to Delete?'),
-        actions:[
-          Container(
-            margin: EdgeInsets.only(left: 20,right: 20),
-            child: IntrinsicHeight(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: TextButton(
-                        onPressed: (){
-                       Navigator.of(context).pop();
-                    }, child: Text("Cancel", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE))),
-                  ),
-                  VerticalDivider(
-                    color: Colors.grey.shade400,  //color of divider
-                    width: 5, //width space of divider
-                    thickness: 2, //thickness of divier line
-                    indent: 15, //Spacing at the top of divider.
-                    endIndent: 15, //Spacing at the bottom of divider.
-                  ),
-                  Expanded(
-                    child: TextButton(
-                        onPressed: () {
-                          setState(() {
-                            dailyWrkDone_DPRNEW_Controller. entrycheck=0;
-                            dailyWrkDone_DPRNEW_Controller. editcheck=0;
-                            dailyWrkDone_DPRNEW_Controller. dprNew_EntryDetReadList.clear();
-                            dailyWrkDone_DPRNEW_Controller. dprNew_LabourReadList.clear();
-                            dailyWrkDone_DPRNEW_Controller. totalNetAmnt=0.0;
-                            dailyWrkDone_DPRNEW_Controller. dprNewGetMatreadListdata.value.clear();
-                            dailyWrkDone_DPRNEW_Controller. dprNewGetMSRreadListdata.value.clear();
-                            dailyWrkDone_DPRNEW_Controller.DprNew_EntryList_DeleteApi(dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].workId, dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].workNo);
-                            dailyWrkDone_DPRNEW_Controller.  dpr_New_entryList.value.removeAt(index);
-                            Navigator.of(context).pop();
-                          });
-                        },
-                        child: Text("Delete", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE))),
-                  )
-                ],
-              ),
-            ),
-          ),
-
-          // ElevatedButton(
-          //   onPressed: () => Navigator.of(context).pop(),
-          //   child:Text('No'),
-          // ),
-          // ElevatedButton(
-          //   onPressed: () async{
-          //     setState(() {
-          //       dailyWrkDone_DPRNEW_Controller. entrycheck=0;
-          //       dailyWrkDone_DPRNEW_Controller. editcheck=0;
-          //       dailyWrkDone_DPRNEW_Controller. dprNew_EntryDetReadList.clear();
-          //       dailyWrkDone_DPRNEW_Controller. dprNew_LabourReadList.clear();
-          //       dailyWrkDone_DPRNEW_Controller. totalNetAmnt=0.0;
-          //       dailyWrkDone_DPRNEW_Controller. dprNewGetMatreadListdata.value.clear();
-          //       dailyWrkDone_DPRNEW_Controller. dprNewGetMSRreadListdata.value.clear();
-          //        dailyWrkDone_DPRNEW_Controller.DprNew_EntryList_DeleteApi(dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].workId, dailyWrkDone_DPRNEW_Controller.dpr_New_entryList.value[index].workNo);
-          //       dailyWrkDone_DPRNEW_Controller.  dpr_New_entryList.value.removeAt(index);
-          //       Navigator.of(context).pop();
-          //     });
-          //   },
-          //   child:Text('Yes'),
-          // ),
-        ],
-      ),
-    );
-  }
 }

@@ -25,27 +25,11 @@ class _Subcont_NMR_EntryListScreenState_Site
 
   @override
   void initState() {
-    if(billGenerationDirectController.entrycheck==2){
-      billGenerationDirectController.entrycheck=0;
-    }
-    else if(billGenerationDirectController.entrycheck==0){
-
-    }
-    else{
-      billGenerationDirectController.entrycheck=1;
-    }
-
-    setState(() {
-      billGenerationDirectController.main_entryList.value.clear();
-      billGenerationDirectController.bill_entryList.value.clear();
-    });
-    billGenerationDirectController.editCheck=0;
     DateTime currentDate = DateTime.now();
     DateTime lastDayOfMonth = new DateTime(currentDate.year, currentDate.month - 1, 0);
     billGenerationDirectController.EntrylistFrDate.text = lastDayOfMonth.toString().substring(0, 10);
     billGenerationDirectController.EntrylistToDate.text = currentDate.toString().substring(0, 10);
     billGenerationDirectController.DirectBill_EntryList();
-    billGenerationDirectController.bill_entryList.value = billGenerationDirectController.main_entryList.value;
     super.initState();
   }
 
@@ -73,8 +57,7 @@ class _Subcont_NMR_EntryListScreenState_Site
             backgroundColor: Setmybackground,
             floatingActionButton: FloatingActionButton.extended(
               onPressed: (){
-                billGenerationDirectController.editCheck =0;
-                billGenerationDirectController.entrycheck =0;
+              billGenerationDirectController.saveButton.value = RequestConstant.SUBMIT;
                 Navigator.push(context, MaterialPageRoute(builder: (context) => Bill_Generation_EntryScreen()));
               },
               label: Text("Add", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,),),
@@ -300,8 +283,7 @@ class _Subcont_NMR_EntryListScreenState_Site
                               textInputAction: TextInputAction.search,
                               onChanged: (value) {
                                 setState(() {
-                                  billGenerationDirectController.bill_entryList.value = BaseUtitiles.filterSearchResults_billGenerationDirect(value, billGenerationDirectController.main_entryList.value);
-                                  // dailyWrkDone_DPR_Controller.searchentryList.value= BaseUtitiles.filterSearchResults_dprlist(value,dailyWrkDone_DPR_Controller.dpr_entryList);
+                                   BaseUtitiles.filterSearchResults_billGenerationDirect(value, billGenerationDirectController.bill_entryList.value);
                                 });
                               },
                             ),
@@ -332,9 +314,10 @@ class _Subcont_NMR_EntryListScreenState_Site
               height: BaseUtitiles.getheightofPercentage(context, 68),
               child: Obx(
                     () => ListView.builder(
-                        padding: EdgeInsets.zero,
+                        padding: EdgeInsets.only(bottom: BaseUtitiles.getheightofPercentage(context, 10)),
                     physics: BouncingScrollPhysics(),
                     itemCount: billGenerationDirectController.bill_entryList.value.length,
+
                     itemBuilder: (context, index) {
                       return Container(
                         margin: EdgeInsets.only(left: 10, right: 10),
@@ -402,7 +385,7 @@ class _Subcont_NMR_EntryListScreenState_Site
                                     Expanded(
                                         flex: 8,
                                         child: Text(
-                                          billGenerationDirectController.bill_entryList.value[index].subconName.toString(),
+                                          billGenerationDirectController.bill_entryList.value[index].subContractorName.toString(),
                                           style: TextStyle(
                                             color: Colors.black,
                                           ),
@@ -429,7 +412,7 @@ class _Subcont_NMR_EntryListScreenState_Site
                                     Expanded(
                                         flex: 8,
                                         child: Text(
-                                          billGenerationDirectController.bill_entryList.value[index].project.toString(),
+                                          billGenerationDirectController.bill_entryList.value[index].projectName.toString(),
                                           style: TextStyle(
                                             color: Colors.black,),
                                         )),
@@ -455,7 +438,7 @@ class _Subcont_NMR_EntryListScreenState_Site
                                         Expanded(
                                             flex: 8,
                                             child: Text(
-                                              billGenerationDirectController.bill_entryList.value[index].fdate.toString(),
+                                              billGenerationDirectController.bill_entryList.value[index].fromWorkDate.toString(),
                                               style: TextStyle(
                                                 color: Colors.black,
                                               ),
@@ -482,7 +465,7 @@ class _Subcont_NMR_EntryListScreenState_Site
                                         Expanded(
                                             flex: 8,
                                             child: Text(
-                                              billGenerationDirectController.bill_entryList.value[index].tdate.toString(),
+                                              billGenerationDirectController.bill_entryList.value[index].toWorkDate.toString(),
                                               style: TextStyle(
                                                 color: Colors.black,),
                                             )),
@@ -534,7 +517,7 @@ class _Subcont_NMR_EntryListScreenState_Site
                                     Expanded(
                                         flex: 5,
                                         child: Text(
-                                          billGenerationDirectController.bill_entryList.value[index].preparedbyName.toString(),
+                                          billGenerationDirectController.bill_entryList.value[index].createdName.toString(),
                                           style: TextStyle(color: Colors.black),
                                         )),
                                     Expanded(
@@ -617,12 +600,12 @@ class _Subcont_NMR_EntryListScreenState_Site
                                                                 ],
                                                               ),
                                                               onTap: () async {
-                                                                billGenerationDirectController.entrycheck=1;
                                                                 billGenerationDirectController.billgen_itemlistTable_Delete();
                                                                 billGenerationDirectController.ItemGetTableListdata.clear();
                                                                 billGenerationDirectController.bill_editListApiDatas.value.clear();
-                                                                await billGenerationDirectController.directBillEntryList_EditApi(billGenerationDirectController.bill_entryList.value[index].workId,context);
                                                                 FocusScope.of(context).unfocus();
+                                                                await billGenerationDirectController.directBillEntryList_EditApi(billGenerationDirectController.bill_entryList.value[index].id,context,"ReSubmit");
+
                                                               }),
 
                                                           Container(
@@ -659,7 +642,7 @@ class _Subcont_NMR_EntryListScreenState_Site
                                                               onTap: () async {
                                                                 Navigator.pop(context);
                                                                 setState(() {
-                                                                  billGenerationDirectController.DeleteAlert(context,index);
+                                                                  billGenerationDirectController.DeleteAlert(context,index,true);
                                                                 });
                                                               }),
                                                           SizedBox(height: 20)
@@ -680,146 +663,7 @@ class _Subcont_NMR_EntryListScreenState_Site
                         ),
                       );
 
-                      //   Slidable(
-                      //   actionPane: SlidableDrawerActionPane(),
-                      //   secondaryActions: [
-                      //     Column(
-                      //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      //       children: <Widget>[
-                      //         Visibility(
-                      //           visible: commanController.deleteMode == 1 ? true : false,
-                      //           child: IconSlideAction(
-                      //               icon: Icons.delete,
-                      //               color: Colors.white10,
-                      //               foregroundColor: Colors.red,
-                      //               caption: RequestConstant.DELETE,
-                      //               onTap: () {
-                      //                 setState(() {
-                      //                   billGenerationDirectController.DeleteAlert(context,index);
-                      //                 });
-                      //               }),
-                      //         ),
-                      //         Visibility(
-                      //           visible: commanController.editMode == 1 ? true : false,
-                      //           child: IconSlideAction(
-                      //               icon: Icons.edit,
-                      //               color: Colors.white10,
-                      //               foregroundColor: Colors.green,
-                      //               caption: RequestConstant.EDIT,
-                      //               onTap: () async {
-                      //                 billGenerationDirectController.entrycheck=1;
-                      //                 billGenerationDirectController.billgen_itemlistTable_Delete();
-                      //                 billGenerationDirectController.ItemGetTableListdata.clear();
-                      //                 billGenerationDirectController.getDetList.clear();
-                      //                 billGenerationDirectController.bill_editListApiDatas.value.clear();
-                      //                 FocusScope.of(context).unfocus();
-                      //                 await billGenerationDirectController.directBillEntryList_EditApi(billGenerationDirectController.bill_entryList.value[index].workId,context);
-                      //               }),
-                      //         ),
-                      //       ],
-                      //     )
-                      //   ],
-                      //   child: Container(
-                      //     margin: EdgeInsets.only(left: 3,right: 3),
-                      //     height: BaseUtitiles.getheightofPercentage(context, 18),
-                      //     width: BaseUtitiles.getWidthtofPercentage(context, 100),
-                      //     child: Card(
-                      //       shape: RoundedRectangleBorder(
-                      //         borderRadius: BorderRadius.circular(10.0),
-                      //       ),
-                      //       color: Colors.indigo.shade800,
-                      //       child: Container(
-                      //         margin: EdgeInsets.all(3),
-                      //         child: Column(
-                      //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //           crossAxisAlignment: CrossAxisAlignment.start,
-                      //           children: <Widget>[
-                      //             Row(
-                      //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      //               children: <Widget>[
-                      //                 Expanded(
-                      //                     flex: 1,
-                      //                     child: Container(
-                      //                       height: BaseUtitiles.getheightofPercentage(context, 2),
-                      //                       child: Text(
-                      //                         billGenerationDirectController.bill_entryList.value[index].workNo
-                      //                             .toString(),
-                      //                         style: TextStyle(color: Colors.yellow,fontWeight: FontWeight.bold),
-                      //                       ),
-                      //                     )),
-                      //                 Expanded(
-                      //                     flex: 1,
-                      //                     child: Container(
-                      //                       margin: EdgeInsets.only(left: 70),
-                      //                       height: BaseUtitiles.getheightofPercentage(context, 2),
-                      //                       child: Text(
-                      //                         billGenerationDirectController.bill_entryList.value[index].workDate
-                      //                             .toString(),
-                      //                         style: TextStyle(color: Colors.yellow,fontWeight: FontWeight.bold),
-                      //                       ),
-                      //                     )),
-                      //               ],
-                      //             ),
-                      //             Row(
-                      //               children: <Widget>[
-                      //                 Expanded(flex: 2, child: Text("Cont Name",style: TextStyle(color: Colors.white),)),
-                      //                 Expanded(
-                      //                   flex: 3,
-                      //                   child: Text(billGenerationDirectController.bill_entryList.value[index].subconName
-                      //                       .toString(),style: TextStyle(color: Colors.white),
-                      //
-                      //                   ),
-                      //                 ),
-                      //               ],
-                      //             ),
-                      //             Row(
-                      //               children: <Widget>[
-                      //                 Expanded(flex: 2, child: Text("Project Name",style: TextStyle(color: Colors.white),)),
-                      //                 Expanded(
-                      //                     flex: 3,
-                      //                     child: Text(billGenerationDirectController
-                      //                         .bill_entryList.value[index].project
-                      //                         .toString(),style: TextStyle(color: Colors.white),)),
-                      //               ],
-                      //             ),
-                      //             Row(
-                      //               children: <Widget>[
-                      //                 Expanded(flex: 2, child: Text("Site Name",style: TextStyle(color: Colors.white),)),
-                      //                 Expanded(
-                      //                     flex: 3,
-                      //                     child: Text(billGenerationDirectController
-                      //                         .bill_entryList.value[index].siteName
-                      //                         .toString(),style: TextStyle(color: Colors.white),)),
-                      //               ],
-                      //             ),
-                      //             Row(
-                      //               children: <Widget>[
-                      //                 Expanded(flex: 2, child: Text("From Date",style: TextStyle(color: Colors.white),)),
-                      //                 Expanded(
-                      //                     flex: 3,
-                      //                     child: Text(billGenerationDirectController
-                      //                         .bill_entryList.value[index].fdate
-                      //                         .toString(),style: TextStyle(color: Colors.white),)),
-                      //               ],
-                      //             ),
-                      //             Row(
-                      //               children: <Widget>[
-                      //                 Expanded(flex: 2, child: Text("To Date",style: TextStyle(color: Colors.white),)),
-                      //                 Expanded(
-                      //                     flex: 3,
-                      //                     child: Text(billGenerationDirectController
-                      //                         .bill_entryList.value[index].tdate
-                      //                         .toString(),style: TextStyle(color: Colors.white),)),
-                      //               ],
-                      //             ),
-                      //           ],
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // );
-
-                    }),
+                        }),
               ),
             ),
           ),

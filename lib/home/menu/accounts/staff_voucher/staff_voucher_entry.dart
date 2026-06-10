@@ -30,19 +30,19 @@ class Staff_Voucher_EntryScreen extends StatefulWidget {
 class _Subcont_Nmr_EntryScreenState_Site
     extends State<Staff_Voucher_EntryScreen> {
   SubcontractorController subcontractorController =
-  Get.put(SubcontractorController());
+      Get.put(SubcontractorController());
   SiteController siteController = Get.put(SiteController());
   AutoYearWiseNoController autoYearWiseNoController =
-  Get.put(AutoYearWiseNoController());
+      Get.put(AutoYearWiseNoController());
   StaffController staffController = Get.put(StaffController());
   CommonVoucherController commonVoucherController =
-  Get.put(CommonVoucherController());
+      Get.put(CommonVoucherController());
   StaffVoucher_Controller staffVoucher_Controller =
-  Get.put(StaffVoucher_Controller());
+      Get.put(StaffVoucher_Controller());
   LoginController loginController = Get.put(LoginController());
   ProjectController projectController = Get.put(ProjectController());
   BottomsheetControllers bottomsheetControllers =
-  Get.put(BottomsheetControllers());
+      Get.put(BottomsheetControllers());
 
   @override
   void initState() {
@@ -90,7 +90,7 @@ class _Subcont_Nmr_EntryScreenState_Site
           staffVoucher_Controller.staffvocDate.text = element.vocDate;
           commonVoucherController.VocType.value = element.vocType;
           commonVoucherController.VoucherTypeController.text =
-          element.vocType == "P" ? "Payment" : "Receipt";
+              element.vocType == "P" ? "Payment" : "Receipt";
           staffController.Staffname.text = element.createdName;
           staffController.selectedstaffId.value = element.createdBy;
           commonVoucherController.AccountTypename.text = element.accTypeName;
@@ -157,7 +157,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                               child: const Text(
                                 "Back",
                                 style:
-                                TextStyle(color: Colors.grey, fontSize: 18),
+                                    TextStyle(color: Colors.grey, fontSize: 18),
                               ))
                         ],
                       ),
@@ -176,7 +176,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                           child: TextFormField(
                             readOnly: true,
                             controller:
-                            staffVoucher_Controller.AutoYearwisestaffVoc,
+                                staffVoucher_Controller.AutoYearwisestaffVoc,
                             cursorColor: Colors.black,
                             style: const TextStyle(color: Colors.black),
                             decoration: const InputDecoration(
@@ -187,7 +187,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
                               prefixIconConstraints:
-                              BoxConstraints(minWidth: 0, minHeight: 0),
+                                  BoxConstraints(minWidth: 0, minHeight: 0),
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
@@ -221,7 +221,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
                               prefixIconConstraints:
-                              BoxConstraints(minWidth: 0, minHeight: 0),
+                                  BoxConstraints(minWidth: 0, minHeight: 0),
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
@@ -245,7 +245,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                             onPrimary: Colors
                                                 .white, // header text color
                                             onSurface:
-                                            Colors.black, // body text color
+                                                Colors.black, // body text color
                                           ),
                                           textButtonTheme: TextButtonThemeData(
                                             style: TextButton.styleFrom(
@@ -278,10 +278,10 @@ class _Subcont_Nmr_EntryScreenState_Site
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             autovalidateMode:
-                            AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.onUserInteraction,
                             readOnly: true,
                             controller:
-                            commonVoucherController.VoucherTypeController,
+                                commonVoucherController.VoucherTypeController,
                             cursorColor: Colors.black,
                             style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
@@ -292,7 +292,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
                               prefixIconConstraints:
-                              BoxConstraints(minWidth: 0, minHeight: 0),
+                                  BoxConstraints(minWidth: 0, minHeight: 0),
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
@@ -330,7 +330,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             autovalidateMode:
-                            AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.onUserInteraction,
                             readOnly: true,
                             controller: staffController.Staffname,
                             cursorColor: Colors.black,
@@ -343,17 +343,24 @@ class _Subcont_Nmr_EntryScreenState_Site
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
                               prefixIconConstraints:
-                              BoxConstraints(minWidth: 0, minHeight: 0),
+                                  BoxConstraints(minWidth: 0, minHeight: 0),
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
                                   child: ConstIcons.siteName),
                             ),
                             onTap: () async {
-                              if (loginController.user.value.userType == "A") {
-                                await staffController.get_staffDropdowntList(context, "staffVoucher");
-                                bottomsheetControllers.StaffName(context, staffController.getStaffDropdownvalue.value, type: "staffVoucher");
-                                  } },
+                            if (loginController.user.value.userType == "A") {
+                                  await staffController.get_staffDropdowntList(
+                                      context, "staffVoucher");
+                                  bottomsheetControllers.StaffName(context,
+                                      staffController.getStaffDropdownvalue.value,
+                                      type: "staffVoucher");
+                            }else
+                              {
+                                null;
+                              }
+                            },
                             validator: (value) {
                               if (value!.isEmpty ||
                                   value == "--Select--" ||
@@ -379,7 +386,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             autovalidateMode:
-                            AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.onUserInteraction,
                             readOnly: true,
                             controller: commonVoucherController.AccountTypename,
                             cursorColor: Colors.black,
@@ -392,7 +399,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
                               prefixIconConstraints:
-                              BoxConstraints(minWidth: 0, minHeight: 0),
+                                  BoxConstraints(minWidth: 0, minHeight: 0),
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
@@ -431,7 +438,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             autovalidateMode:
-                            AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.onUserInteraction,
                             readOnly: true,
                             controller: commonVoucherController.Accountname,
                             cursorColor: Colors.black,
@@ -444,7 +451,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
                               prefixIconConstraints:
-                              BoxConstraints(minWidth: 0, minHeight: 0),
+                                  BoxConstraints(minWidth: 0, minHeight: 0),
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
@@ -496,16 +503,16 @@ class _Subcont_Nmr_EntryScreenState_Site
                               ),
                               onTap: () {
                                 if (commonVoucherController
-                                    .AccountTypename.text ==
-                                    "OTHERS" ||
+                                            .AccountTypename.text ==
+                                        "OTHERS" ||
                                     commonVoucherController
-                                        .AccountTypename.text ==
+                                            .AccountTypename.text ==
                                         "SITE-OTHERS" ||
                                     commonVoucherController
-                                        .AccountTypename.text ==
+                                            .AccountTypename.text ==
                                         "MATERIAL") {
                                   if (commonVoucherController
-                                      .Accountname.text ==
+                                          .Accountname.text ==
                                       "--SELECT--") {
                                     showDialog(
                                         context: context,
@@ -542,16 +549,16 @@ class _Subcont_Nmr_EntryScreenState_Site
                               ),
                               onTap: () {
                                 if (commonVoucherController
-                                    .AccountTypename.text ==
-                                    "OTHERS" ||
+                                            .AccountTypename.text ==
+                                        "OTHERS" ||
                                     commonVoucherController
-                                        .AccountTypename.text ==
+                                            .AccountTypename.text ==
                                         "SITE-OTHERS" ||
                                     commonVoucherController
-                                        .AccountTypename.text ==
+                                            .AccountTypename.text ==
                                         "MATERIAL") {
                                   if (commonVoucherController
-                                      .Accountname.text !=
+                                          .Accountname.text !=
                                       "--SELECT--") {
                                     showDialog(
                                         context: context,
@@ -589,16 +596,16 @@ class _Subcont_Nmr_EntryScreenState_Site
                                 ),
                                 onTap: () async {
                                   if (commonVoucherController
-                                      .AccountTypename.text ==
-                                      "OTHERS" ||
+                                              .AccountTypename.text ==
+                                          "OTHERS" ||
                                       commonVoucherController
-                                          .AccountTypename.text ==
+                                              .AccountTypename.text ==
                                           "SITE-OTHERS" ||
                                       commonVoucherController
-                                          .AccountTypename.text ==
+                                              .AccountTypename.text ==
                                           "MATERIAL") {
                                     if (commonVoucherController
-                                        .Accountname.text !=
+                                            .Accountname.text !=
                                         "--SELECT--") {
                                       if (commonVoucherController
                                           .Accountname.text.isNotEmpty) {
@@ -625,7 +632,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                           margin: EdgeInsets.all(5),
                           alignment: Alignment.center,
                           height:
-                          BaseUtitiles.getheightofPercentage(context, 3),
+                              BaseUtitiles.getheightofPercentage(context, 3),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
                             color: Theme.of(context).primaryColor,
@@ -661,7 +668,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             autovalidateMode:
-                            AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.onUserInteraction,
                             controller: commonVoucherController.namethrough,
                             cursorColor: Colors.black,
                             style: TextStyle(color: Colors.black),
@@ -673,7 +680,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
                               prefixIconConstraints:
-                              BoxConstraints(minWidth: 0, minHeight: 0),
+                                  BoxConstraints(minWidth: 0, minHeight: 0),
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
@@ -705,7 +712,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             autovalidateMode:
-                            AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.onUserInteraction,
                             readOnly: true,
                             controller: commonVoucherController.AccPayforname,
                             cursorColor: Colors.black,
@@ -718,7 +725,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
                               prefixIconConstraints:
-                              BoxConstraints(minWidth: 0, minHeight: 0),
+                                  BoxConstraints(minWidth: 0, minHeight: 0),
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
@@ -749,11 +756,11 @@ class _Subcont_Nmr_EntryScreenState_Site
                           flex: 1,
                           child: Container(
                             margin:
-                            EdgeInsets.only(top: 5, left: 10, right: 10),
+                                EdgeInsets.only(top: 5, left: 10, right: 10),
                             child: Card(
                               shape: RoundedRectangleBorder(
                                 side:
-                                BorderSide(color: Colors.white70, width: 1),
+                                    BorderSide(color: Colors.white70, width: 1),
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               elevation: 3,
@@ -762,10 +769,10 @@ class _Subcont_Nmr_EntryScreenState_Site
                                     top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
                                   autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                                      AutovalidateMode.onUserInteraction,
                                   readOnly: true,
                                   controller:
-                                  commonVoucherController.Paymodename,
+                                      commonVoucherController.Paymodename,
                                   cursorColor: Colors.black,
                                   style: TextStyle(color: Colors.black),
                                   decoration: InputDecoration(
@@ -775,7 +782,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                     labelStyle: TextStyle(
                                         color: Colors.grey,
                                         fontSize:
-                                        RequestConstant.Lable_Font_SIZE),
+                                            RequestConstant.Lable_Font_SIZE),
                                     prefixIconConstraints: BoxConstraints(
                                         minWidth: 0, minHeight: 0),
                                     prefixIcon: Padding(
@@ -808,11 +815,11 @@ class _Subcont_Nmr_EntryScreenState_Site
                           flex: 1,
                           child: Container(
                             margin:
-                            EdgeInsets.only(top: 5, left: 10, right: 10),
+                                EdgeInsets.only(top: 5, left: 10, right: 10),
                             child: Card(
                               shape: RoundedRectangleBorder(
                                 side:
-                                BorderSide(color: Colors.white70, width: 1),
+                                    BorderSide(color: Colors.white70, width: 1),
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               elevation: 3,
@@ -821,16 +828,16 @@ class _Subcont_Nmr_EntryScreenState_Site
                                     top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
                                   autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                                      AutovalidateMode.onUserInteraction,
                                   readOnly:
-                                  staffVoucher_Controller.type.value ==
-                                      "SiteWise Payment"
-                                      ? true
-                                      : false,
+                                      staffVoucher_Controller.type.value ==
+                                              "SiteWise Payment"
+                                          ? true
+                                          : false,
                                   keyboardType: TextInputType.numberWithOptions(
                                       decimal: true),
                                   controller:
-                                  staffVoucher_Controller.TotalAmount,
+                                      staffVoucher_Controller.TotalAmount,
                                   cursorColor: Colors.black,
                                   style: TextStyle(color: Colors.black),
                                   decoration: InputDecoration(
@@ -840,7 +847,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                     labelStyle: TextStyle(
                                         color: Colors.grey,
                                         fontSize:
-                                        RequestConstant.Lable_Font_SIZE),
+                                            RequestConstant.Lable_Font_SIZE),
                                     prefixIconConstraints: BoxConstraints(
                                         minWidth: 0, minHeight: 0),
                                     prefixIcon: Padding(
@@ -861,10 +868,10 @@ class _Subcont_Nmr_EntryScreenState_Site
                                     if (staffVoucher_Controller.type.value ==
                                         "Direct Payment/Office") {
                                       if (staffVoucher_Controller
-                                          .TotalAmount.text ==
-                                          "0.0" ||
+                                                  .TotalAmount.text ==
+                                              "0.0" ||
                                           staffVoucher_Controller
-                                              .TotalAmount.text ==
+                                                  .TotalAmount.text ==
                                               "0") {
                                         staffVoucher_Controller
                                             .TotalAmount.text = "";
@@ -879,199 +886,44 @@ class _Subcont_Nmr_EntryScreenState_Site
                       ],
                     ),
                     Obx(
-                          () => commonVoucherController.selectedPaymodeId.value == 2
+                      () => commonVoucherController.selectedPaymodeId.value == 2
                           ? Column(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(
-                                top: 5, left: 10, right: 10),
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                    color: Colors.white70, width: 1),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 3, left: 10, bottom: 5),
-                                child: TextFormField(
-                                  autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                                  controller:
-                                  staffVoucher_Controller.ChequeNo,
-                                  cursorColor: Colors.black,
-                                  style: TextStyle(color: Colors.black),
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.zero,
-                                    border: InputBorder.none,
-                                    labelText: "Cheque No",
-                                    labelStyle: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: RequestConstant
-                                            .Lable_Font_SIZE),
-                                    prefixIconConstraints: BoxConstraints(
-                                        minWidth: 0, minHeight: 0),
-                                    prefixIcon: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 8, horizontal: 8),
-                                        child: ConstIcons.requestNo),
-                                  ),
-                                  validator: (value) {
-                                    if (value!.isEmpty ||
-                                        value == "--Select--" ||
-                                        value == "--SELECT--") {
-                                      return '\u26A0 ${RequestConstant.VALIDATE}';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(
-                                top: 5, left: 10, right: 10),
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                    color: Colors.white70, width: 1),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 3, left: 10, bottom: 5),
-                                child: TextFormField(
-                                    readOnly: true,
-                                    keyboardType: TextInputType.number,
-                                    controller: staffVoucher_Controller
-                                        .ChequeDate,
-                                    cursorColor: Colors.black,
-                                    style: TextStyle(color: Colors.black),
-                                    decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.zero,
-                                      border: InputBorder.none,
-                                      labelText: "Cheque Date",
-                                      labelStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: RequestConstant
-                                              .Lable_Font_SIZE),
-                                      prefixIconConstraints:
-                                      BoxConstraints(
-                                          minWidth: 0, minHeight: 0),
-                                      prefixIcon: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 8, horizontal: 8),
-                                          child: ConstIcons.date),
-                                    ),
-                                    onTap: () async {
-                                      if (staffVoucher_Controller
-                                          .SaveButton.value ==
-                                          RequestConstant.RESUBMIT) {
-                                      } else {
-                                        var Entrydate =
-                                        await showDatePicker(
-                                            context: context,
-                                            initialDate:
-                                            DateTime.now(),
-                                            firstDate: DateTime(1900),
-                                            lastDate: DateTime.now(),
-                                            builder:
-                                                (context, child) {
-                                              return Theme(
-                                                data:
-                                                Theme.of(context)
-                                                    .copyWith(
-                                                  colorScheme:
-                                                  ColorScheme
-                                                      .light(
-                                                    primary: Theme.of(
-                                                        context)
-                                                        .primaryColor, // header background color
-                                                    onPrimary: Colors
-                                                        .white, // header text color
-                                                    onSurface: Colors
-                                                        .black, // body text color
-                                                  ),
-                                                  textButtonTheme:
-                                                  TextButtonThemeData(
-                                                    style: TextButton
-                                                        .styleFrom(
-                                                      primary: Colors
-                                                          .black, // button text color
-                                                    ),
-                                                  ),
-                                                ),
-                                                child: child!,
-                                              );
-                                            });
-                                        staffVoucher_Controller
-                                            .ChequeDate.text =
-                                            BaseUtitiles.selectDateFormat(
-                                                Entrydate!);
-                                      }
-                                    }),
-                              ),
-                            ),
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Expanded(
-                                flex: 1,
-                                child: Container(
+                              children: [
+                                Container(
                                   margin: EdgeInsets.only(
                                       top: 5, left: 10, right: 10),
                                   child: Card(
                                     shape: RoundedRectangleBorder(
                                       side: BorderSide(
-                                          color: Colors.white70,
-                                          width: 1),
-                                      borderRadius:
-                                      BorderRadius.circular(15),
+                                          color: Colors.white70, width: 1),
+                                      borderRadius: BorderRadius.circular(15),
                                     ),
                                     elevation: 3,
                                     child: Padding(
                                       padding: const EdgeInsets.only(
                                           top: 3, left: 10, bottom: 5),
                                       child: TextFormField(
-                                        autovalidateMode: AutovalidateMode
-                                            .onUserInteraction,
-                                        readOnly: true,
+                                        autovalidateMode:
+                                            AutovalidateMode.onUserInteraction,
                                         controller:
-                                        staffVoucher_Controller
-                                            .BankName,
+                                            staffVoucher_Controller.ChequeNo,
                                         cursorColor: Colors.black,
-                                        style: TextStyle(
-                                            color: Colors.black),
+                                        style: TextStyle(color: Colors.black),
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.zero,
                                           border: InputBorder.none,
-                                          labelText: "Bank Name",
+                                          labelText: "Cheque No",
                                           labelStyle: TextStyle(
                                               color: Colors.grey,
                                               fontSize: RequestConstant
                                                   .Lable_Font_SIZE),
-                                          prefixIconConstraints:
-                                          BoxConstraints(
-                                              minWidth: 0,
-                                              minHeight: 0),
+                                          prefixIconConstraints: BoxConstraints(
+                                              minWidth: 0, minHeight: 0),
                                           prefixIcon: Padding(
-                                              padding:
-                                              EdgeInsets.symmetric(
-                                                  vertical: 8,
-                                                  horizontal: 8),
-                                              child:
-                                              ConstIcons.accountName),
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 8, horizontal: 8),
+                                              child: ConstIcons.requestNo),
                                         ),
-                                        onTap: () async {
-                                          await staffVoucher_Controller
-                                              .getBankName_List();
-                                          bottomsheetControllers.BankName(
-                                              context,
-                                              staffVoucher_Controller
-                                                  .getbankNameList.value);
-                                        },
                                         validator: (value) {
                                           if (value!.isEmpty ||
                                               value == "--Select--" ||
@@ -1084,47 +936,202 @@ class _Subcont_Nmr_EntryScreenState_Site
                                     ),
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                  flex: 1,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 15),
-                                    child: Row(
-                                      children: [
-                                        Checkbox(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  2.0),
-                                            ),
-                                            side: MaterialStateBorderSide
-                                                .resolveWith(
-                                                  (states) => BorderSide(
-                                                width: 1.0,
-                                                // color: Colors.white
-                                                color: Theme.of(context)
-                                                    .primaryColor,
-                                              ),
-                                            ),
-                                            checkColor: Colors.white,
-                                            activeColor: Theme.of(context)
-                                                .primaryColor,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                staffVoucher_Controller
-                                                    .payeeType
-                                                    .value = value!;
-                                              });
-                                            },
-                                            value: staffVoucher_Controller.payeeType.value),
-                                        Text('A/C Payee')
-                                      ],
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      top: 5, left: 10, right: 10),
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                          color: Colors.white70, width: 1),
+                                      borderRadius: BorderRadius.circular(15),
                                     ),
-                                  )),
-                            ],
-                          ),
-                        ],
-                      )
+                                    elevation: 3,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 3, left: 10, bottom: 5),
+                                      child: TextFormField(
+                                          readOnly: true,
+                                          keyboardType: TextInputType.number,
+                                          controller: staffVoucher_Controller
+                                              .ChequeDate,
+                                          cursorColor: Colors.black,
+                                          style: TextStyle(color: Colors.black),
+                                          decoration: InputDecoration(
+                                            contentPadding: EdgeInsets.zero,
+                                            border: InputBorder.none,
+                                            labelText: "Cheque Date",
+                                            labelStyle: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: RequestConstant
+                                                    .Lable_Font_SIZE),
+                                            prefixIconConstraints:
+                                                BoxConstraints(
+                                                    minWidth: 0, minHeight: 0),
+                                            prefixIcon: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 8, horizontal: 8),
+                                                child: ConstIcons.date),
+                                          ),
+                                          onTap: () async {
+                                            if (staffVoucher_Controller
+                                                    .SaveButton.value ==
+                                                RequestConstant.RESUBMIT) {
+                                            } else {
+                                              var Entrydate =
+                                                  await showDatePicker(
+                                                      context: context,
+                                                      initialDate:
+                                                          DateTime.now(),
+                                                      firstDate: DateTime(1900),
+                                                      lastDate: DateTime.now(),
+                                                      builder:
+                                                          (context, child) {
+                                                        return Theme(
+                                                          data:
+                                                              Theme.of(context)
+                                                                  .copyWith(
+                                                            colorScheme:
+                                                                ColorScheme
+                                                                    .light(
+                                                              primary: Theme.of(
+                                                                      context)
+                                                                  .primaryColor, // header background color
+                                                              onPrimary: Colors
+                                                                  .white, // header text color
+                                                              onSurface: Colors
+                                                                  .black, // body text color
+                                                            ),
+                                                            textButtonTheme:
+                                                                TextButtonThemeData(
+                                                              style: TextButton
+                                                                  .styleFrom(
+                                                                primary: Colors
+                                                                    .black, // button text color
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          child: child!,
+                                                        );
+                                                      });
+                                              staffVoucher_Controller
+                                                      .ChequeDate.text =
+                                                  BaseUtitiles.selectDateFormat(
+                                                      Entrydate!);
+                                            }
+                                          }),
+                                    ),
+                                  ),
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                      flex: 1,
+                                      child: Container(
+                                        margin: EdgeInsets.only(
+                                            top: 5, left: 10, right: 10),
+                                        child: Card(
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                                color: Colors.white70,
+                                                width: 1),
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                          ),
+                                          elevation: 3,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 3, left: 10, bottom: 5),
+                                            child: TextFormField(
+                                              autovalidateMode: AutovalidateMode
+                                                  .onUserInteraction,
+                                              readOnly: true,
+                                              controller:
+                                                  staffVoucher_Controller
+                                                      .BankName,
+                                              cursorColor: Colors.black,
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                              decoration: InputDecoration(
+                                                contentPadding: EdgeInsets.zero,
+                                                border: InputBorder.none,
+                                                labelText: "Bank Name",
+                                                labelStyle: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: RequestConstant
+                                                        .Lable_Font_SIZE),
+                                                prefixIconConstraints:
+                                                    BoxConstraints(
+                                                        minWidth: 0,
+                                                        minHeight: 0),
+                                                prefixIcon: Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 8,
+                                                            horizontal: 8),
+                                                    child:
+                                                        ConstIcons.accountName),
+                                              ),
+                                              onTap: () async {
+                                                await staffVoucher_Controller
+                                                    .getBankName_List();
+                                                bottomsheetControllers.BankName(
+                                                    context,
+                                                    staffVoucher_Controller
+                                                        .getbankNameList.value);
+                                              },
+                                              validator: (value) {
+                                                if (value!.isEmpty ||
+                                                    value == "--Select--" ||
+                                                    value == "--SELECT--") {
+                                                  return '\u26A0 ${RequestConstant.VALIDATE}';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                        flex: 1,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(left: 15),
+                                          child: Row(
+                                            children: [
+                                              Checkbox(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            2.0),
+                                                  ),
+                                                  side: MaterialStateBorderSide
+                                                      .resolveWith(
+                                                    (states) => BorderSide(
+                                                      width: 1.0,
+                                                      // color: Colors.white
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
+                                                    ),
+                                                  ),
+                                                  checkColor: Colors.white,
+                                                  activeColor: Theme.of(context)
+                                                      .primaryColor,
+                                                  onChanged: (value) {
+                                                    setState(() {
+                                                      staffVoucher_Controller
+                                                          .payeeType
+                                                          .value = value!;
+                                                    });
+                                                  },
+                                                  value: staffVoucher_Controller.payeeType.value),
+                                              Text('A/C Payee')
+                                            ],
+                                          ),
+                                        )),
+                                  ],
+                                ),
+                              ],
+                            )
                           : SizedBox(),
                     ),
                     Container(
@@ -1140,7 +1147,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             autovalidateMode:
-                            AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.onUserInteraction,
                             controller: staffVoucher_Controller.Remarks,
                             cursorColor: Colors.black,
                             style: TextStyle(color: Colors.black),
@@ -1152,7 +1159,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
                               prefixIconConstraints:
-                              BoxConstraints(minWidth: 0, minHeight: 0),
+                                  BoxConstraints(minWidth: 0, minHeight: 0),
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
@@ -1170,14 +1177,14 @@ class _Subcont_Nmr_EntryScreenState_Site
                     ),
                     SizedBox(height: 5),
                     Obx(
-                          () => Row(
+                      () => Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Radio<String>(
                             value: 'Direct Payment/Office',
                             groupValue: staffVoucher_Controller.type.value,
                             fillColor: MaterialStateColor.resolveWith(
-                                    (states) => Theme.of(context).primaryColor),
+                                (states) => Theme.of(context).primaryColor),
                             onChanged: (value) {
                               setState(() {
                                 staffVoucher_Controller.type.value = value!;
@@ -1191,7 +1198,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                             value: 'SiteWise Payment',
                             groupValue: staffVoucher_Controller.type.value,
                             fillColor: MaterialStateColor.resolveWith(
-                                    (states) => Theme.of(context).primaryColor),
+                                (states) => Theme.of(context).primaryColor),
                             onChanged: (value) {
                               setState(() {
                                 staffVoucher_Controller.type.value = value!;
@@ -1205,79 +1212,79 @@ class _Subcont_Nmr_EntryScreenState_Site
                     ),
                     SizedBox(height: 5),
                     Obx(() => Visibility(
-                      visible: staffVoucher_Controller.type.value ==
-                          "Direct Payment/Office"
-                          ? false
-                          : true,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                primary: Setmybackground,
-                              ),
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  _formKey.currentState!.save();
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              staff_voucher_sitewise()));
-                                }
-                              },
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Icon(
-                                    Icons.add,
-                                    color: Theme.of(context).primaryColor,
+                          visible: staffVoucher_Controller.type.value ==
+                                  "Direct Payment/Office"
+                              ? false
+                              : true,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Setmybackground,
                                   ),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    "Add List",
-                                    style: TextStyle(
-                                        color:
-                                        Theme.of(context).primaryColor),
-                                  ),
-                                ],
-                              )),
-                        ],
-                      ),
-                    )),
+                                  onPressed: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      _formKey.currentState!.save();
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  staff_voucher_sitewise()));
+                                    }
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Icon(
+                                        Icons.add,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                      SizedBox(width: 5),
+                                      Text(
+                                        "Add List",
+                                        style: TextStyle(
+                                            color:
+                                                Theme.of(context).primaryColor),
+                                      ),
+                                    ],
+                                  )),
+                            ],
+                          ),
+                        )),
                     SizedBox(
                         height:
-                        BaseUtitiles.getheightofPercentage(context, 10)),
+                            BaseUtitiles.getheightofPercentage(context, 10)),
                     SizedBox(height: height),
                   ],
                 ),
               ),
               Obx(() => Visibility(
-                visible: staffVoucher_Controller
-                    .Staffvoucher_itemview_GetDbList.value.isEmpty
-                    ? false
-                    : true,
-                child: Container(
-                  height: BaseUtitiles.getheightofPercentage(context, 100),
-                  child: DraggableScrollableSheet(
-                    minChildSize: 0.1,
-                    maxChildSize: 0.9,
-                    initialChildSize: 0.3,
-                    builder: (BuildContext context,
-                        ScrollController scrollController) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: Setmybackground,
-                          borderRadius: new BorderRadius.only(
-                            topLeft: const Radius.circular(40.0),
-                            topRight: const Radius.circular(40.0),
-                          ),
-                        ),
-                        child: Stack(
-                          children: [
-                            Container(
-                                child: SingleChildScrollView(
+                    visible: staffVoucher_Controller
+                            .Staffvoucher_itemview_GetDbList.value.isEmpty
+                        ? false
+                        : true,
+                    child: Container(
+                      height: BaseUtitiles.getheightofPercentage(context, 100),
+                      child: DraggableScrollableSheet(
+                        minChildSize: 0.1,
+                        maxChildSize: 0.9,
+                        initialChildSize: 0.3,
+                        builder: (BuildContext context,
+                            ScrollController scrollController) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: Setmybackground,
+                              borderRadius: new BorderRadius.only(
+                                topLeft: const Radius.circular(40.0),
+                                topRight: const Radius.circular(40.0),
+                              ),
+                            ),
+                            child: Stack(
+                              children: [
+                                Container(
+                                    child: SingleChildScrollView(
                                   controller: scrollController,
                                   child: Column(
                                     children: [
@@ -1286,40 +1293,40 @@ class _Subcont_Nmr_EntryScreenState_Site
                                     ],
                                   ),
                                 )),
-                            IgnorePointer(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: new BorderRadius.only(
-                                    topLeft: const Radius.circular(40.0),
-                                    topRight: const Radius.circular(40.0),
+                                IgnorePointer(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: new BorderRadius.only(
+                                        topLeft: const Radius.circular(40.0),
+                                        topRight: const Radius.circular(40.0),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          margin: EdgeInsets.only(
+                                              top: 20, bottom: 20),
+                                          height: 5,
+                                          width: 60,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              color: Colors.grey),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.only(
-                                          top: 20, bottom: 20),
-                                      height: 5,
-                                      width: 60,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                          BorderRadius.circular(10),
-                                          color: Colors.grey),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              )),
+                          );
+                        },
+                      ),
+                    ),
+                  )),
             ],
           ),
           bottomNavigationBar: Container(
@@ -1482,8 +1489,8 @@ class _Subcont_Nmr_EntryScreenState_Site
                                             child: IntrinsicHeight(
                                               child: Row(
                                                 mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .spaceBetween,
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                 children: [
                                                   Expanded(
                                                     child: TextButton(
@@ -1494,13 +1501,13 @@ class _Subcont_Nmr_EntryScreenState_Site
                                                         child: Text("Cancel",
                                                             style: TextStyle(
                                                                 color:
-                                                                Colors.grey,
+                                                                    Colors.grey,
                                                                 fontWeight:
-                                                                FontWeight
-                                                                    .bold,
+                                                                    FontWeight
+                                                                        .bold,
                                                                 fontSize:
-                                                                RequestConstant
-                                                                    .Lable_Font_SIZE))),
+                                                                    RequestConstant
+                                                                        .Lable_Font_SIZE))),
                                                   ),
                                                   VerticalDivider(
                                                     color: Colors.grey.shade400,
@@ -1508,21 +1515,21 @@ class _Subcont_Nmr_EntryScreenState_Site
                                                     thickness: 2,
                                                     indent: 15,
                                                     endIndent:
-                                                    15, //Spacing at the bottom of divider.
+                                                        15, //Spacing at the bottom of divider.
                                                   ),
                                                   Expanded(
                                                     child: TextButton(
                                                         onPressed: () async {
                                                           staffVoucher_Controller
                                                               .deleteParticularList(
-                                                              staffVoucher_Controller
-                                                                  .Staffvoucher_itemview_GetDbList[
-                                                              index]);
+                                                                  staffVoucher_Controller
+                                                                          .Staffvoucher_itemview_GetDbList[
+                                                                      index]);
                                                           staffVoucher_Controller
-                                                              .Staffvoucher_itemview_GetDbList
+                                                                  .Staffvoucher_itemview_GetDbList
                                                               .remove(staffVoucher_Controller
-                                                              .Staffvoucher_itemview_GetDbList[
-                                                          index]);
+                                                                      .Staffvoucher_itemview_GetDbList[
+                                                                  index]);
                                                           await staffVoucher_Controller
                                                               .getstaffvouchersiteTablesDatas();
                                                           Navigator.pop(
@@ -1531,13 +1538,13 @@ class _Subcont_Nmr_EntryScreenState_Site
                                                         child: Text("Delete",
                                                             style: TextStyle(
                                                                 color:
-                                                                Colors.red,
+                                                                    Colors.red,
                                                                 fontWeight:
-                                                                FontWeight
-                                                                    .bold,
+                                                                    FontWeight
+                                                                        .bold,
                                                                 fontSize:
-                                                                RequestConstant
-                                                                    .Lable_Font_SIZE))),
+                                                                    RequestConstant
+                                                                        .Lable_Font_SIZE))),
                                                   )
                                                 ],
                                               ),
@@ -1730,8 +1737,8 @@ class _Subcont_Nmr_EntryScreenState_Site
                       builder: (context, setState) => TextButton(
                         onPressed: () async {
                           if (
-                          commonVoucherController.AccountTypename.text ==
-                              "--SELECT--" ||
+                              commonVoucherController.AccountTypename.text ==
+                                  "--SELECT--" ||
                               commonVoucherController.Accountname.text ==
                                   "--SELECT--" ||
                               commonVoucherController.Paymodename.text ==
@@ -1739,7 +1746,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                               commonVoucherController.AccPayforname.text ==
                                   "--SELECT--" ||
                               double.parse(staffVoucher_Controller
-                                  .TotalAmount.text) ==
+                                      .TotalAmount.text) ==
                                   0.0) {
                             BaseUtitiles.showToast("Some field is missing");
                           } else {
@@ -1752,9 +1759,9 @@ class _Subcont_Nmr_EntryScreenState_Site
                                 context)) {
                               await staffVoucher_Controller
                                   .SaveButtonSitevoucher_ItemlistScreen(
-                                  context,
+                                      context,
                                   staffVoucher_Controller.SaveButton.value==RequestConstant.RESUBMIT?staffVoucher_Controller
-                                      .Sitevoucher_EditListApiValue[0].id:0);
+                                          .Sitevoucher_EditListApiValue[0].id:0);
                             }
                           }
                         },
@@ -1816,7 +1823,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                             staffVoucher_Controller.SaveButton.value =
                                 RequestConstant.SUBMIT;
                             staffVoucher_Controller.type.value =
-                            "SiteWise Payment";
+                                "SiteWise Payment";
                             staffVoucher_Controller
                                 .delete_Sitevoucher_itemlist_Table();
                             staffVoucher_Controller
@@ -1830,18 +1837,18 @@ class _Subcont_Nmr_EntryScreenState_Site
                             staffController.Staffname.text = "--SELECT--";
                             staffController.selectedstaffId.value = 0;
                             commonVoucherController.VoucherTypeController.text =
-                            "Payment";
+                                "Payment";
                             commonVoucherController.VocType.value = "P";
                             commonVoucherController.AccountTypename.text =
-                            "--SELECT--";
+                                "--SELECT--";
                             commonVoucherController.Accountname.text =
-                            "--SELECT--";
+                                "--SELECT--";
                             commonVoucherController.selectedAccnameId = 0.obs;
                             commonVoucherController.Paymodename.text =
-                            "BY CASH";
+                                "BY CASH";
                             commonVoucherController.selectedPaymodeId.value = 1;
                             commonVoucherController.AccPayforname.text =
-                            "--SELECT--";
+                                "--SELECT--";
                             staffVoucher_Controller.Remarks.text = "";
                             commonVoucherController.namethrough.text = "";
                             siteController.selectedsiteId.value = 0;

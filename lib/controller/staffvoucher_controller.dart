@@ -43,14 +43,14 @@ class StaffVoucher_Controller extends GetxController {
 
   SiteController siteController = Get.put(SiteController());
   CommonVoucherController commonVoucherController =
-  Get.put(CommonVoucherController());
+      Get.put(CommonVoucherController());
   StaffController staffController = Get.put(StaffController());
 
   var staffvouchersiteItemListTableModel = StaffvouchersiteDetlist();
   late List<StaffvouchersiteDetlist> staffvouchersiteTableList =
-  <StaffvouchersiteDetlist>[];
+      <StaffvouchersiteDetlist>[];
   late List<StaffvouchersiteDetlist> deleteModelList =
-  <StaffvouchersiteDetlist>[];
+      <StaffvouchersiteDetlist>[];
   RxList<AccStaffVocSWpayment> getSiteDetList = <AccStaffVocSWpayment>[].obs;
   var staffvouchersitelistService = StaffvouchersitelistService();
 
@@ -147,8 +147,8 @@ class StaffVoucher_Controller extends GetxController {
     }
 
     var savedatas =
-    await staffvouchersitelistService.StaffvoucherSiteItemlist_table_Save(
-        staffvouchersiteTableList);
+        await staffvouchersitelistService.StaffvoucherSiteItemlist_table_Save(
+            staffvouchersiteTableList);
     return Navigator.pop(context, savedatas);
   }
 
@@ -322,8 +322,8 @@ class StaffVoucher_Controller extends GetxController {
       });
     });
     var savedatas =
-    await staffvouchersitelistService.StaffvoucherSiteItemlist_table_Save(
-        staffvouchersiteTableList);
+        await staffvouchersitelistService.StaffvoucherSiteItemlist_table_Save(
+            staffvouchersiteTableList);
     return savedatas;
   }
 
@@ -332,9 +332,9 @@ class StaffVoucher_Controller extends GetxController {
     final value = await StaffVoucher_provider.SitevoucherSite_entryList_editAPI(VocId);
     if (value != null) {
       if (value.success == true) {
-        Sitevoucher_EditListApiValue.value = [value.result];
-        if (Sitevoucher_EditListApiValue.value.isNotEmpty) {
-          SaveButton.value = RequestConstant.RESUBMIT;
+          Sitevoucher_EditListApiValue.value = [value.result];
+          if (Sitevoucher_EditListApiValue.value.isNotEmpty) {
+            SaveButton.value = RequestConstant.RESUBMIT;
           await Sitevoucher_entrylist_editSaveDetTable();
           await getstaffvouchersiteTablesDatas();
           Navigator.pushReplacement(

@@ -1,336 +1,400 @@
-// import 'dart:convert';
+// To parse this JSON data, do
 //
-// List<DirectbillEditApiResModel> directbillEditApiResModelFromJson(String str) => List<DirectbillEditApiResModel>.from(json.decode(str).map((x) => DirectbillEditApiResModel.fromJson(x)));
-//
-// String directbillEditApiResModelToJson(List<DirectbillEditApiResModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-//
-// class DirectbillEditApiResModel {
-//   DirectbillEditApiResModel({
-//     this.workId,
-//     this.workNo,
-//     this.workDate,
-//     this.projectId,
-//     this.siteId,
-//     this.subContId,
-//     this.entryType,
-//     this.fromDate,
-//     this.toDate,
-//     this.rndOff,
-//     this.billAmt,
-//     this.actAdvAmt,
-//     this.advAmt,
-//     this.netPayAmt,
-//     this.debitAmt,
-//     this.creditAmt,
-//     this.debitRemarks,
-//     this.creditRemarks,
-//     this.remarks,
-//     this.preparedby,
-//     this.userId,
-//     this.deviceName,
-//     this.entryMode,
-//     this.billEditDet,
-//   });
-//
-//   int? workId;
-//   String? workNo;
-//   String? workDate;
-//   int? projectId;
-//   int? siteId;
-//   int? subContId;
-//   String? entryType;
-//   String? fromDate;
-//   String? toDate;
-//   double? rndOff;
-//   double? billAmt;
-//   double? actAdvAmt;
-//   double? advAmt;
-//   double? netPayAmt;
-//   double? debitAmt;
-//   double? creditAmt;
-//   String? debitRemarks;
-//   String? creditRemarks;
-//   String? remarks;
-//   int? preparedby;
-//   String? userId;
-//   String? deviceName;
-//   String? entryMode;
-//   List<BillEditDet>? billEditDet;
-//
-//   factory DirectbillEditApiResModel.fromJson(Map<String, dynamic> json) => DirectbillEditApiResModel(
-//     workId: json["WorkId"],
-//     workNo: json["WorkNo"],
-//     workDate: json["WorkDate"],
-//     projectId: json["ProjectId"],
-//     siteId: json["SiteId"],
-//     subContId: json["SubContId"],
-//     entryType: json["EntryType"],
-//     fromDate: json["FromDate"],
-//     toDate: json["ToDate"],
-//     rndOff: json["RndOff"],
-//     billAmt: json["BillAmt"],
-//     actAdvAmt: json["ActAdvAmt"],
-//     advAmt: json["AdvAmt"],
-//     netPayAmt: json["NetPayAmt"],
-//     debitAmt: json["DebitAmt"],
-//     creditAmt: json["CreditAmt"],
-//     debitRemarks: json["DebitRemarks"],
-//     creditRemarks: json["CreditRemarks"],
-//     remarks: json["remarks"],
-//     preparedby: json["Preparedby"],
-//     userId: json["UserId"],
-//     deviceName: json["DeviceName"],
-//     entryMode: json["EntryMode"],
-//     billEditDet: List<BillEditDet>.from(json["BillEditDet"].map((x) => BillEditDet.fromJson(x))),
-//   );
-//
-//   Map<String, dynamic> toJson() => {
-//     "WorkId": workId,
-//     "WorkNo": workNo,
-//     "WorkDate": workDate,
-//     "ProjectId": projectId,
-//     "SiteId": siteId,
-//     "SubContId": subContId,
-//     "EntryType": entryType,
-//     "FromDate": fromDate,
-//     "ToDate": toDate,
-//     "RndOff": rndOff,
-//     "BillAmt": billAmt,
-//     "ActAdvAmt": actAdvAmt,
-//     "AdvAmt": advAmt,
-//     "NetPayAmt": netPayAmt,
-//     "DebitAmt": debitAmt,
-//     "CreditAmt": creditAmt,
-//     "DebitRemarks": debitRemarks,
-//     "CreditRemarks": creditRemarks,
-//     "remarks": remarks,
-//     "Preparedby": preparedby,
-//     "UserId": userId,
-//     "DeviceName": deviceName,
-//     "EntryMode": entryMode,
-//     "BillEditDet": List<dynamic>.from(billEditDet!.map((x) => x.toJson())),
-//   };
-// }
-//
-// class BillEditDet {
-//   BillEditDet({
-//     this.sno,
-//     this.itemDes,
-//     this.unit,
-//     this.qty,
-//     this.rate,
-//     this.amount,
-//   });
-//
-//   int? sno;
-//   String? itemDes;
-//   String? unit;
-//   double? qty;
-//   double? rate;
-//   double? amount;
-//
-//   factory BillEditDet.fromJson(Map<String, dynamic> json) => BillEditDet(
-//     sno: json["Sno"],
-//     itemDes: json["ItemDes"],
-//     unit: json["Unit"],
-//     qty: json["Qty"],
-//     rate: json["Rate"],
-//     amount: json["Amount"],
-//   );
-//
-//   Map<String, dynamic> toJson() => {
-//     "Sno": sno,
-//     "ItemDes": itemDes,
-//     "Unit": unit,
-//     "Qty": qty,
-//     "Rate": rate,
-//     "Amount": amount,
-//   };
-// }
+//     final billDirectWorkOrdDet = billDirectWorkOrdDetFromJson(jsonString);
+
+
+
+
 
 
 // To parse this JSON data, do
 //
 //     final directbillEditApiResModel = directbillEditApiResModelFromJson(jsonString);
 
+
 import 'dart:convert';
 
-List<DirectbillEditApiResModel> directbillEditApiResModelFromJson(String str) => List<DirectbillEditApiResModel>.from(json.decode(str).map((x) => DirectbillEditApiResModel.fromJson(x)));
+DirectbillEditApiResModel directbillEditApiResModelFromJson(String str) => DirectbillEditApiResModel.fromJson(json.decode(str));
 
-String directbillEditApiResModelToJson(List<DirectbillEditApiResModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String directbillEditApiResModelToJson(DirectbillEditApiResModel data) => json.encode(data.toJson());
 
 class DirectbillEditApiResModel {
+  bool? success;
+  Result? result;
+  String? message;
+
   DirectbillEditApiResModel({
-    this.workId,
-    this.workNo,
-    this.workDate,
-    this.projectId,
-    this.siteId,
-    this.subContId,
-    this.projectName,
-    this.siteName,
-    this.subContName,
-    this.entryType,
-    this.fromDate,
-    this.toDate,
-    this.rndOff,
-    this.billAmt,
-    this.actAdvAmt,
-    this.advAmt,
-    this.netPayAmt,
-    this.debitAmt,
-    this.creditAmt,
-    this.debitRemarks,
-    this.creditRemarks,
-    this.remarks,
-    this.preparedby,
-    this.preparedbyName,
-    this.userId,
-    this.entryMode,
-    this.workOrderId,
-    this.workOrderNo,
-    this.billNo,
-    this.billEditDet,
+    this.success,
+    this.result,
+    this.message,
   });
 
-  int? workId;
+  factory DirectbillEditApiResModel.fromJson(Map<String, dynamic> json) => DirectbillEditApiResModel(
+    success: json["success"],
+      result: json["result"]==null?null:Result.fromJson(json["result"]),
+    message: json["message"]
+  );
+
+  Map<String, dynamic> toJson() => {
+    "success": success,
+    "result": result==null?null:result!.toJson(),
+    "message": message
+  };
+}
+
+class Result {
+  int? id;
   String? workNo;
   String? workDate;
+  String? entryType;
+  String? billType;
   int? projectId;
   int? siteId;
   int? subContId;
+  int? workOrderId;
+  int? refWorkId;
+  String? fromWorkDate;
+  String? toWorkDate;
+  String? billNo;
+  double? billAmount;
+  double? finalBillAmount;
+  double? netPayAmount;
+  double? roundOff;
+  double? penaltyAmount;
+  double? advanceAmount;
+  double? actualAdvanceAmount;
+  double? balanceAmount;
+  double? creditAmount;
+  String? creditRemarks;
+  double? debitAmount;
+  String? debitRemarks;
+  double? materialDebitAmount;
+  String? materialDebitRemarks;
+  int? partRateStatus;
+  String? paymentDate;
+  String? remarks;
+  int? createdBy;
+  String? createdDt;
+  int? verifyBy;
+  String? verifyStatus;
+  String? verifyDt;
+  int? approvedBy;
+  String? approveStatus;
+  String? approveDt;
   String? projectName;
   String? siteName;
   String? subContName;
-  String? entryType;
-  String? fromDate;
-  String? toDate;
-  double? rndOff;
-  double? billAmt;
-  double? actAdvAmt;
-  double? advAmt;
-  double? netPayAmt;
-  double? debitAmt;
-  double? creditAmt;
-  String? debitRemarks;
-  String? creditRemarks;
-  String? remarks;
-  int? preparedby;
-  String? preparedbyName;
-  int? userId;
+  String? createdName;
+  String? verifiedName;
+  String? approvedName;
+  String? status;
+  String? billTypeDesc;
+  String? entryTypeDesc;
   String? workOrderNo;
-  int? workOrderId;
-  String? entryMode;
-  String? billNo;
-  List<BillEditDet>? billEditDet;
+  List<SubContractorWorkQtyDet>? subContractorWorkQtyDetS;
+  List<SubContractorBillAddLessSetup>? subContractorBillAddLessSetupS;
 
-  factory DirectbillEditApiResModel.fromJson(Map<String, dynamic> json) => DirectbillEditApiResModel(
-    workId: json["WorkId"],
-    workNo: json["WorkNo"],
-    workDate: json["WorkDate"],
-    projectId: json["ProjectId"],
-    siteId: json["SiteId"],
-    subContId: json["SubContId"],
-    projectName: json["ProjectName"],
-    siteName: json["SiteName"],
-    subContName: json["SubContName"],
-    entryType: json["EntryType"],
-    fromDate: json["FromDate"],
-    toDate: json["ToDate"],
-    rndOff: json["RndOff"],
-    billAmt: json["BillAmt"],
-    actAdvAmt: json["ActAdvAmt"],
-    advAmt: json["AdvAmt"],
-    netPayAmt: json["NetPayAmt"],
-    debitAmt: json["DebitAmt"],
-    creditAmt: json["CreditAmt"],
-    debitRemarks: json["DebitRemarks"],
-    creditRemarks: json["CreditRemarks"],
-    remarks: json["remarks"],
-    preparedby: json["Preparedby"],
-    preparedbyName: json["PreparedbyName"],
-    userId: json["UserId"],
-    entryMode: json["EntryMode"],
-    workOrderNo: json["WorkOrderNo"],
-    workOrderId: json["WorkOrderId"],
-    billNo: json["BillNo"],
-    billEditDet: List<BillEditDet>.from(json["BillEditDet"].map((x) => BillEditDet.fromJson(x))),
-  );
-
-  Map<String, dynamic> toJson() => {
-    "WorkId": workId,
-    "WorkNo": workNo,
-    "WorkDate": workDate,
-    "ProjectId": projectId,
-    "SiteId": siteId,
-    "SubContId": subContId,
-    "ProjectName": projectName,
-    "SiteName": siteName,
-    "SubContName": subContName,
-    "EntryType": entryType,
-    "FromDate": fromDate,
-    "ToDate": toDate,
-    "RndOff": rndOff,
-    "BillAmt": billAmt,
-    "ActAdvAmt": actAdvAmt,
-    "AdvAmt": advAmt,
-    "NetPayAmt": netPayAmt,
-    "DebitAmt": debitAmt,
-    "CreditAmt": creditAmt,
-    "DebitRemarks": debitRemarks,
-    "CreditRemarks": creditRemarks,
-    "remarks": remarks,
-    "Preparedby": preparedby,
-    "PreparedbyName": preparedbyName,
-    "UserId": userId,
-    "EntryMode": entryMode,
-    "WorkOrderNo": workOrderNo,
-    "WorkOrderId": workOrderId,
-    "BillNo": billNo,
-    "BillEditDet": List<dynamic>.from(billEditDet!.map((x) => x.toJson())),
-  };
-}
-
-class BillEditDet {
-  BillEditDet({
-    this.sno,
-    this.itemDesc,
-    this.unit,
-    this.qty,
-    this.rate,
-    this.amount,
+  Result({
+    this.id,
+    this.workNo,
+    this.workDate,
+    this.entryType,
+    this.billType,
+    this.projectId,
+    this.siteId,
+    this.subContId,
     this.workOrderId,
-    this.workDetid,
+    this.refWorkId,
+    this.fromWorkDate,
+    this.toWorkDate,
+    this.billNo,
+    this.billAmount,
+    this.finalBillAmount,
+    this.netPayAmount,
+    this.roundOff,
+    this.penaltyAmount,
+    this.advanceAmount,
+    this.actualAdvanceAmount,
+    this.balanceAmount,
+    this.creditAmount,
+    this.creditRemarks,
+    this.debitAmount,
+    this.debitRemarks,
+    this.materialDebitAmount,
+    this.materialDebitRemarks,
+    this.partRateStatus,
+    this.paymentDate,
+    this.remarks,
+    this.createdBy,
+    this.createdDt,
+    this.verifyBy,
+    this.verifyStatus,
+    this.verifyDt,
+    this.approvedBy,
+    this.approveStatus,
+    this.approveDt,
+    this.projectName,
+    this.siteName,
+    this.subContName,
+    this.createdName,
+    this.verifiedName,
+    this.approvedName,
+    this.status,
+    this.billTypeDesc,
+    this.entryTypeDesc,
+    this.workOrderNo,
+    this.subContractorWorkQtyDetS,
+    this.subContractorBillAddLessSetupS,
   });
 
-  int? sno;
-  String? itemDesc;
-  String? unit;
-  double? qty;
-  double? rate;
-  double? amount;
-  int? workDetid;
-  int? workOrderId;
-
-  factory BillEditDet.fromJson(Map<String, dynamic> json) => BillEditDet(
-    sno: json["Sno"],
-    itemDesc: json["ItemDesc"],
-    unit: json["Unit"],
-    qty: json["Qty"],
-    rate: json["Rate"],
-    amount: json["Amount"],
-    workDetid: json["WorkOrderDetId"],
-    workOrderId: json["WorkOrderId"],
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    id: json["id"],
+    workNo: json["workNo"],
+    workDate: json["workDate"],
+    entryType: json["entryType"],
+    billType: json["billType"],
+    projectId: json["projectId"],
+    siteId: json["siteId"],
+    subContId: json["subContractorId"],
+    workOrderId: json["workOrderId"],
+    refWorkId: json["refWorkId"],
+    fromWorkDate: json["fromWorkDate"],
+    toWorkDate: json["toWorkDate"],
+    billNo: json["billNo"],
+    billAmount: json["netBillAmount"],
+    finalBillAmount: json["finalBillAmount"],
+    netPayAmount: json["netPayAmount"],
+    roundOff: json["roundOff"],
+    penaltyAmount: json["penaltyAmount"],
+    advanceAmount: json["advanceAmount"],
+    actualAdvanceAmount: json["actualAdvanceAmount"],
+    balanceAmount: json["balanceAmount"],
+    creditAmount: json["creditAmount"],
+    creditRemarks: json["creditRemarks"],
+    debitAmount: json["debitAmount"],
+    debitRemarks: json["debitRemarks"],
+    materialDebitAmount: json["materialDebitAmount"],
+    materialDebitRemarks: json["materialDebitRemarks"],
+    partRateStatus: json["partRateStatus"],
+    paymentDate: json["paymentDate"],
+    remarks: json["remarks"],
+    createdBy: json["createdBy"],
+    createdDt: json["createdDt"],
+    verifyBy: json["verifyBy"],
+    verifyStatus: json["verifyStatus"],
+    verifyDt: json["verifyDt"],
+    approvedBy: json["approvedBy"],
+    approveStatus: json["approveStatus"],
+    approveDt: json["approveDt"],
+    projectName: json["projectName"],
+    siteName: json["siteName"],
+    subContName: json["subContractorName"],
+    createdName: json["createdName"],
+    verifiedName: json["verifiedName"],
+    approvedName: json["approvedName"],
+    status: json["status"],
+    billTypeDesc: json["billTypeDesc"],
+    entryTypeDesc: json["entryTypeDesc"],
+    workOrderNo: json["workOrderNo"],
+    subContractorWorkQtyDetS: List<SubContractorWorkQtyDet>.from(json["subContractorWorkQtyDetS"].map((x) => SubContractorWorkQtyDet.fromJson(x))),
+    subContractorBillAddLessSetupS: List<SubContractorBillAddLessSetup>.from(json["subContractorBillAddLessSetupS"].map((x) => SubContractorBillAddLessSetup.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "Sno": sno,
-    "ItemDesc": itemDesc,
-    "Unit": unit,
-    "Qty": qty,
-    "Rate": rate,
-    "Amount": amount,
-    "WorkOrderDetId": workDetid,
-    "WorkOrderId": workOrderId,
+    "id": id,
+    "workNo": workNo,
+    "workDate": workDate,
+    "entryType": entryType,
+    "billType": billType,
+    "projectId": projectId,
+    "siteId": siteId,
+    "subContractorId": subContId,
+    "workOrderId": workOrderId,
+    "refWorkId": refWorkId,
+    "fromWorkDate": fromWorkDate,
+    "toWorkDate": toWorkDate,
+    "billNo": billNo,
+    "netBillAmount": billAmount,
+    "finalBillAmount": finalBillAmount,
+    "netPayAmount": netPayAmount,
+    "roundOff": roundOff,
+    "penaltyAmount": penaltyAmount,
+    "advanceAmount": advanceAmount,
+    "actualAdvanceAmount": actualAdvanceAmount,
+    "balanceAmount": balanceAmount,
+    "creditAmount": creditAmount,
+    "creditRemarks": creditRemarks,
+    "debitAmount": debitAmount,
+    "debitRemarks": debitRemarks,
+    "materialDebitAmount": materialDebitAmount,
+    "materialDebitRemarks": materialDebitRemarks,
+    "partRateStatus": partRateStatus,
+    "paymentDate": paymentDate,
+    "remarks": remarks,
+    "createdBy": createdBy,
+    "createdDt": createdDt,
+    "verifyBy": verifyBy,
+    "verifyStatus": verifyStatus,
+    "verifyDt": verifyDt,
+    "approvedBy": approvedBy,
+    "approveStatus": approveStatus,
+    "approveDt": approveDt,
+    "projectName": projectName,
+    "siteName": siteName,
+    "subContractorName": subContName,
+    "createdName": createdName,
+    "verifiedName": verifiedName,
+    "approvedName": approvedName,
+    "status": status,
+    "billTypeDesc": billTypeDesc,
+    "entryTypeDesc": entryTypeDesc,
+    "workOrderNo": workOrderNo,
+    "subContractorWorkQtyDetS": List<dynamic>.from(subContractorWorkQtyDetS!.map((x) => x.toJson())),
+    "subContractorBillAddLessSetupS": List<dynamic>.from(subContractorBillAddLessSetupS!.map((x) => x.toJson())),
   };
 }
+
+class SubContractorBillAddLessSetup {
+  int? id;
+  int? subContractorWorkQtyMasId;
+  String? workNo;
+  int? addLessId;
+  double? percentValue;
+  double? amount;
+
+  SubContractorBillAddLessSetup({
+    this.id,
+    this.subContractorWorkQtyMasId,
+    this.workNo,
+    this.addLessId,
+    this.percentValue,
+    this.amount,
+  });
+
+  factory SubContractorBillAddLessSetup.fromJson(Map<String, dynamic> json) => SubContractorBillAddLessSetup(
+    id: json["id"],
+    subContractorWorkQtyMasId: json["subContractorWorkQtyMasId"],
+    workNo: json["workNo"],
+    addLessId: json["addLessId"],
+    percentValue: json["percentValue"],
+    amount: json["amount"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "subContractorWorkQtyMasId": subContractorWorkQtyMasId,
+    "workNo": workNo,
+    "addLessId": addLessId,
+    "percentValue": percentValue,
+    "amount": amount,
+  };
+}
+
+class SubContractorWorkQtyDet {
+  int? reqDetId;
+  int? subContractorWorkQtyMasId;
+  int? siteId;
+  int? headItemid;
+  int? subItemid;
+  int? level3ItemId;
+  int? dbrWorkDetId;
+  int? refWorkDetId;
+  String? unit;
+  double? rate;
+  double? qty;
+  double? amount;
+  String? flatNo;
+  String? itemDesc;
+  String? workType;
+  double? actualQty;
+  double? actualAmount;
+  double? totalqty;
+  String? qtysClosed;
+  double? balbillqty;
+  double? CurBillQty;
+  double? balanceQty;
+  int? partRateStatus;
+  dynamic? boqCode;
+
+  SubContractorWorkQtyDet({
+    this.reqDetId,
+    this.subContractorWorkQtyMasId,
+    this.siteId,
+    this.headItemid,
+    this.subItemid,
+    this.level3ItemId,
+    this.dbrWorkDetId,
+    this.refWorkDetId,
+    this.unit,
+    this.rate,
+    this.qty,
+    this.amount,
+    this.flatNo,
+    this.itemDesc,
+    this.workType,
+    this.actualQty,
+    this.actualAmount,
+    this.totalqty,
+    this.qtysClosed,
+    this.balbillqty,
+    this.CurBillQty,
+    this.balanceQty,
+    this.partRateStatus,
+    this.boqCode,
+  });
+
+  factory SubContractorWorkQtyDet.fromJson(Map<String, dynamic> json) => SubContractorWorkQtyDet(
+    reqDetId: json["id"],
+    subContractorWorkQtyMasId: json["subContractorWorkQtyMasId"],
+    siteId: json["siteId"],
+    headItemid: json["headItemid"],
+    subItemid: json["subItemid"],
+    level3ItemId: json["level3ItemId"],
+    dbrWorkDetId: json["dbrWorkDetId"],
+    refWorkDetId: json["refWorkDetId"],
+    unit: json["unit"],
+    rate: json["rate"],
+    qty: json["qty"],
+    amount: json["amount"],
+    flatNo: json["flatNo"],
+    itemDesc: json["itemDescription"],
+    workType: json["workType"],
+    actualQty: json["actualQty"],
+    actualAmount: json["actualAmount"],
+    totalqty: json["totalQty"],
+    qtysClosed: json["qtysClosed"],
+    balbillqty: json["balanceBillQty"],
+    CurBillQty: json["currentBillQty"],
+    balanceQty: json["balanceQty"],
+    partRateStatus: json["partRateStatus"],
+    boqCode: json["boqCode"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": reqDetId,
+    "subContractorWorkQtyMasId": subContractorWorkQtyMasId,
+    "siteId": siteId,
+    "headItemid": headItemid,
+    "subItemid": subItemid,
+    "level3ItemId": level3ItemId,
+    "dbrWorkDetId": dbrWorkDetId,
+    "refWorkDetId": refWorkDetId,
+    "unit": unit,
+    "rate": rate,
+    "qty": qty,
+    "amount": amount,
+    "flatNo": flatNo,
+    "itemDescription": itemDesc,
+    "workType": workType,
+    "actualQty": actualQty,
+    "actualAmount": actualAmount,
+    "totalQty": totalqty,
+    "qtysClosed": qtysClosed,
+    "balanceBillQty": balbillqty,
+    "currentBillQty": CurBillQty,
+    "balanceQty": balanceQty,
+    "partRateStatus": partRateStatus,
+    "boqCode": boqCode,
+  };
+}
+

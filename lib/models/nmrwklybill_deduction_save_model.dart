@@ -1,165 +1,216 @@
+// To parse this JSON data, do
+//
+//     final nmrSaveRequest = nmrSaveRequestFromJson(jsonString);
+
 import 'dart:convert';
 
-NmrSaveRequest subcontNmrSaveRequestFromJson(String str) => NmrSaveRequest.fromJson(json.decode(str));
+NmrSaveRequest nmrSaveRequestFromJson(String str) => NmrSaveRequest.fromJson(json.decode(str));
 
-String subcontNmrSaveRequestToJson(NmrSaveRequest data) => json.encode(data.toJson());
+String nmrSaveRequestToJson(NmrSaveRequest data) => json.encode(data.toJson());
 
 class NmrSaveRequest {
+  int? id;
+  String? workNo;
+  String? entryDate;
+  int? projectId;
+  int? siteId;
+  int? subContractorId;
+  String? fromDate;
+  String? toDate;
+  String? billNo;
+  double? billAmount;
+  double? foodAmount;
+  double? bankCharges;
+  double? debitAmount;
+  String? debitRemarks;
+  double? creditAmount;
+  String? creditRemarks;
+  double? advanceAmount;
+  double? actualAdvanceAmount;
+  double? roundOff;
+  double? netPayAmount;
+  double? balanceAmount;
+  String? remarks;
+  int? createdBy;
+  String? createdDt;
+  String? verifyStatus;
+  String? approveStatus;
+  List<SubContractorNmrBillDet>? subContractorNmrBillDetS;
+  List<SubContractorNmrBillAddLessSetup>? subContractorNmrBillAddLessSetupS;
+
   NmrSaveRequest({
-    this.workId,
+    this.id,
     this.workNo,
     this.entryDate,
     this.projectId,
     this.siteId,
-    this.subContId,
+    this.subContractorId,
     this.fromDate,
     this.toDate,
-    this.remarks,
-    this.rndOff,
     this.billNo,
-    this.billAmt,
-    this.actAdvAmt,
-    this.advAmt,
-    this.netPayAmt,
-    this.debitAmt,
-    this.creditAmt,
+    this.billAmount,
+    this.foodAmount,
+    this.bankCharges,
+    this.debitAmount,
     this.debitRemarks,
+    this.creditAmount,
     this.creditRemarks,
-    this.preparedby,
-    this.userId,
-    this.deviceName,
-    this.entryMode,
-    this.nmrBillDet,
+    this.advanceAmount,
+    this.actualAdvanceAmount,
+    this.roundOff,
+    this.netPayAmount,
+    this.balanceAmount,
+    this.remarks,
+    this.createdBy,
+    this.createdDt,
+    this.verifyStatus,
+    this.approveStatus,
+    this.subContractorNmrBillDetS,
+    this.subContractorNmrBillAddLessSetupS,
   });
-
-  String? workId;
-  String? workNo;
-  String? entryDate;
-  String? projectId;
-  String? siteId;
-  String? subContId;
-  String? fromDate;
-  String? toDate;
-  String? remarks;
-  String? rndOff;
-  String? billNo;
-  String? billAmt;
-  String? actAdvAmt;
-  String? advAmt;
-  String? netPayAmt;
-  String? debitAmt;
-  String? creditAmt;
-  String? debitRemarks;
-  String? creditRemarks;
-  String? preparedby;
-  String? userId;
-  String? deviceName;
-  String? entryMode;
-  List<NmrBillDet>? nmrBillDet;
 
   factory NmrSaveRequest.fromJson(Map<String, dynamic> json) => NmrSaveRequest(
-    workId: json["WorkId"],
-    workNo: json["WorkNo"],
-    entryDate: json["EntryDate"],
-    projectId: json["ProjectId"],
-    siteId: json["SiteId"],
-    subContId: json["SubContId"],
-    fromDate: json["FromDate"],
-    toDate: json["ToDate"],
+    id: json["id"],
+    workNo: json["workNo"],
+    entryDate: json["entryDate"],
+    projectId: json["projectId"],
+    siteId: json["siteId"],
+    subContractorId: json["subContractorId"],
+    fromDate: json["fromDate"],
+    toDate: json["toDate"],
+    billNo: json["billNo"],
+    billAmount: json["billAmount"],
+    foodAmount: json["foodAmount"],
+    bankCharges: json["bankCharges"],
+    debitAmount: json["debitAmount"],
+    debitRemarks: json["debitRemarks"],
+    creditAmount: json["creditAmount"],
+    creditRemarks: json["creditRemarks"],
+    advanceAmount: json["advanceAmount"],
+    actualAdvanceAmount: json["actualAdvanceAmount"],
+    roundOff: json["roundOff"],
+    netPayAmount: json["netPayAmount"],
+    balanceAmount: json["balanceAmount"],
     remarks: json["remarks"],
-    rndOff: json["RndOff"],
-    billNo: json["Billno"],
-    billAmt: json["BillAmt"],
-    actAdvAmt: json["ActAdvAmt"],
-    advAmt: json["AdvAmt"],
-    netPayAmt: json["NetPayAmt"],
-    debitAmt: json["DebitAmt"],
-    creditAmt: json["CreditAmt"],
-    debitRemarks: json["DebitRemarks"],
-    creditRemarks: json["CreditRemarks"],
-    preparedby: json["Preparedby"],
-    userId: json["UserId"],
-    deviceName: json["DeviceName"],
-    entryMode: json["EntryMode"],
-    nmrBillDet: List<NmrBillDet>.from(json["NMRBillDet"].map((x) => NmrBillDet.fromJson(x))),
+    createdBy: json["createdBy"],
+    createdDt: json["createdDt"],
+    verifyStatus: json["verifyStatus"],
+    approveStatus: json["approveStatus"],
+    subContractorNmrBillDetS: List<SubContractorNmrBillDet>.from(json["subContractorNMRBillDetS"].map((x) => SubContractorNmrBillDet.fromJson(x))),
+    subContractorNmrBillAddLessSetupS: List<SubContractorNmrBillAddLessSetup>.from(json["subContractorNMRBillAddLessSetupS"].map((x) => SubContractorNmrBillAddLessSetup.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "WorkId": workId,
-    "WorkNo": workNo,
-    "EntryDate": entryDate,
-    "ProjectId": projectId,
-    "SiteId": siteId,
-    "SubContId": subContId,
-    "FromDate": fromDate,
-    "ToDate": toDate,
+    "id": id,
+    "workNo": workNo,
+    "entryDate": entryDate,
+    "projectId": projectId,
+    "siteId": siteId,
+    "subContractorId": subContractorId,
+    "fromDate": fromDate,
+    "toDate": toDate,
+    "billNo": billNo,
+    "billAmount": billAmount,
+    "foodAmount": foodAmount,
+    "bankCharges": bankCharges,
+    "debitAmount": debitAmount,
+    "debitRemarks": debitRemarks,
+    "creditAmount": creditAmount,
+    "creditRemarks": creditRemarks,
+    "advanceAmount": advanceAmount,
+    "actualAdvanceAmount": actualAdvanceAmount,
+    "roundOff": roundOff,
+    "netPayAmount": netPayAmount,
+    "balanceAmount": balanceAmount,
     "remarks": remarks,
-    "RndOff": rndOff,
-    "Billno": billNo,
-    "BillAmt": billAmt,
-    "ActAdvAmt": actAdvAmt,
-    "AdvAmt": advAmt,
-    "NetPayAmt": netPayAmt,
-    "DebitAmt": debitAmt,
-    "CreditAmt": creditAmt,
-    "DebitRemarks": debitRemarks,
-    "CreditRemarks": creditRemarks,
-    "Preparedby": preparedby,
-    "UserId": userId,
-    "DeviceName": deviceName,
-    "EntryMode": entryMode,
-    "NMRBillDet": List<dynamic>.from(nmrBillDet!.map((x) => x.toJson())),
+    "createdBy": createdBy,
+    "createdDt": createdDt,
+    "verifyStatus": verifyStatus,
+    "approveStatus": approveStatus,
+    "subContractorNMRBillDetS": List<dynamic>.from(subContractorNmrBillDetS!.map((x) => x.toJson())),
+    "subContractorNMRBillAddLessSetupS": List<dynamic>.from(subContractorNmrBillAddLessSetupS!.map((x) => x.toJson())),
   };
 }
 
-class NmrBillDet {
-  NmrBillDet({
-    this.projectId,
-    this.siteId,
-    this.categoryId,
-    this.totnos,
-    this.totalOtamt,
-    this.nmrAmt,
-    // this.wages,
-    // this.amt,
-    // this.totalOthrs,
+class SubContractorNmrBillAddLessSetup {
+  int? id;
+  int? addLessId;
+  int? subContractorNmrBillMasId;
+  double? percentValue;
+  double? amount;
+
+  SubContractorNmrBillAddLessSetup({
+    this.id,
+    this.addLessId,
+    this.subContractorNmrBillMasId,
+    this.percentValue,
+    this.amount,
   });
 
-  String? projectId;
-  String? siteId;
-  String? categoryId;
-  String? totnos;
-  String? totalOtamt;
-  String? nmrAmt;
-  // String? wages;
-  // String? amt;
-  // String? totalOthrs;
-
-  factory NmrBillDet.fromJson(Map<String, dynamic> json) => NmrBillDet(
-    projectId: json["ProjectId"],
-    siteId: json["SiteId"],
-    categoryId: json["CategoryId"],
-    totnos: json["Totnos"],
-    totalOtamt: json["total_otamt"],
-    nmrAmt: json["NMRAmt"],
-    // wages: json["wages"],
-    // amt: json["amt"],
-    // totalOthrs: json["total_othrs"],
+  factory SubContractorNmrBillAddLessSetup.fromJson(Map<String, dynamic> json) => SubContractorNmrBillAddLessSetup(
+    id: json["id"],
+    addLessId: json["addLessId"],
+    subContractorNmrBillMasId: json["subContractorNMRBillMasId"],
+    percentValue: json["percentValue"],
+    amount: json["amount"],
   );
 
   Map<String, dynamic> toJson() => {
-    "ProjectId": projectId,
-    "SiteId": siteId,
-    "CategoryId": categoryId,
-    "Totnos": totnos,
-    "total_otamt": totalOtamt,
-    "NMRAmt": nmrAmt,
-    // "wages": wages,
-    // "amt": amt,
-    // "total_othrs": totalOthrs,
+    "id": id,
+    "addLessId": addLessId,
+    "subContractorNMRBillMasId": subContractorNmrBillMasId,
+    "percentValue": percentValue,
+    "amount": amount,
   };
 }
 
+class SubContractorNmrBillDet {
+  int? id;
+  int? subContractorNmrBillMasId;
+  int? projectId;
+  int? siteId;
+  int? subContractorId;
+  int? categoryId;
+  double? nmrAmount;
+  double? totalNos;
+  double? totalOtAmount;
+
+  SubContractorNmrBillDet({
+    this.id,
+    this.subContractorNmrBillMasId,
+    this.projectId,
+    this.siteId,
+    this.subContractorId,
+    this.categoryId,
+    this.nmrAmount,
+    this.totalNos,
+    this.totalOtAmount,
+  });
+
+  factory SubContractorNmrBillDet.fromJson(Map<String, dynamic> json) => SubContractorNmrBillDet(
+    id: json["id"],
+    subContractorNmrBillMasId: json["subContractorNMRBillMasId"],
+    projectId: json["projectId"],
+    siteId: json["siteId"],
+    subContractorId: json["subContractorId"],
+    categoryId: json["categoryId"],
+    nmrAmount: json["nmrAmount"],
+    totalNos: json["totalNos"],
+    totalOtAmount: json["totalOTAmount"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "subContractorNMRBillMasId": subContractorNmrBillMasId,
+    "projectId": projectId,
+    "siteId": siteId,
+    "subContractorId": subContractorId,
+    "categoryId": categoryId,
+    "nmrAmount": nmrAmount,
+    "totalNos": totalNos,
+    "totalOTAmount": totalOtAmount,
+  };
+}
 
 
 NMR_SaveDeduction_SaveResponse saveDeduction_SaveResponseFromJson(String str) => NMR_SaveDeduction_SaveResponse.fromJson(json.decode(str));
@@ -181,4 +232,3 @@ class NMR_SaveDeduction_SaveResponse {
     "RetString": RetString,
   };
 }
-

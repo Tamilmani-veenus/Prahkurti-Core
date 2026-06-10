@@ -4,79 +4,86 @@
 
 import 'dart:convert';
 
-List<NmrItemlist> nmrItemlistFromJson(String str) => List<NmrItemlist>.from(json.decode(str).map((x) => NmrItemlist.fromJson(x)));
+NmrItemlist nmrItemlistFromJson(String str) => NmrItemlist.fromJson(json.decode(str));
 
-String nmrItemlistToJson(List<NmrItemlist> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String nmrItemlistToJson(NmrItemlist data) => json.encode(data.toJson());
 
 class NmrItemlist {
+  bool? success;
+  String? message;
+  List<Result>? result;
+
   NmrItemlist({
-    this.project,
-    this.projectid,
-    this.siteName,
-    this.siteId,
-    this.categoryId,
-    this.categoryName,
-    this.nmrAmt,
-    this.totnos,
-    this.totalOtamt,
-    this.netAmt,
-    this.Rate,
-    this.Totamt,
-    this.total_othrs,
-    this.wages,
-    this.amt,
+    this.success,
+    this.message,
+    this.result,
   });
 
-  String? project;
-  int? projectid;
+  factory NmrItemlist.fromJson(Map<String, dynamic> json) => NmrItemlist(
+    success: json["success"],
+    message: json["message"],
+    result: json["result"]==null?[]:List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "success": success,
+    "message": message,
+    "result": result==null?[]:List<dynamic>.from(result!.map((x) => x.toJson())),
+  };
+}
+
+class Result {
+  String? projectName;
+  int? projectId;
   String? siteName;
   int? siteId;
   int? categoryId;
   String? categoryName;
-  double? nmrAmt;
-  double? totnos;
-  double? totalOtamt;
+  double? nmrAmount;
+  double? totalNos;
+  double? rate;
+  double? totalOtAmount;
   double? netAmt;
-  double? Rate;
-  double? Totamt;
-  double? total_othrs;
-  double? wages;
-  double? amt;
 
+  Result({
+    this.projectName,
+    this.projectId,
+    this.siteName,
+    this.siteId,
+    this.categoryId,
+    this.categoryName,
+    this.nmrAmount,
+    this.totalNos,
+    this.rate,
+    this.totalOtAmount,
+    this.netAmt,
+  });
 
-  factory NmrItemlist.fromJson(Map<String, dynamic> json) => NmrItemlist(
-    project: json["project"],
-    projectid: json["projectid"],
-    siteName: json["sitename"],
-    siteId: json["siteid"],
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    projectName: json["ProjectName"],
+    projectId: json["ProjectId"],
+    siteName: json["SiteName"],
+    siteId: json["SiteId"],
     categoryId: json["CategoryId"],
     categoryName: json["CategoryName"],
-    nmrAmt: json["NMRAMT"],
-    totnos: json["totnos"],
-    totalOtamt: json["total_otamt"],
+    nmrAmount: json["NMRAMT"],
+    totalNos: json["totnos"],
+    rate: json["Rate"],
+    totalOtAmount: json["total_otamt"],
     netAmt: json["NetAmt"],
-    Rate: json["Rate"],
-    Totamt: json["Totamt"],
-    total_othrs: json["total_othrs"],
-    wages: json["wages"],
-    amt: json["Amt"],
   );
 
   Map<String, dynamic> toJson() => {
-    "project": project,
-    "projectid": projectid,
-    "sitename": siteName,
-    "siteid": siteId,
+    "ProjectName": projectName,
+    "ProjectId": projectId,
+    "SiteName": siteName,
+    "SiteId": siteId,
     "CategoryId": categoryId,
     "CategoryName": categoryName,
-    "NMRAMT": nmrAmt,
-    "totnos": totnos,
-    "total_otamt": totalOtamt,
+    "NMRAMT": nmrAmount,
+    "totnos": totalNos,
+    "Rate": rate,
+    "total_otamt": totalOtAmount,
     "NetAmt": netAmt,
-    "Rate": Rate,
-    "Totamt": Totamt,
-    "total_othrs": total_othrs,
-    "wages": wages,
-    "Amt": amt,
   };
 }

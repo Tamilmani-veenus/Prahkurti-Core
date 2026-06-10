@@ -24,25 +24,11 @@ class _Subcont_NMR_EntryListScreenState_Site
 
   @override
   void initState() {
-
-    if(nmrWklyController.editCheck==1){
-
-    }
-    else{
-      nmrWklyController.editCheck=0;
-    }
-
-    setState(() {
-      nmrWklyController.NmrEtyList.value.clear();
-      nmrWklyController.mainEtyList.value.clear();
-    });
-
     DateTime currentDate = DateTime.now();
     DateTime lastDayOfMonth = DateTime(currentDate.year, currentDate.month - 1, 0);
     nmrWklyController.EntrylistFrDate.text = lastDayOfMonth.toString().substring(0, 10);
     nmrWklyController.EntrylistToDate.text = currentDate.toString().substring(0, 10);
     nmrWklyController.getNmrEntryList();
-    nmrWklyController.NmrEtyList.value = nmrWklyController.mainEtyList.value;
     super.initState();
   }
 
@@ -64,8 +50,7 @@ class _Subcont_NMR_EntryListScreenState_Site
             visible: commanController.addMode.value == 1 ? true : false,
             child: FloatingActionButton.extended(
               onPressed: (){
-                nmrWklyController.submitCheck =0;
-                nmrWklyController.editCheck =0;
+                nmrWklyController.saveButton.value = RequestConstant.SUBMIT;
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const Subcont_Nmr_EntryScreen_Site()));
               },
               label: const Text("Add", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,),),
@@ -309,122 +294,6 @@ class _Subcont_NMR_EntryListScreenState_Site
                   ),
                 ),
 
-                // Container(
-                //   margin: EdgeInsets.only(top: 10),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                //     children: <Widget>[
-                //       Container(
-                //         width: BaseUtitiles.getWidthtofPercentage(context,40),
-                //         height: BaseUtitiles.getheightofPercentage(context, 4),
-                //         decoration: BoxDecoration(),
-                //         child: TextField(
-                //           readOnly: true,
-                //           controller: nmrWklyController.EntrylistFrDate,
-                //           decoration: InputDecoration(
-                //             contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                //             border: OutlineInputBorder(),
-                //             prefixIcon: Icon(Icons.date_range_sharp,
-                //                 color: Theme.of(context).primaryColor),
-                //           ),
-                //           onTap: () async {
-                //             nmrWklyController.NmrEtyList.clear();
-                //             var Frdate = await showDatePicker(
-                //                 context: context,
-                //                 initialDate: DateTime.now(),
-                //                 firstDate: DateTime(1900),
-                //                 lastDate: DateTime(2100),
-                //                 builder: (context, child) {
-                //                   return Theme(data: Theme.of(context).copyWith(
-                //                     colorScheme: ColorScheme.light(
-                //                       primary: Theme.of(context).primaryColor, // header background color
-                //                       onPrimary: Colors.white, // header text color
-                //                       onSurface: Colors.black, // body text color
-                //                     ),
-                //                     textButtonTheme: TextButtonThemeData(
-                //                       style: TextButton.styleFrom(
-                //                         primary: Colors.black, // button text color
-                //                       ),
-                //                     ),
-                //                   ),
-                //                     child: child!,
-                //                   );
-                //                 });
-                //             nmrWklyController.EntrylistFrDate.text = Frdate.toString().substring(0, 10);
-                //             nmrWklyController.getNmrEntryList();
-                //           },
-                //         ),
-                //       ),
-                //       Container(
-                //         height: BaseUtitiles.getheightofPercentage(context, 4),
-                //         width: BaseUtitiles.getWidthtofPercentage(context,40),
-                //         decoration: BoxDecoration(),
-                //         child: TextField(
-                //           readOnly: true,
-                //           controller: nmrWklyController.EntrylistToDate,
-                //           decoration: InputDecoration(
-                //             contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                //             border: OutlineInputBorder(),
-                //             prefixIcon: Icon(Icons.date_range_sharp,
-                //                 color: Theme.of(context).primaryColor),
-                //           ),
-                //           onTap: () async {
-                //             nmrWklyController.NmrEtyList.clear();
-                //             var Todate = await showDatePicker(
-                //                 context: context,
-                //                 initialDate: DateTime.now(),
-                //                 firstDate: DateTime(1900),
-                //                 lastDate: DateTime(2100),
-                //                 builder: (context, child) {
-                //                   return Theme(data: Theme.of(context).copyWith(
-                //                     colorScheme: ColorScheme.light(
-                //                       primary: Theme.of(context).primaryColor, // header background color
-                //                       onPrimary: Colors.white, // header text color
-                //                       onSurface: Colors.black, // body text color
-                //                     ),
-                //                     textButtonTheme: TextButtonThemeData(
-                //                       style: TextButton.styleFrom(
-                //                         primary: Colors.black, // button text color
-                //                       ),
-                //                     ),
-                //                   ),
-                //                     child: child!,
-                //                   );
-                //                 });
-                //             nmrWklyController.EntrylistToDate.text =
-                //                 Todate.toString().substring(0, 10);
-                //             nmrWklyController.getNmrEntryList();
-                //           },
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                // Container(
-                //   margin: EdgeInsets.only(left:10,top: 10,right: 10),
-                //   height: BaseUtitiles.getheightofPercentage(context, 5),
-                //   child: TextField(
-                //     onChanged: (value) {
-                //       setState(() {
-                //         nmrWklyController.NmrEtyList.value=BaseUtitiles.filterSearchResults(value, nmrWklyController.mainEtyList);
-                //
-                //       });
-                //     },
-                //     controller: editingController,
-                //     decoration: InputDecoration(
-                //         contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                //         labelText: "Search",
-                //         prefixIcon: Icon(
-                //           Icons.search,
-                //           color: Theme.of(context).primaryColor,
-                //         ),
-                //         border: OutlineInputBorder(
-                //             borderRadius: BorderRadius.all(Radius.circular(25.0)))),
-                //   ),
-                // ),
-                // Divider(color: Theme.of(context).primaryColor),
-                // ListDetails(),
-
               ],
             ),
           ),
@@ -446,7 +315,7 @@ class _Subcont_NMR_EntryListScreenState_Site
                       () => ListView.builder(
                       shrinkWrap: true,
                       physics: BouncingScrollPhysics(),
-                      padding: EdgeInsets.zero,
+                      padding: EdgeInsets.only(bottom: BaseUtitiles.getheightofPercentage(context, 10)),
                       itemCount: nmrWklyController.NmrEtyList.value.length,
                       itemBuilder: (context, index) {
                         return Container(
@@ -476,7 +345,7 @@ class _Subcont_NMR_EntryListScreenState_Site
                                                   margin: EdgeInsets.only(left: 5, right: 3),
                                                   child: ConstIcons.list_date, ),
                                                 Text(
-                                                  nmrWklyController.NmrEtyList.value[index].entrydate.toString(),
+                                                  nmrWklyController.NmrEtyList.value[index].entryDate.toString(),
                                                   style: TextStyle(
                                                       color: Theme.of(context).primaryColor,
                                                       fontWeight: FontWeight.bold),
@@ -497,60 +366,6 @@ class _Subcont_NMR_EntryListScreenState_Site
                                     ],
                                   ),
                                   SizedBox(height: 10),
-                                  Row(
-                                    children: <Widget>[
-                                      Container(
-                                        margin: EdgeInsets.only(top: 5, left: 10),
-                                        child: Text(""),
-                                      ),
-                                      Expanded(
-                                          flex: 3,
-                                          child: Text(
-                                            "Subcontractor",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,),
-                                          )),
-                                      Expanded(
-                                          flex: 6,
-                                          child: Text(
-                                            nmrWklyController
-                                                .NmrEtyList.value[index].subconName
-                                                .toString(),
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                            ),
-                                          )),
-                                    ],
-                                  ),
-                                  SizedBox(height: 5,),
-                                  Row(
-                                    children: <Widget>[
-                                      Container(
-                                        margin: EdgeInsets.only(top: 5, left: 10),
-                                        child: Text(""),
-                                      ),
-                                      Expanded(
-                                          flex: 3,
-                                          child: Text(
-                                            "Project Name",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,),
-                                          )),
-                                      Expanded(
-                                          flex: 6,
-                                          child: Text(
-                                            nmrWklyController
-                                                .NmrEtyList.value[index].project
-                                                .toString(),
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                            ),
-                                          )),
-                                    ],
-                                  ),
-                                  SizedBox(height: 5,),
                                   Row(
                                     children: <Widget>[
                                       Container(
@@ -629,7 +444,83 @@ class _Subcont_NMR_EntryListScreenState_Site
                                     ],
                                   ),
                                   SizedBox(height: 5,),
-
+                                  Row(
+                                    children: <Widget>[
+                                      Container(
+                                        margin: EdgeInsets.only(top: 5, left: 10),
+                                        child: Text(""),
+                                      ),
+                                      Expanded(
+                                          flex: 3,
+                                          child: Text(
+                                            "Project",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,),
+                                          )),
+                                      Expanded(
+                                          flex: 6,
+                                          child: Text(
+                                            nmrWklyController
+                                                .NmrEtyList.value[index].projectName
+                                                .toString(),
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                            ),
+                                          )),
+                                    ],
+                                  ),
+                                  SizedBox(height: 5,),
+                                  Row(
+                                    children: <Widget>[
+                                      Container(
+                                        margin: EdgeInsets.only(top: 2, left: 10),
+                                        child: Text(""),
+                                      ),
+                                      const Expanded(
+                                          flex: 3,
+                                          child: Text(
+                                            "Site",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,),
+                                          )),
+                                      Expanded(
+                                          flex: 6,
+                                          child: Text(
+                                            nmrWklyController.NmrEtyList.value[index].siteName.toString(),
+                                            style: TextStyle(color: Colors.black),
+                                          )),
+                                    ],
+                                  ),
+                                  SizedBox(height: 5,),
+                                  Row(
+                                    children: <Widget>[
+                                      Container(
+                                        margin: EdgeInsets.only(top: 5, left: 10),
+                                        child: Text(""),
+                                      ),
+                                      Expanded(
+                                          flex: 3,
+                                          child: Text(
+                                            "Subcontractor",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,),
+                                          )),
+                                      Expanded(
+                                          flex: 6,
+                                          child: Text(
+                                            nmrWklyController
+                                                .NmrEtyList.value[index].subContractorName
+                                                .toString(),
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                            ),
+                                          )),
+                                    ],
+                                  ),
+                                  SizedBox(height: 5,),
                                   Row(
                                     children: <Widget>[
                                       Container(
@@ -652,39 +543,31 @@ class _Subcont_NMR_EntryListScreenState_Site
                                           )),
                                     ],
                                   ),
-
                                   Divider(thickness: 1),
                                   Row(
                                     children: <Widget>[
                                       Container(
-                                        margin: EdgeInsets.only(left: 10),
+                                        margin: EdgeInsets.only(top: 2, left: 10),
                                         child: Text(""),
                                       ),
-                                      Expanded(
-                                          flex: 2,
-                                          child: Text(
-                                            "Site Name",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black),
-                                          )),
-                                      Expanded(
+                                      const Expanded(
                                           flex: 4,
                                           child: Text(
-                                            nmrWklyController.NmrEtyList.value[index].siteName.toString(),
+                                            "Prepared By",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,),
+                                          )),
+                                      Expanded(
+                                          flex: 6,
+                                          child: Text(
+                                            nmrWklyController.NmrEtyList.value[index].createdName.toString(),
                                             style: TextStyle(color: Colors.black),
                                           )),
                                       Expanded(
-                                          flex: 1,
+                                          flex: 2,
                                           child: IconButton(
                                               onPressed: () {
-                                                if(nmrWklyController.NmrEtyList.value[index].appStatus=="N" && nmrWklyController.NmrEtyList.value[index].verifyStatus=="Y"){
-                                                  BaseUtitiles.showToast("Verified record cannot be edited or deleted");
-                                                }
-                                                else if(nmrWklyController.NmrEtyList.value[index].appStatus=="Y" || nmrWklyController.NmrEtyList.value[index].verifyStatus=="Y"){
-                                                  BaseUtitiles.showToast("Approval made cannot be edited or deleted");
-                                                }
-                                                else {
                                                   showModalBottomSheet(
                                                       context: context,
                                                       shape: RoundedRectangleBorder(
@@ -755,12 +638,7 @@ class _Subcont_NMR_EntryListScreenState_Site
                                                                     ],
                                                                   ),
                                                                   onTap: () async {
-                                                                    nmrWklyController.EditListSaveDatas.value.clear();
-                                                                    nmrWklyController.NmritemList.value.clear();
-                                                                    await  nmrWklyController.NmrEntryList_EditApi(nmrWklyController.NmrEtyList.value[index].nmrWorkId,context,1);
-                                                                    // Navigator.pop(context);
-                                                                    // FocusScope.of(context).unfocus();
-
+                                                                    await  nmrWklyController.NmrEntryList_EditApi(nmrWklyController.NmrEtyList.value[index].id,context,"Edit",true);
                                                                   }),
                                                               Container(
                                                                   margin: EdgeInsets.only(
@@ -795,17 +673,14 @@ class _Subcont_NMR_EntryListScreenState_Site
                                                                     ],
                                                                   ),
                                                                   onTap: () {
-                                                                    setState(() {
                                                                       Navigator.pop(context);
                                                                       nmrWklyController.DeleteAlert(context,index);
-                                                                    });
                                                                   }),
                                                               SizedBox(height: 20)
                                                             ],
                                                           ),
                                                         );
                                                       });
-                                                }
                                               },
                                               icon: Icon(
                                                 Icons.arrow_drop_down_circle_outlined,
@@ -813,6 +688,7 @@ class _Subcont_NMR_EntryListScreenState_Site
                                               )))
                                     ],
                                   ),
+
                                 ],
                               ),
                             ),

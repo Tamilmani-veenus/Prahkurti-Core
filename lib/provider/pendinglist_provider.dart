@@ -162,6 +162,36 @@ class PendingListProvider {
         response =
             await ApiManager.getAPICall(ApiConstant.GET_STORETRANS_PEND_LIST);
       }
+      else if (formName == "SUBCONTRACTOR DPR APPROVAL") {
+        response = await ApiManager.getAPICall(ApiConstant.GETSUBCONT_DPRAPPROVAL);
+      }
+      else if (formName == "BILL VERIFICATION - NMR") {
+        response = await ApiManager.getAPICall(ApiConstant.GETNMRBILLVERIFYLIST);
+      }
+      else if (formName == "BILL APPROVAL - NMR") {
+        response = await ApiManager.getAPICall(ApiConstant.GETNMRBILLAPPROVELIST);
+      }
+      else if (formName == "BILL VERIFICATION - DIRECT") {
+        response = await ApiManager.getAPICall(ApiConstant.GETBILLDIRECTVERIFYLIST);
+      }
+      else if (formName == "BILL APPROVAL - DIRECT") {
+        response = await ApiManager.getAPICall(ApiConstant.GETBILLDIRECTAPPROVELIST);
+      }
+      else if (formName == "BILL VERIFICATION - BOQ") {
+        response = await ApiManager.getAPICall(ApiConstant.GETBILLBOQVERIFYLIST);
+      }
+      else if (formName == "BILL APPROVAL - BOQ") {
+        response = await ApiManager.getAPICall(ApiConstant.GETBILLBOQAPPROVELIST);
+      }
+      else if (formName == "STAFF L & P VERIFICATION") {
+        response = await ApiManager.getAPICall(ApiConstant.GETSTAFFREQVERIFYLIST);
+      }
+      else if (formName == "STAFF L & P APPROVAL") {
+        response = await ApiManager.getAPICall(ApiConstant.GETSTAFFREQAPPLIST);
+      }
+      else if (formName == "BOQ REVISED - APPROVAL") {
+        response = await ApiManager.getAPICall(ApiConstant.GETBOQAPPROLIST);
+      }
       return onclickPendingListResponseFromJson(response);
     } catch (error, stackTrace) {
       print("ERROR...${error}");
@@ -215,7 +245,8 @@ class PendingListProvider {
     await ApiManager.putUpdateAPIButton(
             ApiConstant.PUT_SUBCONTNMRBILL_APPROVAL_API, body)
         .then((value) {
-      var response = dprItemscreenSaveResponseFromJson(value);
+      var response ;
+      // = dprItemscreenSaveResponseFromJson(value);
       if (response.RetString != null) {
         ratingRes = response.RetString;
         BaseUtitiles.showToast(ratingRes);
@@ -278,22 +309,47 @@ class PendingListProvider {
     }
   }
 
-  static Future PO_Approval_deleteAPI(int reqId) async {
-    var data = null;
-    await ApiManager.deleteAPICall("${ApiConstant.PO_APPROVE_DELETE}?id=$reqId")
-        .then((value) {
-      final res = json.decode(value);
-      if (res["success"] == true) {
-        data = res["result"];
-        BaseUtitiles.showToast("$data");
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
+  static Future<bool> PO_Approval_deleteAPI(int reqId) async {
+    try {
+      final response = await ApiManager.deleteAPICall(
+          "${ApiConstant.PO_APPROVE_DELETE}?id=$reqId");
+
+      final Map<String, dynamic> decoded = jsonDecode(response);
+
+
+      bool isSuccess = decoded["success"] == true;
+
+      final message = decoded["message"] ??
+          (isSuccess
+              ? "Deleted successfully"
+              : "Something went wrong");
+
+      BaseUtitiles.showToast(message);
+
+      return isSuccess;
+    } catch (error) {
+      print("Delete API Error: $error");
       BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
-    });
-    return data;
+      return false;
+    }
   }
+
+  // static Future PO_Approval_deleteAPI(int reqId) async {
+  //   var data = null;
+  //   await ApiManager.deleteAPICall("${ApiConstant.PO_APPROVE_DELETE}?id=$reqId")
+  //       .then((value) {
+  //     final res = json.decode(value);
+  //     if (res["success"] == true) {
+  //       data = res["result"];
+  //       BaseUtitiles.showToast("$data");
+  //       return data;
+  //     }
+  //   }, onError: (error) {
+  //     print(error);
+  //     BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
+  //   });
+  //   return data;
+  // }
 
   ///----------------WorkOrder Verify and Approval---------
 
@@ -301,7 +357,8 @@ class PendingListProvider {
     var ratingRes = null;
     await ApiManager.putUpdateAPIButton(ApiConstant.PUT_POAPPROVAL_API, body)
         .then((value) {
-      var response = dprItemscreenSaveResponseFromJson(value);
+      var response  ;
+      // = dprItemscreenSaveResponseFromJson(value);
       if (response.RetString != null) {
         ratingRes = response.RetString;
         BaseUtitiles.showToast(ratingRes);
@@ -319,7 +376,8 @@ class PendingListProvider {
     await ApiManager.putUpdateAPIButton(
             ApiConstant.PUT_BILLGEN_APPROVAL_API, body)
         .then((value) {
-      var response = dprItemscreenSaveResponseFromJson(value);
+      var response ;
+      // = dprItemscreenSaveResponseFromJson(value);
       if (response.RetString != null) {
         ratingRes = response.RetString;
         BaseUtitiles.showToast(ratingRes);
@@ -336,7 +394,8 @@ class PendingListProvider {
     // await ApiManager.putUpdateAPIButton(ApiConstant.PUT_ADVANCEREQ_APPROVAL_API, body).then((value) {
     await ApiManager.putUpdateAPIButton(ApiConstant.PUT_POAPPROVAL_API, body)
         .then((value) {
-      var response = dprItemscreenSaveResponseFromJson(value);
+      var response ;
+      // = dprItemscreenSaveResponseFromJson(value);
       if (response.RetString != null) {
         ratingRes = response.RetString;
         BaseUtitiles.showToast(ratingRes);
@@ -510,7 +569,8 @@ class PendingListProvider {
     var ratingRes = null;
     await ApiManager.putUpdateAPIButton(ApiConstant.PUT_POAPPROVAL_API, body)
         .then((value) {
-      var response = dprItemscreenSaveResponseFromJson(value);
+      var response ;
+      // = dprItemscreenSaveResponseFromJson(value);
       if (response.RetString != null) {
         ratingRes = response.RetString;
         BaseUtitiles.showToast(ratingRes);

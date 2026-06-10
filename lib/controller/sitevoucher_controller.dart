@@ -66,20 +66,20 @@ class SiteVoucher_Controller extends GetxController {
     type.value = "Direct Payment/Office";
     delete_Sitevoucher_itemlist_Table();
     Sitevoucher_itemview_GetDbList.clear();
-    siteController.selectedsitedropdownName = "--Select--".obs;
+    siteController.selectedsitedropdownName = "--SELECT--".obs;
     siteController.getSiteDropdownvalue.value.clear();
     siteController.Sitename.text = RequestConstant.SELECT;
     siteController.siteDropdownName.clear();
     commonVoucherController.VoucherTypeController.text = "Payment";
-    projectController.projectname.text = "--Select--";
+    projectController.projectname.text = "--SELECT--";
     commonVoucherController.VocType.value = "P";
-    commonVoucherController.AccountTypename.text = "--Select--";
-    commonVoucherController.Accountname.text = "--Select--";
+    commonVoucherController.AccountTypename.text = "--SELECT--";
+    commonVoucherController.Accountname.text = "--SELECT--";
     commonVoucherController.selectedAccnameId = 0.obs;
     commonVoucherController.setSelectedAccPayForListName("A");
     sitevocDate.text = BaseUtitiles.initiateCurrentDateFormat();
-    commonVoucherController.Paymodename.text = "--Select--";
-    commonVoucherController.AccPayforname.text = "--Select--";
+    commonVoucherController.Paymodename.text = "--SELECT--";
+    commonVoucherController.AccPayforname.text = "--SELECT--";
     Remarks.text = "";
     Amount.text = "0.00";
   }

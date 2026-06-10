@@ -26,7 +26,6 @@ class _MRNRequest_PreIndent_MAterialsAddState extends State<MRNRequest_PreIndent
 
   @override
   void initState() {
-    // mrn_request_controller.list.value.clear();
     int i = 0;
     mrnRequest_PreIndent_Controller.getmaterialvalue.forEach((element) {
       mrnRequest_PreIndent_Controller.Material_itemlist_textControllersInitiate();
@@ -39,86 +38,89 @@ class _MRNRequest_PreIndent_MAterialsAddState extends State<MRNRequest_PreIndent
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Setmybackground,
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () async {
-            mrnRequest_PreIndent_Controller.addMaterialControl=0;
-            await mrnRequest_PreIndent_Controller.materiallist_Save_DB(context);
-            await mrnRequest_PreIndent_Controller.getMaterialTablesDatas();
-          },
-          label: Text(
-            "Done",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: RequestConstant.Lable_Font_SIZE,
-            ),
-          ),
-          icon: Icon(
-            Icons.library_add_check_outlined,
-            color: Colors.white,
-            size: RequestConstant.Heading_Font_SIZE,
-          ),
-          backgroundColor: Theme.of(context).primaryColor,
-        ),
-        body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Column(
-            children: [
-              SizedBox(height: 40),
-              Container(
-                margin: EdgeInsets.only(left: 15, right: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Add Materials",
-                      style: TextStyle(
-                          fontSize: RequestConstant.Heading_Font_SIZE,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Container(
-                      height: BaseUtitiles.getheightofPercentage(context, 5),
-                      width: BaseUtitiles.getWidthtofPercentage(context, 50),
-                      margin: EdgeInsets.only(left: 15),
-                      child: TextField(
-                        cursorColor: Theme.of(context).primaryColor,
-                        controller: editingController,
-                        decoration: InputDecoration(
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
-                          ),
-                          prefixIcon: const Icon(
-                            Icons.search,
-                            color: Colors.black,
-                          ),
-                          hintText: "Search..",
-                          hintStyle: TextStyle(color: Colors.black),
-                          isDense: true,
-                          fillColor: Colors.white,
-                        ),
-                        onEditingComplete: () {
-                          FocusScope.of(context).unfocus();
-                          // if (onSearch != null) onSearch!(searchcontroller.text);
-                        },
-                        textInputAction: TextInputAction.search,
-                        onChanged: (value) {
-                          setState(() {
-                            mrnRequest_PreIndent_Controller.list.value = BaseUtitiles.materialNamePopupAlert(value, mrnRequest_PreIndent_Controller.getmaterialvalue);
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+          backgroundColor: Setmybackground,
+          floatingActionButton: FloatingActionButton.extended(
+            onPressed: () async {
+              mrnRequest_PreIndent_Controller.addMaterialControl=0;
+              await mrnRequest_PreIndent_Controller.materiallist_Save_DB(context);
+              await mrnRequest_PreIndent_Controller.getMaterialTablesDatas();
+            },
+            label: Text(
+              "Done",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: RequestConstant.Lable_Font_SIZE,
               ),
-              listDetails(),
-            ],
+            ),
+            icon: Icon(
+              Icons.library_add_check_outlined,
+              color: Colors.white,
+              size: RequestConstant.Heading_Font_SIZE,
+            ),
+            backgroundColor: Theme.of(context).primaryColor,
           ),
-        ));
+          body: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Column(
+              children: [
+                SizedBox(height: 40),
+                Container(
+                  margin: EdgeInsets.only(left: 15, right: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Add Materials",
+                        style: TextStyle(
+                            fontSize: RequestConstant.Heading_Font_SIZE,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Container(
+                        height: BaseUtitiles.getheightofPercentage(context, 5),
+                        width: BaseUtitiles.getWidthtofPercentage(context, 50),
+                        margin: EdgeInsets.only(left: 15),
+                        child: TextField(
+                          cursorColor: Theme.of(context).primaryColor,
+                          controller: editingController,
+                          decoration: InputDecoration(
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                            prefixIcon: const Icon(
+                              Icons.search,
+                              color: Colors.black,
+                            ),
+                            hintText: "Search..",
+                            hintStyle: TextStyle(color: Colors.black),
+                            isDense: true,
+                            fillColor: Colors.white,
+                          ),
+                          onEditingComplete: () {
+                            FocusScope.of(context).unfocus();
+                            // if (onSearch != null) onSearch!(searchcontroller.text);
+                          },
+                          textInputAction: TextInputAction.search,
+                          onChanged: (value) {
+                            setState(() {
+                              mrnRequest_PreIndent_Controller.list.value = BaseUtitiles.materialNamePopupAlert(value, mrnRequest_PreIndent_Controller.getmaterialvalue);
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                listDetails(),
+              ],
+            ),
+          )),
+    );
   }
 
   Widget listDetails() {

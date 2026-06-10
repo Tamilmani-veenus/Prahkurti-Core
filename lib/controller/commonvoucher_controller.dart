@@ -1,13 +1,7 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../commonpopup/accountname_alert.dart';
-import '../commonpopup/accounttype_alert.dart';
-import '../commonpopup/payfor_alert.dart';
-import '../commonpopup/paymode_alert.dart';
-
+import 'package:prahkurticore/controller/punch_in_controller.dart';
 import '../models/accountname_model.dart';
 import '../models/addaccountnamerequest_model.dart';
 import '../provider/common_provider.dart';
@@ -17,6 +11,7 @@ import 'bottomsheet_Controllers.dart';
 
 class CommonVoucherController extends GetxController{
 
+  PunchInController punchInController = Get.put(PunchInController());
 
   final VoucherTypeController =new TextEditingController();
   final voucherPaidForm=new TextEditingController();
@@ -35,7 +30,7 @@ class CommonVoucherController extends GetxController{
 
   int vocPaidformId = 0;
   int active=0;
-  RxString SaveButton=RequestConstant.SAVE.obs;
+  RxString SaveButton=RequestConstant.SUBMIT.obs;
 
   bool check=false;
 
@@ -132,7 +127,7 @@ class CommonVoucherController extends GetxController{
   }
 
 
-  checkDuplicateAccountName(String value,BuildContext context){
+  checkDuplicateAccountName(String value,BuildContext context) async {
     check=false;
     getaccdropDownvalue.value.forEach((element) {
       if(value.toUpperCase()==element.accName){
@@ -144,7 +139,8 @@ class CommonVoucherController extends GetxController{
       BaseUtitiles.showToast("already exist");
     }
     else{
-      SaveButton_AccountnameScreen(context,selectedAccnameId.value=SaveButton.value == RequestConstant.UPDATE?selectedAccnameId.value:0,selectedAccTypeId.value);
+      await punchInController.getNetworkTime();
+      await SaveButton_AccountnameScreen(context,selectedAccnameId.value=SaveButton.value == RequestConstant.UPDATE?selectedAccnameId.value:0,selectedAccTypeId.value);
     }
   }
 
@@ -290,6 +286,8 @@ class CommonVoucherController extends GetxController{
       accountMainGroupId: 0,
       accountName: AddAccountname.text,
       active: "Y",
+      createdBy: 0,
+      createdDt: BaseUtitiles().convertToUtcIso(punchInController.currentDate!),
     ));
     final list = await CommonProvider.SaveAccountnameScreenEntryAPI(body, accNameId, SaveButton.value);
     if (list != null ) {

@@ -1,25 +1,57 @@
+// To parse this JSON data, do
+//
+//     final dprTypeSucontResponse = dprTypeSucontResponseFromJson(jsonString);
+
 import 'dart:convert';
 
-List<DprTypeSucontResponse> dprTypeSucontResponseFromJson(String str) => List<DprTypeSucontResponse>.from(json.decode(str).map((x) => DprTypeSucontResponse.fromJson(x)));
+DprTypeSucontResponse dprTypeSucontResponseFromJson(String str) => DprTypeSucontResponse.fromJson(json.decode(str));
 
-String dprTypeSucontResponseToJson(List<DprTypeSucontResponse> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String dprTypeSucontResponseToJson(DprTypeSucontResponse data) => json.encode(data.toJson());
 
 class DprTypeSucontResponse {
+  bool? success;
+  List<Result>? result;
+  String? message;
+
   DprTypeSucontResponse({
-    this.subContId,
-    this.subContName,
+    this.success,
+    this.result,
+    this.message,
   });
 
-  int? subContId;
-  String? subContName;
-
   factory DprTypeSucontResponse.fromJson(Map<String, dynamic> json) => DprTypeSucontResponse(
-    subContId: json["SubContId"],
-    subContName: json["SubContName"],
+    success: json["success"],
+    result: List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
+    message: json["message"],
   );
 
   Map<String, dynamic> toJson() => {
-    "SubContId": subContId,
-    "SubContName": subContName,
+    "success": success,
+    "result": List<dynamic>.from(result!.map((x) => x.toJson())),
+    "message": message,
+  };
+}
+
+class Result {
+  int? subContId;
+  int? subContractorId;
+  String? subContName;
+
+  Result({
+    this.subContId,
+    this.subContractorId,
+    this.subContName,
+  });
+
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    subContId: json["id"],
+    subContractorId: json["subContractorId"],
+    subContName: json["subContractorName"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": subContId,
+    "subContractorId": subContractorId,
+    "subContractorName": subContName,
   };
 }

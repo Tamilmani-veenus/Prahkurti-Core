@@ -154,22 +154,6 @@ class Sitevoucher_provider{
   }
 
 
-  /// Getting multiple image provider.....
-
-  Future<GetSiteVocImage> gettingImageProvider(vocId) async {
-    const String contentType = "application/json; charset=utf-8";
-    Uri uri = Uri.parse("${ApiConstant.GET_VOC_IMAGE_LIST}?voc_id=$vocId");
-    print(uri.toString());
-    String method = "GET";
-    http.Request request = http.Request(method, uri);
-    request.headers["content-type"] = contentType;
-    http.StreamedResponse streamedRes = await http.Client().send(request);
-    http.Response response = await http.Response.fromStream(streamedRes);
-    await getResponse(response);
-    print("Response Data ::  ${response.body}");
-    return GetSiteVocImage.fromJson(jsonDecode(response.body.toString()));
-  }
-
   /// Delete image provider.....
 
   Future<SiteVocImageDelete> deleteImageProvider(int imageId) async {

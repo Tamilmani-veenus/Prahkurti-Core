@@ -1,4 +1,5 @@
 
+import '../controller/billgeneration_boq_controller.dart';
 import '../controller/dailywrk_done_dpr_controller.dart';
 import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
@@ -7,7 +8,8 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 
 class EntryTypeAlert extends StatefulWidget {
-  const EntryTypeAlert({Key? key}) : super(key: key);
+  final String from;
+  const EntryTypeAlert({Key? key,required this.from}) : super(key: key);
 
   @override
   State<EntryTypeAlert> createState() => _EntryTypeAlertState();
@@ -16,7 +18,19 @@ class EntryTypeAlert extends StatefulWidget {
 class _EntryTypeAlertState extends State<EntryTypeAlert> {
 
   DailyWrkDone_DPR_Controller dailyWrkDone_DPR_Controller=Get.put(DailyWrkDone_DPR_Controller());
-  final list=["BOQ"];
+  BillGenerationBoqController billGenerationBoqController=Get.put(BillGenerationBoqController());
+
+
+  List<String> list = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    list = widget.from == "BILL BOQ"
+        ? ["BOQ", "DIRECT"]
+        : ["NMR","BOQ"];
+    super.initState();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -45,17 +59,20 @@ class _EntryTypeAlertState extends State<EntryTypeAlert> {
                     itemBuilder: (BuildContext context, int index) {
                         return InkWell(
                           onTap: () async {
-                            if(index==0){
-                              dailyWrkDone_DPR_Controller.entryTypeController.text="BOQ";
-                              dailyWrkDone_DPR_Controller.entryType="B";
-                              dailyWrkDone_DPR_Controller.setSelectedTypeSubcontListName(0);
+                            String selectedType = list[index];
+
+                            dailyWrkDone_DPR_Controller.entryTypeController.text = selectedType;
+                            billGenerationBoqController.entryTypeController.text = selectedType;
+
+                            if (selectedType == "NMR") {
+                              dailyWrkDone_DPR_Controller.entryType = "N";
+                            } else if (selectedType == "BOQ") {
+                              dailyWrkDone_DPR_Controller.entryType = "B";
+                              billGenerationBoqController.entryType.value = "B";
+                            } else if (selectedType == "DIRECT") {
+                              billGenerationBoqController.entryType.value = "D";
                             }
-                            else {
-                              // dailyWrkDone_DPR_Controller.entryTypeController.text="NMR";
-                              // dailyWrkDone_DPR_Controller.entryType="N";
-                              // dailyWrkDone_DPR_Controller.setSelectedTypeSubcontListName(0);
-                            }
-                            await dailyWrkDone_DPR_Controller.dpr_getSubcotType();
+
                             Navigator.pop(context);
                           },
                           child: Column(
@@ -100,8 +117,7 @@ class EntryTypeAlert_DPR_New extends StatefulWidget {
 
 class _EntryTypeAlert_DPR_NewState extends State<EntryTypeAlert_DPR_New> {
   DailyWrkDone_DPR_Controller dailyWrkDone_DPR_Controller=Get.put(DailyWrkDone_DPR_Controller());
-  // final list=["BOQ","NMR"];
-  final list=["RATE","NMR"];
+  final list=["NMR","RATE"];
 
   @override
   Widget build(BuildContext context) {
@@ -131,16 +147,13 @@ class _EntryTypeAlert_DPR_NewState extends State<EntryTypeAlert_DPR_New> {
                       return InkWell(
                         onTap: () async {
                           if(index==0){
-                            dailyWrkDone_DPR_Controller.entryTypeController.text="RATE";
-                            dailyWrkDone_DPR_Controller.entryType="B";
-                            dailyWrkDone_DPR_Controller.setSelectedTypeSubcontListName(0);
-                          }
-                          else {
                             dailyWrkDone_DPR_Controller.entryTypeController.text="NMR";
                             dailyWrkDone_DPR_Controller.entryType="N";
-                            dailyWrkDone_DPR_Controller.setSelectedTypeSubcontListName(0);
                           }
-                          await dailyWrkDone_DPR_Controller.dpr_getSubcotType();
+                          else {
+                            dailyWrkDone_DPR_Controller.entryTypeController.text="RATE";
+                            dailyWrkDone_DPR_Controller.entryType="B";
+                          }
                           Navigator.pop(context);
                         },
                         child: Column(

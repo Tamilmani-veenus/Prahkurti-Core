@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 
 import '../apimanager/apimanager.dart';
 
+import '../models/boq_approval_det_model.dart';
 import '../models/boqrevised_itemlist_model.dart';
 import '../models/boqrevisededitresponse.dart';
 import '../models/boqrevisedentrylist_model.dart';
@@ -15,132 +16,97 @@ import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
 
 class BoqRevised_Provider{
-  static Future<List<BoqRevisedEntrylistResponse>> get_boq_EntryList(int? Userid, String UserType, String frdate, String todate) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GET_BOQ_ENTRY_LIST + "?UserId=$Userid&UserType=$UserType&Frdate=$frdate&Todate=$todate")
-        .then((value) {
-      print("BoqRevisedEntryList:" + value);
-      data = boqRevisedEntrylistResponseFromJson(value);
-      if (data != null && data.length > 0) {
-        return data;
-      }
-    }, onError: (error) {
+
+  static Future<BoqRevisedEntryListResponse?> get_boq_EntryList(String frdate, String todate) async {
+    try {
+      var value = await ApiManager.getAPICall(
+          "${ApiConstant.GET_BOQ_ENTRY_LIST}?fromDate=$frdate&toDate=$todate");
+      return boqRevisedEntryListResponseFromJson(value);
+    } catch (error) {
       print(error);
-      BaseUtitiles.showToast(error);
-    });
-    return data;
+      return null;
+    }
+  }
+
+  static Future<ApproveDetResponse?> getApprovalDetList(id) async {
+    try {
+      var value = await ApiManager.getAPICall(
+          "${ApiConstant.GET_APP_DET_LIST}?id=$id");
+      return approveDetResponseFromJson(value);
+    } catch (error) {
+      print(error);
+      return null;
+    }
   }
 
   //-----Itemlist--
-  static Future<List<BoqRevisedItemlistResponse>> getRevisedItemlist(
-      int? pid, int? sid) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GETREVISEDITEMLIST +
-        "?PId=$pid&SId=$sid&SubId=0&EntryType=N")
-        .then((value) {
-      print("ItemList:" + value);
-      data = boqRevisedItemlistResponseFromJson(value);
-      if (data != null && data.length > 0) {
-        return data;
-
-      }
-    }, onError: (error) {
+  static Future<BoqRevisedItemResponse?> getRevisedItemlist(int? reviseId,int? pid, int? sid, int? headItemId) async {
+    try {
+      var value = await ApiManager.getAPICall(
+          "${ApiConstant.GETREVISEDITEMLIST}?revisedId=$reviseId&projectId=$pid&siteId=$sid&headItemId=$headItemId");
+      return boqRevisedItemResponseFromJson(value);
+    } catch (error) {
       print(error);
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return data;
+      return null;
+    }
   }
-
   // -----------Save API------------
 
-  static SaveBoqRevisedScreenEntryAPI(String body, int reviseId, int buttonControl,context) async {
-    String? ratingRes;
-
+  static SaveBoqRevisedScreenEntryAPI(String body, int reviseId, saveButton) async {
     try {
-      dynamic value;
+      var response;
 
-      if (reviseId != 0) {
-        // Update existing
-        value = await ApiManager.putUpdateAPIButton(ApiConstant.PUT_BOQREVISED_UPDATE_API, body);
-      } else {
-        // Save new
-        value = await ApiManager.postAPICall(ApiConstant.BOQREVISED_SAVE, body);
+      if (saveButton==RequestConstant.RESUBMIT) {
+        response = await ApiManager.putUpdateAPIButton("${ApiConstant.PUT_BOQREVISED_UPDATE_API}?id=$reviseId", body);
+      } else if (saveButton==RequestConstant.SUBMIT) {
+        response = await ApiManager.postAPICall(ApiConstant.BOQREVISED_SAVE, body);
+      } else{
+        response = await ApiManager.putUpdateAPIButton("${ApiConstant.PUT_BOQREVISED_APPROVE_API}?id=$reviseId", body);
       }
+      return jsonDecode(response);
 
-      var response = saveDeduction_SaveResponseFromJson(value);
-      if (response.RetString != null) {
-        ratingRes = response.RetString;
-      }
-
-    } on SocketException catch (_) {
-      BaseUtitiles.showToast(RequestConstant.NOINTERNETCONNECTION);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pop(context);
+    }  catch (error) {
+      print("Error == $error");
       return null;
     }
-    on TimeoutException catch (_) {
-      BaseUtitiles.showToast(RequestConstant.REQUESTTIMEOUT);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      return null;
-    }
-    on FormatException catch (_) {
-      BaseUtitiles.showToast(RequestConstant.BADRESPONSE);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      return null;
-    } catch (error) {
-      print('❌ Error in SaveBoqRevisedScreenEntryAPI: $error');
-      buttonControl = 0;
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      BaseUtitiles.showToast(RequestConstant.NETWORKERROR);
-    }
-
-    return ratingRes;
   }
-
-//---Save API---
 
 //----Edit---
-  static Future<List<BoqRevisedEditResponse>> Boq_RevisedList_editAPI(int Revise_Id) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GET_BOQREVISED_EDIT_API + "?Revise_Id=$Revise_Id").then((value) {
-      final res = boqRevisedEditResponseFromJson(value);
-      if (res != null && res.length > 0) {
-        data = res;
-        return data;
-      }
-    }, onError: (error) {
+
+  static Future<BoqRevisedEditResponse?> Boq_RevisedList_editAPI(int Revise_Id,status) async {
+    try {
+      var value = await ApiManager.getAPICall(ApiConstant.GET_BOQREVISED_EDIT_API + "?id=$Revise_Id&checkEdit=$status");
+      return boqRevisedEditResponseFromJson(value);
+    } catch (error) {
       print(error);
-      // BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG+error);
-    });
-    return data;
+      return null;
+    }
   }
   //---Delete API----
-  static Future BoqRevised_entryList_deleteAPI(int Revise_Id, String Revise_No,String UserId, String DeviceName) async {
-    var data = null;
-    await ApiManager.deleteAPICall(ApiConstant.DELETE_BOQREVISED_ENTRYLIST_API + "?Revise_Id=$Revise_Id&Revise_No=$Revise_No&UserId=$UserId&DeviceName=$DeviceName")
-        .then((value) {
-      final res = json.decode(value);
-      if (res != null) {
-        data = res;
-        if(data=="Deleted"){
-          BaseUtitiles.showToast("Deleted Successfully");
-        }else{
-          BaseUtitiles.showToast("$data");
-        }
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG+error);
-    });
-    return data;
+
+  static Future<bool> BoqRevised_entryList_deleteAPI(int Revise_Id) async {
+    try {
+      final response = await ApiManager.deleteAPICall(
+          "${ApiConstant.DELETE_BOQREVISED_ENTRYLIST_API}?id=$Revise_Id");
+
+      final Map<String, dynamic> decoded = jsonDecode(response);
+
+
+      bool isSuccess = decoded["success"] == true;
+
+      final message = decoded["message"] ??
+          (isSuccess
+              ? "Deleted successfully"
+              : "Something went wrong");
+
+      BaseUtitiles.showToast(message);
+
+      return isSuccess;
+    } catch (error) {
+      print("Delete API Error: $error");
+      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
+      return false;
+    }
   }
 
 }

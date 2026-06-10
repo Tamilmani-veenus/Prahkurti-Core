@@ -23,6 +23,7 @@ class ConstIcons {
   static const Icon staffName = Icon( Icons.person, color: IconColor );
   static const Icon fromSiteName = Icon( Icons.add_business_rounded, color: IconColor );
   static const Icon subcontractorName = Icon( Icons.safety_divider, color: IconColor );
+  static const Icon billType = Icon( Icons.business, color: IconColor );
   static const Icon supplierName = Icon( Icons.supervised_user_circle_sharp, color: IconColor );
   static const Icon preparedBy = Icon( Icons.content_paste_go, color: IconColor );
   static const Icon remarks = Icon( Icons.receipt_long, color: IconColor );

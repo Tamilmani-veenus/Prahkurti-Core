@@ -21,19 +21,16 @@ import '../utilities/requestconstant.dart';
 
 class SubContAttendanceProvider {
 
-  static Future<List<SubContEntryShowResponse>> getShowPopupList(int subId, int projectId) async {
-    var data = null;
-    await ApiManager.getAPICall("${ApiConstant.GETSUBCONT_ENTRY_SHOW_CLICK}?id=$subId&PID=$projectId").then((value) {
-      print("SubContEntryShowClick:" + value);
-      data = subContEntryShowResponseFromJson(value);
-      if (data != null && data.length > 0) {
-        return data;
-      }
-    }, onError: (error) {
+  static Future<SubContEntryShowResponse?> getShowPopupList(int subId) async {
+    try{
+      final value =await ApiManager.getAPICall("${ApiConstant.GETSUBCONT_ENTRY_SHOW_CLICK}?subcontractorId=$subId");
+      return subContEntryShowResponseFromJson(value);
+    }
+    catch (error, e) {
       print(error);
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
-    });
-    return data;
+      print("ERROR...${e}");
+      return null;
+    }
   }
 
   static Future<SubContEntryShowResponse?> getSubcontAttenDetList(int projectId,int subId) async {
@@ -116,7 +113,6 @@ class SubContAttendanceProvider {
 
       final response = await request.send();
       final responseBody = await response.stream.bytesToString();
-      print("ssssssssss...${jsonDecode(responseBody)}");
       return jsonDecode(responseBody);
 
     } catch (error) {
@@ -225,28 +221,6 @@ class SubContAttendanceProvider {
   //     rethrow;
   //   }
   // }
-
-  /// Getting multiple image provider.....
-
-  Future<GetAttenImage> gettingImageProvider(labId,dprId,from) async {
-    const String contentType = "application/json; charset=utf-8";
-    String url;
-    if(from=="Subcont Attendance"){
-      url = "${ApiConstant.GET_ATTEN_IMAGE_LIST}?LabrAttn_Id=$labId";
-    }
-    else{
-      url = "${ApiConstant.GET_DPR_IMAGE_LIST}?DprId=$dprId";
-    }
-    print(url.toString());
-    String method = "GET";
-    http.Request request = http.Request(method, Uri.parse(url));
-    request.headers["content-type"] = contentType;
-    http.StreamedResponse streamedRes = await http.Client().send(request);
-    http.Response response = await http.Response.fromStream(streamedRes);
-    await getResponse(response);
-    print("Response Data ::  ${response.body}");
-    return GetAttenImage.fromJson(jsonDecode(response.body.toString()));
-  }
 
   /// Delete image provider.....
 

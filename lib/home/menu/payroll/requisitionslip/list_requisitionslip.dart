@@ -32,16 +32,11 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
   @override
   void initState() {
     // TODO: implement initState
-
-    requisitionSlipController.ReqSlipEtyList.clear();
-    requisitionSlipController.mainentrylist.value.clear();
-
     DateTime currentDate = DateTime.now();
     DateTime lastDayOfMonth = new DateTime(currentDate.year, currentDate.month - 1, 0);
     requisitionSlipController.EntrylistFromdate.text = lastDayOfMonth.toString().substring(0, 10);
     requisitionSlipController.EntrylistTodate.text = currentDate.toString().substring(0, 10);
     requisitionSlipController.getRequisitionslip_EntryList();
-    requisitionSlipController.ReqSlipEtyList.value = requisitionSlipController.mainentrylist.value;
     super.initState();
   }
 
@@ -64,13 +59,7 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
             visible: commanController.addMode.value == 1 ? true : false,
             child: FloatingActionButton.extended(
               onPressed: (){
-                requisitionSlipController.entryCheck =0;
-                requisitionSlipController.editCheck =0;
-                // mrn_request_controller.entrycheck =0;
-                // mrn_request_controller.editCheck =0;
-                Future.delayed(Duration(seconds: 0), ()async{
-                  // await requisitionSlipController.getLeaveInfo_List(loginController.user.value.empId!);
-                });
+                requisitionSlipController.saveButton.value=RequestConstant.SUBMIT;
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const RequisitionSlip_Entry()));
               },
               label: Text("Add", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,),),
@@ -89,7 +78,7 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Requisition Slip",
+                        "Staff L & P Slip",
                         style: TextStyle(
                             fontSize: RequestConstant.Heading_Font_SIZE,
                             fontWeight: FontWeight.bold),
@@ -334,7 +323,7 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                 child: Obx(() => ListView.builder(
                       shrinkWrap: true,
                       physics: BouncingScrollPhysics(),
-                      padding: EdgeInsets.zero,
+                      padding: EdgeInsets.only(bottom: BaseUtitiles.getheightofPercentage(context, 10)),
                       itemCount: requisitionSlipController.ReqSlipEtyList.value.length,
                       itemBuilder: (context, index) {
                         return Container(
@@ -364,7 +353,7 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                                                   margin: EdgeInsets.only(left: 5, right: 3),
                                                   child: ConstIcons.list_date, ),
                                                 Text(
-                                                  requisitionSlipController.ReqSlipEtyList.value[index].eDate.toString(),
+                                                  requisitionSlipController.ReqSlipEtyList.value[index].entryDate.toString(),
                                                   style: TextStyle(
                                                       color: Theme.of(context).primaryColor,
                                                       fontWeight: FontWeight.bold),
@@ -378,7 +367,7 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                                       Container(
                                         margin: EdgeInsets.only(right: 10),
                                         child: Text(
-                                          requisitionSlipController.ReqSlipEtyList.value[index].requestionNo.toString(),
+                                          requisitionSlipController.ReqSlipEtyList.value[index].requisitionNo.toString(),
                                           style: TextStyle(fontWeight: FontWeight.bold),
                                         ),
                                       )
@@ -392,7 +381,7 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                                         child: Text(""),
                                       ),
                                       Expanded(
-                                          flex: 2,
+                                          flex: 3,
                                           child: Text(
                                             "Type",
                                             style: TextStyle(
@@ -400,9 +389,9 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                                               color: Colors.black,),
                                           )),
                                       Expanded(
-                                          flex: 8,
+                                          flex: 9,
                                           child: Text(
-                                            requisitionSlipController.ReqSlipEtyList.value[index].reqType.toString(),
+                                            requisitionSlipController.ReqSlipEtyList.value[index].requisitionTypeDesc.toString(),
                                             style: TextStyle(
                                               color: Colors.black,
                                             ),
@@ -417,17 +406,17 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                                         child: Text(""),
                                       ),
                                       Expanded(
-                                          flex: 2,
+                                          flex: 3,
                                           child: Text(
-                                            "Staff Name",
+                                            "Staff",
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               color: Colors.black,),
                                           )),
                                       Expanded(
-                                          flex: 8,
+                                          flex: 9,
                                           child: Text(
-                                            requisitionSlipController.ReqSlipEtyList.value[index].employee.toString(),
+                                            requisitionSlipController.ReqSlipEtyList.value[index].staffName.toString(),
                                             style: TextStyle(
                                               color: Colors.black,
                                             ),
@@ -442,7 +431,7 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                                         child: Text(""),
                                       ),
                                       Expanded(
-                                          flex: 2,
+                                          flex: 3,
                                           child: Text(
                                             "Location",
                                             style: TextStyle(
@@ -450,12 +439,35 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                                               color: Colors.black,),
                                           )),
                                       Expanded(
-                                          flex: 8,
+                                          flex: 9,
                                           child: Text(
-                                            requisitionSlipController.ReqSlipEtyList.value[index].project.toString(),
+                                            requisitionSlipController.ReqSlipEtyList.value[index].projectName.toString(),
                                             style: TextStyle(
                                               color: Colors.black,
                                             ),
+                                          )),
+                                    ],
+                                  ),
+                                  SizedBox(height: 5,),
+                                  Row(
+                                    children: <Widget>[
+                                      Container(
+                                        margin: EdgeInsets.only(top: 5,left: 10),
+                                        child: Text(""),
+                                      ),
+                                      Expanded(
+                                          flex: 3,
+                                          child: Text(
+                                            "Status",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black),
+                                          )),
+                                      Expanded(
+                                          flex: 9,
+                                          child: Text(
+                                            requisitionSlipController.ReqSlipEtyList.value[index].status.toString(),
+                                            style: TextStyle(color:requisitionSlipController.ReqSlipEtyList.value[index].status.toString() == "Approved"?Colors.green:requisitionSlipController.ReqSlipEtyList.value[index].status.toString() == "Rejected"? Colors.red:Colors.black),
                                           )),
                                     ],
                                   ),
@@ -467,9 +479,9 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                                         child: Text(""),
                                       ),
                                       Expanded(
-                                          flex: 2,
+                                          flex: 3,
                                           child: Text(
-                                            "Status",
+                                            "Prepared By",
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.black),
@@ -477,16 +489,12 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                                       Expanded(
                                           flex: 7,
                                           child: Text(
-                                            requisitionSlipController.ReqSlipEtyList.value[index].status.toString(),
-                                            style: TextStyle(color:requisitionSlipController.ReqSlipEtyList.value[index].status.toString() == "Approved"?Colors.green:requisitionSlipController.ReqSlipEtyList.value[index].status.toString() == "Rejected"? Colors.red:Colors.black),
+                                            requisitionSlipController.ReqSlipEtyList.value[index].createdName.toString(),
                                           )),
                                       Expanded(
-                                          flex: 1,
+                                          flex: 2,
                                           child: IconButton(
                                               onPressed: () {
-                                                if(requisitionSlipController.ReqSlipEtyList[index].status.toString() == "Approved" || requisitionSlipController.ReqSlipEtyList[index].status.toString() == "Rejected" || requisitionSlipController.ReqSlipEtyList[index].status.toString() == "Verified"){
-                                                  BaseUtitiles.showToast("${requisitionSlipController.ReqSlipEtyList[index].status} record can't be edited or deleted");
-                                                }else{
                                                   showModalBottomSheet(
                                                       context: context,
                                                       shape: RoundedRectangleBorder(
@@ -507,7 +515,7 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                                                                     child: Container(
                                                                       margin: EdgeInsets.only(right: 10),
                                                                       child: Text(
-                                                                        requisitionSlipController.ReqSlipEtyList.value[index].requestionNo.toString(),
+                                                                        requisitionSlipController.ReqSlipEtyList.value[index].requisitionNo.toString(),
                                                                         style: TextStyle(
                                                                             fontWeight: FontWeight.bold,
                                                                             color: Theme.of(context).primaryColor),
@@ -551,22 +559,8 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                                                                       ],
                                                                     ),
                                                                     onTap: () async {
-                                                                      FocusScope.of(context).unfocus();
-                                                                      Navigator.pop(context);
-                                                                      if(requisitionSlipController.ReqSlipEtyList.value[index].status == 'APPROVED'){
-                                                                        Fluttertoast.showToast(msg: "Approved record can't be edited");
-                                                                      }else if(requisitionSlipController.ReqSlipEtyList.value[index].status == 'REJECTED'){
-                                                                        Fluttertoast.showToast(msg: "Rejected record can't be edited");
-                                                                      } else{
-                                                                        requisitionSlipController.editCheck = 1;
-                                                                        await requisitionSlipController.Requisitionslip_EditApi(requisitionSlipController.ReqSlipEtyList[index].requestionId, context);
-                                                                      }
-                                                                      // mrn_request_controller.delete_MaterialIntent_itemlist_Table();
-                                                                      // mrn_request_controller.Material_itemview_GetDbList.clear();
-                                                                      // mrn_request_controller.getRequestDetList.clear();
-                                                                      // FocusScope.of(context).unfocus();
-                                                                      // await mrn_request_controller.MaterialIntentList_EditApi(mrn_request_controller.MrnReqEtyList[index].reqMasId, mrn_request_controller.MrnReqEtyList[index].projectid, mrn_request_controller.MrnReqEtyList[index].siteid, context);
-                                                                    }),
+                                                                        await requisitionSlipController.Requisitionslip_EditApi(requisitionSlipController.ReqSlipEtyList[index].id, context, true);
+                                                                        }),
                                                               ),
                                                               Container(
                                                                   margin: EdgeInsets.only(right: 20),
@@ -602,11 +596,7 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                                                                     ),
                                                                     onTap: () async {
                                                                       Navigator.pop(context);
-                                                                      if(requisitionSlipController.ReqSlipEtyList.value[index].status == 'APPROVED' || requisitionSlipController.ReqSlipEtyList.value[index].status == 'REJECTED'){
-                                                                        Fluttertoast.showToast(msg: "Approved record can't be deleted");
-                                                                      }else{
-                                                                        requisitionSlipController.DeleteAlert(context, index);
-                                                                      }
+                                                                        requisitionSlipController.DeleteAlert(context, index, true);
                                                                     }),
                                                               ),
                                                               SizedBox(height: 20)
@@ -614,7 +604,6 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                                                           ),
                                                         );
                                                       });
-                                                }
                                               },
                                               icon: Icon(
                                                 Icons.arrow_drop_down_circle_outlined,

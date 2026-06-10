@@ -446,9 +446,7 @@ class MRN_Request_Controller extends GetxController {
       approveStatus: isResubmit ?Material_EditListApiValue[0].approveStatus:"N",
 
       //det
-      mMatReqMasLink: getRequestDetList.value.isEmpty
-          ? getRequestDet(id)
-          : getRequestDetList.value,
+      mMatReqMasLink:  getRequestDet(id)
     ));
 
     final list = await Mrn_Req_provider.SaveMaterialScreenEntryAPI(
@@ -483,8 +481,7 @@ class MRN_Request_Controller extends GetxController {
       if (element.qty > 0) {
         var list = MMatReqMasLink(
           id: element.reqDetId,
-          materialReqOrdMasid:
-              materialReqOrdMasid != 0 ? materialReqOrdMasid : 0,
+          materialReqOrdMasid: materialReqOrdMasid != 0 ? materialReqOrdMasid : 0,
           materialId: element.materialid,
           qty: element.qty,
           scaleId: element.scaleId,
@@ -645,8 +642,7 @@ class MRN_Request_Controller extends GetxController {
                   Expanded(
                     child: TextButton(
                         onPressed: () async {
-                          bool result = await Material_EntryList_DeleteApi(
-                              MrnReqEtyList.value[index].reqMasId);
+                          bool result = await Material_EntryList_DeleteApi(MrnReqEtyList.value[index].reqMasId);
                           if (result) {
                             MrnReqEtyList.removeAt(index);
                             Navigator.of(context).pop();

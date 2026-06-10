@@ -11,6 +11,7 @@ class AutoYearWiseNoController extends GetxController {
   RxString DPR_Labour_autoYrsWise = "".obs;
   RxString DPR_autoYrsWise = "".obs;
   RxString DirectBillautoYrsWise = "".obs;
+  RxString BillBoqautoYrsWise = "".obs;
   RxString InwardPendingautoYrsWise = "".obs;
   RxString TransferBetProjectautoYrsWise = "".obs;
   RxString TransferAckNoautoYrsWise = "".obs;
@@ -78,6 +79,10 @@ class AutoYearWiseNoController extends GetxController {
         else if (Url == "DPR LABOUR") {
             DPR_Labour_autoYrsWise.value = value["entryAutoNo"];
             return DPR_Labour_autoYrsWise.value;
+        }
+        else if (Url == "BILL BOQ") {
+          BillBoqautoYrsWise.value = value["entryAutoNo"];
+          return BillBoqautoYrsWise.value;
         }
         else if (Url == "DIRECT BILL") {
             DirectBillautoYrsWise.value = value["entryAutoNo"];

@@ -21,38 +21,41 @@ class _TransferAckMaterialListState extends State<TransferAckMaterialList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Setmybackground,
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 40),
-              Container(
-                margin: EdgeInsets.only(left: 15, right: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Transfer ACK Pending",
-                      style: TextStyle(
-                          fontSize: RequestConstant.Heading_Font_SIZE,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          "Back",
-                          style: TextStyle(color: Colors.grey, fontSize: 18),
-                        ))
-                  ],
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+          backgroundColor: Setmybackground,
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: 40),
+                Container(
+                  margin: EdgeInsets.only(left: 15, right: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Transfer ACK Pending",
+                        style: TextStyle(
+                            fontSize: RequestConstant.Heading_Font_SIZE,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            "Back",
+                            style: TextStyle(color: Colors.grey, fontSize: 18),
+                          ))
+                    ],
+                  ),
                 ),
-              ),
-              ListDetails(context),
-            ],
-          ),
-        ));
+                ListDetails(context),
+              ],
+            ),
+          )),
+    );
   }
 
   Widget ListDetails(BuildContext context){

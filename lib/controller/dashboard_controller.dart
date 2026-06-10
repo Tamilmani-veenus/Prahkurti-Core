@@ -12,8 +12,6 @@ class Dashboard_Controller extends GetxController {
 
   LoginController loginController = Get.put(LoginController());
 
-  final Date = TextEditingController();
-
   RxList main_List = [].obs;
 
   Future DirectBill_EntryList() async {
@@ -28,92 +26,5 @@ class Dashboard_Controller extends GetxController {
     });
   }
 
-  Future logoutPopup(BuildContext context) async {
-    return await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Alert!'),
-        content: const Text('Do you want to logout?'),
-        actions:[
-          Container(
-            margin: const EdgeInsets.only(left: 20, right: 20),
-            child: IntrinsicHeight(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: TextButton(
-                        onPressed: () {
-                          return Navigator.of(context).pop();
-                        },
-                        child: const Text("Cancel",
-                            style: TextStyle(
-                                color:
-                                Colors.grey,
-                                fontWeight:
-                                FontWeight
-                                    .bold,
-                                fontSize:
-                                RequestConstant
-                                    .Lable_Font_SIZE))),
-                  ),
-                  VerticalDivider(
-                    color: Colors.grey.shade400,
-                    width: 5,
-                    thickness: 2,
-                    indent: 15,
-                    endIndent: 15, //Spacing at the bottom of divider.
-                  ),
-                  Expanded(
-                    child: TextButton(
-                        onPressed: (){
-                          BaseUtitiles.showToast('Logout Successfully');
-                          Navigator.of(context).pop();
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => const WelcomePage()),
-                          );
-                        },
-                        child: Text("Logout",
-                            style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                                fontSize: RequestConstant.Lable_Font_SIZE))),
-                  )
-                ],
-              ),
-            ),
-          ),
-
-
-          // ElevatedButton(
-          //   style: ElevatedButton.styleFrom(
-          //     primary: Theme.of(context).primaryColor,
-          //   ),
-          //   onPressed: () {
-          //     return Navigator.of(context).pop();
-          //   },
-          //   child:Text('No'),
-          // ),
-          // ElevatedButton(
-          //   onPressed: (){
-          //     SessionStorage.removeUser();
-          //     BaseUtitiles.showToast('Logout Successfully');
-          //     Navigator.of(context).pop();
-          //     Navigator.pushReplacement(
-          //       context,
-          //       // MaterialPageRoute(builder: (context) => LoginScreen()),
-          //       MaterialPageRoute(builder: (context) => Welcome_Page()),
-          //     );
-          //   },
-          //   child:Text('Yes'),
-          //   style: ElevatedButton.styleFrom(
-          //     primary: Theme.of(context).primaryColor,
-          //   ),
-          // ),
-        ],
-      ),
-    );
-  }
 
 }

@@ -22,11 +22,12 @@ class AttendanceReportListResponse {
   factory AttendanceReportListResponse.fromJson(Map<String, dynamic> json) => AttendanceReportListResponse(
     success: json["success"],
     message: json["message"],
-    result: json["result"]==[]?null:List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
+    result: json["result"]==null?[]:List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "success": success,
+    "message": message,
     "result": result==null?[]:List<dynamic>.from(result!.map((x) => x.toJson())),
   };
 }

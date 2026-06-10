@@ -4,6 +4,7 @@ import '../../../../app_theme/app_colors.dart';
 import '../../../../constants/ui_constant/icons_const.dart';
 import '../../../../controller/inward_pending_controller.dart';
 import '../../../../controller/pendinglistcontroller.dart';
+import '../../../../controller/punch_in_controller.dart';
 import '../../../../utilities/baseutitiles.dart';
 import '../../../../utilities/requestconstant.dart';
 
@@ -43,6 +44,7 @@ class _Inward_PoAmendmentState extends State<Inward_PoAmendment> {
 
   InwardPending_Controller inwardPending_Controller=Get.put(InwardPending_Controller());
   PendingListController pendingListController = Get.put(PendingListController());
+  PunchInController punchInController = Get.put(PunchInController());
 
 
   @override
@@ -300,7 +302,6 @@ class _Inward_PoAmendmentState extends State<Inward_PoAmendment> {
     );
   }
 
-
   Future SubmitAlert(BuildContext context) async {
     return await showDialog(
       context: context,
@@ -341,6 +342,7 @@ class _Inward_PoAmendmentState extends State<Inward_PoAmendment> {
                     child: TextButton(
                         onPressed: () async {
                           if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
+                            await punchInController.getNetworkTime();
                             await inwardPending_Controller.PoAmendment_ApprovalButtonsave(
                                 context, widget.purOrdMasId, widget.projectId, widget.siteId, widget.inwdType);
                             Navigator.pop(context);

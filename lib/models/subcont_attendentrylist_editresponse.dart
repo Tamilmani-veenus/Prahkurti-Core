@@ -22,12 +22,13 @@ class SubContAttendEntryListEditRes {
   factory SubContAttendEntryListEditRes.fromJson(Map<String, dynamic> json) => SubContAttendEntryListEditRes(
     success: json["success"],
     message: json["message"],
-    result: Result.fromJson(json["result"]),
+    result: json["result"]==null?null:Result.fromJson(json["result"]),
   );
 
   Map<String, dynamic> toJson() => {
     "success": success,
-    "result": result!.toJson(),
+    "message": message,
+    "result": result==null?null:result!.toJson(),
   };
 }
 

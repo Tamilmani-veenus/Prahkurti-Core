@@ -75,7 +75,7 @@ class _TransferBetweenSites_EntrylistState extends State<TransferBetweenSites_En
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                         "Transfer Betweens Sites",
+                         "Transfer Between Sites",
                           style: TextStyle(
                               fontSize: RequestConstant.Heading_Font_SIZE,
                               fontWeight: FontWeight.bold),

@@ -1,45 +1,89 @@
 // To parse this JSON data, do
 //
-//     final boqRevisedEntrylistResponse = boqRevisedEntrylistResponseFromJson(jsonString);
+//     final boqRevisedEntryListResponse = boqRevisedEntryListResponseFromJson(jsonString);
 
 import 'dart:convert';
 
-List<BoqRevisedEntrylistResponse> boqRevisedEntrylistResponseFromJson(String str) => List<BoqRevisedEntrylistResponse>.from(json.decode(str).map((x) => BoqRevisedEntrylistResponse.fromJson(x)));
+BoqRevisedEntryListResponse boqRevisedEntryListResponseFromJson(String str) => BoqRevisedEntryListResponse.fromJson(json.decode(str));
 
-String boqRevisedEntrylistResponseToJson(List<BoqRevisedEntrylistResponse> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String boqRevisedEntryListResponseToJson(BoqRevisedEntryListResponse data) => json.encode(data.toJson());
 
-class BoqRevisedEntrylistResponse {
-  BoqRevisedEntrylistResponse({
-    this.reviseId,
-    this.reviseNo,
-    this.reviseDate,
-    this.project,
-    this.siteName,
-    this.preparedby,
+class BoqRevisedEntryListResponse {
+  bool? success;
+  String? message;
+  List<Result>? result;
+
+  BoqRevisedEntryListResponse({
+    this.success,
+    this.message,
+    this.result,
   });
 
-  int? reviseId;
-  String? reviseNo;
-  String? reviseDate;
-  String? project;
-  String? siteName;
-  String? preparedby;
-
-  factory BoqRevisedEntrylistResponse.fromJson(Map<String, dynamic> json) => BoqRevisedEntrylistResponse(
-    reviseId: json["Revise_Id"],
-    reviseNo: json["Revise_No"],
-    reviseDate: json["Revise_Date"],
-    project: json["Project"],
-    siteName: json["SiteName"],
-    preparedby: json["Preparedby"],
+  factory BoqRevisedEntryListResponse.fromJson(Map<String, dynamic> json) => BoqRevisedEntryListResponse(
+    success: json["success"],
+    message: json["message"],
+    result: json["result"]==null?[]:List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "Revise_Id": reviseId,
-    "Revise_No": reviseNo,
-    "Revise_Date": reviseDate,
-    "Project": project,
-    "SiteName": siteName,
-    "Preparedby": preparedby,
+    "success": success,
+    "message": message,
+    "result": result==null?[]:List<dynamic>.from(result!.map((x) => x.toJson())),
+  };
+}
+
+class Result {
+  int? id;
+  String? reviseNo;
+  String? reviseDate;
+  int? projectId;
+  int? siteId;
+  String? remarks;
+  int? createdBy;
+  int? approvedBy;
+  String? createdByName;
+  String? projectName;
+  String? siteName;
+
+  Result({
+    this.id,
+    this.reviseNo,
+    this.reviseDate,
+    this.projectId,
+    this.siteId,
+    this.remarks,
+    this.createdBy,
+    this.approvedBy,
+    this.createdByName,
+    this.projectName,
+    this.siteName,
+  });
+
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    id: json["id"],
+    reviseNo: json["reviseNo"],
+    reviseDate: json["reviseDate"],
+    projectId: json["projectId"],
+    siteId: json["siteId"],
+    remarks: json["remarks"],
+    createdBy: json["createdBy"],
+    approvedBy: json["approvedBy"],
+    createdByName: json["createdByName"],
+    projectName: json["projectName"],
+    siteName: json["siteName"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "reviseNo": reviseNo,
+    "reviseDate": reviseDate,
+    "projectId": projectId,
+    "siteId": siteId,
+    "remarks": remarks,
+    "createdBy": createdBy,
+    "approvedBy": approvedBy,
+    "createdByName": createdByName,
+    "projectName": projectName,
+    "siteName": siteName,
   };
 }

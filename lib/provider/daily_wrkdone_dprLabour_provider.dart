@@ -53,7 +53,8 @@ class DPRLabourProvider{
         value = await ApiManager.postAPICall(ApiConstant.DPR_LABOUR_SAVE_API, body);
       }
 
-      var response = dprItemscreenSaveResponseFromJson(value);
+      var response ;
+      // = dprItemscreenSaveResponseFromJson(value);
       if (response.RetString != null) {
         ratingRes = response.RetString;
       }
@@ -131,5 +132,6 @@ class DPRLabourProvider{
     });
     return data;
   }
+
 
 }

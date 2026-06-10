@@ -1,18 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:prahkurticore/controller/punch_in_controller.dart';
 import '../db_model/inwardpending_itemlist_table_model.dart';
 import '../db_services/inwardpending_itemlist_service.dart';
 import '../home/menu/materials/inward/inward_Entry.dart';
-import '../home/menu/materials/inward/inward_itemlist.dart';
-import '../home/menu/materials/inward/inward_list.dart';
-import '../models/getting_image_response.dart';
-import '../models/image_delete_response.dart';
-import '../models/image_payload.dart';
 import '../models/inward_pending_alldatasres_model.dart';
-import '../models/inward_pending_entrylist_model.dart';
-import '../models/inwardimageres_model.dart';
 import '../models/inwardpending_save_apireq_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -108,9 +100,9 @@ class InwardPending_Controller extends GetxController
   RxString saveButton = RequestConstant.SUBMIT.obs;
 
   clearDatas() {
-    InwardSupplierNameText.text = "--Select--";
-    InwardProjectNameText.text = "--Select--";
-    InwardSiteNameText.text = "--Select--";
+    InwardSupplierNameText.text = "--SELECT--";
+    InwardProjectNameText.text = "--SELECT--";
+    InwardSiteNameText.text = "--SELECT--";
     projectId = 0;
     siteId = 0;
     supId = 0;
@@ -485,13 +477,12 @@ class InwardPending_Controller extends GetxController
 
   /// ------PoApproval Approval API--------------
 
-  Future PoAmendment_ApprovalButtonsave(
-      BuildContext context, purOrdMasId, projectId, siteId, inwType) async {
+  Future PoAmendment_ApprovalButtonsave(BuildContext context, purOrdMasId, projectId, siteId, inwType) async {
     await Future.delayed(const Duration(seconds: 0));
     String body = poAmendmentApproveResModelToJson(PoAmendmentApproveResModel(
       purOrdOId: purOrdMasId,
       woOrdId: 0,
-      amdDate: punchInController.currentDates,
+      amdDate: punchInController.currentDate,
       projectId: projectId,
       siteId: siteId,
       amdType: "Q",

@@ -22,13 +22,13 @@ class StaffvouchereditResponse {
   factory StaffvouchereditResponse.fromJson(Map<String, dynamic> json) => StaffvouchereditResponse(
     success: json["success"],
     message: json["message"],
-    result: Result.fromJson(json["result"]),
+    result: json["result"]==null?null:Result.fromJson(json["result"]),
   );
 
   Map<String, dynamic> toJson() => {
     "success": success,
     "message": message,
-    "result": result!.toJson(),
+    "result": result==null?null:result!.toJson(),
   };
 }
 

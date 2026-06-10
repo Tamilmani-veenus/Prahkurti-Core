@@ -1,107 +1,3 @@
-//
-//
-// // To parse this JSON data, do
-// //
-// //     final todayPunchInResponse = todayPunchInResponseFromJson(jsonString);
-//
-// import 'dart:convert';
-//
-// TodayPunchInResponse todayPunchInResponseFromJson(String str) => TodayPunchInResponse.fromJson(json.decode(str));
-//
-// String todayPunchInResponseToJson(TodayPunchInResponse data) => json.encode(data.toJson());
-//
-// class TodayPunchInResponse {
-//   List<EmployeeTimingTodaywise> employeeTimingTodaywise;
-//
-//   TodayPunchInResponse({
-//     required this.employeeTimingTodaywise,
-//   });
-//
-//   factory TodayPunchInResponse.fromJson(Map<String, dynamic> json) => TodayPunchInResponse(
-//     employeeTimingTodaywise: List<EmployeeTimingTodaywise>.from(json["EmployeeTimingTodaywise"].map((x) => EmployeeTimingTodaywise.fromJson(x))),
-//   );
-//
-//   Map<String, dynamic> toJson() => {
-//     "EmployeeTimingTodaywise": List<dynamic>.from(employeeTimingTodaywise.map((x) => x.toJson())),
-//   };
-// }
-//
-// class EmployeeTimingTodaywise {
-//   String staffName;
-//   List<PunchDetail> punchDetails;
-//
-//   EmployeeTimingTodaywise({
-//     required this.staffName,
-//     required this.punchDetails,
-//   });
-//
-//   factory EmployeeTimingTodaywise.fromJson(Map<String, dynamic> json) => EmployeeTimingTodaywise(
-//     staffName: json["StaffName"],
-//     punchDetails: List<PunchDetail>.from(json["PunchDetails"].map((x) => PunchDetail.fromJson(x))),
-//   );
-//
-//   Map<String, dynamic> toJson() => {
-//     "StaffName": staffName,
-//     "PunchDetails": List<dynamic>.from(punchDetails.map((x) => x.toJson())),
-//   };
-// }
-//
-// class PunchDetail {
-//   DateTime punchInDate;
-//   String punchOutDate;
-//   String punchInProjectName;
-//   String punchOutProjectName;
-//   String punchInTime;
-//   String punchOutTime;
-//   String allocateStatus;
-//   // String punchInOnDutyAddress;
-//   // String punchOutOnDutyAddress;
-//
-//   PunchDetail({
-//     required this.punchInDate,
-//     required this.punchOutDate,
-//     required this.punchInProjectName,
-//     required this.punchOutProjectName,
-//     required this.punchInTime,
-//     required this.punchOutTime,
-//     required this.allocateStatus,
-//     // required this.punchInOnDutyAddress,
-//     // required this.punchOutOnDutyAddress,
-//   });
-//
-//   factory PunchDetail.fromJson(Map<String, dynamic> json) => PunchDetail(
-//     punchInDate: DateTime.parse(json["PunchInDate"]),
-//     punchOutDate: json["PunchOutDate"],
-//     punchInProjectName: json["PunchInProjectName"],
-//     punchOutProjectName: json["PunchOutProjectName"],
-//     punchInTime: json["PunchInTime"],
-//     punchOutTime: json["PunchOutTime"],
-//     allocateStatus: json["PunchInStatus"],
-//     // punchInOnDutyAddress: json["PunchInOnDutyAddress"],
-//     // punchOutOnDutyAddress: json["PunchOutOnDutyAddress"],
-//   );
-//
-//   Map<String, dynamic> toJson() => {
-//     "PunchInDate": "${punchInDate.year.toString().padLeft(4, '0')}-${punchInDate.month.toString().padLeft(2, '0')}-${punchInDate.day.toString().padLeft(2, '0')}",
-//     "PunchOutDate": punchOutDate,
-//     "PunchInProjectName": punchInProjectName,
-//     "PunchOutProjectName": punchOutProjectName,
-//     "PunchInTime": punchInTime,
-//     "PunchOutTime": punchOutTime,
-//     "PunchInStatus": allocateStatus,
-//     // "PunchInOnDutyAddress": punchInOnDutyAddress,
-//     // "PunchOutOnDutyAddress": punchOutOnDutyAddress,
-//   };
-// }
-
-
-// To parse this JSON data, do
-//
-//     final todayPunchInResponse = todayPunchInResponseFromJson(jsonString);
-
-// To parse this JSON data, do
-//
-//     final todayPunchInResponse = todayPunchInResponseFromJson(jsonString);
 
 import 'dart:convert';
 
@@ -170,6 +66,12 @@ class PunchDetail {
   String? outProjectAddress;
   String? inImageUrl;
   String? outImageUrl;
+  String? onPinInAddress;
+  String? onPinOutAddress;
+  String? instatus;
+  String? outStatus;
+
+
 
   PunchDetail({
     this.designation,
@@ -184,6 +86,12 @@ class PunchDetail {
     this.outProjectAddress,
     this.inImageUrl,
     this.outImageUrl,
+    this.onPinInAddress,
+    this.onPinOutAddress,
+    this.instatus,
+    this.outStatus,
+
+
   });
 
   factory PunchDetail.fromJson(Map<String, dynamic> json) => PunchDetail(
@@ -199,6 +107,12 @@ class PunchDetail {
     outProjectAddress: json["outProjectAddress"],
     inImageUrl: json["inImageUrl"],
     outImageUrl: json["outImageUrl"],
+    onPinInAddress: json["onPinInAddress"],
+    onPinOutAddress: json["onPinOutAddress"],
+    instatus: json["instatus"],
+    outStatus: json["outStatus"],
+
+
   );
 
   Map<String, dynamic> toJson() => {
@@ -214,6 +128,13 @@ class PunchDetail {
     "outProjectAddress": outProjectAddress,
     "inImageUrl": inImageUrl,
     "outImageUrl": outImageUrl,
+    "onPinInAddress": onPinInAddress,
+    "onPinOutAddress": onPinOutAddress,
+    "instatus": instatus,
+    "outStatus": outStatus,
+
+
+
   };
 }
 

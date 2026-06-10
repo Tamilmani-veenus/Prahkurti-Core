@@ -26,8 +26,8 @@ class StaffController extends GetxController{
   int editcheck=0;
   int VocID=0;
   RxString type="Direct Payment/Office".obs;
-  RxString Button=RequestConstant.SAVE.obs;
-  RxString SaveButton=RequestConstant.SAVE.obs;
+  RxString Button=RequestConstant.SUBMIT.obs;
+  RxString SaveButton=RequestConstant.SUBMIT.obs;
   RxList getStaffDropdownvalue = [].obs;
   RxList mainlist=[].obs;
   RxInt selectedstaffId = 0.obs;
@@ -38,7 +38,7 @@ class StaffController extends GetxController{
 
 
   Future get_staffDropdowntList(BuildContext,type) async {
-    getStaffDropdownvalue.value.clear();
+    getStaffDropdownvalue.value=[];
     final value = await CommonProvider.getStaffDropdown(type);
     if (value != null) {
       if(value.success == true){

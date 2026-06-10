@@ -10,6 +10,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../controller/dailyentries_controller.dart';
 import '../../controller/dailywrk_done_dpr_controller.dart';
+import '../../controller/dailywrk_done_dprnew_controller.dart';
 import '../../controller/inward_pending_controller.dart';
 import '../../controller/punch_in_controller.dart';
 import '../../controller/sitevoucher_controller.dart';
@@ -28,6 +29,7 @@ class _CameraCapturePageState extends State<CameraCapturePage> with WidgetsBindi
   PunchInController punchInController = Get.put(PunchInController());
   DailyEntriesController dailyEntriesController = Get.put(DailyEntriesController());
   DailyWrkDone_DPR_Controller dailyWrkDone_DPR_Controller = Get.put(DailyWrkDone_DPR_Controller());
+  DailyWrkDone_DPRNEW_Controller dailyWrkDone_DPRNEW_Controller=Get.put(DailyWrkDone_DPRNEW_Controller());
   SiteVoucher_Controller siteVoucher_Controller = Get.put(SiteVoucher_Controller());
   InwardPending_Controller inwardPendingcontroller = Get.put(InwardPending_Controller());
   CameraController? _controller;
@@ -187,6 +189,10 @@ class _CameraCapturePageState extends State<CameraCapturePage> with WidgetsBindi
           dailyWrkDone_DPR_Controller.imageFiles.add(watermarkedFile);
           newlyAddedIndex = dailyWrkDone_DPR_Controller.imageFiles.length - 1;
         }
+        else if(widget.fromScreen=="DPR-NEW"){
+          dailyWrkDone_DPRNEW_Controller.imageFiles.add(watermarkedFile);
+          newlyAddedIndex = dailyWrkDone_DPRNEW_Controller.imageFiles.length - 1;
+        }
         else if(widget.fromScreen=="Site Voucher"){
           siteVoucher_Controller.imageFiles.add(watermarkedFile);
           newlyAddedIndex = siteVoucher_Controller.imageFiles.length - 1;
@@ -237,6 +243,10 @@ class _CameraCapturePageState extends State<CameraCapturePage> with WidgetsBindi
         }
         else if (widget.fromScreen == "DPR" && newlyAddedIndex != null) {
           dailyWrkDone_DPR_Controller.imageFiles.removeAt(newlyAddedIndex!);
+          newlyAddedIndex = null;
+        }
+        else if (widget.fromScreen == "DPR-NEW" && newlyAddedIndex != null) {
+          dailyWrkDone_DPRNEW_Controller.imageFiles.removeAt(newlyAddedIndex!);
           newlyAddedIndex = null;
         }
         else if (widget.fromScreen == "Site Voucher" && newlyAddedIndex != null) {
@@ -348,6 +358,7 @@ class _CameraCapturePageState extends State<CameraCapturePage> with WidgetsBindi
                     (widget.fromScreen == "Punch Out" && punchInController.punchOutImageFile.value != null) ||
                     (widget.fromScreen == "Subcontractor Attendance" && dailyEntriesController.imageFiles != null) ||
                     (widget.fromScreen == "DPR" && dailyWrkDone_DPR_Controller.imageFiles.isNotEmpty) ||
+                    (widget.fromScreen == "DPR-NEW" && dailyWrkDone_DPRNEW_Controller.imageFiles.isNotEmpty) ||
                     (widget.fromScreen == "Site Voucher" && siteVoucher_Controller.imageFiles.isNotEmpty) ||
                     ((widget.fromScreen == "Inward" || widget.fromScreen == "InwardAddButton" ) && inwardPendingcontroller.imageFiles.isNotEmpty))
 
@@ -370,6 +381,11 @@ class _CameraCapturePageState extends State<CameraCapturePage> with WidgetsBindi
                         else if(widget.fromScreen == "DPR") {
                           if (dailyWrkDone_DPR_Controller.imageFiles.isNotEmpty) {
                             selectedImage = XFile(dailyWrkDone_DPR_Controller.imageFiles.last.path); // ✔ safe
+                          }
+                        }
+                        else if(widget.fromScreen == "DPR-NEW") {
+                          if (dailyWrkDone_DPRNEW_Controller.imageFiles.isNotEmpty) {
+                            selectedImage = XFile(dailyWrkDone_DPRNEW_Controller.imageFiles.last.path); // ✔ safe
                           }
                         }
                         else if(widget.fromScreen == "Site Voucher") {
@@ -426,6 +442,10 @@ class _CameraCapturePageState extends State<CameraCapturePage> with WidgetsBindi
                                 }
                                 else if (widget.fromScreen == "DPR" && newlyAddedIndex != null) {
                                   dailyWrkDone_DPR_Controller.imageFiles.removeAt(newlyAddedIndex!);
+                                  newlyAddedIndex = null;
+                                }
+                                else if (widget.fromScreen == "DPR-NEW" && newlyAddedIndex != null) {
+                                  dailyWrkDone_DPRNEW_Controller.imageFiles.removeAt(newlyAddedIndex!);
                                   newlyAddedIndex = null;
                                 }
                                 else if (widget.fromScreen == "Site Voucher" && newlyAddedIndex != null) {

@@ -1,7 +1,8 @@
 class DprNew_MeasurementTable{
   int? id;
+  int? reqDetId;
   String? Name;
-  String? nos;
+  double? nos;
   double? length;
   double? breath;
   double? depth;
@@ -10,6 +11,7 @@ class DprNew_MeasurementTable{
   DprNew_MeasurementMap() {
     var mapping = Map<String, dynamic>();
     mapping['id'] = id != null ? id : null;
+    mapping['reqDetId'] = reqDetId != null ? reqDetId : null;
     mapping['Name'] = Name != null ? Name : null;
     mapping['nos'] = nos != null ? nos : null;
     mapping['length'] = length != null ? length : null;

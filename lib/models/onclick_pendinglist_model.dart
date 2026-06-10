@@ -40,8 +40,12 @@ class OnClickListResult {
   int? ReqOrdMasId;
   int? PONo;
   int? PoId;
+  String? requisitionNo;
+  String? requisitionTypeValue;
   String? reqOrdNo;
   String? ReqOrdNo;
+  String? reviseNo;
+  String? reviseDate;
   String? labourAttendanceNo;
   String? labourAttendanceDate;
   String? reqOrdDate;
@@ -68,6 +72,7 @@ class OnClickListResult {
   dynamic? no;
   String? date;
   String? dueDate;
+  String? deliveryDate;
   String? accName;
   String? accType;
   String? supplierName;
@@ -78,6 +83,9 @@ class OnClickListResult {
   String? preparedby;
   String? preparedByName;
   String? Preparedbyname;
+  String? preparebyname;
+  String? preparedByBOQ;
+  String? preparedName;
   int? preparedByid;
   double? netAmt;
   double? netAmount;
@@ -90,11 +98,15 @@ class OnClickListResult {
   int? DprType;
   String? appNo;
   String? subContractorName;
+  String? subContractor;
+  String? SubcontName;
   double? totNos;
   double? totAmt;
   String? Payfor;
   int? ProjectId;
   int? ProjectID;
+  int? Projectid;
+  int? projId;
   int? SiteId;
   int? SiteID;
   String? VerifiedBy;
@@ -104,8 +116,11 @@ class OnClickListResult {
   String? appRemarks;
   int? delaydays;
   String? fromDate;
+  String? frDate;
   String? toDate;
+  String? tDate;
   String? billno;
+  String? billNo;
   String? purchaseType;
   String? PurchaseType;
   String? approvedby;
@@ -116,25 +131,31 @@ class OnClickListResult {
   String? dcno;
   String? dcNo;
   String? staffName;
+  String? StaffName;
+  int? staffId;
   String? vehicleno;
   String? vehicleName;
   String? entryType;
   double? reqAmt;
   String? leaveReason;
-  String? lFrdate;
-  String? lTodate;
+  String? LeaveReason;
   double? totalLeave;
-  String? perReason;
-  String? pFrdate;
-  String? pTodate;
-  String? pFrTime;
-  String? pToTime;
+  String? permissionReason;
+  String? permissionFromDate;
+  String? permissionToDate;
+  String? permissionFromTime;
+  String? PermissionFromTime;
+  String? permissionToTime;
+  int? permissionTimeMins;
+  int? permissionTimeHrs;
   String? Time;
   String? Address;
   String? Remarks;
+  String? requisitionType;
   String? Designation;
-  double? totalPerHrs;
+  double? totalPermissionHours;
   String? employeeName;
+  String? empName;
   String? purchaseOrdNo;
   String? PurchaseOrdNo;
   String? purchaseOrdDate;
@@ -142,15 +163,21 @@ class OnClickListResult {
   String? inwType;
   String? approveByName;
   String? createdByName;
+  String? createdByNamebill;
   String? approvedbyname;
   String? fromSiteName;
   String? transferEntryDate;
   String? transEntryDate;
   String? entryDate;
+  String? entryDateMobile;
   String? transferNo;
   String? TransferNo;
+  String? leaveFromDate;
+  double? totalLeaveDays;
+  String? leaveToDate;
   int? reqMasId;
   String? subcontractName;
+  String? SubcontractName;
   String? entryName;
   String? verifiedBy;
   int? materialReqOrdMasId;
@@ -159,14 +186,25 @@ class OnClickListResult {
   dynamic createdBy;
   int? employeeId;
   String? quoteRemarks;
+  String? workNo;
+  String? workDate;
+  int? workId;
+  double? netPayAmount;
+  String? entryNo;
+  String? billStatus;
+  String? billType;
 
   OnClickListResult({
     this.id,
     this.ReqOrdMasId,
     this.PONo,
     this.PoId,
+    this.requisitionNo,
+    this.requisitionTypeValue,
     this.reqOrdNo,
     this.ReqOrdNo,
+    this.reviseNo,
+    this.reviseDate,
     this.labourAttendanceNo,
     this.labourAttendanceDate,
     this.reqOrdDate,
@@ -175,6 +213,7 @@ class OnClickListResult {
     this.ReqDueDate,
     this.requestType,
     this.projectId,
+    this.Projectid,
     this.siteId,
     this.fromProjectName,
     this.FromProjectName,
@@ -193,6 +232,7 @@ class OnClickListResult {
     this.no,
     this.date,
     this.dueDate,
+    this.deliveryDate,
     this.accName,
     this.accType,
     this.supplierName,
@@ -204,6 +244,9 @@ class OnClickListResult {
     this.preparedByid,
     this.preparedByName,
     this.Preparedbyname,
+    this.preparebyname,
+    this.preparedByBOQ,
+    this.preparedName,
     this.netAmt,
     this.netAmount,
     this.frProjectName,
@@ -213,13 +256,17 @@ class OnClickListResult {
     this.type,
     this.potype,
     this.DprType,
+    this.requisitionType,
     this.appNo,
     this.subContractorName,
+    this.subContractor,
+    this.SubcontName,
     this.totNos,
     this.totAmt,
     this.Payfor,
     this.ProjectId,
     this.ProjectID,
+    this.projId,
     this.SiteId,
     this.SiteID,
     this.VerifiedBy,
@@ -229,8 +276,11 @@ class OnClickListResult {
     this.appRemarks,
     this.delaydays,
     this.fromDate,
+    this.frDate,
     this.toDate,
+    this.tDate,
     this.billno,
+    this.billNo,
     this.purchaseType,
     this.PurchaseType,
     this.approvedby,
@@ -243,22 +293,30 @@ class OnClickListResult {
     this.vehicleno,
     this.vehicleName,
     this.staffName,
+    this.StaffName,
+    this.staffId,
     this.reqAmt,
     this.leaveReason,
-    this.lFrdate,
-    this.lTodate,
+    this.LeaveReason,
     this.totalLeave,
-    this.perReason,
-    this.pFrdate,
-    this.pTodate,
-    this.pFrTime,
-    this.pToTime,
+    this.permissionReason,
+    this.permissionFromDate,
+    this.permissionToDate,
+    this.leaveFromDate,
+    this.totalLeaveDays,
+    this.leaveToDate,
+    this.permissionFromTime,
+    this.PermissionFromTime,
+    this.permissionToTime,
+    this.permissionTimeHrs,
+    this.permissionTimeMins,
     this.Time,
     this.Address,
     this.Remarks,
     this.Designation,
-    this.totalPerHrs,
+    this.totalPermissionHours,
     this.employeeName,
+    this.empName,
     this.purchaseOrdNo,
     this.PurchaseOrdNo,
     this.purchaseOrdDate,
@@ -266,6 +324,7 @@ class OnClickListResult {
     this.inwType,
     this.approveByName,
     this.createdByName,
+    this.createdByNamebill,
     this.approvedbyname,
     this.fromSiteName,
     this.transferEntryDate,
@@ -275,7 +334,9 @@ class OnClickListResult {
     this.reqMasId,
     this.entryType,
     this.entryDate,
+    this.entryDateMobile,
     this.subcontractName,
+    this.SubcontractName,
     this.entryName,
     this.verifiedBy,
     this.materialReqOrdMasId,
@@ -284,6 +345,13 @@ class OnClickListResult {
     this.createdBy,
     this.employeeId,
     this.quoteRemarks,
+    this.workNo,
+    this.workDate,
+    this.workId,
+    this.netPayAmount,
+    this.entryNo,
+    this.billType,
+    this.billStatus
   });
 
   factory OnClickListResult.fromJson(Map<String, dynamic> json) => OnClickListResult(
@@ -292,7 +360,11 @@ class OnClickListResult {
     PONo: json["PONO"],
     PoId: json["PoId"],
     reqOrdNo: json["reqOrdNo"],
+    requisitionNo: json["requisitionNo"],
+    requisitionTypeValue: json["requisitionTypeValue"],
     ReqOrdNo: json["ReqOrdNo"],
+      reviseNo: json["reviseNo"],
+      reviseDate: json["reviseDate"],
     labourAttendanceNo: json["LabourAttendanceNo"],
     labourAttendanceDate: json["LabourAttendanceDate"],
     reqOrdDate: json["reqOrdDate"],
@@ -302,6 +374,7 @@ class OnClickListResult {
     requestType: json["requestType"],
     projectId: json["projectID"],
     ProjectID:json["ProjectID"],
+    Projectid:json["Projectid"],
     siteId: json["siteID"],
     fromProjectName: json["fromProjectName"],
     FromProjectName: json["FromProjectName"],
@@ -320,6 +393,7 @@ class OnClickListResult {
     no: json["No"],
     date: json["PODate"],
     dueDate: json["DueDate"],
+    deliveryDate: json["deliveryDate"],
     accName: json["Acc_name"],
     accType: json["Acc_type"],
     supplierName: json["SupplierName"],
@@ -329,9 +403,12 @@ class OnClickListResult {
     preparedby: json["Preparedby"],
     preparedByid: json["PreparedById"],
     Preparedbyname: json["Preparedbyname"],
+    preparedName: json["preparedByName"],
     prepareby: json["preparedby"],
     appRemarks: json["appRemarks"],
     preparedByName: json["Prepared_by"],
+      preparebyname: json["PreparedByName"],
+      preparedByBOQ: json["preparedBy"],
     netAmt: json["NetAmt"],
     netAmount: json["NetAmount"],
     frProjectName: json["FrProjectName"],
@@ -342,10 +419,13 @@ class OnClickListResult {
     DprType: json["DPRType"],
     appNo: json["AppNo"],
     subContractorName: json["SubContractorName"],
+    SubcontName: json["subcontractorName"],
+    subContractor: json["subContractorName"],
     totNos: json["TotNos"],
     totAmt: json["TotNos"],
     Payfor: json["Payfor"],
     ProjectId: json["ProjectId"],
+    projId: json["projectId"],
     SiteId: json["SiteId"],
     SiteID: json["SiteID"],
     VerifiedBy: json["VerifiedBy"],
@@ -355,10 +435,14 @@ class OnClickListResult {
     app_remarks: json["AppRemarks"],
     delaydays: json["DelayDays"],
     fromDate: json["FromDate"],
+    frDate: json["fromDate"],
     toDate: json["ToDate"],
+    tDate: json["toDate"],
     billno: json["Billno"],
+    billNo: json["billNo"],
     purchaseType: json["PurchaseType"],
     PurchaseType: json["purchaseType"],
+    requisitionType: json["requisitionType"],
     approvedby: json["approvedby"],
     workshift: json["workshift"],
     workordertype: json["WorkOrderType"],
@@ -370,29 +454,39 @@ class OnClickListResult {
     vehicleName: json["vehicleName"],
     entryType: json["entryType"],
     staffName: json["StaffName"],
+    StaffName: json["staffName"],
+    staffId: json["staffId"],
     reqAmt: json["ReqAmt"],
     leaveReason: json["LeaveReason"],
-    lFrdate: json["LFrdate"],
-    lTodate: json["LTodate"],
+    LeaveReason: json["leaveReason"],
     totalLeave: json["TotalLeave"],
-    perReason: json["PerReason"],
-    pFrdate: json["PFrdate"],
-    pTodate: json["PTodate"],
-    pFrTime: json["PFrTime"],
-    pToTime: json["PToTime"],
+    leaveFromDate: json["leaveFromDate"],
+    totalLeaveDays: json["totalLeaveDays"],
+    leaveToDate: json["leaveToDate"],
+    permissionReason: json["permissionReason"],
+    permissionFromDate: json["permissionFromDate"],
+    permissionToDate: json["permissionToDate"],
+    permissionFromTime: json["permissionFromTime"],
+    PermissionFromTime: json["PermissionFromTime"],
+    permissionToTime: json["permissionToTime"],
+    permissionTimeHrs: json["permissionTimeHrs"],
+    permissionTimeMins: json["permissionTimeMins"],
     Time: json["Time"],
     Address: json["Address"],
     Remarks: json["Remarks"],
     Designation: json["Designation"],
-    totalPerHrs: json["TotalPerHrs"],
+    totalPermissionHours: json["totalPermissionHours"],
     employeeName: json["EmployeeName"],
+    empName: json["employeeName"],
     PurchaseOrdDate: json["PurchaseOrdDate"],
     purchaseOrdNo: json["PurchaseOrdNo"],
     inwType: json["inw_type"],
     entryDate: json["entryDate"],
+    entryDateMobile: json["entryDateMobile"],
     approveByName: json["ApproveByName"],
     approvedbyname:json["approvedbyname"],
     createdByName: json["CreatedByName"],
+    createdByNamebill: json["createdByName"],
     PurchaseOrdNo: json["purchaseOrdNo"],
     purchaseOrdDate: json["purchaseOrdDate"],
     fromSiteName: json["FromSiteName"],
@@ -402,6 +496,7 @@ class OnClickListResult {
     transferNo: json["TransferNo"],
     reqMasId: json["ReqMasId"],
     subcontractName: json["SubcontractName"],
+    SubcontractName: json["subcontractName"],
     entryName: json["entryName"],
     verifiedBy: json["verifedName"],
       materialReqOrdMasId: json["materialReqOrdMasId"],
@@ -410,6 +505,13 @@ class OnClickListResult {
       createdBy: json["createdBy"],
       employeeId: json["employeeId"],
       quoteRemarks: json["quoteRemarks"],
+    workNo: json["workNo"],
+    workDate: json["workDate"],
+    workId: json["workId"],
+    netPayAmount: json["netPayAmount"],
+    entryNo: json["entryNo"],
+    billStatus: json["billStatus"],
+    billType: json["billType"]
   );
 
   Map<String, dynamic> toJson() => {
@@ -417,8 +519,12 @@ class OnClickListResult {
     "ReqOrdMasId": ReqOrdMasId,
     "PONO": PONo,
     "PoId": PoId,
+    "requisitionNo": requisitionNo,
+    "requisitionTypeValue": requisitionTypeValue,
     "reqOrdNo": reqOrdNo,
     "ReqOrdNo": ReqOrdNo,
+    "reviseNo": reviseNo,
+    "reviseDate": reviseDate,
     "LabourAttendanceNo": labourAttendanceNo,
     "LabourAttendanceDate": labourAttendanceDate,
     "reqOrdDate": reqOrdDate,
@@ -429,6 +535,8 @@ class OnClickListResult {
     "projectID": projectId,
     "appRemarks": appRemarks,
     "ProjectID": ProjectID,
+    "Projectid": Projectid,
+    "projectId": projId,
     "siteID": siteId,
     "SiteID": SiteID,
     "fromProjectName": fromProjectName,
@@ -449,6 +557,7 @@ class OnClickListResult {
     "No": no,
     "PODate": date,
     "DueDate": dueDate,
+    "deliveryDate": deliveryDate,
     "ProjectName": projectName,
     "SiteName": SiteName,
     "Acc_name": accName,
@@ -461,7 +570,10 @@ class OnClickListResult {
     "PreparedById": preparedByid,
     "Prepared_by": preparedByName,
     "Preparedbyname": Preparedbyname,
+    "preparedByName": preparedName,
+    "PreparedByName": preparebyname,
     "preparedby": prepareby,
+    "preparedBy": preparedByBOQ,
     "NetAmt": netAmt,
     "NetAmount":netAmount,
     "FrProjectName": frProjectName,
@@ -472,6 +584,8 @@ class OnClickListResult {
     "DPRType": DprType,
     "AppNo": appNo,
     "SubContractorName": subContractorName,
+    "subcontractorName": SubcontName,
+    "subContractorName": subContractor,
     "TotNos": totNos,
     "TotNos": totAmt,
     "Payfor": Payfor,
@@ -483,8 +597,11 @@ class OnClickListResult {
     "AppRemarks": app_remarks,
     "DelayDays": delaydays,
     "FromDate": fromDate,
+    "fromDate": frDate,
     "ToDate": toDate,
+    "toDate": tDate,
     "Billno": billno,
+    "billNo": billNo,
     "approvedby": approvedby,
     "workshift": workshift,
     "WorkOrderType": workordertype,
@@ -495,23 +612,32 @@ class OnClickListResult {
     "vehicleno": vehicleno,
     "vehicleName": vehicleName,
     "entryType": entryType,
+    "requisitionType": requisitionType,
     "StaffName":staffName,
+    "staffName":StaffName,
+    "staffId":staffId,
     "ReqAmt": reqAmt,
     "LeaveReason": leaveReason,
-    "LFrdate": lFrdate,
-    "LTodate": lTodate,
+    "leaveReason": LeaveReason,
+    "leaveFromDate": leaveFromDate,
+    "totalLeaveDays": totalLeaveDays,
+    "leaveToDate": leaveToDate,
     "TotalLeave": totalLeave,
-    "PerReason": perReason,
-    "PFrdate": pFrdate,
-    "PTodate": pTodate,
-    "PFrTime": pFrTime,
-    "PToTime": pToTime,
+    "permissionReason": permissionReason,
+    "permissionFromDate": permissionFromDate,
+    "permissionToDate": permissionToDate,
+    "permissionFromTime": permissionFromTime,
+    "PermissionFromTime": PermissionFromTime,
+    "permissionToTime": permissionToTime,
+    "permissionTimeHrs": permissionTimeHrs,
+    "permissionTimeMins": permissionTimeMins,
     "Address": Address,
     "Remarks":   Remarks,
     "Time":Time,
     "Designation":   Designation,
-    "TotalPerHrs": totalPerHrs,
+    "totalPermissionHours": totalPermissionHours,
     "EmployeeName":employeeName,
+    "employeeName":empName,
     "PurchaseOrdNo": purchaseOrdNo,
     "purchaseOrdNo": PurchaseOrdNo,
     "purchaseOrdDate": purchaseOrdDate,
@@ -519,6 +645,7 @@ class OnClickListResult {
     "inw_type": inwType,
     "ApproveByName": approveByName,
     "CreatedByName": createdByName,
+    "createdByName": createdByNamebill,
     "approvedbyname":approvedbyname,
     "FromSiteName": fromSiteName,
     "TransferEntryDate": transferEntryDate,
@@ -527,7 +654,9 @@ class OnClickListResult {
     "TransferNo": transferNo,
     "ReqMasId": reqMasId,
     "entryDate": entryDate,
+    "entryDateMobile": entryDateMobile,
     "SubcontractName": subcontractName,
+    "subcontractName": SubcontractName,
     "entryName": entryName,
     "verifedName": verifiedBy,
     "materialReqOrdMasId": materialReqOrdMasId,
@@ -536,5 +665,12 @@ class OnClickListResult {
     "createdBy": createdBy,
     "employeeId": employeeId,
     "quoteRemarks": quoteRemarks,
+    "workNo": workNo,
+    "workDate":workDate,
+    "workId":workId,
+    "netPayAmount":netPayAmount,
+    "entryNo": entryNo,
+    "billStatus": billStatus,
+    "billType": billType
   };
 }

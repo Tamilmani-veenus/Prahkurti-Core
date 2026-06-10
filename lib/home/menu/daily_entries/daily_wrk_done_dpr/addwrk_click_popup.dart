@@ -54,7 +54,6 @@ class _AddwrkClickPopupState extends State<AddwrkClickPopup> {
               onPressed: () async {
                 await dailyWrkDone_DPR_Controller.dpr_itemlist_Save_DB(context);
                 dailyWrkDone_DPR_Controller.getDprTablesDatas();
-                dailyWrkDone_DPR_Controller.addwrkCheck=1;
               },
               label: Text("Done", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,),),
               icon: Icon(Icons.library_add_check_outlined, color: Colors.white, size: RequestConstant.Heading_Font_SIZE, ),
@@ -106,7 +105,7 @@ class _AddwrkClickPopupState extends State<AddwrkClickPopup> {
                             },
                             textInputAction: TextInputAction.search,
                             onChanged: (value) {
-                              dailyWrkDone_DPR_Controller.dpr_mainitemList.value = BaseUtitiles.itemDescPopupAlert(value, dailyWrkDone_DPR_Controller.dpr_itemList.value);
+                              dailyWrkDone_DPR_Controller.dpr_mainitemList.value = BaseUtitiles.itemDescPopupAlert(value, dailyWrkDone_DPR_Controller.dpr_mainitemList.value);
                             },
                           ),
                         ),
@@ -121,88 +120,6 @@ class _AddwrkClickPopupState extends State<AddwrkClickPopup> {
             )
         );
 
-      // child: AlertDialog(
-      //   contentPadding: EdgeInsets.all(5.0),
-      //   shape: RoundedRectangleBorder(
-      //     borderRadius: BorderRadius.all(Radius.circular(10.0)),
-      //   ),
-      //   content: Stack(children: <Widget>[
-      //     SingleChildScrollView(
-      //       child: Container(
-      //         //height: BaseUtitiles.getheightofPercentage(context, 60),
-      //         child: Column(
-      //           children: <Widget>[
-      //             Container(
-      //               margin: EdgeInsets.only(top: 10),
-      //               height: BaseUtitiles.getheightofPercentage(context, 4),
-      //               child: TextField(
-      //                 onChanged: (value) {
-      //                   setState(() {
-      //                     datas=value;
-      //                     dailyWrkDone_DPR_Controller.list.value=BaseUtitiles.itemDescPopupAlert(value,dailyWrkDone_DPR_Controller.dpr_mainitemList.value);
-      //                   });
-      //                 },
-      //                 controller: editingController,
-      //                 decoration: InputDecoration(
-      //                     contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-      //                     labelText: "Search",
-      //                     labelStyle: TextStyle(
-      //                         color: Theme.of(context).primaryColor,
-      //                         fontStyle: FontStyle.italic,
-      //                         fontSize: RequestConstant.App_Font_SIZE),
-      //                     prefixIcon: Icon(
-      //                       Icons.search,
-      //                       color: Theme.of(context).primaryColor,
-      //                     ),
-      //                     border: OutlineInputBorder(
-      //                         borderRadius:
-      //                         BorderRadius.all(Radius.circular(25.0)))),
-      //               ),
-      //             ),
-      //             Container(
-      //               margin: const EdgeInsets.only(top: 20),
-      //               width: BaseUtitiles.getWidthtofPercentage(context, 80),
-      //               height: BaseUtitiles.getheightofPercentage(context, 55),
-      //               child: Column(
-      //                 children:<Widget> [
-      //                   Container(
-      //                     width: BaseUtitiles.getWidthtofPercentage(context, 80),
-      //                     height: BaseUtitiles.getheightofPercentage(context,48),
-      //                     child: listDetails(),
-      //                   ),
-      //                   Container(
-      //                     margin: EdgeInsets.only(top: 15),
-      //                     height: BaseUtitiles.getheightofPercentage(context, 4),
-      //                     width: BaseUtitiles.getWidthtofPercentage(context, 24),
-      //                     child: ElevatedButton(
-      //                       style: ElevatedButton.styleFrom(
-      //                         primary: Theme.of(context).primaryColor,
-      //                         //background color of button
-      //                         side: BorderSide(width: 3, color: Colors.black),
-      //                         //border width and color
-      //                         elevation: 3,
-      //                         //elevation of button
-      //                         shape: RoundedRectangleBorder(
-      //                           //to set border radius to button
-      //                             borderRadius: BorderRadius.circular(30)),),
-      //                       child: Text(RequestConstant.OK),
-      //                       onPressed: () async{
-      //                         await dailyWrkDone_DPR_Controller.dpr_itemlist_Save_DB(context);
-      //                         dailyWrkDone_DPR_Controller.getDprTablesDatas();
-      //                         dailyWrkDone_DPR_Controller.addwrkCheck=1;
-      //                       },
-      //                     ),
-      //                   ),
-      //                 ],
-      //               ),
-      //             ),
-      //           ],
-      //         ),
-      //       ),
-      //     ),
-      //   ]),
-      // ),
-    // );
   }
 
 
@@ -341,12 +258,7 @@ class _AddwrkClickPopupState extends State<AddwrkClickPopup> {
                                   RequestConstant.App_Font_SIZE,
                                   color: Colors.black),
                             )),
-                        // Column(
-                        //   crossAxisAlignment: CrossAxisAlignment.start,
-                        //   children: [
-                        //
-                        //   ],
-                        // ),
+
                       ],
                     ),
                     Divider(thickness: 1,color: Theme.of(context).primaryColor)
@@ -359,9 +271,5 @@ class _AddwrkClickPopupState extends State<AddwrkClickPopup> {
     else{
       return Container();
     }
-
-
-
-
   }
 }

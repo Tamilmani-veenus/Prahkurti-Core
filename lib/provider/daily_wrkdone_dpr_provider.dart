@@ -19,255 +19,159 @@ import '../utilities/requestconstant.dart';
 
 class DPRProvider{
 
-  static Future<List<DprItemListResponse>> get_Dpr_ItemList(
-      int? Projectid, int? SiteId, int? Subcontid, String entryType) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GET_DPR_ITEM_LIST + "?PId=$Projectid&SId=$SiteId&SubId=$Subcontid&EntryType=$entryType").then((value) {
-      print("DPRItemList:" + value);
-      data = dprItemListResponseFromJson(value);
-      if (data != null && data.length > 0) {
-        return data;
-      }
-    }, onError: (error) {
+  static Future<DprItemListResponse?> get_Dpr_ItemList(int? Projectid, int? SiteId, int? Subcontid) async {
+    try {
+      var value = await ApiManager.getAPICall(
+          "${ApiConstant.GET_DPR_ITEM_LIST}?projectId=$Projectid&siteId=$SiteId&subcontractorId=$Subcontid");
+      return dprItemListResponseFromJson(value);
+    } catch (error, e) {
       print(error);
+      print("ERROR...${e}");
+      return null;
+    }
+  }
+
+
+  static Future<DailywrkDoneDprEntrylistResmodel?> get_dpr_EntryList(String frdate, String todate) async {
+    try {
+      var value = await ApiManager.getAPICall(
+          "${ApiConstant.GET_DPR_ENTRY_LIST}?fromDate=$frdate&toDate=$todate");
+      return dailywrkDoneDprEntrylistResmodelFromJson(value);
+    } catch (error) {
+      print(error);
+      return null;
+    }
+  }
+
+  static Future<bool> dpr_entryList_deleteAPI(int reqId) async {
+    try {
+      final response = await ApiManager.deleteAPICall(
+          "${ApiConstant.DELETE_DPR_ENTRYLIST_API}?id=$reqId");
+
+      final Map<String, dynamic> decoded = jsonDecode(response);
+
+
+      bool isSuccess = decoded["success"] == true;
+
+      final message = decoded["message"] ??
+          (isSuccess
+              ? "Deleted successfully"
+              : "Something went wrong");
+
+      BaseUtitiles.showToast(message);
+
+      return isSuccess;
+    } catch (error) {
+      print("Delete API Error: $error");
       BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
-    });
-    return data;
+      return false;
+    }
   }
 
-  static Future<List<DailywrkDoneDprEntrylistResmodel>> get_dpr_EntryList(int? Userid, String UserType, String frdate, String todate) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GET_DPR_ENTRY_LIST + "?UserId=$Userid&UserType=$UserType&Frdate=$frdate&Todate=$todate").then((value) {
-      print("DPREntryList:" + value);
-      data = dailywrkDoneDprEntrylistResmodelFromJson(value);
-      if (data != null && data.length > 0) {
-        return data;
-      }
-    }, onError: (error) {
+  static Future<DprEditApimodel?> dpr_entryList_editAPI(int workId) async {
+    try {
+      final value = await ApiManager.getAPICall("${ApiConstant.GET_DPR_EDIT_API}?id=$workId");
+      print('API Response: ${value}');
+      return dprEditApimodelFromJson(value);
+
+    } catch (error,e) {
+      print("Error == $error");
+      print("ERROR....${e}");
+      return null;
+    }
+  }
+
+  static Future<DprTypeSucontResponse?> Dpr_getTypeSubcont(int? Projectid, int? SiteId, type,entryType) async {
+    try {
+      var value = await ApiManager.getAPICall(
+          type=="Dprnew"?"${ApiConstant.GET_DPRNEW_SUBCONTRACTOR_LIST}?projectId=$Projectid&siteId=$SiteId&entryType=$entryType" :
+          "${ApiConstant.GET_DPR_SUBCONTRACTOR_LIST}?projectId=$Projectid&siteId=$SiteId"
+      );
+      DprTypeSucontResponse data = dprTypeSucontResponseFromJson(value);
+      return data;
+    } catch (error) {
       print(error);
-      BaseUtitiles.showToast(error);
-    });
-    return data;
+      return null;
+    }
   }
 
-  static Future dpr_entryList_deleteAPI(int WorkId,String WorkNo, String UserId, String DeviceName) async {
-    var data = null;
-    await ApiManager.deleteAPICall(ApiConstant.DELETE_DPR_ENTRYLIST_API + "?WorkId=$WorkId&WorkNo=$WorkNo&UserId=$UserId&DeviceName=$DeviceName")
-        .then((value) {
-      final res = json.decode(value);
-      if (res != null) {
-        data = res;
-        if(data=="Deleted"){
-          BaseUtitiles.showToast("Deleted Successfully");
-        }else{
-          BaseUtitiles.showToast("$data");
+
+  static Future<dynamic> SaveIemListScreenEntryAPI(DailywrkDoneDprItemlistSaveModel data, imagesPath,saveButton,id) async {
+    try {
+
+      final url = saveButton == RequestConstant.RESUBMIT || saveButton == RequestConstant.APPROVAL
+          ? "${ApiConstant.PUT_DPR_UPDATE_API}?id=$id"
+          : ApiConstant.DPR_SAVE_API;
+
+      print("eeeee....${url}");
+
+      final request = http.MultipartRequest(
+        saveButton == RequestConstant.RESUBMIT || saveButton == RequestConstant.APPROVAL? 'PUT' : 'POST',
+        Uri.parse(url),
+      );
+
+      request.headers.addAll(RequestConstant.postHeaders());
+
+      final bodyData = data.toJson();
+      bodyData.remove('SubContractDailyWorkDets');
+
+      bodyData.forEach((key, value) {
+        if (value != null) {
+          request.fields[key] = value.toString();
         }
-        return data;
+      });
+
+      if (data.subContractDailyWorkDets != null && data.subContractDailyWorkDets!.isNotEmpty) {
+        for (int i = 0; i < data.subContractDailyWorkDets!.length; i++) {
+          final det = data.subContractDailyWorkDets![i];
+
+          request.fields['SubContractDailyWorkDets[$i].id'] = (det.id ?? 0).toString();
+          request.fields['SubContractDailyWorkDets[$i].subContractDailyWorkMasId'] = (det.subContractDailyWorkMasId ?? 0).toString();
+          request.fields['SubContractDailyWorkDets[$i].subContarctWorkdetid'] = (det.subContarctWorkdetid ?? 0).toString();
+          request.fields['SubContractDailyWorkDets[$i].headItemId'] = (det.headItemId ?? 0).toString();
+          request.fields['SubContractDailyWorkDets[$i].subItemId'] = (det.subItemId ?? 0).toString();
+          request.fields['SubContractDailyWorkDets[$i].level3ItemId'] = (det.level3ItemId ?? 0).toString();
+          request.fields['SubContractDailyWorkDets[$i].itemDescription'] = (det.itemDescription ?? 0).toString();
+          request.fields['SubContractDailyWorkDets[$i].workType'] = (det.workType ?? 0).toString();
+          request.fields['SubContractDailyWorkDets[$i].boqCode'] = (det.boqCode ?? 0).toString();
+          request.fields['SubContractDailyWorkDets[$i].scaleId'] = (det.scaleId ?? 0).toString();
+          request.fields['SubContractDailyWorkDets[$i].siteId'] = (det.siteId ?? 0).toString();
+          request.fields['SubContractDailyWorkDets[$i].billStatus'] = (det.billStatus ?? 0).toString();
+          request.fields['SubContractDailyWorkDets[$i].cement'] = (det.cement ?? 0).toString();
+          request.fields['SubContractDailyWorkDets[$i].workRemarks'] = (det. workRemarks?? "-").toString();
+          request.fields['SubContractDailyWorkDets[$i].qty'] = (det.qty ?? 0).toString();
+          request.fields['SubContractDailyWorkDets[$i].rate'] = (det.rate ?? 0).toString();
+          request.fields['SubContractDailyWorkDets[$i].amount'] = (det.amount ?? 0).toString();
+          request.fields['SubContractDailyWorkDets[$i].avgLabRate'] = (det.avgLabRate ?? 0).toString();
+        }
       }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
-    });
-    return data;
-  }
-
-  static Future<List<DailywrkDoneDprEntrylistEditApiResmodel>> dpr_entryList_editAPI(int workId) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GET_DPR_EDIT_API + "?WorkId=$workId").then((value) {
-      final res = dailywrkDoneDprEntrylistEditApiResmodelFromJson(value);
-      if (res != null && res.length > 0) {
-        data = res;
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG+error);
-    });
-    return data;
-  }
-
-  static Future<List<DprTypeSucontResponse>> Dpr_getTypeSubcont(
-      int? Projectid, int? SiteId, String entryType) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GET_DPR_SUBCONTRACTOR_LIST +
-        "?PId=$Projectid&SId=$SiteId&EntryType=$entryType")
-        .then((value) {
-      print("SubcontType:" + value);
-      data = dprTypeSucontResponseFromJson(value);
-      if (data != null && data.length > 0) {
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
-    });
-    return data;
-  }
-
-  // static SaveIemListScreenEntryAPI(body,workId,aprovedButton,int buttonControl,context) async {
-  //   String? ratingRes;
-  //
-  //   try {
-  //     dynamic value;
-  //
-  //     if (workId != 0) {
-  //       // Approval update
-  //       if (aprovedButton != 0) {
-  //         value = await ApiManager.putUpdateAPIButton(ApiConstant.PUT_DPR_APROVE_API, body);
-  //       } else {
-  //         // Normal update
-  //         value = await ApiManager.putUpdateAPIButton(ApiConstant.PUT_DPR_UPDATE_API, body);
-  //       }
-  //     } else {
-  //       // New save
-  //       value = await ApiManager.postAPICall(ApiConstant.DPR_SAVE_API, body);
-  //     }
-  //
-  //     var response = dprItemscreenSaveResponseFromJson(value);
-  //     if (response.RetString != null) {
-  //       ratingRes = response.RetString;
-  //     }
-  //
-  //   } on SocketException catch (_) {
-  //     BaseUtitiles.showToast(RequestConstant.NOINTERNETCONNECTION);
-  //     if (Navigator.canPop(context)) Navigator.pop(context);
-  //     return null;
-  //   }
-  //   on TimeoutException catch (_) {
-  //     BaseUtitiles.showToast(RequestConstant.REQUESTTIMEOUT);
-  //     if (Navigator.canPop(context)) Navigator.pop(context);
-  //     return null;
-  //   }
-  //   on FormatException catch (_) {
-  //     BaseUtitiles.showToast(RequestConstant.BADRESPONSE);
-  //     if (Navigator.canPop(context)) Navigator.pop(context);
-  //     return null;
-  //   } catch (error) {
-  //     print('❌ Error in SaveIemListScreenEntryAPI: $error');
-  //     buttonControl = 0;
-  //     BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
-  //   }
-  //
-  //   return ratingRes;
-  // }
-
-  static Future<String?> SaveIemListScreenEntryAPI(DailywrkDoneDprItemlistSaveModel data,workId,aprovedButton,int buttonControl,context,List<File> imagesPath) async {
-    String url;
-    var request;
-
-    // Determine the URL and HTTP method based on attendId and approvedButton
-    if (workId != 0) {
-      if(aprovedButton != 0){
-        url = ApiConstant.PUT_DPR_APROVE_API;
-        request = http.MultipartRequest('PUT', Uri.parse(url));
-      }else{
-        url = ApiConstant.PUT_DPR_UPDATE_API;
-        request = http.MultipartRequest('PUT', Uri.parse(url));
-      }
-    }
-    else {
-      url = ApiConstant.DPR_SAVE_API;
-      request = http.MultipartRequest('POST', Uri.parse(url));
-    }
-
-    if (kDebugMode) {
-      print('Calling API: $url');
-    }
-
-    // Adding fields to the request
-    Map<String, dynamic> bodyData = data.toJson();
-    bodyData.forEach((key, value) {
-      if (value != null) {
-        request.fields[key] = value.toString();
-      }
-    });
-
-    // Convert attendanceDet to JSON and add to request fields
-    if (data.dprDet != null && data.dprDet!.isNotEmpty) {
-      request.fields['DprDet'] = json.encode(data.dprDet!.map((item) => item.toJson()).toList());
-    }
-
-    // Add image files if not null
 
       if (imagesPath.isNotEmpty) {
         for (File file in imagesPath) {
-          var stream = http.ByteStream(file.openRead());
-          var length = await file.length();
-          var multipartFile = http.MultipartFile(
-            'Files',
-            stream,
-            length,
-            filename: basename(file.path),
-            contentType: MediaType('image', 'jpeg'),
+          request.files.add(
+            await http.MultipartFile.fromPath(
+              'DPRImg',
+              file.path,
+              contentType: MediaType('image', 'jpeg'),
+            ),
           );
-          request.files.add(multipartFile);
         }
       }
 
-
-    if (kDebugMode) {
-      print("Request Fields: ${request.fields}");
-      // print("AttendanceDet Request Field: ${request.fields['AttendanceDet']}");
-      print("Request Files: ${request.files.map((f) => f.filename).toList()}");
-    }
-
-    try {
-      var response = await request.send();
-      var responseBody = await response.stream.bytesToString();
-      var jsonResponse = json.decode(responseBody);
       if (kDebugMode) {
-        print('ResponseData: $jsonResponse');
-      }
-      if (response.statusCode == 200) {
-        var res = DprItemlistscreenSaveResponse.fromJson(jsonResponse);
-        if (kDebugMode) {
-          print('Response data: ${res.RetString}');
-        }
-        return res.RetString;
-      } else {
-        // dailyEntriesController.buttonControl = 0;
-        if (kDebugMode) {
-          print('Error: ${response.statusCode}');
-        }
-        Navigator.pop(context);
-        Navigator.pop(context);
-        Navigator.pop(context);
-        BaseUtitiles.showToast(RequestConstant.NETWORKERROR);
-        return null;
+        print("Fields: ${request.fields}");
+        print("Files: ${request.files.map((f) => f.filename).toList()}");
       }
 
-    } on SocketException catch (_) {
-      BaseUtitiles.showToast(RequestConstant.NOINTERNETCONNECTION);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      return null;
-    }
-    on TimeoutException catch (_) {
-      BaseUtitiles.showToast(RequestConstant.REQUESTTIMEOUT);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      return null;
-    }
-    on FormatException catch (_) {
-      BaseUtitiles.showToast(RequestConstant.BADRESPONSE);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      return null;
-    }
-    catch (e) {
-      buttonControl = 0;
-      if (kDebugMode) {
-        print('Exception: $e');
-      }
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      BaseUtitiles.showToast(RequestConstant.NETWORKERROR);
+      final response = await request.send();
+      final responseBody = await response.stream.bytesToString();
+      return jsonDecode(responseBody);
+
+    } catch (error) {
+      print("Error == $error");
       return null;
     }
   }
+
 
 }

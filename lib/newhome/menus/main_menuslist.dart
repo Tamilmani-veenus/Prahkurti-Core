@@ -62,41 +62,42 @@ class _MainManusListState extends State<MainManusList> {
     return Obx(() => ListView.builder(
           shrinkWrap: true,
           physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.zero,
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.05),
           itemCount: menuController.menuListDatas.value.length,
           itemBuilder: (context, index) {
+            final moduleName =
+                menuController.menuListDatas.value[index].moduleName;
+
+            if (![
+              "Materials",
+              "Daily Entries",
+              "Main Menu",
+              "Accounts",
+              "Payroll",
+              "Project Planning"
+            ].contains(moduleName)) {
+              return const SizedBox.shrink();
+            }
             return Container(
               margin: const EdgeInsets.only(bottom: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20, top: 10, bottom: 20),
-                        child: Text(
-                            menuController.menuListDatas.value[index].moduleName == "Materials"
-                                ? "Materials"
-                                : menuController.menuListDatas.value[index].moduleName == "Daily Entries"
-                                    ? "Daily Entries"
-                                    : menuController.menuListDatas.value[index].moduleName == "Main Menu"
-                                        ? "Main Menu"
-                                        : menuController.menuListDatas.value[index].moduleName == "Accounts"
-                                            ? "Accounts"
-                                             : menuController.menuListDatas.value[index].moduleName == "Payroll"
-                                             ? "Payroll"
-                                            : "",
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 23,
-                                fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, top: 10, bottom: 20),
+                    child: Text(
+                      moduleName ?? "",
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold,
                       ),
-                    ],
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                  menuController.menuListDatas.value[index].moduleName ==
-                          "Materials"
-                      ? Container(
+                  if(menuController.menuListDatas.value[index].moduleName ==
+                          "Materials")
+                       Container(
                           margin:
                               const EdgeInsets.only(left: 10, right: 10, bottom: 5),
                           // height: BaseUtitiles.getheightofPercentage(context, 26),
@@ -412,11 +413,10 @@ class _MainManusListState extends State<MainManusList> {
                                       mainAxisSpacing: 10),
                             ),
                           ),
-                        )
-                      : Container(),
-                  menuController.menuListDatas.value[index].moduleName ==
-                          "Main Menu"
-                      ? Container(
+                        ),
+            if(menuController.menuListDatas.value[index].moduleName ==
+                          "Project Planning")
+                       Container(
                           margin: const EdgeInsets.only(left: 10, right: 10),
                           //height: BaseUtitiles.getheightofPercentage(context, 33),
                           child: Card(
@@ -429,7 +429,7 @@ class _MainManusListState extends State<MainManusList> {
                               shrinkWrap: true,
                               physics: const BouncingScrollPhysics(),
                               padding: EdgeInsets.zero,
-                              itemCount: menuController.subMainmenuList.length,
+                              itemCount: menuController.projPlanningList.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return InkWell(
                                   child: Container(
@@ -440,7 +440,7 @@ class _MainManusListState extends State<MainManusList> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
-                                            menuController.subMainmenuList[
+                                            menuController.projPlanningList[
                                                         index].menuName ==
                                                     "BOQ - Revised"
                                                 ? Container(
@@ -490,15 +490,11 @@ class _MainManusListState extends State<MainManusList> {
                                             Container(
                                               margin: const EdgeInsets.only(top: 6),
                                               child: Text(
-                                                menuController.subMainmenuList[
+                                                menuController.projPlanningList[
                                                             index].menuName ==
                                                         "BOQ - Revised"
                                                     ? "BOQ - Revised"
-                                                    // : menuController.subMainmenuList[index] == "Material Purchase - Item Wise" ? "Material Purchase"
-                                                    // : menuController.subMainmenuList[index] == "Material Transfer" ? "Material Transfer"
-                                                    // : menuController.subMainmenuList[index] == "Material Usage" ? "Material Usage"
-                                                    // : menuController.subMainmenuList[index] == "Stock Report" ? "Stock"
-                                                    : "",
+                                                   : "",
                                                 textAlign: TextAlign.center,
                                                 style: const TextStyle(
                                                     color: Colors.black,
@@ -512,10 +508,10 @@ class _MainManusListState extends State<MainManusList> {
                                   ),
                                   onTap: () async {
                                     menuController.MainmenuScreen(
-                                        menuController.subMainmenuList[index].menuName!,
+                                        menuController.projPlanningList[index].menuName!,
                                         context);
-                                    menuController.formName.value = menuController.subMainmenuList[index].menuName!;
-                                    menuController.formMenuId.value = menuController.subMainmenuList[index].menuId!;
+                                    menuController.formName.value = menuController.projPlanningList[index].menuName!;
+                                    menuController.formMenuId.value = menuController.projPlanningList[index].menuId!;
                                     await commanController.getControllEntryListRights();
                                   },
                                 );
@@ -528,11 +524,10 @@ class _MainManusListState extends State<MainManusList> {
                                       mainAxisSpacing: 10),
                             ),
                           ),
-                        )
-                      : Container(),
-                  menuController.menuListDatas.value[index].moduleName ==
-                          "Daily Entries"
-                      ? Container(
+                        ),
+            if(menuController.menuListDatas.value[index].moduleName ==
+                          "Daily Entries")
+                       Container(
                           margin: const EdgeInsets.only(left: 10, right: 10),
                           child: Card(
                             elevation: 5,
@@ -728,7 +723,7 @@ class _MainManusListState extends State<MainManusList> {
                                                               )
                                                             : menuController.dailyEntryList[
                                                                         index].menuName ==
-                                                                    "Daily Work Done (DPR New)"
+                                                                    "Daily Work Done [DPR New]"
                                                                 ? Container(
                                                                     width: 40,
                                                                     height: 40,
@@ -811,7 +806,32 @@ class _MainManusListState extends State<MainManusList> {
                                                                             )
                                                                           ],
                                                                         ),
-                                                                      )
+                                                                      ): menuController.dailyEntryList[index].menuName ==
+                                                "Bill Generation"
+                                                ? Container(
+                                              width:
+                                              40,
+                                              height:
+                                              40,
+                                              decoration:
+                                              BoxDecoration(
+                                                color: Theme.of(context).primaryColor,
+                                                borderRadius: const BorderRadius.all(
+                                                  Radius.circular(10),
+                                                ),
+                                              ),
+                                              child:
+                                              const Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    Icons.article,
+                                                    color: Colors.white,
+                                                    size: 25,
+                                                  )
+                                                ],
+                                              ),
+                                            )
                                                                     : menuController.dailyEntryList[index].menuName ==
                                                                             "Bill Generation - Direct"
                                                                         ? Container(
@@ -933,11 +953,14 @@ class _MainManusListState extends State<MainManusList> {
                                                                 ? "DPR"
                                                                 : menuController.dailyEntryList[
                                                                             index].menuName ==
-                                                                        "Daily Work Done (DPR New)"
+                                                                        "Daily Work Done [DPR New]"
                                                                     ? "DPR NEW"
                                                                     : menuController.dailyEntryList[index].menuName ==
                                                                             "Daily Work Done (DPR Labour)"
                                                                         ? "Work Done(DPR Labour)"
+                                                                  : menuController.dailyEntryList[index].menuName ==
+                                                                  "Bill Generation"
+                                                                  ? "Bill Generation"
                                                                         : menuController.dailyEntryList[index].menuName ==
                                                                                 "Bill Generation - Direct"
                                                                             ? "Bill Direct"
@@ -975,11 +998,11 @@ class _MainManusListState extends State<MainManusList> {
                                       mainAxisSpacing: 13),
                             ),
                           ),
-                        )
-                      : Container(),
-                  menuController.menuListDatas.value[index].moduleName ==
-                          "Accounts"
-                      ? Container(
+                        ),
+
+            if(menuController.menuListDatas.value[index].moduleName ==
+                          "Accounts")
+                      Container(
                           margin: const EdgeInsets.only(left: 10, right: 10),
                           child: Card(
                             elevation: 5,
@@ -1226,11 +1249,10 @@ class _MainManusListState extends State<MainManusList> {
                                       mainAxisSpacing: 10),
                             ),
                           ),
-                        )
-                      : Container(),
-                  menuController.menuListDatas.value[index].moduleName ==
-                      "Payroll"
-                      ? Container(
+                        ),
+            if(menuController.menuListDatas.value[index].moduleName ==
+                      "Payroll")
+                       Container(
                     margin: const EdgeInsets.only(left: 10, right: 10),
                     child: Card(
                       elevation: 5,
@@ -1251,7 +1273,7 @@ class _MainManusListState extends State<MainManusList> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      menuController.payrollList[index].menuName == "Staff Requisition Slip"
+                                      menuController.payrollList[index].menuName == "Staff L & P Slip"
                                           ? Container(
                                         width: 40,
                                         height: 40,
@@ -1287,8 +1309,8 @@ class _MainManusListState extends State<MainManusList> {
                                     children: [
                                       Container(
                                         margin: const EdgeInsets.only(top: 6),
-                                        child: Text(menuController.payrollList[index].menuName == "Staff Requisition Slip"
-                                            ? "Staff Requisition \nSlip"
+                                        child: Text(menuController.payrollList[index].menuName == "Staff L & P Slip"
+                                            ? "Staff L & P Slip"
                                             : "",
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(
@@ -1312,7 +1334,7 @@ class _MainManusListState extends State<MainManusList> {
                         gridDelegate:
                         const SliverGridDelegateWithMaxCrossAxisExtent(
                             maxCrossAxisExtent: 140,
-                            childAspectRatio:7 / 6,
+                            childAspectRatio: 9 / 6,
                             crossAxisSpacing: 0,
                             mainAxisSpacing: 10),
                       ),
@@ -1320,7 +1342,6 @@ class _MainManusListState extends State<MainManusList> {
 
                     ),
                   )
-                      : Container(),
                 ],
               ),
             );

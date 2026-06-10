@@ -203,7 +203,6 @@ class Inward_Pending_provider {
 
         final response = await request.send();
           final responseBody = await response.stream.bytesToString();
-        print("ssssssssss...${jsonDecode(responseBody)}");
           return jsonDecode(responseBody);
 
       } catch (error) {
@@ -218,9 +217,9 @@ class Inward_Pending_provider {
       final value = await ApiManager.getAPICall("${ApiConstant.EDIT_INWARDPENDING_API}?InwardId=$inwardId&InwardType=$type");
       print('API Response: ${value}');
      return inwardPendingEditApiResFromJson(value);
-
-    } catch (error) {
+    } catch (error,e) {
       print("Error == $error");
+      print("Error == $e");
       return null;
     }
   }
@@ -267,6 +266,7 @@ class Inward_Pending_provider {
       final value = await ApiManager.getAPICall(
           type=="inward"?"${ApiConstant.GET_INWARD_IMAGE_LIST}?id=$Id":
           type=="siteVoucher"?"${ApiConstant.GET_VOC_IMAGE_LIST}?id=$Id":
+          type == "DPR" ? "${ApiConstant.GET_DPR_IMAGE_LIST}?id=$Id":
           "${ApiConstant.GET_DLR_IMAGE_LIST}?id=$Id");
       print('API Response: ${value}');
       return gettingImageFromJson(value);
@@ -286,6 +286,7 @@ class Inward_Pending_provider {
       final response = await ApiManager.deleteAPICall(
           type=="inward"?"${ApiConstant.DELETE_INWARD_IMAGE_API }?inwId=$imageId":
           type=="siteVoucher"?"${ApiConstant.SITE_VOC_IMAGE_DELETE }?Id=$imageId":
+          type=="DPR"?"${ApiConstant.DPR_IMAGE_DELETE }?id=$imageId":
           "${ApiConstant.DELETE_DLR_IMAGE_API }?imgId=$imageId");
 
       final Map<String, dynamic> decoded = jsonDecode(response);

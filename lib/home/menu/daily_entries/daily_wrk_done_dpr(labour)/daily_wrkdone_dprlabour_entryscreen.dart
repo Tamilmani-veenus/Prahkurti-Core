@@ -228,7 +228,7 @@ class _DailyWork_done_DPRLabour_EntryScreenState extends State<DailyWork_done_DP
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return  EntryTypeAlert();
+                          return  EntryTypeAlert(from: 'DPR LABOUR',);
                         });
                   },
                 ),
@@ -365,7 +365,7 @@ class _DailyWork_done_DPRLabour_EntryScreenState extends State<DailyWork_done_DP
 
                       }
                       else{
-                        dailyWrkDone_DPRLabour_Controller.getAddBoqDetails(context);
+                        // dailyWrkDone_DPRLabour_Controller.getAddBoqDetails(context);
                       }
                     }
                 ),

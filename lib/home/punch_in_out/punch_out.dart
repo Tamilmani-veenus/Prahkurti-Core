@@ -1,5 +1,6 @@
 import 'dart:io';
-
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,7 +23,7 @@ import '../../utilities/baseutitiles.dart';
 import '../../utilities/print_logger.dart';
 import '../../utilities/requestconstant.dart';
 import 'package:path/path.dart' as path;
-
+import 'package:http/http.dart' as http;
 import 'camera_screen.dart';
 
 class PunchOut extends StatefulWidget {
@@ -99,38 +100,80 @@ class _PunchOutState extends State<PunchOut> {
           msg:
           'Location permissions are permanently denied, we cannot request permissions.');
       Navigator.pop(context);
-    }
 
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    checkGeoFence(position);
+    }
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
+    try {
+      // 📍 Call Nominatim instead of placemarkFromCoordinates
+      final url = Uri.parse(
+          "https://nominatim.openstreetmap.org/reverse?format=json&lat=${position
+              .latitude}&lon=${position.longitude}&addressdetails=1");
+      print('url...${url}');
+
+      final response = await http.get(url, headers: {
+        "User-Agent": "core/1.0 (https://core.in/contact)"
+      });
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final displayName = data["display_name"] ?? "Unknown address";
+
+        setState(() {
+          loading = false;
+          punchInController.punchAddress.value = displayName;
+          punchInController.punchLat.value = position.latitude.toString();
+          punchInController.punchLon.value = position.longitude.toString();
+          if (kDebugMode) {
+            print("Punch In Address :: $displayName");
+            print("Punch In latitude :: ${position.latitude}");
+            print("Punch In longitude :: ${position.longitude}");
+          }
+          if (widget.allotedStatus!="OD") {
+            checkGeoFence(position);
+          }
+          else{
+            setState(() {
+              status = true;
+              loading = false;
+            });
+          }
+        });
+      } else {
+        // Fluttertoast.showToast(msg: "Failed to get address from Nominatim");
+      }
+    }
+    catch (e) {
+      if (kDebugMode) {
+        print("Error fetching location: $e");
+      }
+    }
   }
 
   void checkGeoFence(Position position) {
+    double lat = double.tryParse(widget.latitude!.trim()) ?? 0.0;
+    double lon = double.tryParse(widget.longitude!.trim()) ?? 0.0;
+    double radius = double.tryParse(widget.radius!.trim()) ?? 0.0;
+
     double distanceInMeters = Geolocator.distanceBetween(
       position.latitude,
       position.longitude,
-      double.parse(widget.latitude!),
-      double.parse(widget.longitude!),
+      lat,
+      lon,
     );
 
-    if (distanceInMeters <= num.parse(widget.radius!)) {
+    if (distanceInMeters <= radius) {
       setState(() {
         status = true;
         loading = false;
-        if (kDebugMode) {
-          printToLog("Status :: You are inside the location");
-        }
-        Fluttertoast.showToast(msg: "You are inside the location");
       });
+      Fluttertoast.showToast(msg: "You are inside the location");
     } else {
       setState(() {
         status = false;
         loading = false;
       });
-      if (kDebugMode) {
-        printToLog("Status :: You are outside the location");
-      }
+      debugPrint("Status :: You are outside the location");
     }
   }
 
@@ -197,7 +240,7 @@ class _PunchOutState extends State<PunchOut> {
                     ),
               
                   ),
-                  SizedBox(height: BaseUtitiles.getheightofPercentage(context,  widget.allotedStatus=="N"?3:6)),
+                  SizedBox(height: BaseUtitiles.getheightofPercentage(context,  widget.allotedStatus=="NA" || widget.allotedStatus=="OD"?3:6)),
                   Text(
                     "Tomorrow Plan",
                     style: TextStyle(
@@ -239,7 +282,7 @@ class _PunchOutState extends State<PunchOut> {
                     ),
                   ),
                   SizedBox(height: BaseUtitiles.getheightofPercentage(context, 3)),
-                  widget.allotedStatus=="N"?Column(
+                  widget.allotedStatus=="NA" || widget.allotedStatus=="OD"?Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -284,7 +327,7 @@ class _PunchOutState extends State<PunchOut> {
                       ),
                     ],
                   ):SizedBox(),
-                  SizedBox(height: BaseUtitiles.getheightofPercentage(context, widget.allotedStatus=="N"?8:12)),
+                  SizedBox(height: BaseUtitiles.getheightofPercentage(context, widget.allotedStatus=="NA" || widget.allotedStatus=="OD"?8:12)),
                   Padding(
                     padding: EdgeInsets.only(right: 10, left: 10),
                     child: SizedBox(
@@ -305,7 +348,7 @@ class _PunchOutState extends State<PunchOut> {
                             else if( punchInController.tomorrowPlanPunchOut.text.trim()==''){
                               BaseUtitiles.showToast("Please enter Tomarrow plan");
                             }
-                            else if( punchInController.punchOutRemarks.text.trim()=='' && widget.allotedStatus=="N"){
+                            else if( punchInController.punchOutRemarks.text.trim()=='' && (widget.allotedStatus=="NA" || widget.allotedStatus=="OD")){
                               BaseUtitiles.showToast("Please enter Punch Out Remarks");
                             }
                             else{
