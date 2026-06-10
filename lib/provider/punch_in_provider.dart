@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:http_parser/http_parser.dart';
 import '../apimanager/apimanager.dart';
+import '../models/getpunchtype_model.dart';
 import '../models/punch_filter_response.dart';
 import '../models/punch_in_model.dart';
 import '../models/today_punch_in_response.dart';
@@ -123,66 +124,26 @@ class PunchInProvider {
 
 
   static Future<TodayPunchInResponse?> todayPunchInProvider(String frdate, String todate,int? empId) async {
-
     try {
       var value = await ApiManager.getAPICall("${ApiConstant.OLDTODAY_PUNCHIN_STATUS}?FromDate=$frdate&ToDate=$todate&employeeID=$empId");
-
       TodayPunchInResponse data = todayPunchInResponseFromJson(value);
-
       return data;
-
     } catch (error, e) {
       print(error);
       print("ERROR....${e}");
       return null;
-
     }
   }
 
-  /// Punch in punch out filter Provider.....
-
-  Future<PunchFilterResponse> punchFilterProvider(String fromDate,String toDate,String userType,int empId) async {
+  static Future<GetPunchTypeListRes?> getPunchTypeList() async {
     try {
-      Uri uri = Uri.parse("${ApiConstant.PUNCH_FILTER_STATUS}?Frdate=$fromDate&Todate=$toDate&UserType=$userType&EmpId=$empId");
-      if (kDebugMode) {
-        print(uri.toString());
-      }
-      String method = "GET";
-      http.Request request = http.Request(method, uri);
-      request.headers['Content-Type'] = 'application/json';
-      http.StreamedResponse streamRes = await send(request);
-      http.Response response = await http.Response.fromStream(streamRes);
-      print("Response Data ::  ${response.body}");
-      await getResponse(response);
-      if (response.statusCode == 200){
-        return PunchFilterResponse.fromJson(jsonDecode(response.body.toString()));
-      }
-      else {
-        throw Exception('Request failed with status code ${response.statusCode}');
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error sending request: $e');
-      }
-      rethrow;
-    }
-  }
-
-
-
-  static Future getPunchFilterList(String fromDate,String toDate,String userType,int empId) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.PUNCH_FILTER_STATUS + "?Frdate=$fromDate&Todate=$toDate&UserType=$userType&EmpId=$empId").then((value) {
-      print("PunchResponse:" + value);
-      data = punchFilterResponseFromJson(value);
-      if (data != null) {
-        return data;
-      }
-    }, onError: (error) {
+      var value = await ApiManager.getAPICall(ApiConstant.GET_PUNCH_TYPE_LIST);
+      return getPunchTypeListResFromJson(value);
+    } catch (error, e) {
       print(error);
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return data;
+      print("ERROR....${e}");
+      return null;
+    }
   }
 
 

@@ -50,7 +50,7 @@ class _ApprovedAlertPopupState extends State<ApprovedAlertPopup> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text("Date              ",style: TextStyle(color: Theme.of(context).primaryColor)),
-                                  Text(widget.list[index].labrAttnDate.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold,color: Colors.black)),
+                                  Text(widget.list[index].labourAttendanceDate.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold,color: Colors.black)),
                                 ],
                               ),
                               Container(
@@ -59,7 +59,7 @@ class _ApprovedAlertPopupState extends State<ApprovedAlertPopup> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text("Atten No",style: TextStyle(color: Theme.of(context).primaryColor)),
-                                    Text(widget.list[index].labrAttnNo.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold,color: Colors.black)),
+                                    Text(widget.list[index].labourAttendanceNo.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold,color: Colors.black)),
                                   ],
                                 ),
                               ),
@@ -70,7 +70,7 @@ class _ApprovedAlertPopupState extends State<ApprovedAlertPopup> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text("Status",style: TextStyle(color: Theme.of(context).primaryColor)),
-                                    Text(widget.list[index].appStatus.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold,color: Colors.black)),
+                                    Text(widget.list[index].approveStatus.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold,color: Colors.black)),
                                   ],
                                 ),
                               ),

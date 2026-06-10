@@ -20,12 +20,6 @@ class _TypeSubcontAlertState extends State<TypeSubcontAlert> {
   DailyWrkDone_DPRNEW_Controller dailyWrkDone_DPRNEW_Controller=Get.put(DailyWrkDone_DPRNEW_Controller());
 
   @override
-  void initState() {
-
-    dailyWrkDone_DPR_Controller.dpr_subcontractorList.value=dailyWrkDone_DPR_Controller.submainList.value;
-    super.initState();
-  }
-  @override
   Widget build(BuildContext context) {
 
     return AlertDialog(
@@ -36,7 +30,6 @@ class _TypeSubcontAlertState extends State<TypeSubcontAlert> {
       content: Stack( children: <Widget>[
         SingleChildScrollView(
           child: Container(
-            //height: BaseUtitiles.getheightofPercentage(context, 60),
             child: Column(
               children: <Widget>[
                 Container(
@@ -45,7 +38,7 @@ class _TypeSubcontAlertState extends State<TypeSubcontAlert> {
                   child: TextField(
                     onChanged: (value) {
                       setState(() {
-                        dailyWrkDone_DPR_Controller.dpr_subcontractorList.value=BaseUtitiles.subcontPopupAlert(value,dailyWrkDone_DPR_Controller.submainList.value);
+                        dailyWrkDone_DPR_Controller.dpr_subcontractorList.value=BaseUtitiles.subcontPopupAlert(value,dailyWrkDone_DPR_Controller.dpr_subcontractorList.value);
                       });
                     },
                     controller: editingController,
@@ -68,12 +61,10 @@ class _TypeSubcontAlertState extends State<TypeSubcontAlert> {
                       itemBuilder: (BuildContext context, int index) {
                         return InkWell(
                           onTap: () async {
-                            dailyWrkDone_DPR_Controller.SelectedTypeSubcontID(dailyWrkDone_DPR_Controller.dpr_subcontractorList.value[index].subContName!);
-                            await dailyWrkDone_DPRNEW_Controller.getLabourList();
-                            dailyWrkDone_DPRNEW_Controller.dprNew_LabourTable_Delete();
-                            dailyWrkDone_DPRNEW_Controller.dprNew_LabourReadList.clear();
-                            dailyWrkDone_DPRNEW_Controller.dprNew_LabourTableSave();
-                            dailyWrkDone_DPRNEW_Controller.getLabourTablesDatas();
+                            setState(() {
+                              dailyWrkDone_DPR_Controller.TypeSubcontractorname.text = dailyWrkDone_DPR_Controller.dpr_subcontractorList[index].subContName;
+                              dailyWrkDone_DPR_Controller.TypeSubcontId.value=dailyWrkDone_DPR_Controller.dpr_subcontractorList[index].subContractorId;
+                            });
                             Navigator.pop(context);
                           },
                           child: Column(

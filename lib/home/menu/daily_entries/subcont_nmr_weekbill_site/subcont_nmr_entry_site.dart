@@ -28,7 +28,6 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
   SiteController siteController = Get.put(SiteController());
   AutoYearWiseNoController autoYearWiseNoController=Get.put(AutoYearWiseNoController());
   NMRWklyController nmrWklyController= Get.put(NMRWklyController());
-  // HDTRefreshController _hdtRefreshController = HDTRefreshController();
   DailyEntriesController dailyEntriesController = Get.put(DailyEntriesController());
   BottomsheetControllers bottomsheetControllers = Get.put(BottomsheetControllers());
 
@@ -37,33 +36,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
   void initState(){
     var duration = Duration(seconds: 0);
     Future.delayed(duration,() async {
-
-      if(nmrWklyController.editCheck==1){
-        nmrWklyController.EditListSaveDatas.value.forEach((element) {
-          siteController.Sitename.text=element.siteName.toString();
-          projectController.projectname.text=element.projectName.toString();
-          subcontractorController.Subcontractorname.text=element.subContName.toString();
-          siteController.selectedsiteId.value=element.siteId;
-          projectController.selectedProjectId.value=element.projectId;
-          subcontractorController.selectedSubcontId.value=element.subContId;
-          nmrWklyController.BillNoController.text = element.billNo;
-          nmrWklyController.NmritemList.value= element.nmrBillDet;
-          nmrWklyController.autoYearWiseNoController.text=element.workNo!;
-          nmrWklyController.NmrentryDateController.text =element.workDate!;
-          nmrWklyController.FromdateController.text=element.fromDate!;
-          nmrWklyController.TodateController.text=element.toDate!;
-          nmrWklyController.RemarksController.text=element.remarks!;
-        });
-      }
-      else if(nmrWklyController.submitCheck==1){
-        nmrWklyController.NmritemList.value;
-      }
-      else{
-        await autoYearWiseNoController.AutoYearWiseNo("NMR WEEKLY BILL");
-        await projectController.getProjectList();
-        await siteController.subcontEntry_siteDropdowntList(context,0);
-        await subcontractorController.getSubcontList(context, projectController.selectedProjectId.value,siteController.selectedsiteId.value, 1);
-        nmrWklyController.autoYearWiseNoController.text=autoYearWiseNoController.NMR_autoYrsWise.value;
+      if(nmrWklyController.saveButton.value == RequestConstant.SUBMIT){
         nmrWklyController.NmritemList.value=[];
         projectController.projectname.text="--SELECT--";
         projectController.selectedProjectId.value=0;
@@ -71,12 +44,31 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
         siteController.selectedsiteId.value=0;
         subcontractorController.Subcontractorname.text="--SELECT--";
         subcontractorController.selectedSubcontId.value=0;
-        nmrWklyController.BillNoController.text = "";
-        nmrWklyController.RemarksController.clear();
+        subcontractorController.InvoiceNo.text = "";
+        nmrWklyController.RemarksController.text = "";
         nmrWklyController.NmrentryDateController.text = BaseUtitiles.initiateCurrentDateFormat();
         nmrWklyController.FromdateController.text=BaseUtitiles.initiateCurrentDateFormat();
         nmrWklyController.TodateController.text=BaseUtitiles.initiateCurrentDateFormat();
+        await autoYearWiseNoController.AutoYearWiseNo("NMR WEEKLY BILL");
         nmrWklyController.autoYearWiseNoController.text=autoYearWiseNoController.NMR_autoYrsWise.value;
+      }
+
+      if(nmrWklyController.saveButton.value == RequestConstant.RESUBMIT || nmrWklyController.saveButton.value == RequestConstant.VERIFY || nmrWklyController.saveButton.value == RequestConstant.APPROVAL){
+        nmrWklyController.EditListSaveDatas.value.forEach((element) {
+          siteController.Sitename.text=element.siteName.toString();
+          projectController.projectname.text=element.projectName.toString();
+          subcontractorController.Subcontractorname.text=element.subContractorName.toString();
+          siteController.selectedsiteId.value=element.siteId;
+          projectController.selectedProjectId.value=element.projectId;
+          subcontractorController.selectedSubcontId.value=element.subContractorId;
+          subcontractorController.InvoiceNo.text = element.billNo;
+          nmrWklyController.NmritemList.value= element.subContractorNmrBillDetS;
+          nmrWklyController.autoYearWiseNoController.text=element.workNo!;
+          nmrWklyController.NmrentryDateController.text =element.entryDate!;
+          nmrWklyController.FromdateController.text=element.fromDate!;
+          nmrWklyController.TodateController.text=element.toDate!;
+          nmrWklyController.RemarksController.text=element.remarks!;
+        });
       }
     });
     super.initState();
@@ -199,7 +191,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                                           child: ConstIcons.date),
                                     ),
                                     onTap: () async {
-                                      if(nmrWklyController.editCheck==1){}
+                                      if(nmrWklyController.saveButton.value == RequestConstant.RESUBMIT){}
                                       else{
                                         var entryDate = await showDatePicker(
                                             context: context,
@@ -263,18 +255,17 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                                         vertical: 8, horizontal: 8),
                                     child: ConstIcons.projectName),
                               ),
-                              onTap: () {
-                                if(nmrWklyController.editCheck==1 || nmrWklyController.NmritemList.value.length>0){
+                              onTap: () async {
+                                if(nmrWklyController.saveButton.value == RequestConstant.RESUBMIT || nmrWklyController.NmritemList.value.length>0){
                                 }
                                 else{
-                                  setState(() {
-                                    bottomsheetControllers.ProjectName(context, projectController.getdropDownvalue.value);
-                                  });
+                                  await projectController.getProjectList();
+                                  bottomsheetControllers.ProjectName(context, projectController.getdropDownvalue.value);
                                 }
                               },
                               validator: (value) {
                                 if (value!.isEmpty || value == "--SELECT--" || value == "--Select--") {
-                                  return '\u26A0 Enter user Project name';
+                                  return '\u26A0 ${RequestConstant.VALIDATE}';
                                 }
                                 return null;
                               },
@@ -313,7 +304,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                                     child: ConstIcons.siteName),
                               ),
                               onTap: () async {
-                                if(nmrWklyController.editCheck==1|| nmrWklyController.NmritemList.value.length>0){
+                                if(nmrWklyController.saveButton.value == RequestConstant.RESUBMIT|| nmrWklyController.NmritemList.value.length>0){
 
                                 }
                                 else{
@@ -322,7 +313,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                               },
                               validator: (value) {
                                 if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
-                                  return '\u26A0 Enter user Site name';
+                                  return '\u26A0 ${RequestConstant.VALIDATE}';
                                 }
                                 return null;
                               },
@@ -362,16 +353,15 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                                     child: ConstIcons.subcontractorName),
                               ),
                               onTap: () async {
-                                if(nmrWklyController.editCheck==1 || nmrWklyController.NmritemList.value.length>0||projectController.selectedProjectId.value==0||siteController.selectedsiteId.value==0){
+                                if(nmrWklyController.saveButton.value == RequestConstant.RESUBMIT || nmrWklyController.NmritemList.value.length>0||projectController.selectedProjectId.value==0||siteController.selectedsiteId.value==0){
                                 }
                                 else{
-                                  await subcontractorController.getSubcontList(context, projectController.selectedProjectId.value,siteController.selectedsiteId.value, 1);
                                   bottomsheetControllers.SubcontractorName(context, subcontractorController.getdropDownvalue.value);
                                 }
                               },
                               validator: (value) {
                                 if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
-                                  return '\u26A0 Enter user Subcontractor name';
+                                  return '\u26A0 ${RequestConstant.VALIDATE}';
                                 }
                                 return null;
                               },
@@ -391,7 +381,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                             padding:
                             const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                             child: TextFormField(
-                              controller: nmrWklyController.BillNoController,
+                              controller: subcontractorController.InvoiceNo,
                               autovalidateMode: AutovalidateMode.onUserInteraction,
                               cursorColor: Colors.black,
                               style: const TextStyle(color: Colors.black),
@@ -471,7 +461,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                                       ),
                                     ),
                                     onTap: () async {
-                                      if(nmrWklyController.editCheck==1){
+                                      if(nmrWklyController.saveButton.value == RequestConstant.RESUBMIT){
 
                                       }
                                       else if(nmrWklyController.NmritemList.value.isNotEmpty){
@@ -506,7 +496,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                                     },
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
-                                        return 'Select Date';
+                                        return '\u26A0 ${RequestConstant.VALIDATE}';
                                       }
                                       return null;
                                     },
@@ -514,7 +504,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                                 ),
                               ),
                             ),
-                            Container(
+                            SizedBox(
                               width: BaseUtitiles.getWidthtofPercentage(context, 45),
                               child: Card(
                                 shape: RoundedRectangleBorder(
@@ -545,7 +535,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                                               color: Theme.of(context).primaryColor)),
                                     ),
                                     onTap: () async {
-                                      if(nmrWklyController.editCheck==1){
+                                      if(nmrWklyController.saveButton.value == RequestConstant.RESUBMIT){
 
                                       }
                                       else if(nmrWklyController.NmritemList.value.isNotEmpty){
@@ -579,7 +569,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                                     },
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
-                                        return 'Select Date';
+                                        return '\u26A0 ${RequestConstant.VALIDATE}';
                                       }
                                       return null;
                                     },
@@ -623,25 +613,6 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                         ),
                       ),
                       SizedBox(height: BaseUtitiles.getheightofPercentage(context, 1)),
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.center,
-                      //   children: [
-                      //     ElevatedButton(
-                      //         style: ElevatedButton.styleFrom(
-                      //           primary: Setmybackground,
-                      //         ),
-                      //         onPressed: () {
-                      //        // Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => const Subcont_NMR_Deduction_Site() ));
-                      //         },
-                      //         child: Row(
-                      //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      //           children: [
-                      //             Icon(Icons.add, color: Theme.of(context).primaryColor),
-                      //             const SizedBox(width: 5),
-                      //             Text("Add Items", style: TextStyle(color: Theme.of(context).primaryColor)),
-                      //           ],)),
-                      //   ],
-                      // ),
                       Container(
                         height: BaseUtitiles.getheightofPercentage(context, 4),
                         child: ElevatedButton(
@@ -657,14 +628,13 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                                 borderRadius: BorderRadius.circular(30)),),
                           child: Text(RequestConstant.SUBMIT,style: TextStyle(color: Colors.white)),
                           onPressed: () async {
-                            if(nmrWklyController.editCheck==1){
+                            if(nmrWklyController.saveButton.value == RequestConstant.RESUBMIT){
                             }
                             else{
                               if(projectController.selectedProjectId.value!=0 && siteController.selectedsiteId.value !=0 &&  subcontractorController.selectedSubcontId.value!=0){
                                 await nmrWklyController.getNmrcheckstatusCount(projectController.selectedProjectId.value,subcontractorController.selectedSubcontId.value.toString(),siteController.selectedsiteId.value,nmrWklyController.FromdateController.text,nmrWklyController.TodateController.text);
                                 await nmrWklyController.getNmrcheckstatus(projectController.selectedProjectId.value,subcontractorController.selectedSubcontId.value.toString(),siteController.selectedsiteId.value,nmrWklyController.FromdateController.text,nmrWklyController.TodateController.text,context);
                               }
-                              //  nmrWklyController.submit_getNmrItemList_Site();
                             }
 
                           },
@@ -673,344 +643,6 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
 
 
                       SizedBox(height: height),
-
-                      // Container(
-                      //   padding: EdgeInsets.only(left: 20, bottom: 8),
-                      //   child: Row(
-                      //     children: [
-                      //       Expanded(
-                      //         flex: 1,
-                      //         child: Container(
-                      //           height: BaseUtitiles.getheightofPercentage(context, 4),
-                      //           child: TextField(
-                      //             controller: nmrWklyController.autoYearWiseNoController,
-                      //             readOnly: true,
-                      //             textAlign: TextAlign.center,
-                      //             decoration: InputDecoration(
-                      //               contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                      //               focusedBorder: OutlineInputBorder(
-                      //                 borderSide: BorderSide(color:Theme.of(context).primaryColor, width: 1.0),
-                      //               ),
-                      //               enabledBorder: OutlineInputBorder(
-                      //                 borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                      //               ),
-                      //               border: OutlineInputBorder(),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //       Expanded(
-                      //         flex: 1,
-                      //         child: Container(
-                      //           height: BaseUtitiles.getheightofPercentage(context, 4),
-                      //           margin: EdgeInsets.only(left: 10, right: 20),
-                      //           decoration: BoxDecoration(),
-                      //           child: TextField(
-                      //             readOnly: true,
-                      //             controller: nmrWklyController.NmrentryDateController,
-                      //             decoration: InputDecoration(
-                      //               contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                      //               focusedBorder: OutlineInputBorder(
-                      //                 borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                      //               ),
-                      //               enabledBorder: OutlineInputBorder(
-                      //                 borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                      //               ),
-                      //               border: OutlineInputBorder(),
-                      //               prefixIcon: Icon(Icons.date_range_sharp,
-                      //                   color: Theme.of(context).primaryColor),
-                      //             ),
-                      //             onTap: () async {
-                      //               if(nmrWklyController.editCheck==1){
-                      //
-                      //               }
-                      //               else{
-                      //                 var Entrydate = await showDatePicker(
-                      //                     context: context,
-                      //                     initialDate: DateTime.now(),
-                      //                     firstDate: DateTime(1900),
-                      //                     lastDate: DateTime(2100),
-                      //                     builder: (context, child) {
-                      //                       return Theme(data: Theme.of(context).copyWith(
-                      //                         colorScheme: ColorScheme.light(
-                      //                           primary: Theme.of(context).primaryColor, // header background color
-                      //                           onPrimary: Colors.white, // header text color
-                      //                           onSurface: Colors.black, // body text color
-                      //                         ),
-                      //                         textButtonTheme: TextButtonThemeData(
-                      //                           style: TextButton.styleFrom(
-                      //                             primary: Colors.black, // button text color
-                      //                           ),
-                      //                         ),
-                      //                       ),
-                      //                         child: child!,
-                      //                       );
-                      //                     });
-                      //                 nmrWklyController.NmrentryDateController.text =BaseUtitiles.selectDateFormat(Entrydate!);
-                      //               }
-                      //             },
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                      // Container(
-                      //   margin: EdgeInsets.only(top: 10,bottom: 10),
-                      //   height: BaseUtitiles.getheightofPercentage(context, 5),
-                      //   width: BaseUtitiles.getWidthtofPercentage(context, 90),
-                      //   child: TextField(
-                      //     style: TextStyle(fontSize: RequestConstant.Dropdown_Font_SIZE),
-                      //     readOnly: true,
-                      //     controller: projectController.projectname,
-                      //     decoration: new InputDecoration(
-                      //       contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                      //       labelText: RequestConstant.PROJECT_NAME,
-                      //       focusedBorder: OutlineInputBorder(
-                      //         borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                      //       ),
-                      //       enabledBorder: OutlineInputBorder(
-                      //         borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                      //       ),
-                      //     ),
-                      //     onTap: () {
-                      //       if(nmrWklyController.editCheck==1|| nmrWklyController.NmritemList.value.length>0){
-                      //       }
-                      //       else{
-                      //         projectController.getProjectList(context,0);
-                      //       }
-                      //     },
-                      //   ),
-                      // ),
-                      // Container(
-                      //   margin: EdgeInsets.only(bottom: 10),
-                      //   height: BaseUtitiles.getheightofPercentage(context, 5),
-                      //   width: BaseUtitiles.getWidthtofPercentage(context, 90),
-                      //   child: TextField(
-                      //     style: TextStyle(fontSize: RequestConstant.Dropdown_Font_SIZE),
-                      //     readOnly: true,
-                      //     controller: siteController.Sitename,
-                      //     decoration: new InputDecoration(
-                      //       contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                      //       labelText:RequestConstant.SITE_NAME,
-                      //       focusedBorder: OutlineInputBorder(
-                      //         borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                      //       ),
-                      //       enabledBorder: OutlineInputBorder(
-                      //         borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                      //       ),
-                      //     ),
-                      //     onTap: () {
-                      //       if(nmrWklyController.editCheck==1|| nmrWklyController.NmritemList.value.length>0){
-                      //
-                      //       }
-                      //       else{
-                      //         siteController.subcontEntry_siteDropdowntList(context,0);
-                      //       }
-                      //
-                      //     },
-                      //   ),
-                      // ),
-                      // Container(
-                      //   margin: EdgeInsets.only(bottom: 10),
-                      //   height: BaseUtitiles.getheightofPercentage(context, 5),
-                      //   width: BaseUtitiles.getWidthtofPercentage(context, 90),
-                      //   child: TextField(
-                      //     style: TextStyle(fontSize: RequestConstant.Dropdown_Font_SIZE),
-                      //     readOnly: true,
-                      //     controller: subcontractorController.Subcontractorname,
-                      //     decoration: new InputDecoration(
-                      //       contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                      //       labelText: RequestConstant.SUBCONTRACTOR_NAME,
-                      //       focusedBorder: OutlineInputBorder(
-                      //         borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                      //       ),
-                      //       enabledBorder: OutlineInputBorder(
-                      //         borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                      //       ),
-                      //
-                      //     ),
-                      //
-                      //     onTap: () async{
-                      //       if(nmrWklyController.editCheck==1 || nmrWklyController.NmritemList.value.length>0||projectController.selectedProjectId.value==0||siteController.selectedsiteId.value==0){
-                      //
-                      //       }
-                      //       else{
-                      //         await subcontractorController.getSubcontList(context,projectController.selectedProjectId.value);
-                      //       }
-                      //     },
-                      //   ),
-                      //
-                      // ),
-                      // Container(
-                      //   alignment: Alignment.center,
-                      //   margin: EdgeInsets.only(top: 10,bottom: 10,right: 10,left: 10),
-                      //   height: BaseUtitiles.getheightofPercentage(context, 4),
-                      //   decoration: BoxDecoration(
-                      //     borderRadius: BorderRadius.circular(50),
-                      //     color: Theme.of(context).primaryColor,
-                      //     boxShadow: [
-                      //       BoxShadow(
-                      //           offset: Offset(0, 10),
-                      //           blurRadius: 35,
-                      //           color: Colors.grey
-                      //       ),
-                      //     ],
-                      //   ),
-                      //   child: Text("Sub Contractor Work Done Details",style: TextStyle(color: Colors.white),),
-                      // ),
-                      // Container(
-                      //   child: Row(
-                      //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      //     children: <Widget>[
-                      //       Container(
-                      //         height: BaseUtitiles.getheightofPercentage(context, 4),
-                      //         width: BaseUtitiles.getWidthtofPercentage(context, 40),
-                      //         margin: EdgeInsets.only(left: 5, right: 5),
-                      //         decoration: BoxDecoration(),
-                      //         child: TextField(
-                      //           readOnly: true,
-                      //           controller: nmrWklyController.FromdateController,
-                      //           decoration: InputDecoration(
-                      //             contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                      //             focusedBorder: OutlineInputBorder(
-                      //               borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                      //             ),
-                      //             enabledBorder: OutlineInputBorder(
-                      //               borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                      //             ),
-                      //             border: OutlineInputBorder(),
-                      //             prefixIcon: Icon(Icons.date_range_sharp,
-                      //                 color: Theme.of(context).primaryColor),
-                      //           ),
-                      //           onTap: () async {
-                      //             if(nmrWklyController.editCheck==1){
-                      //
-                      //             }
-                      //             else if(nmrWklyController.NmritemList.value.isNotEmpty){
-                      //
-                      //             }
-                      //             else{
-                      //               var Frdate = await showDatePicker(
-                      //                   fieldHintText: "From",
-                      //                   context: context,
-                      //                   initialDate: DateTime.now(),
-                      //                   firstDate: DateTime(1900),
-                      //                   lastDate: DateTime(2100),
-                      //                   builder: (context, child) {
-                      //                     return Theme(data: Theme.of(context).copyWith(
-                      //                       colorScheme: ColorScheme.light(
-                      //                         primary: Theme.of(context).primaryColor, // header background color
-                      //                         onPrimary: Colors.white, // header text color
-                      //                         onSurface: Colors.black, // body text color
-                      //                       ),
-                      //                       textButtonTheme: TextButtonThemeData(
-                      //                         style: TextButton.styleFrom(
-                      //                           primary: Colors.black, // button text color
-                      //                         ),
-                      //                       ),
-                      //                     ),
-                      //                       child: child!,
-                      //                     );
-                      //                   });
-                      //               nmrWklyController.FromdateController.text = BaseUtitiles.selectDateFormat(Frdate!);
-                      //               nmrWklyController.TodateController.text= BaseUtitiles.NMR_After_OneWeekDate(Frdate);
-                      //             }
-                      //           },
-                      //         ),
-                      //       ),
-                      //
-                      //       Container(
-                      //         height: BaseUtitiles.getheightofPercentage(context, 4),
-                      //         width: BaseUtitiles.getWidthtofPercentage(context, 40),
-                      //         margin: EdgeInsets.only(left: 5, right: 5),
-                      //         decoration: BoxDecoration(),
-                      //         child: TextField(
-                      //           readOnly: true,
-                      //           controller: nmrWklyController.TodateController,
-                      //           decoration: InputDecoration(
-                      //             contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                      //             focusedBorder: OutlineInputBorder(
-                      //               borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                      //             ),
-                      //             enabledBorder: OutlineInputBorder(
-                      //               borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                      //             ),
-                      //             border: OutlineInputBorder(),
-                      //             prefixIcon: Icon(Icons.date_range_sharp,
-                      //                 color: Theme.of(context).primaryColor),
-                      //           ),
-                      //           onTap: () async {
-                      //
-                      //             // if(nmrWklyController.editCheck==1){
-                      //             //
-                      //             // }
-                      //             // else{
-                      //             //   var Todate = await showDatePicker(
-                      //             //       context: context,
-                      //             //       initialDate: DateTime.now(),
-                      //             //       firstDate: DateTime(1900),
-                      //             //       lastDate: DateTime(2100));
-                      //             //   nmrWklyController.FromdateController.text =BaseUtitiles.selectDateFormat(Todate!);
-                      //             // }
-                      //           },
-                      //
-                      //         ),
-                      //       ),
-                      //
-                      //     ],
-                      //   ),
-                      // ),
-                      // Container(
-                      //   margin: EdgeInsets.only(top: 10,bottom: 10),
-                      //   height: BaseUtitiles.getheightofPercentage(context, 5),
-                      //   width: BaseUtitiles.getWidthtofPercentage(context, 90),
-                      //   child: TextField(
-                      //     controller: nmrWklyController.RemarksController,
-                      //     textAlign: TextAlign.center,
-                      //     decoration: InputDecoration(
-                      //       contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                      //       labelText: RequestConstant.REMARKS,
-                      //       focusedBorder: OutlineInputBorder(
-                      //         borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                      //       ),
-                      //       enabledBorder: OutlineInputBorder(
-                      //         borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
-                      // Container(
-                      //   height: BaseUtitiles.getheightofPercentage(context, 4),
-                      //   child: ElevatedButton(
-                      //     style: ElevatedButton.styleFrom(
-                      //       primary: Theme.of(context).primaryColor,
-                      //       //background color of button
-                      //       side: BorderSide(width: 3, color: Colors.black),
-                      //       //border width and color
-                      //       elevation: 3,
-                      //       //elevation of button
-                      //       shape: RoundedRectangleBorder(
-                      //         //to set border radius to button
-                      //           borderRadius: BorderRadius.circular(30)),),
-                      //     child: Text(RequestConstant.SUBMIT),
-                      //     onPressed: () async {
-                      //       if(nmrWklyController.editCheck==1){
-                      //       }
-                      //       else{
-                      //         if(projectController.selectedProjectId.value!=0 && siteController.selectedsiteId.value!=0 && subcontractorController.selectedSubcontId.value!=0){
-                      //           await  nmrWklyController.getNmrcheckstatusCount(projectController.selectedProjectId.value,subcontractorController.selectedSubcontId.value.toString(),siteController.selectedsiteId.value,nmrWklyController.FromdateController.text,nmrWklyController.TodateController.text);
-                      //           await  nmrWklyController.getNmrcheckstatus(projectController.selectedProjectId.value,subcontractorController.selectedSubcontId.value.toString(),siteController.selectedsiteId.value,nmrWklyController.FromdateController.text,nmrWklyController.TodateController.text,context);
-                      //         }
-                      //       //  nmrWklyController.submit_getNmrItemList_Site();
-                      //       }
-                      //
-                      //     },
-                      //   ),
-                      // ),
-                      // Obx(()=>Visibility(
-                      //     visible: nmrWklyController.NmritemList.value.isEmpty?false:true,
-                      //     child: ListDetails())),
 
                     ],
                   ),
@@ -1222,98 +854,6 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
       ),
     );
   }
-
-  Future SubmitAlert(BuildContext context) async {
-    return await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Alert!'),
-        content: Text(nmrWklyController.editCheck == 1
-            ? 'Are you sure to Re-Submit?'
-            : 'Are you sure to Submit?'),
-        actions: [
-          Container(
-            margin: EdgeInsets.only(left: 20, right: 20),
-            child: IntrinsicHeight(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text("Cancel",
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                                fontSize: RequestConstant.Lable_Font_SIZE))),
-                  ),
-                  VerticalDivider(
-                    color: Colors.grey.shade400,
-                    //color of divider
-                    width: 5,
-                    //width space of divider
-                    thickness: 2,
-                    //thickness of divier line
-                    indent: 15,
-                    //Spacing at the top of divider.
-                    endIndent: 15, //Spacing at the bottom of divider.
-                  ),
-                  Expanded(
-                    child: TextButton(
-                        onPressed: () async {
-
-                          if (nmrWklyController.buttonControl == 0) {
-                            if (nmrWklyController.editCheck == 1) {
-                            } else {
-                              if (projectController.selectedProjectId.value !=
-                                  0 &&
-                                  siteController.selectedsiteId.value != 0 &&
-                                  subcontractorController
-                                      .selectedSubcontId.value !=
-                                      0) {
-                                await nmrWklyController.getNmrcheckstatusCount(
-                                    projectController.selectedProjectId.value,
-                                    subcontractorController
-                                        .selectedSubcontId.value
-                                        .toString(),
-                                    siteController.selectedsiteId.value,
-                                    nmrWklyController.FromdateController.text,
-                                    nmrWklyController.TodateController.text);
-                                await nmrWklyController.getNmrcheckstatus(
-                                    projectController.selectedProjectId.value,
-                                    subcontractorController
-                                        .selectedSubcontId.value
-                                        .toString(),
-                                    siteController.selectedsiteId.value,
-                                    nmrWklyController.FromdateController.text,
-                                    nmrWklyController.TodateController.text,
-                                    context);
-                              }
-                            }
-                          } else {
-                            nmrWklyController.buttonControl = 1;
-                            BaseUtitiles.showToast(
-                                "Already Submited Please wait...");
-                          }
-                        },
-                        child: Text(RequestConstant.SUBMIT,
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: RequestConstant.Lable_Font_SIZE))),
-                  )
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-
 
   Widget ListDetailss(BuildContext context,ScrollController scrollController ) {
     return SingleChildScrollView(

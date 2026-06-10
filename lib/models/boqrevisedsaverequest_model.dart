@@ -1,108 +1,126 @@
 // To parse this JSON data, do
 //
-//     final boqRevisedRequest = boqRevisedRequestFromJson(jsonString);
+//     final boqRevisedSaveRequest = boqRevisedSaveRequestFromJson(jsonString);
 
 import 'dart:convert';
 
-BoqRevisedRequest boqRevisedRequestFromJson(String str) => BoqRevisedRequest.fromJson(json.decode(str));
+BoqRevisedSaveRequest boqRevisedSaveRequestFromJson(String str) => BoqRevisedSaveRequest.fromJson(json.decode(str));
 
-String boqRevisedRequestToJson(BoqRevisedRequest data) => json.encode(data.toJson());
+String boqRevisedSaveRequestToJson(BoqRevisedSaveRequest data) => json.encode(data.toJson());
 
-class BoqRevisedRequest {
-  BoqRevisedRequest({
-    this.revise_Id,
+class BoqRevisedSaveRequest {
+  int? id;
+  String? reviseNo;
+  String? reviseDate;
+  int? projectId;
+  int? siteId;
+  String? remarks;
+  int? createdBy;
+  String? createdDt;
+  int? measureHeadItemId;
+  List<BoqReviseDet>? boqReviseDets;
+
+  BoqRevisedSaveRequest({
+    this.id,
     this.reviseNo,
     this.reviseDate,
     this.projectId,
     this.siteId,
     this.remarks,
-    this.preparedBy,
-    this.userId,
-    this.deviceName,
-    this.entryMode,
-    this.appStatus,
-    this.dprDet,
+    this.createdBy,
+    this.createdDt,
+    this.measureHeadItemId,
+    this.boqReviseDets,
   });
-  int? revise_Id;
-  String? reviseNo;
-  String? reviseDate;
-  String? projectId;
-  String? siteId;
-  String? remarks;
-  String? preparedBy;
-  String? userId;
-  String? deviceName;
-  String? entryMode;
-  String? appStatus;
-  List<DprDet>? dprDet;
 
-  factory BoqRevisedRequest.fromJson(Map<String, dynamic> json) => BoqRevisedRequest(
-    revise_Id: json["Revise_Id"],
-    reviseNo: json["Revise_No"],
-    reviseDate: json["Revise_Date"],
-    projectId: json["ProjectId"],
-    siteId: json["SiteId"],
-    remarks: json["Remarks"],
-    preparedBy: json["Prepared_By"],
-    userId: json["UserId"],
-    deviceName: json["DeviceName"],
-    entryMode: json["EntryMode"],
-    appStatus: json["App_status"],
-    dprDet: List<DprDet>.from(json["DprDet"].map((x) => DprDet.fromJson(x))),
+  factory BoqRevisedSaveRequest.fromJson(Map<String, dynamic> json) => BoqRevisedSaveRequest(
+    id: json["id"],
+    reviseNo: json["reviseNo"],
+    reviseDate: json["reviseDate"],
+    projectId: json["projectId"],
+    siteId: json["siteId"],
+    remarks: json["remarks"],
+    createdBy: json["createdBy"],
+    createdDt: json["createdDt"],
+    measureHeadItemId: json["measureHeadItemId"],
+    boqReviseDets: List<BoqReviseDet>.from(json["boqReviseDets"].map((x) => BoqReviseDet.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "Revise_Id": revise_Id,
-    "Revise_No": reviseNo,
-    "Revise_Date": reviseDate,
-    "ProjectId": projectId,
-    "SiteId": siteId,
-    "Remarks": remarks,
-    "Prepared_By": preparedBy,
-    "UserId": userId,
-    "DeviceName": deviceName,
-    "EntryMode": entryMode,
-    "App_status": appStatus,
-    "DprDet": List<dynamic>.from(dprDet!.map((x) => x.toJson())),
+    "id": id,
+    "reviseNo": reviseNo,
+    "reviseDate": reviseDate,
+    "projectId": projectId,
+    "siteId": siteId,
+    "remarks": remarks,
+    "createdBy": createdBy,
+    "createdDt": createdDt,
+    "measureHeadItemId": measureHeadItemId,
+    "boqReviseDets": List<dynamic>.from(boqReviseDets!.map((x) => x.toJson())),
   };
 }
 
-class DprDet {
-  DprDet({
-    this.hdNmeId,
-    this.sbNmeId,
-    this.level3ItemId,
-    this.unit,
+class BoqReviseDet {
+  int? id;
+  int? boqReviseMasId;
+  int? measureHeadItemId;
+  int? measureSubItemId;
+  int? measureLevel3ItemId;
+  int? scaleId;
+  double? rate;
+  double? qty;
+  double? reviseQty;
+  String? remarks;
+  int? approvedBy;
+  String? approveStatus;
+  String? boQcode;
+
+
+  BoqReviseDet({
+    this.id,
+    this.boqReviseMasId,
+    this.measureHeadItemId,
+    this.measureSubItemId,
+    this.measureLevel3ItemId,
+    this.scaleId,
     this.rate,
     this.qty,
-    this.detRemarks,
+    this.reviseQty,
+    this.remarks,
+    this.approvedBy,
+    this.approveStatus,
+    this.boQcode,
   });
 
-  String? hdNmeId;
-  String? sbNmeId;
-  String? level3ItemId;
-  String? unit;
-  String? rate;
-  String? qty;
-  String? detRemarks;
-
-  factory DprDet.fromJson(Map<String, dynamic> json) => DprDet(
-    hdNmeId: json["HdNme_Id"],
-    sbNmeId: json["SbNme_Id"],
-    level3ItemId: json["Level3item_id"],
-    unit: json["Unit"],
-    rate: json["Rate"],
-    qty: json["Qty"],
-    detRemarks: json["DetRemarks"],
+  factory BoqReviseDet.fromJson(Map<String, dynamic> json) => BoqReviseDet(
+    id: json["id"],
+    boqReviseMasId: json["boqReviseMasId"],
+    measureHeadItemId: json["measureHeadItemId"],
+    measureSubItemId: json["measureSubItemId"],
+    measureLevel3ItemId: json["measureLevel3ItemId"],
+    scaleId: json["scaleId"],
+    rate: json["rate"],
+    qty: json["qty"],
+    reviseQty: json["reviseQty"],
+    remarks: json["remarks"],
+    approvedBy: json["approvedBy"],
+    approveStatus: json["approveStatus"],
+    boQcode: json["boQcode"],
   );
 
   Map<String, dynamic> toJson() => {
-    "HdNme_Id": hdNmeId,
-    "SbNme_Id": sbNmeId,
-    "Level3item_id": level3ItemId,
-    "Unit": unit,
-    "Rate": rate,
-    "Qty": qty,
-    "DetRemarks": detRemarks,
+    "id": id,
+    "boqReviseMasId": boqReviseMasId,
+    "measureHeadItemId": measureHeadItemId,
+    "measureSubItemId": measureSubItemId,
+    "measureLevel3ItemId": measureLevel3ItemId,
+    "scaleId": scaleId,
+    "rate": rate,
+    "qty": qty,
+    "reviseQty": reviseQty,
+    "remarks": remarks,
+    "approvedBy": approvedBy,
+    "approveStatus": approveStatus,
+    "boQcode": boQcode,
   };
 }

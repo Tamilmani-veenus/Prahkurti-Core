@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -43,8 +42,11 @@ class _SiteLocationViewState extends State<SiteLocationView> {
     ScreenUtil.init(context);
     return WillPopScope(
       onWillPop: () async {
-        siteLocationController.projectNameSearch.text = "";
-        punchIn = false;
+        setState(() {
+          siteLocationController.projectNameSearch.text = "";
+          punchInController.selectedRadio.value=0;
+          punchIn = false;
+        });
         return true;
       },
       child: SafeArea(
@@ -67,9 +69,12 @@ class _SiteLocationViewState extends State<SiteLocationView> {
                     size: 20.r,
                   ),
                   onPressed: () {
-                    Get.back();
-                    siteLocationController.projectNameSearch.text = "";
-                    punchIn = false;
+                    setState(() {
+                      Get.back();
+                      siteLocationController.projectNameSearch.text = "";
+                      punchInController.selectedRadio.value=0;
+                      punchIn = false;
+                    });
                   }),
             ),
             body: Column(

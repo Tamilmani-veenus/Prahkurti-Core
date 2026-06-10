@@ -23,27 +23,11 @@ class _Boq_Revised_EntryListState extends State<Boq_Revised_EntryList> {
 
   @override
   void initState() {
-    if (boq_revised_controller.itemCheck == 2) {
-      boq_revised_controller.itemCheck = 0;
-    } else if (boq_revised_controller.itemCheck == 0) {
-    } else {
-      boq_revised_controller.itemCheck = 1;
-    }
-    setState(() {
-      boq_revised_controller.main_entryList.value.clear();
-      boq_revised_controller.Boq_entryList.value.clear();
-    });
-
     DateTime currentDate = DateTime.now();
     DateTime lastDayOfMonth = DateTime(currentDate.year, currentDate.month - 1, 0);
-    boq_revised_controller.entryList_frdateController.text =
-        lastDayOfMonth.toString().substring(0, 10);
-    boq_revised_controller.entryList_todateController.text =
-        BaseUtitiles.initiateCurrentDateFormat();
-    boq_revised_controller.Boq_getEntryList();
-    boq_revised_controller.Boq_entryList.value =
-        boq_revised_controller.main_entryList.value;
-
+    boq_revised_controller.entryList_frdateController.text = lastDayOfMonth.toString().substring(0, 10);
+    boq_revised_controller.entryList_todateController.text = BaseUtitiles.initiateCurrentDateFormat();
+    boq_revised_controller.getBOQEntryList();
     super.initState();
   }
 
@@ -58,8 +42,9 @@ class _Boq_Revised_EntryListState extends State<Boq_Revised_EntryList> {
           visible: commanController.addMode.value == 1 ? true : false,
           child: FloatingActionButton.extended(
             onPressed: () {
-              boq_revised_controller.itemCheck = 0;
-              boq_revised_controller.editCheck = 0;
+              boq_revised_controller.saveButton.value = RequestConstant.SUBMIT;
+              boq_revised_controller.delete_BoqRevised_itemlist_Table();
+              boq_revised_controller.Boqitem_itemview_GetDbList.value=[];
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -254,9 +239,7 @@ class _Boq_Revised_EntryListState extends State<Boq_Revised_EntryList> {
                         style: ElevatedButton.styleFrom(
                             primary: Theme.of(context).primaryColor),
                         onPressed: () async {
-                          setState(() {
-                            boq_revised_controller.Boq_getEntryList();
-                          });
+                            boq_revised_controller.getBOQEntryList();
                         },
                         child: const Center(
                             child: Padding(
@@ -391,7 +374,7 @@ class _Boq_Revised_EntryListState extends State<Boq_Revised_EntryList> {
                                   const Expanded(
                                       flex: 3,
                                       child: Text(
-                                        "Project :",
+                                        "Project Name",
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black,
@@ -401,7 +384,7 @@ class _Boq_Revised_EntryListState extends State<Boq_Revised_EntryList> {
                                       flex: 8,
                                       child: Text(
                                         boq_revised_controller
-                                            .Boq_entryList.value[index].project
+                                            .Boq_entryList.value[index].projectName
                                             .toString(),
                                         style: const TextStyle(
                                           color: Colors.black,
@@ -419,7 +402,7 @@ class _Boq_Revised_EntryListState extends State<Boq_Revised_EntryList> {
                                   const Expanded(
                                       flex: 3,
                                       child: Text(
-                                        "Site :",
+                                        "Site Name",
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black,
@@ -447,7 +430,7 @@ class _Boq_Revised_EntryListState extends State<Boq_Revised_EntryList> {
                                   const Expanded(
                                       flex: 2,
                                       child: Text(
-                                        "Prepared By :",
+                                        "Prepared By ",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black),
@@ -456,7 +439,7 @@ class _Boq_Revised_EntryListState extends State<Boq_Revised_EntryList> {
                                       flex: 4,
                                       child: Text(
                                         boq_revised_controller.Boq_entryList
-                                            .value[index].preparedby
+                                            .value[index].createdByName
                                             .toString(),
                                         style: const TextStyle(color: Colors.black),
                                       )),
@@ -535,16 +518,10 @@ class _Boq_Revised_EntryListState extends State<Boq_Revised_EntryList> {
                                                                 ],
                                                               ),
                                                               onTap: () {
-                                                                boq_revised_controller.itemCheck = 1;
                                                                 boq_revised_controller.delete_BoqRevised_itemlist_Table();
-                                                                boq_revised_controller.Boqitem_itemview_GetDbList.clear();
-                                                                boq_revised_controller.getBoqDetList.clear();
-                                                                boq_revised_controller.BoqrevisedList_EditApi(
-                                                                    boq_revised_controller.Boq_entryList.value[index].reviseId,
-                                                                    context);
-                                                                FocusScope.of(
-                                                                        context)
-                                                                    .unfocus();
+                                                                boq_revised_controller.Boqitem_itemview_GetDbList.value=[];
+                                                                boq_revised_controller.BoqrevisedList_EditApi(boq_revised_controller.Boq_entryList.value[index].id, context, true);
+                                                                FocusScope.of(context).unfocus();
                                                               }),
                                                         ),
                                                         Container(

@@ -43,7 +43,6 @@ class DailyWrkDone_DPRLabour_Controller extends GetxController{
   LoginController loginController=Get.put(LoginController());
   DailyWrkDone_DPR_Controller dailyWrkDone_DPR_Controller=Get.put(DailyWrkDone_DPR_Controller());
   PendingListController pendingListController=Get.put(PendingListController());
-  HeadNameController headNameController=Get.put(HeadNameController());
 
   var dprLabour_LabScreenService =new DprLabour_LabScreenService();
   var dprLabour_DetService = DprLabour_DetService();
@@ -70,7 +69,7 @@ class DailyWrkDone_DPRLabour_Controller extends GetxController{
 
 int workid=0;
   int aprovedButton=0;
-  RxString saveButton=RequestConstant.SAVE.obs;
+  RxString saveButton=RequestConstant.SUBMIT.obs;
   int editCheck=0;
   RxList dprLabour_itemList = [].obs;
   RxList dprLabour_EntryList = [].obs;
@@ -89,41 +88,41 @@ int workid=0;
   List<TextEditingController> ListNosControllers = [];
   List<TextEditingController> ListOtHrsController = [];
 
-  Future getAddBoqDetails(BuildContext context) async {
-    await DPR_New_Provider.dprNew_getBoqDetails(
-        projectController.selectedProjectId.value,
-        siteController.selectedsiteId.value,
-        headNameController.selectedHeadId.value,
-        dailyWrkDone_DPR_Controller.TypeSubcontId.value,
-        dailyWrkDone_DPR_Controller.entryType)
-        .then((value) async {
-      if (value != null && value.length > 0) {
-        dprLabour_BoqDetailsList.value = value;
-        return showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return LabourAddBoqPopup(list: dprLabour_BoqDetailsList.value);
-            });
-      } else {
-        BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
-      }
-    });
-  }
+  // Future getAddBoqDetails(BuildContext context) async {
+  //   await DPR_New_Provider.dprNew_getBoqDetails(
+  //       projectController.selectedProjectId.value,
+  //       siteController.selectedsiteId.value,
+  //       headNameController.selectedHeadId.value,
+  //       dailyWrkDone_DPR_Controller.TypeSubcontId.value,
+  //       dailyWrkDone_DPR_Controller.entryType)
+  //       .then((value) async {
+  //     if (value != null && value.length > 0) {
+  //       dprLabour_BoqDetailsList.value = value;
+  //       return showDialog(
+  //           context: context,
+  //           builder: (BuildContext context) {
+  //             return LabourAddBoqPopup(list: dprLabour_BoqDetailsList.value);
+  //           });
+  //     } else {
+  //       BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+  //     }
+  //   });
+  // }
 
-  Future getLab_ShowClickPopList(BuildContext context) async {
-    await SubContAttendanceProvider.getShowPopupList(dailyWrkDone_DPR_Controller.TypeSubcontId.value,projectController.selectedProjectId.value).then((value) async {
-      if (value != null && value.length > 0) {
-        dprLabour_ShowList.value = value;
-        return showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return LabourShowPopup(list: dprLabour_ShowList.value);
-            });
-      } else {
-        BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
-      }
-    });
-  }
+  // Future getLab_ShowClickPopList(BuildContext context) async {
+  //   await SubContAttendanceProvider.getShowPopupList(dailyWrkDone_DPR_Controller.TypeSubcontId.value,projectController.selectedProjectId.value).then((value) async {
+  //     if (value != null && value.length > 0) {
+  //       dprLabour_ShowList.value = value;
+  //       return showDialog(
+  //           context: context,
+  //           builder: (BuildContext context) {
+  //             return LabourShowPopup(list: dprLabour_ShowList.value);
+  //           });
+  //     } else {
+  //       BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+  //     }
+  //   });
+  // }
 
   Future dprLabour_getItemList(int prid,int siteid,int subcontid,String entrytype) async {
     if(editCheck==1){
@@ -159,7 +158,7 @@ int workid=0;
         return saveButton.value=RequestConstant.UPDATE;
     }
     else
-      return saveButton.value=RequestConstant.SAVE;
+      return saveButton.value=RequestConstant.SUBMIT;
   }
 
   textControllersInitiate(){

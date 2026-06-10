@@ -2,12 +2,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:prahkurticore/controller/pendinglistcontroller.dart';
 import 'package:prahkurticore/controller/reports_controller.dart';
+import 'package:prahkurticore/controller/staffcontroller.dart';
 import '../controller/logincontroller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
-// import '../models/reqslipapproval_model.dart';
 import '../home/menu/payroll/requisitionslip/entry_requisitionslip.dart';
 import '../models/reqslipapproval_model.dart';
 import '../models/requisitionslipsave_model.dart';
@@ -15,15 +15,11 @@ import '../provider/reuisitionslip_provider.dart';
 import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
-import 'package:intl/intl.dart';
-
 
 
 class  RequisitionSlipControllerNew extends GetxController{
   final ReqAutoyearwise=TextEditingController();
   final Reqdate=TextEditingController();
-  final Staffname=TextEditingController();
-  final Location=TextEditingController();
   final LeaveReason=TextEditingController();
   final Reason=TextEditingController();
   final Fromdate=TextEditingController();
@@ -53,61 +49,61 @@ class  RequisitionSlipControllerNew extends GetxController{
   final pTotime=TextEditingController();
   final EntrylistFromdate=TextEditingController();
   final EntrylistTodate=TextEditingController();
-  final reqtype=TextEditingController();
 
   ///Verify and Approval-----
-  final verifyRemarks=TextEditingController();
-
-  // List<TextEditingController> leaveReasonControllers = [];
-  // List<TextEditingController> FromdateControllers = [];
-  // List<TextEditingController> TodateControllers = [];
-  // List<TextEditingController> TotaldaysControllers = [];
+  final remarksValue=TextEditingController();
 
   ReportsController reportsController = Get.put(ReportsController());
   PendingListController pendingListController = Get.put(PendingListController());
+  StaffController staffController = Get.put(StaffController());
 
-  // RxString type="Leave".obs;
-  var type = 'Leave'.obs;
-  int checkColor = 0;
+  var type = 'L'.obs;
   bool willPop = false;
 
-  //----This for ScreenChek-------
-  int reqSlip = 0;
-  RxInt projectLocationID = 0.obs;
-  RxInt selectedstaffId = 0.obs;
-  int buttonControl = 0;
-
-
   int reqId=0;
-  int editCheck = 0;
-  int entryCheck = 0;
   RxString saveButton=RequestConstant.SUBMIT.obs;
   RxList ReqSlipEtyList = [].obs;
   RxList mainentrylist = [].obs;
   RxList staffLeaveInfolist = [].obs;
   RxList ReqSlipEditList = [].obs;
+  RxList staffReqTypeList = [].obs;
+  RxList verifyList = [].obs;
   LoginController loginController=Get.put(LoginController());
 
 
-
   Future getRequisitionslip_EntryList() async {
-    mainentrylist.value.clear();
-    ReqSlipEtyList.value.clear();
-    await RequisitionslipProvider.getReqSlipEntry_List(
-        loginController.user.value.empId,
-        loginController.UserType(),
+    mainentrylist.value=[];
+    ReqSlipEtyList.value=[];
+    var response = await RequisitionslipProvider.getReqSlipEntry_List(
         EntrylistFromdate.text,
-        EntrylistTodate.text)
-        .then((value) async {
-      if (value != null && value.length > 0) {
-        mainentrylist.value = value;
-        ReqSlipEtyList.value = mainentrylist.value;
-        return mainentrylist.value;
+        EntrylistTodate.text);
+    if (response != null) {
+      if (response.success == true) {
+        if (response.result!.isNotEmpty) {
+          mainentrylist.assignAll(response.result!);
+          ReqSlipEtyList.assignAll(response.result!);
+        } else {
+          BaseUtitiles.showToast("No Data Found");
+        }
+      } else {
+        BaseUtitiles.showToast(response.message ?? "Something went wrong..");
       }
-      else {
-        BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+    } else {
+      BaseUtitiles.showToast("Something went wrong..");
+    }
+  }
+
+  Future getStaffReqTypeList() async {
+    final value = await RequisitionslipProvider.getStaffReqTypeList();
+    if (value != null) {
+      if (value.success == true) {
+        staffReqTypeList.value = value.result!;
+      } else {
+        BaseUtitiles.showToast(value.message ?? "Something Went Wrong..");
       }
-    });
+    } else {
+      BaseUtitiles.showToast("Something Went Wrong..");
+    }
   }
 
   Future getLeaveInfo_List(int empId) async {
@@ -149,169 +145,124 @@ class  RequisitionSlipControllerNew extends GetxController{
   // }
 
 
-  //---------RequisitionSlip Verify button------
-  Future<void> reqSlipApproveApi(BuildContext context, String urlName, int? reqId, String reqNo,) async {
-    String body = reqSlipApprovalToJson(ReqSlipApproval(
-      urlName: urlName,
-      reqId: reqId.toString(),
-      reqNo: reqNo,
-      deviceName: BaseUtitiles.deviceName,
-      userId: loginController.user.value.userId.toString(),
-      approvedBy: loginController.user.value.empId.toString(),
-      appRemarks: verifyRemarks.text,
-    ));
-    final returnRes = await RequisitionslipProvider.RequisitionSlipAPI(body, context);
-    if (returnRes != null) {
-      print('RequisitionVerify :: $returnRes');
-      BaseUtitiles.showToast(returnRes);
-      await pendingListController.getPendingList();
-      if(returnRes=="Record Rejected Successfully..."){
-      Navigator.pop(context);
-      Navigator.pop(context);
-      }else{
-        Navigator.pop(context);
-        Navigator.pop(context);
-        Navigator.pop(context);
-      }
-    } else {
-      Fluttertoast.showToast(msg: RequestConstant.NORECORD_FOUND);
-    }
-  }
-
-
-
-
-  Future SaveButtonStaffReqScreen(BuildContext context,int staffId, int id) async {
-    if(type.value=="Leave"){
-      reqtype.text="L";
-    }
-    else if(type.value=="OnDuty"){
-      reqtype.text="O";
-    }else if(type.value=="Compensate Leave"){
-      reqtype.text="C";
-    }
-    else{
-      reqtype.text="P";
-    }
-
+  Future SaveButtonStaffReqScreen(BuildContext context, int id) async {
     String body = requisitonSlipsaveRequestToJson(RequisitonSlipsaveRequest(
-      reqId: id != 0 ? id.toString() : "0",
-      reqNo: ReqAutoyearwise.text,
-      reqDate: Reqdate.text,
-      staffId: staffId.toString(),
-      projectid: projectLocationID.value.toString(),
-      reqType: reqtype.text,
+      id: reqId,
+      requisitionNo: ReqAutoyearwise.text,
+      requisitionType: type.value,
+      entryDate: Reqdate.text,
+      staffId: staffController.selectedstaffId.value,
+      projectId: reportsController.selectedProjectId.value,
       leaveReason: LeaveReason.text,
-      lFrdate: Fromdate.text,
-      lTodate: Todate.text,
-      totalLeave: Totaldays.text,
-      perReason: Reason.text,
-      pFrTime: Fromtime.text,
-      pToTime: Totime.text,
-      pFrdate: Date.text,
-      pTodate: Date.text,
-      pTimeHrs: RequiredHrs.text,
-      pTimeMins: RequiredMins.text,
-      totalPerHrs: TotalHrs.text,
-      userId: loginController.UserId(),
-      deviceName: BaseUtitiles.deviceName,
-      entryMode:saveButton.value==RequestConstant.SUBMIT?"ADD":saveButton.value==RequestConstant.RESUBMIT?"UPDATE":saveButton.value=="Verify"?"VERIFY":saveButton.value=="Approve"?"APPROVE":"",
+      leaveFromDate: Fromdate.text,
+      leaveToDate: Todate.text,
+      totalLeaveDays: double.tryParse(Totaldays.text),
+      permissionReason: Reason.text,
+      permissionFromDate: Date.text,
+      permissionToDate: Date.text,
+      permissionFromTime: Fromtime.text,
+      permissionToTime: Totime.text,
+      permissionTimeHrs: int.tryParse(RequiredHrs.text),
+      permissionTimeMins: int.tryParse(RequiredMins.text),
+      totalPermissionHours: double.tryParse(TotalHrs.text),
+      createdBy: int.tryParse(loginController.EmpId()),
+      createdDt: BaseUtitiles().convertToUtcIso(Reqdate.text),
+      verifyStatus: "N",
+      approveStatus: "N",
+      verifyRemarks: "-",
+      approveRemarks: "-"
     ));
-    final list = await RequisitionslipProvider.SaveReqslipScreenEntryAPI(body, id,context);
-    if (list != null && id != 0) {
-      BaseUtitiles.showToast(list);
-      editCheck=0;
-      buttonControl = 0;
-      await getRequisitionslip_EntryList();
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pop(context);
-
-      // return Navigator.pushReplacement(
-      //     context,
-      //     new MaterialPageRoute(
-      //         builder: (BuildContext context) =>
-      //         new Requisitionslip_EntryList()));
-    } else {
-      if (list == RequestConstant.DUPLICATE_OCCURED) {
-        Navigator.pop(context);
-        Navigator.pop(context);
-        buttonControl = 0;
-        return BaseUtitiles.showToast(list);
-      } else {
-        Navigator.pop(context);
-        Navigator.pop(context);
-        BaseUtitiles.showToast(list);
-        editCheck=0;
-        buttonControl = 0;
+    final list = await RequisitionslipProvider.SaveReqslipScreenEntryAPI(body, reqId);
+    if (list != null ) {
+      if(list["success"] == true){
+        BaseUtitiles.showToast(list["message"]);
         await getRequisitionslip_EntryList();
-        Navigator.pop(context);
-        // return Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) => new Requisitionslip_EntryList()));
+        BaseUtitiles.popMultiple(context, count: 3);
       }
+      else {
+        BaseUtitiles.showToast(list["message"] ?? 'Something went wrong..');
+        BaseUtitiles.popMultiple(context, count: 2);
+      }
+    }
+    else {
+      BaseUtitiles.showToast("Something went wrong..");
+      BaseUtitiles.popMultiple(context, count: 2);
     }
   }
 
+  Future reqSlipVerifyApproveApi(context,data,type) async {
+    String body = requisitonSlipsaveRequestToJson(RequisitonSlipsaveRequest(
+      id: data.id,
+      requisitionNo: data.requisitionNo,
+      requisitionType: data.requisitionTypeValue,
+      entryDate: BaseUtitiles().convertDate(data.entryDate),
+      staffId: data.staffId,
+      projectId: type=="Approve"||type=="Approve-Reject"?data.projId:data.Projectid,
+      leaveReason: data.LeaveReason,
+      leaveFromDate: BaseUtitiles().convertDate(data.leaveFromDate),
+      leaveToDate: BaseUtitiles().convertDate(data.leaveToDate),
+      totalLeaveDays: data.totalLeaveDays,
+      permissionReason: data.permissionReason,
+      permissionFromDate: BaseUtitiles().convertDate(data.permissionFromDate),
+      permissionToDate: BaseUtitiles().convertDate(data.permissionToDate),
+      permissionFromTime: type=="Approve"||type=="Approve-Reject"?data.PermissionFromTime:data.permissionFromTime,
+      permissionToTime: data.permissionToTime,
+      permissionTimeHrs: data.permissionTimeHrs,
+      permissionTimeMins: data.permissionTimeMins,
+      totalPermissionHours: data.totalPermissionHours,
+      createdBy: int.tryParse(loginController.EmpId()),
+      createdDt: data.entryDateMobile,
+      verifyRemarks: type=="Verify"||type=="Verify-Reject"?remarksValue.text:"",
+      approveRemarks: type=="Approve"||type=="Approve-Reject"?remarksValue.text:"",
+      verifyStatus: type=="Verify-Reject"?"R":"Y",
+      approveStatus: type=="Approve-Reject"?"R":type=="Approve"?"Y":"N",
+    ));
+    final list = await RequisitionslipProvider.SaveReqslipScreenEntryAPI(body, data.id);
+    if (list != null ) {
+      if(list["success"] == true){
+        BaseUtitiles.showToast(list["message"]);
+        await pendingListController.getPendingList();
+        BaseUtitiles.popMultiple(context, count: 2);
+      }
+      else {
+        BaseUtitiles.showToast(list["message"] ?? 'Something went wrong..');
+        BaseUtitiles.popMultiple(context, count: 2);
+      }
+    }
+    else {
+      BaseUtitiles.showToast("Something went wrong..");
+      BaseUtitiles.popMultiple(context, count: 2);
+    }
+  }
 
-  // Future Requisitionslip_EditApi(int reqId, BuildContext context) async {
-  //   await RequisitionslipProvider.Requisitionslip_editAPI(reqId).then((value) async {
-  //     if (  value.length != 0) {
-  //       editCheck = 1;
-  //       ReqSlipEditList.value = value;
-  //       if (mounted) {
-  //         Navigator.push(
-  //             context,
-  //             MaterialPageRoute(builder: (context) => RequisitionSlip_Entry())
-  //         );
-  //       }
-  //
-  //     }
-  //   });
-  // }
-  Future Requisitionslip_EditApi(int reqId, BuildContext context) async {
-    try {
-      var value = await RequisitionslipProvider.Requisitionslip_editAPI(reqId);
-
-      // Check if the value is not null and has data
-      if (value != null && value.isNotEmpty) {
-        editCheck = 1;
-        ReqSlipEditList.value = value;
-
-        // Check if context is not null and valid before using it
-        if (context != null) {
-          Navigator.push(
+  Future Requisitionslip_EditApi(int reqId, BuildContext context, status) async {
+    ReqSlipEditList.value=[];
+    var response = await RequisitionslipProvider.Requisitionslip_editAPI(reqId,status);
+    if (response != null) {
+      if (response.success == true) {
+        ReqSlipEditList.value = [response.result];
+        if (ReqSlipEditList.isNotEmpty) {
+          saveButton.value=RequestConstant.RESUBMIT;
+          Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => RequisitionSlip_Entry())
           );
         } else {
-          print("Context is invalid");
+          BaseUtitiles.showToast("No Data Found");
         }
       } else {
-        print("No data received from API");
+        BaseUtitiles.showToast(response.message ?? "Something went wrong..");
       }
-    } catch (e) {
-      print("Error during API call: $e");
+    } else {
+      BaseUtitiles.showToast("Something went wrong..");
     }
   }
 
 
-  RxList verifyList = [].obs;
-  Future RequistionslipVerify(int reqId, BuildContext context) async {
-    await RequisitionslipProvider.Requisitionslip_editAPI(reqId).then((value) async {
-      if(value.isNotEmpty){
-        verifyList.value = value;
-      }
-      return verifyList.value;
-    });
-  }
-
-
   //--Entrylist Delete--
-  Future Requisition_DeleteApi(int reqId, String ReqNo) async {
-    await RequisitionslipProvider.Requisitionslip_entryList_deleteAPI(reqId,ReqNo, loginController.UserId(), BaseUtitiles.deviceName).then((value) async {
-      if (value != null && value.length > 0) {
-        return value;
-      }
-    });
+
+  Future<bool> Requisition_DeleteApi(int reqId,status) async {
+    return RequisitionslipProvider.Requisitionslip_entryList_deleteAPI(reqId,status);
   }
 
   // vehicleAge(DateTime Fromdate, DateTime Todate) {
@@ -485,7 +436,7 @@ class  RequisitionSlipControllerNew extends GetxController{
   }
 
 
-  Future DeleteAlert(BuildContext context,int index) async {
+  Future DeleteAlert(BuildContext context,int index,bool status) async {
     return await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -513,11 +464,14 @@ class  RequisitionSlipControllerNew extends GetxController{
                   Expanded(
                     child: TextButton(
                         onPressed: () async {
-                          entryCheck=0;
-                          editCheck=0;
-                          await Requisition_DeleteApi(ReqSlipEtyList.value[index].requestionId,ReqSlipEtyList.value[index].requestionNo);
-                          ReqSlipEtyList.removeAt(index);
-                          Navigator.of(context).pop();
+                          bool result = await Requisition_DeleteApi(ReqSlipEtyList.value[index].id,status);
+                          if (result) {
+                            ReqSlipEtyList.removeAt(index);
+                            Navigator.of(context).pop();
+                          }
+                          else{
+                            Navigator.of(context).pop();
+                          }
                         },
                         child: const Text("Delete", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE))),
                   )

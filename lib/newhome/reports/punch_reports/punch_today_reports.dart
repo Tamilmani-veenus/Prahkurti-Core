@@ -170,34 +170,6 @@ class PunchTodayReports extends GetView<PunchInController> {
                                   ),
                                 ),
                               ),
-                              // Expanded(
-                              //   flex: 1,
-                              //   child: Align(
-                              //     alignment: Alignment.center,
-                              //     child: Text(
-                              //       "Punch In",
-                              //       style: TextStyle(
-                              //         fontSize: 14.0,
-                              //         color: Theme.of(context).primaryColor,
-                              //         fontWeight: FontWeight.bold,
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-                              // Expanded(
-                              //   flex: 1,
-                              //   child: Align(
-                              //     alignment: Alignment.center,
-                              //     child: Text(
-                              //       "Punch Out",
-                              //       style: TextStyle(
-                              //         fontSize: 14.0,
-                              //         color: Theme.of(context).primaryColor,
-                              //         fontWeight: FontWeight.bold,
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
                             ],
                           ),
                         ),
@@ -398,8 +370,8 @@ class PunchTodayReports extends GetView<PunchInController> {
                                                                       width:
                                                                           120,
                                                                       child:
-                                                                          Text(
-                                                                        '${detail.inLocation != "" && detail.inLocation != "null" ? detail.inLocation! : "-"}',
+                                                                          Text(detail.instatus == "Alloted" || detail.instatus == "Non-Alloted" ?
+                                                                        '${detail.inLocation != "" && detail.inLocation != "null" ? detail.inLocation! : "-"}' : detail.instatus,
                                                                         style:
                                                                             const TextStyle(
                                                                           fontSize:
@@ -413,11 +385,55 @@ class PunchTodayReports extends GetView<PunchInController> {
                                                                     ),
                                                                   ],
                                                                 ),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              Padding(
+                                                                padding:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    left:
+                                                                    20),
+                                                                child: Row(
+                                                                  children: [
+                                                                    SizedBox(
+                                                                      width: 70,
+                                                                      child:
+                                                                      Text(
+                                                                        "In Address :  ",
+                                                                        style:
+                                                                        TextStyle(
+                                                                          fontSize:
+                                                                          12,
+                                                                          color:
+                                                                          Colors.grey,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    Container(
+                                                                      width:
+                                                                      120,
+                                                                      child:
+                                                                      Text(detail.instatus == "Alloted" || detail.instatus == "Non-Alloted" ?
+                                                                        '${detail.projectAddress != "" && detail.projectAddress != null ? detail.projectAddress! : "-"}' : detail.onPinInAddress!,
+                                                                        style:
+                                                                        const TextStyle(
+                                                                          fontSize:
+                                                                          13,
+                                                                          fontWeight:
+                                                                          FontWeight.bold,
+                                                                          color:
+                                                                          Colors.black,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
                                                               )
                                                             ],
                                                           ),
-                                                          if (!isLastItem)
-                                                            const Divider(),
+
                                                         ],
                                                       ),
                                                       GestureDetector(
@@ -445,7 +461,7 @@ class PunchTodayReports extends GetView<PunchInController> {
                                                       ),
                                                     ]),
                                                 const SizedBox(height: 5),
-                                                Divider(),
+
                                                 Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment
@@ -574,8 +590,8 @@ class PunchTodayReports extends GetView<PunchInController> {
                                                                   ),
                                                                   Container(
                                                                     width: 120,
-                                                                    child: Text(
-                                                                      '${detail.outLocation != null && detail.outLocation != "" && detail.outLocation != "null" ? detail.outLocation! : "-"}',
+                                                                    child: Text(detail.outStatus == "Alloted" || detail.outStatus == "Non-Alloted" ?
+                                                                      '${detail.outLocation != null && detail.outLocation != "" && detail.outLocation != null ? detail.outLocation! : "-"}' : detail.outStatus == null || detail.outStatus == "" || detail.outStatus == "-" ? "-" : detail.outStatus,
                                                                       style:
                                                                           const TextStyle(
                                                                         fontSize:
@@ -589,7 +605,48 @@ class PunchTodayReports extends GetView<PunchInController> {
                                                                   ),
                                                                 ],
                                                               ),
-                                                            )
+                                                            ),
+                                                            SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  left: 20),
+                                                              child: Row(
+                                                                children: [
+                                                                  SizedBox(
+                                                                    width: 70,
+                                                                    child: Text(
+                                                                      "Out Address :",
+                                                                      style:
+                                                                      TextStyle(
+                                                                        fontSize:
+                                                                        12,
+                                                                        color: Colors
+                                                                            .grey,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Container(
+                                                                    width: 120,
+                                                                    child: Text(detail.outStatus == "Alloted" || detail.outStatus == "Non-Alloted" ?
+                                                                      '${detail.outProjectAddress != null && detail.outProjectAddress != "" && detail.outProjectAddress != null ? detail.outProjectAddress! : "-"}' : detail.onPinOutAddress,
+                                                                      style:
+                                                                      const TextStyle(
+                                                                        fontSize:
+                                                                        13,
+                                                                        fontWeight:
+                                                                        FontWeight.bold,
+                                                                        color: Colors
+                                                                            .black,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
                                                           ],
                                                         ),
                                                       ],
@@ -637,6 +694,8 @@ class PunchTodayReports extends GetView<PunchInController> {
                                                           ),
                                                   ],
                                                 ),
+                                                if (!isLastItem)
+                                                  const Divider(),
                                               ],
                                             ),
                                           );

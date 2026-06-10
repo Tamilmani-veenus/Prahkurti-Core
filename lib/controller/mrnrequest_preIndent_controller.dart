@@ -41,15 +41,11 @@ class MRNRequest_PreIndent_Controller extends GetxController{
   RxList pendingAllDatasList = [].obs;
 
   int reqId=0;
-  int entrycheck = 0;
 
-  int editCheck = 0;
-  int checkColor = 0;
   int addMaterialControl = 0;
 
 
   RxString ReqType = "".obs;
-  String screenCheck="";
   RxString selectedMaterialName = "".obs;
   RxString saveButton=RequestConstant.SUBMIT.obs;
   var materialTableModel = Materiallist();
@@ -86,8 +82,8 @@ class MRNRequest_PreIndent_Controller extends GetxController{
   //------MRNReq PreIndent List-----------------
 
   Future getMrnReq_PreIndent_EntryList() async {
-    mainEtyList.value.clear();
-    MrnReqPreIndentList.value.clear();
+    mainEtyList.value=[];
+    MrnReqPreIndentList.value=[];
     var response = await MRNRequest_PreIndent_Provider.getMRNReqPreIndent_EntryList(
         MrnReqPreIndent_FrDate.text, MrnReqPreIndent_ToDate.text);
     if (response != null) {
@@ -171,10 +167,6 @@ class MRNRequest_PreIndent_Controller extends GetxController{
     }
   }
 
-  // Future getMaterialList(BuildContext context, int pId, int sId,requestType,type) async {
-  //   getmaterialvalue.value.clear();
-  //   return Navigator.push(context, MaterialPageRoute(builder: (context) => MRNRequest_PreIndent_MAterialsAdd(list:  getmaterialvalue.value,)));
-  // }
 
   setCheck(int id,bool value){
     addMaterialControl=1;
@@ -292,7 +284,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
 
   //Get Values
   Future getMaterialTablesDatas() async {
-    Material_itemview_GetDbList.clear();
+    Material_itemview_GetDbList.value=[];
     var Matlist = await materiallistService.MaterialItemlist_table_readAll();
     Matlist.forEach((user) {
       var materiallist =Materiallist();
@@ -650,8 +642,6 @@ class MRNRequest_PreIndent_Controller extends GetxController{
                   Expanded(
                     child: TextButton(
                         onPressed: () async {
-                          entrycheck=0;
-                          editCheck=0;
                           bool request = await Material_EntryList_DeleteApi(MrnReqPreIndentList.value[index].reqMasId);
                           if (request) {
                             MrnReqPreIndentList.removeAt(index);

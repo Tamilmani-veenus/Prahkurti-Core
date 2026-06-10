@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
+import '../models/boqrevised_itemlist_model.dart';
+
 String? punchStatus;
 bool punchIn = false;
 
@@ -64,6 +66,12 @@ class BaseUtitiles {
     );
 
     return localDateTime.toUtc().toIso8601String();
+  }
+
+  String convertDate(String date) {
+    return DateFormat("yyyy-MM-dd").format(
+      DateFormat("dd-MMM-yyyy").parse(date),
+    );
   }
 
   static void popMultiple(BuildContext context, {int count = 1}) {
@@ -183,23 +191,89 @@ class BaseUtitiles {
     }
   }
 
-  static filterSearchResults_BOQRevised(String value,list)  {
-    dummyListData.value.clear();
-    if (value.isNotEmpty) {
-      list.value.forEach((item) {
-        if (item.itemDesc.toString().toLowerCase().contains(value) ||
-            item.itemDesc.toString().toUpperCase().contains(value) ||
-            item.unit.toString().toLowerCase().contains(value) ||
-            item.unit.toString().toUpperCase().contains(value))
-        {
-          dummyListData.value.add(item);
+  static List<Result> filterSearchResults_BOQRevised(
+      String value,
+      RxList<Result> originalList,
+      ) {
+
+    if (value.isEmpty) {
+      return List<Result>.from(originalList);
+    }
+
+    String search = value.toLowerCase();
+
+    List<Result> filteredMainList = [];
+
+    for (var mainItem in originalList) {
+
+      List<SubItem> filteredSubItems = [];
+
+      for (var subItem in mainItem.subItems ?? []) {
+
+        List<Level3Item> filteredLevel3 =
+        subItem.level3Items!
+            .where((level3) {
+
+          return level3.name
+              .toString()
+              .toLowerCase()
+              .contains(search)
+
+              ||
+
+              level3.scaleName
+                  .toString()
+                  .toLowerCase()
+                  .contains(search)
+
+              ||
+
+              level3.seqno
+                  .toString()
+                  .toLowerCase()
+                  .contains(search);
+
+        }).toList();
+
+        bool subItemMatch = subItem.subItem
+            .toString()
+            .toLowerCase()
+            .contains(search);
+
+        if (subItemMatch || filteredLevel3.isNotEmpty) {
+
+          filteredSubItems.add(
+            SubItem(
+              measureSubItemId:
+              subItem.measureSubItemId,
+              subItem: subItem.subItem,
+              seqno: subItem.seqno,
+              level3Items: filteredLevel3,
+            ),
+          );
         }
-      });
-      return  dummyListData.value;
+      }
+
+      bool mainMatch = mainItem.headItemName
+          .toString()
+          .toLowerCase()
+          .contains(search);
+
+      if (mainMatch || filteredSubItems.isNotEmpty) {
+
+        filteredMainList.add(
+          Result(
+            measureHeadItemId:
+            mainItem.measureHeadItemId,
+            headItemName:
+            mainItem.headItemName,
+            subItems: filteredSubItems,
+          ),
+        );
+      }
     }
-    else {
-      return  list.value;
-    }
+
+    return filteredMainList;
   }
 
 
@@ -616,17 +690,17 @@ class BaseUtitiles {
             item.PurchaseOrdNo.toString().toLowerCase().contains(value) ||
             item.PurchaseOrdNo.toString().toUpperCase().contains(value) ||
 
-            item.approveByName.toString().toLowerCase().contains(value) ||
-            item.approveByName.toString().toUpperCase().contains(value) ||
+            item.entryType.toString().toLowerCase().contains(value) ||
+            item.entryType.toString().toUpperCase().contains(value) ||
 
-            item.approveByName.toString().toLowerCase().contains(value) ||
-            item.approveByName.toString().toUpperCase().contains(value) ||
+            item.workNo.toString().toLowerCase().contains(value) ||
+            item.workNo.toString().toUpperCase().contains(value) ||
 
-            item.approveByName.toString().toLowerCase().contains(value) ||
-            item.approveByName.toString().toUpperCase().contains(value) ||
+            item.prepareby.toString().toLowerCase().contains(value) ||
+            item.prepareby.toString().toUpperCase().contains(value) ||
 
-            item.approveByName.toString().toLowerCase().contains(value) ||
-            item.approveByName.toString().toUpperCase().contains(value) ||
+            item.SubcontractName.toString().toLowerCase().contains(value) ||
+            item.SubcontractName.toString().toUpperCase().contains(value) ||
 
             item.approveByName.toString().toLowerCase().contains(value) ||
             item.approveByName.toString().toUpperCase().contains(value)
@@ -1003,21 +1077,35 @@ class BaseUtitiles {
     }
   }
 
-  static empNameamePopupAlert(String value,list)  {
-    dummyListData.value.clear();
-    if (value.isNotEmpty) {
-      list.forEach((item) {
-        if (item.empName.toString().toLowerCase().contains(value) ||
-            item.empName.toString().toUpperCase().contains(value))
-        {
-          dummyListData.value.add(item);
-        }
-      });
-      return  dummyListData.value;
+  // static empNameamePopupAlert(String value,list)  {
+  //   dummyListData.value.clear();
+  //   if (value.isNotEmpty) {
+  //     list.forEach((item) {
+  //       if (item.staffName.toString().toLowerCase().contains(value) ||
+  //           item.staffName.toString().toUpperCase().contains(value))
+  //       {
+  //         dummyListData.value.add(item);
+  //       }
+  //     });
+  //     return  dummyListData.value;
+  //   }
+  //   else {
+  //     return  list;
+  //   }
+  // }
+
+  static empNameamePopupAlert(String value, List list) {
+
+    if (value.isEmpty) {
+      return list;
     }
-    else {
-      return  list;
-    }
+
+    return list.where((item) {
+      return item.employeeName
+          .toString()
+          .toLowerCase()
+          .contains(value.toLowerCase());
+    }).toList();
   }
 
   static bankNamePopupAlert(String value,list)  {

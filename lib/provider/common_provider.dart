@@ -5,6 +5,7 @@ import '../models/accountname_model.dart';
 import '../models/accounttype_model.dart';
 import '../models/companydropdownlist_model.dart';
 import '../models/companywiseprojectname_model.dart';
+import '../models/dpr_headname_model.dart';
 import '../models/invoiceno_billdir_model.dart';
 import '../models/materiallist_model.dart';
 import '../models/materialsubitem_dropdown_model.dart';
@@ -113,56 +114,33 @@ class CommonProvider {
     }
   }
 
-  static Future<List> getWorkOrderNoList(int pId, int sId, int subId) async {
-    List responseData = [];
-    await ApiManager.getAPICall(
-            ApiConstant.GETWRKORDERNOLIST + "?pid=$pId&sid=$sId&subid=$subId")
-        .then((value) {
-      responseData = workOrderNoResponseFromJson(value);
-      if (responseData != null && responseData.length > 0) {
-        return responseData;
-      }
-    }, onError: (error) {
-      print(error);
-      print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return responseData;
+  static Future<WorkOrderNoResponse?> getWorkOrderNoList(int pId, int sId, int subId, {String? fromDate, String? toDate,String? type}) async {
+    try{
+      final value = await ApiManager.getAPICall(type=="BILL DIRECT"?
+      "${ApiConstant.GETWRKORDERNOLIST}?projectId=$pId&siteId=$sId&subcontractorId=$subId":
+      "${ApiConstant.GETBOQWRKORDERNOLIST}?projectId=$pId&siteId=$sId&subcontractorId=$subId&fromDate=$fromDate&toDate=$toDate");
+      print("AdvEntryList:" + value);
+      return workOrderNoResponseFromJson(value);
+    }
+    catch(e){
+      print("ERROR.....$e");
+      return null;
+    }
   }
 
-  static Future<List> getInvoiceNoList(int pId, int subId) async {
-    List responseData = [];
-    await ApiManager.getAPICall(
-            ApiConstant.GETINVOICENOLIST + "?pid=$pId&subid=$subId")
-        .then((value) {
-      responseData = invoiceNoResponseFromJson(value);
-      if (responseData != null && responseData.length > 0) {
-        return responseData;
-      }
-    }, onError: (error) {
-      print(error);
-      print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return responseData;
+  static Future<InvoiceNoResponse?> getInvoiceNoList(int pId, int subId) async {
+    try{
+      final value = await ApiManager.getAPICall(
+          "${ApiConstant.GETINVOICENOLIST}?fieldName=billNo&tableName=View_SubContractorWorkNMRBill&projectId=$pId&subContractorId=$subId");
+      print("AdvEntryList:" + value);
+      return invoiceNoResponseFromJson(value);
+    }
+    catch(e){
+      print("ERROR.....$e");
+      return null;
+    }
   }
 
-  static Future<List> getNMRBillNoList(int pId, int subId) async {
-    List responseData = [];
-    await ApiManager.getAPICall(
-            ApiConstant.GETNMRBILLNO + "?pid=$pId&subid=$subId")
-        .then((value) {
-      responseData = nmrBillNoResFromJson(value);
-      if (responseData != null && responseData.length > 0) {
-        return responseData;
-      }
-    }, onError: (error) {
-      print(error);
-      print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return responseData;
-  }
 
   static Future<List> getLabour() async {
     List responseData = [];
@@ -306,6 +284,18 @@ class CommonProvider {
     }
   }
 
+  static Future<DprHeadNameListModel?> dprNewHeadNameDropdown(siteId,type) async {
+    try {
+      final response = await ApiManager.getAPICall("${type=="DPRNEW"?ApiConstant.GETDPRNEWHEAD_LIST:ApiConstant.GETBOQHEAD_LIST}?siteId=$siteId");
+      print("response...$response");
+      return dprHeadNameListModelFromJson(response);
+    } catch (error, stackTrace) {
+      print("Error == $error");
+      print("StackTrace == $stackTrace");
+      return null;
+    }
+  }
+
   static Future<MaterialWiseHeadSubResponse?> materialWise_sub_HeadDropdown(
       headId) async {
     try {
@@ -407,8 +397,7 @@ class CommonProvider {
     try {
       if (Url == "MRN INDENT") {
         response = await ApiManager.getAPICall(
-          "${ApiConstant.GETAUTONO_YEAR_WISE}?fieldName=ReqOrdNo&tableName=MaterialReqOrdMas&formName=MaterialReqOrdMas",
-        );
+          "${ApiConstant.GETAUTONO_YEAR_WISE}?fieldName=ReqOrdNo&tableName=MaterialReqOrdMas&formName=MaterialReqOrdMas",);
       } else if (Url == "MRN PRE INDENT") {
         response = await ApiManager.getAPICall(
             "${ApiConstant.GETAUTONO_YEAR_WISE}?fieldName=ReqOrdNo&tableName=MaterialReqOrdMas&formName=SiteRequest");
@@ -429,28 +418,31 @@ class CommonProvider {
             "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=InwardNo%20&tableName=MaterialInwardMas%20&formName=MaterialInward");
       } else if (Url == "BOQ REVISED") {
         response = await ApiManager.getAPICall(
-            "${ApiConstant.GETAUTONO_YEAR_WISE}?FieldName=Revise_No&TableName=BOQ_Revise_Mas&FormName=BOQ");
+            "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=ReviseNo&tableName=BOQReviseMas&formName=BOQReviseMas");
       } else if (Url == "SUBCONTRACTOR ATTENDANCE") {
         response = await ApiManager.getAPICall(
             "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=LabourAttendanceNo&tableName=SubContLabourAttendMas&formName=SubContLabourAttendMas");
       } else if (Url == "DPR") {
         response = await ApiManager.getAPICall(
-            "${ApiConstant.GETAUTONO_YEAR_WISE}?FieldName=Work_No&TableName=SubCont_dailyWork_Mas&FormName=dpr");
+            "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=WorkNo&tableName=SubContractDailyWorkMas&formName=SubContractDailyWorkMas");
       } else if (Url == "DPR NEW") {
         response = await ApiManager.getAPICall(
-            "${ApiConstant.GETAUTONO_YEAR_WISE}?FieldName=Work_No&TableName=SubCont_dailyWork_Mas&FormName=DPR_New");
+            "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=WorkNo&tableName=SubContractDailyWorkMas&formName=SubContractDailyWorkMasNew");
       } else if (Url == "DPR LABOUR") {
         response = await ApiManager.getAPICall(
             "${ApiConstant.GETAUTONO_YEAR_WISE}FieldName=Work_No&TableName=SubCont_dailyWork_Mas&FormName=DPR_New2");
       } else if (Url == "COMPANY NMR") {
         response = await ApiManager.getAPICall(
             "${ApiConstant.GETAUTONO_YEAR_WISE}?FieldName=NMRLbrAttn_No&TableName=NMRLbr_attend_Mas&FormName=NMR_Labr_Attn");
-      } else if (Url == "DIRECT BILL") {
+      } else if (Url == "BILL BOQ") {
         response = await ApiManager.getAPICall(
-            "${ApiConstant.GETAUTONO_YEAR_WISE}?FieldName=Work_No&TableName=SubCont_WorkQty_Mas&FormName=SubContBillDirect");
+            "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=WorkNo&tableName=SubcontractorWorkQtyMas&formName=SubcontractorWorkQtyMasBOQ");
+      }else if (Url == "DIRECT BILL") {
+        response = await ApiManager.getAPICall(
+            "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=workno&tableName=SubcontractorWorkQtyMas&formName=SubcontractorWorkQtyMasDirect");
       } else if (Url == "NMR WEEKLY BILL") {
         response = await ApiManager.getAPICall(
-            "${ApiConstant.GETAUTONO_YEAR_WISE}?FieldName=Work_No&TableName=SubCont_NMR_Bill_Mas&FormName=SubCont_NMR_Bill");
+            "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=Workno&tableName=SubContractorNMRBillMas&formName=SubContractorNMRBillMas");
       } else if (Url == "ADVANCE REQ VOUCHER") {
         response = await ApiManager.getAPICall(
             "${ApiConstant.GETAUTONO_YEAR_WISE}?FieldName=voc_no&TableName=Ac_advance_req_voucher&FormName=AdvanceRequisitionvoucher");
@@ -459,13 +451,13 @@ class CommonProvider {
             "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=SiteVoucherNo&tableName=AccountSiteVoucher&formName=AccountSiteVoucher");
       } else if (Url == "STAFF VOUCHER") {
         response = await ApiManager.getAPICall(
-            "${ApiConstant.GETAUTONO_YEAR_WISE}?FieldName=StaffVocNo&TableName=AccountStaffVoucher&FormName=StaffVoucher");
+            "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=StaffVocNo&tableName=AccountStaffVoucher&formName=StaffVoucher");
       } else if (Url == "TRANSFER ACK PENDING") {
         response = await ApiManager.getAPICall(
             "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=AcknowledgeNo&tableName=MaterialTransferAckmas&formName=MaterialAckMas");
       } else if (Url == "REQ SLIP") {
         response = await ApiManager.getAPICall(
-            "${ApiConstant.GETAUTONO_YEAR_WISE}?FieldName=Requestion_No&TableName=Staff_Requestion_Slip&FormName=StaffLeavePermission");
+            "${ApiConstant.GETAUTONO_YEAR_WISE}?fieldName=RequisitionNo&tableName=StaffRequisitionSlip&formName=StaffRequisitionSlip");
       }
       final data = json.decode(response);
       return data;

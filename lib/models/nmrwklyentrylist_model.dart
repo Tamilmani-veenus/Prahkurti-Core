@@ -1,79 +1,93 @@
-
+// To parse this JSON data, do
+//
+//     final nmrEntryList = nmrEntryListFromJson(jsonString);
 
 import 'dart:convert';
 
-List<NmrEntrylist> nmrEntrylistFromJson(String str) => List<NmrEntrylist>.from(json.decode(str).map((x) => NmrEntrylist.fromJson(x)));
+NmrEntryList nmrEntryListFromJson(String str) => NmrEntryList.fromJson(json.decode(str));
 
-String nmrEntrylistToJson(List<NmrEntrylist> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String nmrEntryListToJson(NmrEntryList data) => json.encode(data.toJson());
 
-class NmrEntrylist {
-  NmrEntrylist({
-    this.nmrWorkId,
-    this.workNo,
-    this.entrydate,
-    this.fromDate,
-    this.toDate,
-    this.subcontid,
-    this.subconName,
-    this.projectid,
-    this.project,
-    this.siteName,
-    this.totalAmount,
-    this.status,
-    this.verifyStatus,
-    this.appStatus,
-    this.billNo,
+class NmrEntryList {
+  bool? success;
+  String? message;
+  List<Result>? result;
+
+  NmrEntryList({
+    this.success,
+    this.message,
+    this.result
   });
 
-  int? nmrWorkId;
-  String? workNo;
-  String? entrydate;
-  String? fromDate;
-  String? toDate;
-  int? subcontid;
-  String? subconName;
-  int? projectid;
-  String? project;
-  String? siteName;
-  double? totalAmount;
-  String? status;
-  String? verifyStatus;
-  String? appStatus;
-  String? billNo;
-
-  factory NmrEntrylist.fromJson(Map<String, dynamic> json) => NmrEntrylist(
-    nmrWorkId: json["NMR_Work_id"],
-    workNo: json["Work_No"],
-    entrydate: json["Entrydate"],
-    fromDate: json["From_Date"],
-    toDate:  json["To_Date"] ,
-    subcontid: json["subcontid"],
-    subconName: json["Subcon_name"],
-    projectid: json["projectid"],
-    project: json["project"],
-    siteName:  json["SiteName"] ,
-    totalAmount: json["TotalAmount"],
-    status: json["Status"],
-    verifyStatus:  json["VerifyStatus"],
-    appStatus:  json["AppStatus"],
-    billNo:  json["BillNo"],
+  factory NmrEntryList.fromJson(Map<String, dynamic> json) => NmrEntryList(
+    success: json["success"],
+    message: json["message"],
+    result: json["result"]==null?[]:List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "NMR_Work_id": nmrWorkId,
-    "Work_No": workNo,
-    "Entrydate": entrydate,
-    "From_Date": fromDate ,
-    "To_Date":  toDate ,
-    "subcontid": subcontid,
-    "Subcon_name": subconName,
-    "projectid": projectid,
-    "project": project,
-    "SiteName":  siteName,
-    "TotalAmount": totalAmount,
-    "Status": status,
-    "VerifyStatus":  verifyStatus,
-    "AppStatus":  appStatus,
-    "BillNo":  billNo,
+    "success": success,
+    "message": message,
+    "result": result==null?[]:List<dynamic>.from(result!.map((x) => x.toJson())),
+  };
+}
+
+class Result {
+  int? id;
+  String? workNo;
+  String? entryDate;
+  String? fromDate;
+  String? toDate;
+  String? billNo;
+  String? verifyStatus;
+  String? projectName;
+  String? siteName;
+  String? subContractorName;
+  String? createdName;
+  String? status;
+
+  Result({
+    this.id,
+    this.workNo,
+    this.entryDate,
+    this.fromDate,
+    this.toDate,
+    this.billNo,
+    this.verifyStatus,
+    this.projectName,
+    this.siteName,
+    this.subContractorName,
+    this.createdName,
+    this.status,
+  });
+
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    id: json["id"],
+    workNo: json["workNo"],
+    entryDate: json["entryDate"],
+    fromDate: json["fromDate"],
+    toDate: json["toDate"],
+    billNo: json["billNo"],
+    verifyStatus: json["verifyStatus"],
+    projectName: json["projectName"],
+    siteName: json["siteName"],
+    subContractorName: json["subContractorName"],
+    createdName: json["createdName"],
+    status: json["status"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "workNo": workNo,
+    "entryDate": entryDate,
+    "fromDate": fromDate,
+    "toDate": toDate,
+    "billNo": billNo,
+    "verifyStatus": verifyStatus,
+    "projectName": projectName,
+    "siteName": siteName,
+    "subContractorName": subContractorName,
+    "createdName": createdName,
+    "status": status,
   };
 }

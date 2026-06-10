@@ -87,22 +87,6 @@ class StaffVoucher_provider{
     }
   }
 
-  //---Delete API----
-  static Future StaffvoucherSite_entryList_deleteAPI(int VocId, String VocNo,String UserId, String DeviceName) async {
-    var data = null;
-    await ApiManager.deleteAPICall(ApiConstant.DELETE_SITEVOUCHER_ENTRYLIST_API + "?VocId=$VocId&VocNo=$VocNo&UserId=$UserId&DeviceName=$DeviceName")
-        .then((value) {
-      final res = json.decode(value);
-      if (res != null) {
-        data = res;
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG+error);
-    });
-    return data;
-  }
   //--EditAPI
 
   static Future<StaffvouchereditResponse?> SitevoucherSite_entryList_editAPI(int VocId) async {

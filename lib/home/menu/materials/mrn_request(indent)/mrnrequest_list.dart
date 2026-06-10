@@ -30,10 +30,6 @@ class _MRN_RequestIndent_EntrylistState
 
   @override
   void initState() {
-    setState(() {
-      mrn_request_controller.mainEtyList.value.clear();
-      mrn_request_controller.MrnReqEtyList.value.clear();
-    });
     DateTime currentDate = DateTime.now();
     DateTime lastDayOfMonth =
         new DateTime(currentDate.year, currentDate.month - 1, 0);

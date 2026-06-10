@@ -7,150 +7,190 @@ String dailywrkDoneDprItemlistSaveModelToJson(DailywrkDoneDprItemlistSaveModel d
 
 class DailywrkDoneDprItemlistSaveModel {
   DailywrkDoneDprItemlistSaveModel({
-    this.workId,
+    this.Id,
     this.workNo,
     this.workDate,
+    this.workType,
     this.projectId,
     this.siteId,
     this.subContId,
     this.refNo,
+    this.totalamt,
     this.entryType,
+    this.dprType,
+    this.billStatus,
     this.remarks,
     this.preparedby,
     this.approvedby,
-    this.userId,
-    this.empId,
-    this.entryMode,
-    this.deviceName,
-    this.dprDet,
-    this.files,
+    this.createdBy,
+    this.createdDate,
+    this.subContractDailyWorkDets,
+    this.approveStatus,
+    this.verifyStatus,
   });
 
-  String? workId;
+  int? Id;
   String? workNo;
   String? workDate;
-  String? projectId;
-  String? siteId;
-  String? subContId;
+  String? workType;
+  int? projectId;
+  int? siteId;
+  int? subContId;
   String? refNo;
+  String? totalamt;
   String? entryType;
+  int? dprType;
+  String? billStatus;
   String? remarks;
   String? preparedby;
   String? approvedby;
-  String? userId;
-  String? empId;
-  String? entryMode;
-  String? deviceName;
-  List<DprDet>? dprDet;
-  List<File>? files;
+  int? createdBy;
+  String? createdDate;
+  String? approveStatus;
+  String? verifyStatus;
+  List<SubContractDailyWorkDets>? subContractDailyWorkDets;
 
   factory DailywrkDoneDprItemlistSaveModel.fromJson(Map<String, dynamic> json) => DailywrkDoneDprItemlistSaveModel(
-    workId: json["WorkId"],
+    Id: json["Id"],
     workNo: json["WorkNo"],
     workDate: json["WorkDate"],
+    workType: json["WorkType"],
     projectId: json["ProjectId"],
     siteId: json["SiteId"],
-    subContId: json["SubContId"],
+    subContId: json["SubContractorId"],
     refNo: json["RefNo"],
+    totalamt: json["TotalAmount"],
     entryType: json["EntryType"],
+    dprType: json["DPRType"],
+    billStatus: json["BillStatus"],
     remarks: json["Remarks"],
     preparedby: json["Preparedby"],
     approvedby: json["Approvedby"],
-    userId: json["UserId"],
-    empId: json["EmpId"],
-    entryMode: json["EntryMode"],
-    deviceName: json["DeviceName"],
-    files: json["files"],
-    dprDet: List<DprDet>.from(json["DprDet"].map((x) => DprDet.fromJson(x))),
+    createdBy: json["CreatedBy"],
+    createdDate: json["CreatedDt"],
+    approveStatus: json["ApproveStatus"],
+    verifyStatus: json["VerifyStatus"],
+    subContractDailyWorkDets: List<SubContractDailyWorkDets>.from(json["DprDet"].map((x) => SubContractDailyWorkDets.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "WorkId": workId,
+    "Id": Id,
     "WorkNo": workNo,
     "WorkDate": workDate,
+    "WorkType": workType,
     "ProjectId": projectId,
     "SiteId": siteId,
-    "SubContId": subContId,
+    "SubContractorId": subContId,
     "RefNo": refNo,
+    "TotalAmount": totalamt,
     "EntryType": entryType,
+    "DPRType": dprType,
+    "BillStatus": billStatus,
     "Remarks": remarks,
     "Preparedby": preparedby,
     "Approvedby": approvedby,
-    "UserId": userId,
-    "EmpId": empId,
-    "EntryMode": entryMode,
-    "DeviceName": deviceName,
-    "files": files,
-    "DprDet": List<dynamic>.from(dprDet!.map((x) => x.toJson())),
+    "CreatedBy": createdBy,
+    "CreatedDt": createdDate,
+    "ApproveStatus": approveStatus,
+    "VerifyStatus": verifyStatus,
+    "SubContractDailyWorkDets": List<dynamic>.from(subContractDailyWorkDets!.map((x) => x.toJson())),
   };
 }
 
-class DprDet {
-  DprDet({
+class SubContractDailyWorkDets {
+  int? cement;
+  double? rate;
+  int? subContractDailyWorkMasId;
+  String? detRemarks;
+  int? siteId;
+  int? scaleId;
+  int? subContarctWorkdetid;
+  String? itemDescription;
+  String? workType;
+  int? headItemId;
+  int? subItemId;
+  String? boqCode;
+  String? siteName;
+  double? qty;
+  double? amount;
+  String? billStatus;
+  int? avgLabRate;
+  int? id;
+  int? level3ItemId;
+  String? workRemarks;
+
+  SubContractDailyWorkDets({
+    this.cement,
+    this.rate,
+    this.subContractDailyWorkMasId,
+    this.detRemarks,
+    this.siteId,
+    this.scaleId,
+    this.subContarctWorkdetid,
+    this.itemDescription,
+    this.workType,
     this.headItemId,
     this.subItemId,
-    this.level3ItemId,
-    this.woDetId,
-    this.unit,
+    this.boqCode,
+    this.siteName,
     this.qty,
-    this.rate,
     this.amount,
-    this.detRemarks,
+    this.billStatus,
+    this.avgLabRate,
+    this.id,
+    this.level3ItemId,
+    this.workRemarks
   });
 
-  String? headItemId;
-  String? subItemId;
-  String? level3ItemId;
-  String? woDetId;
-  String? unit;
-  String? qty;
-  String? rate;
-  String? amount;
-  String? detRemarks;
-
-  factory DprDet.fromJson(Map<String, dynamic> json) => DprDet(
-    headItemId: json["HeadItemId"],
-    subItemId: json["SubItemId"],
-    level3ItemId: json["Level3ItemId"],
-    woDetId: json["WODetId"],
-    unit: json["Unit"],
-    qty: json["Qty"],
-    rate: json["Rate"],
-    amount: json["Amount"],
-    detRemarks: json["DetRemarks"],
+  factory SubContractDailyWorkDets.fromJson(Map<String, dynamic> json) => SubContractDailyWorkDets(
+    cement: json["cement"],
+    rate: json["rate"],
+    subContractDailyWorkMasId: json["subContractDailyWorkMasId"],
+    detRemarks: json["workRemarks"],
+    siteId: json["siteId"],
+    scaleId: json["unit"],
+    subContarctWorkdetid: json["subContarctWorkdetid"],
+    itemDescription: json["itemDescription"],
+    workType: json["workType"],
+    headItemId: json["headItemId"],
+    subItemId: json["subItemId"],
+    boqCode: json["boqCode"],
+    siteName: json["siteName"],
+    qty: json["qty"],
+    amount: json["amount"],
+    billStatus: json["billStatus"],
+    avgLabRate: json["avgLabRate"],
+    id: json["id"],
+    level3ItemId: json["level3ItemId"],
+    workRemarks: json["workRemarks"]
   );
 
   Map<String, dynamic> toJson() => {
-    "HeadItemId": headItemId,
-    "SubItemId": subItemId,
-    "Level3ItemId": level3ItemId,
-    "WODetId": woDetId,
-    "Unit": unit,
-    "Qty": qty,
-    "Rate": rate,
-    "Amount": amount,
-    "DetRemarks": detRemarks,
+    "cement": cement,
+    "rate": rate,
+    "subContractDailyWorkMasId": subContractDailyWorkMasId,
+    "workRemarks": detRemarks,
+    "siteId": siteId,
+    "unit": scaleId,
+    "subContarctWorkdetid": subContarctWorkdetid,
+    "itemDescription": itemDescription,
+    "workType": workType,
+    "headItemId": headItemId,
+    "subItemId": subItemId,
+    "boqCode": boqCode,
+    "siteName": siteName,
+    "qty": qty,
+    "amount": amount,
+    "billStatus": billStatus,
+    "avgLabRate": avgLabRate,
+    "id": id,
+    "level3ItemId": level3ItemId,
+    "workRemarks": workRemarks,
   };
 }
 
 
 
-DprItemlistscreenSaveResponse dprItemscreenSaveResponseFromJson(String str) => DprItemlistscreenSaveResponse.fromJson(json.decode(str));
 
-String dprItemscreenSaveResponseToJson(DprItemlistscreenSaveResponse data) => json.encode(data.toJson());
 
-class DprItemlistscreenSaveResponse {
-  DprItemlistscreenSaveResponse({
-    this.RetString,
-  });
 
-  String? RetString;
-
-  factory DprItemlistscreenSaveResponse.fromJson(Map<String, dynamic> json) => DprItemlistscreenSaveResponse(
-    RetString: json["RetString"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "RetString": RetString,
-  };
-}

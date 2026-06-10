@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -19,6 +21,7 @@ import '../../utilities/baseutitiles.dart';
 import '../../utilities/print_logger.dart';
 import '../../utilities/requestconstant.dart';
 import 'camera_screen.dart';
+import 'package:http/http.dart' as http;
 
 String? apiLoading;
 
@@ -50,17 +53,18 @@ class _PunchInState extends State<PunchIn> {
 
     punchInController.getNetworkTime();
     checkLocationPermission();
-
     super.initState();
   }
 
   Future<void> checkLocationPermission() async {
     PermissionStatus permissionStatus = await Permission.location.status;
+    debugPrint("Permission Status :: $permissionStatus");
+
     if (permissionStatus.isDenied || permissionStatus.isRestricted) {
       await Permission.location.request();
       await determinePosition();
       permissionStatus = await Permission.location.status;
-      printToLog("Permission Status :: $permissionStatus");
+      debugPrint("Permission Status :: $permissionStatus");
     } else if (permissionStatus.isGranted) {
       await determinePosition();
     } else {
@@ -95,30 +99,74 @@ class _PunchInState extends State<PunchIn> {
 
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    checkGeoFence(position);
+    try {
+      // 📍 Call Nominatim instead of placemarkFromCoordinates
+      final url = Uri.parse(
+          "https://nominatim.openstreetmap.org/reverse?format=json&lat=${position
+              .latitude}&lon=${position.longitude}&addressdetails=1");
+      print('url...${url}');
+
+      final response = await http.get(url, headers: {
+        "User-Agent": "core/1.0 (https://core.in/contact)"
+      });
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final displayName = data["display_name"] ?? "Unknown address";
+
+        setState(() {
+          loading = false;
+          punchInController.punchAddress.value = displayName;
+          punchInController.punchLat.value = position.latitude.toString();
+          punchInController.punchLon.value = position.longitude.toString();
+          if (kDebugMode) {
+            print("Punch In Address :: $displayName");
+            print("Punch In latitude :: ${position.latitude}");
+            print("Punch In longitude :: ${position.longitude}");
+          }
+          if (widget.allotedStatus!="OD") {
+            checkGeoFence(position);
+          } else {
+            setState(() {
+              status = true;
+              loading = false;
+            });
+          }
+        });
+      } else {
+        // Fluttertoast.showToast(msg: "Failed to get address from Nominatim");
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error fetching location: $e");
+      }
+    }
   }
 
   void checkGeoFence(Position position) {
+    double lat = double.tryParse(widget.latitude!.trim()) ?? 0.0;
+    double lon = double.tryParse(widget.longitude!.trim()) ?? 0.0;
+    double radius = double.tryParse(widget.radius!.trim()) ?? 0.0;
+
     double distanceInMeters = Geolocator.distanceBetween(
       position.latitude,
       position.longitude,
-      double.parse(widget.latitude!),
-      double.parse(widget.longitude!),
+      lat,
+      lon,
     );
-    print('distanceInMeters...${distanceInMeters}');
-    if (distanceInMeters <= num.parse(widget.radius!)) {
+
+    if (distanceInMeters <= radius) {
       setState(() {
         status = true;
         loading = false;
-        printToLog("Status :: You are inside the location");
-        Fluttertoast.showToast(msg: "You are inside the location");
       });
+      Fluttertoast.showToast(msg: "You are inside the location");
     } else {
       setState(() {
         status = false;
         loading = false;
       });
-      printToLog("Status :: You are outside the location");
+      debugPrint("Status :: You are outside the location");
     }
   }
 
@@ -137,7 +185,7 @@ class _PunchInState extends State<PunchIn> {
             ),
             color: Colors.white,
             onPressed: () {
-              Get.back();
+                  Get.back();
             },
           ),
           title: const Text("Punch In"),
@@ -206,7 +254,7 @@ class _PunchInState extends State<PunchIn> {
                     ),
                   ),
                 ),
-                widget.allotedStatus=="N"? Column(
+                widget.allotedStatus=="OD" || widget.allotedStatus=="NA"? Column(
                   children: [
                     Container(
                       margin: EdgeInsets.only(top: 2, left: 25, right: 25),
@@ -264,7 +312,7 @@ class _PunchInState extends State<PunchIn> {
                       ),
                       onPressed: () async {
                         if (punchInController.imageFile.value != null) {
-                          if(widget.allotedStatus=="N" && punchInController.punchInRemarks.text.trim()==''){
+                          if((widget.allotedStatus=="OD" || widget.allotedStatus=="NA") && punchInController.punchInRemarks.text.trim()==''){
                             BaseUtitiles.showToast("Please enter PunchIn remarks");
                           }
                           else{

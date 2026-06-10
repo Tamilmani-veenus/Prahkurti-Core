@@ -8,6 +8,10 @@ class PunchInSaveModel {
   String? InTime;
   String? InStatus;
   String? InNAPRemarks;
+  String? OnPinInLatitude;
+  String? OnPinInLongitude;
+  String? OnPinInAddress;
+  String? OnDutyRemarks;
   String? CreatedBy;
   String? CreatedDt;
 
@@ -19,6 +23,10 @@ class PunchInSaveModel {
     this.InTime,
     this.InStatus,
     this.InNAPRemarks,
+    this.OnPinInLatitude,
+    this.OnPinInLongitude,
+    this.OnPinInAddress,
+    this.OnDutyRemarks,
     this.CreatedBy,
     this.CreatedDt,
   });
@@ -30,6 +38,10 @@ class PunchInSaveModel {
     "InDate": InDate,
     "InTime": InTime,
     "InNAPRemarks": InNAPRemarks,
+    "OnPinInLatitude": OnPinInLatitude,
+    "OnPinInLongitude": OnPinInLongitude,
+    "OnPinInAddress": OnPinInAddress,
+    "OnDutyRemarks": OnDutyRemarks,
     "InStatus": InStatus,
     "CreatedBy": CreatedBy,
     "remarks": CreatedDt,
@@ -46,7 +58,11 @@ class PunchOutSaveModel {
   String? TodayTask;
   String? TomorrowTask;
   String? OutNAPRemarks;
+  String? OnPinOutLatitude;
+  String? OnPinOutLongitude;
+  String? OnPinOutAddress;
   String? InDate;
+  String? OnDutyRemarks;
 
   PunchOutSaveModel({
     this.id,
@@ -58,7 +74,11 @@ class PunchOutSaveModel {
     this.TodayTask,
     this.TomorrowTask,
     this.OutNAPRemarks,
+    this.OnPinOutLatitude,
+    this.OnPinOutLongitude,
+    this.OnPinOutAddress,
     this.InDate,
+    this.OnDutyRemarks,
   });
 
   Map<String, dynamic> toJson() => {
@@ -71,7 +91,11 @@ class PunchOutSaveModel {
     "TodayTask" : TodayTask,
     "TomorrowTask" : TomorrowTask,
     "OutNAPRemarks" : OutNAPRemarks,
+    "OnPinOutLatitude" : OnPinOutLatitude,
+    "OnPinOutLongitude" : OnPinOutLongitude,
+    "OnPinOutAddress" : OnPinOutAddress,
     "InDate" : InDate,
+    "OnDutyRemarks" : OnDutyRemarks,
   };
 }
 
@@ -93,13 +117,13 @@ class GetPunchSatusResponse {
   factory GetPunchSatusResponse.fromJson(Map<String, dynamic> json) => GetPunchSatusResponse(
     success: json["success"],
     message: json["message"],
-    result: Result.fromJson(json["result"]),
+    result: json["result"]==null?null:Result.fromJson(json["result"]),
   );
 
   Map<String, dynamic> toJson() => {
     "success": success,
     "message": message,
-    "result": result!.toJson(),
+    "result": result==null?null:result!.toJson(),
   };
 }
 

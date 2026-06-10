@@ -6,7 +6,9 @@ import 'package:flutter/widgets.dart';
 import '../apimanager/apimanager.dart';
 import '../models/bill_genration_direct_entrylist_model.dart';
 
+import '../models/billdirectgstcalculations.dart';
 import '../models/directbill_editapi_res_model.dart';
+import '../models/directbill_itemlistdet_resmodel.dart';
 import '../models/nmrwklybill_deduction_save_model.dart';
 // import '../models/workOrderListDet_model.dart';/
 import '../utilities/apiconstant.dart';
@@ -15,143 +17,116 @@ import '../utilities/requestconstant.dart';
 
 class DirectBillGenerateProvider {
 
-  static Future<List<BillDirectentrylist>> getBillDirectEntry_List(
-      int? Userid, String UserType, String frdate, String todate) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GET_DIRECTBILL_ENTRY_LIST +
-        "?UserId=$Userid&UserType=$UserType&Frdate=$frdate&Todate=$todate")
-        .then((value) {
+  static Future<BillDirectentrylist?> getBillDirectEntry_List(String frdate, String todate) async {
+    try{
+      final value = await ApiManager.getAPICall(ApiConstant.GET_DIRECTBILL_ENTRY_LIST + "?fromDate=$frdate&toDate=$todate");
       print("AdvEntryList:" + value);
-      data = billDirectentrylistFromJson(value);
-      if (data != null && data.length > 0) {
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return data;
+      return billDirectentrylistFromJson(value);
+    }
+    catch(e){
+      print("ERROR.....$e");
+      return null;
+    }
   }
 
-  static Future billadv_balance(int pId,int subId, siteId) async {
-    var datasave;
-    await ApiManager.getAPICall(ApiConstant.GET_DIRECTBILL_ADVANCE_BALANCE+"?PID=$pId&SubID=$subId&SID=$siteId").then((value) {
-      var decodedJson = json.decode(value);
-      datasave=decodedJson;
-      if (datasave!=null) {
-        return datasave;
-      }
-    },onError: (error) {
-      print(error);
+  static Future<BillDirectDetCalculations?> getBillDirectCalculation_List() async {
+    try{
+      final value = await ApiManager.getAPICall(ApiConstant.GET_DIRECTBILL_CALCULATION_LIST);
+      print("AdvEntryList:" + value);
+      return billDirectDetCalculationsFromJson(value);
+    }
+    catch(e){
+      print("ERROR.....$e");
+      return null;
+    }
+  }
+
+  static Future<dynamic> billadv_balance(int pId,int subId) async {
+    try {
+      final value = await ApiManager.getAPICall(ApiConstant.GET_DIRECTBILL_ADVANCE_BALANCE+"?projectId=$pId&subcontractorId=$subId");
+      print('API Response: ${value}');
+      return jsonDecode(value);
+
+    } catch (error) {
       print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return datasave;
+      return null;
+    }
   }
 
-  static Future getWorkOrderList(
-      int pId, int subId, int workOrderNo) async {
-    try {
-      final response = await ApiManager.getAPICall(
-        "${ApiConstant.GET_WORKORDER_ENTRY_LIST}?PID=$pId&SubID=$subId&WorkOrderId=$workOrderNo",
+
+  static Future<BillDirectWorkOrdDet?> getWorkOrderList(int pId,int sId, int subId, int workOrderNo,type,toDate) async {
+    try{
+      final value = await ApiManager.getAPICall(
+          "${ApiConstant.GET_WORKORDER_ENTRY_LIST}?projectId=$pId&siteId=$sId&subcontractorId=$subId&workOrderId=$workOrderNo"
       );
-
-      final data = directbillEditApiResModelFromJson(response);
-
-      if (data.isNotEmpty) {
-        return data;
-      }
-      return null;
-    } catch (error) {
-      print(error);
-      BaseUtitiles.showToast("${RequestConstant.SOMETHINGWENT_WRONG} $error");
+      print("AdvEntryList:" + value);
+      return billDirectWorkOrdDetFromJson(value);
+    }
+    catch(e,s){
+      print("ERROR.....$e");
+      print("ERROR...${s}");
       return null;
     }
   }
 
-
-  static Future<String?> SaveSubContScreenEntryAPI(String body, int workId, int buttonControl,context) async {
-    String? ratingRes;
-
+  static SaveSubContScreenEntryAPI(String body, int id, context) async {
     try {
-      if (workId != 0) {
-        // PUT request
-        final value = await ApiManager.putUpdateAPIButton(ApiConstant.PUT_DIRECTBILL_UPDATE_API, body);
-        var response = saveDeduction_SaveResponseFromJson(value);
-        if (response.RetString != null) {
-          ratingRes = response.RetString;
-        }
+      var response;
+
+      if (id != 0) {
+        response = await ApiManager.putUpdateAPIButton("${ApiConstant.PUT_DIRECTBILL_UPDATE_API}?id=$id", body);
       } else {
-        // POST request
-        final value = await ApiManager.postAPICall(ApiConstant.DIRECTBILL_SAVE_API, body);
-        var response = saveDeduction_SaveResponseFromJson(value);
-        if (response.RetString != null) {
-          ratingRes = response.RetString;
-        }
+        response = await ApiManager.postAPICall(ApiConstant.DIRECTBILL_SAVE_API, body);
       }
-    }on SocketException catch (_) {
-      BaseUtitiles.showToast(RequestConstant.NOINTERNETCONNECTION);
-      Navigator.pop(context);
-      Navigator.pop(context);
+      return jsonDecode(response);
+
+    }  catch (error) {
+      print("Error == $error");
       return null;
     }
-    on TimeoutException catch (_) {
-      BaseUtitiles.showToast(RequestConstant.REQUESTTIMEOUT);
-      Navigator.pop(context);
-      Navigator.pop(context);
+  }
+
+  static Future<DirectbillEditApiResModel?> directBill_entryList_editAPI(int workId) async {
+    try{
+      final value = await ApiManager.getAPICall("${ApiConstant.EDIT_DIRECTBILL_API}?id=$workId");
+      print("AdvEntryList:" + value);
+      return directbillEditApiResModelFromJson(value);
+    }
+    catch(e,F){
+      print("ERROR.....$e");
+      print("ERROR.....$F");
       return null;
     }
-    on FormatException catch (_) {
-      BaseUtitiles.showToast(RequestConstant.BADRESPONSE);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      return null;
+  }
+
+
+
+
+
+  static Future<bool> entryList_deleteAPI(int WorkId,status) async {
+    try {
+      final response = await ApiManager.deleteAPICall(
+          "${ApiConstant.DELETE_DIRECTBILL_API}?id=$WorkId&isList=$status");
+
+      final Map<String, dynamic> decoded = jsonDecode(response);
+
+
+      bool isSuccess = decoded["success"] == true;
+
+      final message = decoded["message"] ??
+          (isSuccess
+              ? "Deleted successfully"
+              : "Something went wrong");
+
+      BaseUtitiles.showToast(message);
+
+      return isSuccess;
     } catch (error) {
-      print('❌ Error in SaveSubContScreenEntryAPI: $error');
-      Navigator.pop(context);
-      Navigator.pop(context);
-      buttonControl = 0;
-      BaseUtitiles.showToast(RequestConstant.NETWORKERROR);
-      return null;
-    }
-
-    return ratingRes;
-  }
-
-  static Future<List<DirectbillEditApiResModel>> directBill_entryList_editAPI(int workId) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.EDIT_DIRECTBILL_API + "?WorkId=$workId").then((value) {
-      final res = directbillEditApiResModelFromJson(value);
-      if (res != null) {
-        data = res;
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG+error);
-    });
-    return data;
-  }
-
-  static Future entryList_deleteAPI(int WorkId, int subid, String WorkNo, String UserId, String DeviceName) async {
-    var data = null;
-    await ApiManager.deleteAPICall(ApiConstant.DELETE_DIRECTBILL_API +
-        "?WorkId=$WorkId&subid=$subid&WorkNo=$WorkNo&UserId=$UserId&DeviceName=$DeviceName")
-        .then((value) {
-      final res = json.decode(value);
-      if (res != null) {
-        data = res;
-        if(data=="Deleted"){
-          BaseUtitiles.showToast("Deleted Successfully");
-        }else{
-          BaseUtitiles.showToast("$data");
-        }
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
+      print("Delete API Error: $error");
       BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
-    });
-    return data;
+      return false;
+    }
   }
+
+
 }

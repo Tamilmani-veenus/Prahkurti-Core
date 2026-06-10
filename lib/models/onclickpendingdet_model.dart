@@ -360,6 +360,7 @@ class MMatPurOrdLink {
   String? GSTAmt;
   double? igstAmount;
   double? netAmount;
+  double? netPayAmount;
   String? remarks;
   String? poDescription;
   int? materialReqOrdDetLinkid;
@@ -394,6 +395,7 @@ class MMatPurOrdLink {
     this.GSTAmt,
     this.igstAmount,
     this.netAmount,
+    this.netPayAmount,
     this.remarks,
     this.poDescription,
     this.materialReqOrdDetLinkid,
@@ -429,6 +431,7 @@ class MMatPurOrdLink {
     GSTAmt: json["GSTAmt"],
     igstAmount: json["igstAmount"],
     netAmount: json["netAmount"].toDouble(),
+    netPayAmount: json["TotalDetNetAmount"],
     remarks: json["remarks"],
     poDescription: json["poDescription"],
     materialReqOrdDetLinkid: json["materialReqOrdDetLinkid"],
@@ -464,6 +467,7 @@ class MMatPurOrdLink {
     "GSTAmt": GSTAmt,
     "igstAmount": igstAmount,
     "netAmount": netAmount,
+    "TotalDetNetAmount": netPayAmount,
     "remarks": remarks,
     "poDescription": poDescription,
     "materialReqOrdDetLinkid": materialReqOrdDetLinkid,

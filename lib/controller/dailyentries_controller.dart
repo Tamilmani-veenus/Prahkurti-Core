@@ -296,9 +296,8 @@ class DailyEntriesController extends GetxController {
     readListdata.value.clear();
     siteController.selectedsiteId.value = 0;
     subcontractorController.selectedSubcontId.value = 0;
-    siteController.selectedsitedropdownName = "--Select--".obs;
+    siteController.selectedsitedropdownName = "--SELECT--".obs;
     siteController.getSiteDropdownvalue.value.clear();
-    saveButton.value = RequestConstant.SAVE;
     attendId = 0;
     projectController.selectedProjectId = 0.obs;
     AttendDateController.text = BaseUtitiles.initiateCurrentDateFormat();
@@ -311,7 +310,7 @@ class DailyEntriesController extends GetxController {
     siteController.siteDropdownName.clear();
     WorkTypeTextController.text = "NMR";
     Nmr_Rate.value = RequestConstant.N;
-    shiftTextController.text = "--Select--";
+    shiftTextController.text = "--SELECT--";
     shiftType.value = RequestConstant.D;
   }
 

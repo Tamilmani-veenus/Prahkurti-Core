@@ -1,4 +1,5 @@
 import '../db_helper/db_manager.dart';
+import '../db_model/direct_bill_gst_calculation_model.dart';
 import '../db_model/directbill_gen_itemlist_model.dart';
 
 class DirectBillGen_ItemlistService {
@@ -47,5 +48,28 @@ class DirectBillGen_ItemlistService {
     });
   }
 
+  //nmr weekly bill generation
+
+  DirectBillGST_ItemTable_Save(
+      List<DirectBillGSTCalTable> directBillGenGSTItemListTableModel) async {
+    directBillGenGSTItemListTableModel.forEach((element) async {
+      return await _dbManager.insertData('directBillGenGSTItemlistTable', element.DirectBillGSTCalTableMap());
+    });
+  }
+
+  DirectBillGST_ItemlistTable_readAll() async {
+    return _dbManager.readData('directBillGenGSTItemlistTable');
+  }
+
+  DirectBillGST_ItemlistTable_Update(
+      List<DirectBillGSTCalTable> directBillGenGSTItemListTableModel) async {
+    directBillGenGSTItemListTableModel.forEach((element) async {
+      return await _dbManager.UpdateTableIdwise('directBillGenGSTItemlistTable', element.DirectBillGSTCalTableMap());
+    });
+  }
+
+  DirectBillGST_ItemlistTable_delete() async {
+    return await _dbManager.delete('directBillGenGSTItemlistTable');
+  }
 
 }

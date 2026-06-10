@@ -20,7 +20,6 @@ class _DailyWork_done_DPR_LabourState extends State<DailyWork_done_DPR_Labour> {
 
   @override
   void initState() {
-    dailyWrkDone_DPRNEW_Controller.entrycheck = 1;
     dailyWrkDone_DPRNEW_Controller.nosAndothrsZerovalueset();
     super.initState();
   }
@@ -35,68 +34,71 @@ class _DailyWork_done_DPR_LabourState extends State<DailyWork_done_DPR_Labour> {
           FocusManager.instance.primaryFocus?.unfocus();
         }
       },
-      child: Scaffold(
-        bottomSheet: SizedBox(
-          height: kToolbarHeight,
-          child: AppBar(
-            backgroundColor: Colors.white,
-            automaticallyImplyLeading: false,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children:<Widget> [
-                const Text("Total Amount ",style: TextStyle(color: Colors.black87,fontSize: 14),),
-                Text(RequestConstant.CURRENCY_SYMBOL+dailyWrkDone_DPRNEW_Controller.totalNetAmnt.toString(),style: TextStyle(color: dailyWrkDone_DPRNEW_Controller.totalNetAmnt > 0 ? Colors.green.shade800 : Colors.red.shade800,fontSize: 17 )),
-                InkWell(
-                  onTap: (){
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DailyWork_done_DPR_Material()));
-                  },
-                  child: const Row(
-                    children: [
-                      Text("NEXT",style: TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.bold),),
-                      Icon(Icons.navigate_next_sharp,color: Colors.grey )
-                    ],
-                  ),
-                )
+      child: SafeArea(
+        top: false,
+        child: Scaffold(
+          bottomSheet: SizedBox(
+            height: kToolbarHeight,
+            child: AppBar(
+              backgroundColor: Colors.white,
+              automaticallyImplyLeading: false,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children:<Widget> [
+                  const Text("Total Amount ",style: TextStyle(color: Colors.black87,fontSize: 14),),
+                  Text(RequestConstant.CURRENCY_SYMBOL+dailyWrkDone_DPRNEW_Controller.totalNetAmnt.toString(),style: TextStyle(color: dailyWrkDone_DPRNEW_Controller.totalNetAmnt > 0 ? Colors.green.shade800 : Colors.red.shade800,fontSize: 17 )),
+                  InkWell(
+                    onTap: (){
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DailyWork_done_DPR_Material()));
+                    },
+                    child: const Row(
+                      children: [
+                        Text("NEXT",style: TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.bold),),
+                        Icon(Icons.navigate_next_sharp,color: Colors.grey )
+                      ],
+                    ),
+                  )
 
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-        body: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            children: <Widget>[
-              const SizedBox(height: 20),
-              Container(
-                margin: const EdgeInsets.only(left: 15, right: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      "DPR - NEW (Labour)",
-                      style: TextStyle(
-                          fontSize: RequestConstant.Heading_Font_SIZE,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text(
-                          "Back",
-                          style: TextStyle(color: Colors.grey, fontSize: 18),
-                        )),
+          body: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              children: <Widget>[
+                const SizedBox(height: 40),
+                Container(
+                  margin: const EdgeInsets.only(left: 15, right: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "DPR - NEW (Labour)",
+                        style: TextStyle(
+                            fontSize: RequestConstant.Heading_Font_SIZE,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text(
+                            "Back",
+                            style: TextStyle(color: Colors.grey, fontSize: 18),
+                          )),
 
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 5),
-              ListDetails(),
-              // Divider(thickness: 1,color: Colors.grey)
-            ],
+                const SizedBox(height: 5),
+                ListDetails(),
+                // Divider(thickness: 1,color: Colors.grey)
+              ],
+            ),
+
+
           ),
-
-
         ),
       ),
     );
@@ -208,10 +210,6 @@ class _DailyWork_done_DPR_LabourState extends State<DailyWork_done_DPR_Labour> {
                                   child: TextFormField(
                                       onTap: () {
                                         dailyWrkDone_DPRNEW_Controller.NosControllers[index].text = "";
-                                        setState(() {
-                                          dailyWrkDone_DPRNEW_Controller.clickEdit();
-                                          dailyWrkDone_DPRNEW_Controller.getLabourTablesDatas();
-                                        });
                                       },
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(color: Colors.black),
@@ -227,11 +225,11 @@ class _DailyWork_done_DPR_LabourState extends State<DailyWork_done_DPR_Labour> {
                                             borderSide: BorderSide(color: Theme.of(context).primaryColor),
                                             borderRadius: const BorderRadius.all(Radius.circular(10))),
                                       ),
-                                      onChanged: (value) {
-                                        setState(() {
-                                          dailyWrkDone_DPRNEW_Controller.clickEdit();
-                                          dailyWrkDone_DPRNEW_Controller.getLabourTablesDatas();
-                                        });
+                                      onChanged: (value) async {
+                                        await dailyWrkDone_DPRNEW_Controller.clickEdit();
+                                        await dailyWrkDone_DPRNEW_Controller.getLabourTablesDatas();
+
+                                        setState(() {});
                                       }
                                   ),
                                 )),
@@ -251,10 +249,6 @@ class _DailyWork_done_DPR_LabourState extends State<DailyWork_done_DPR_Labour> {
                                   child: TextFormField(
                                       onTap: () {
                                         dailyWrkDone_DPRNEW_Controller.OtHrsController[index].text = "";
-                                        setState(() {
-                                          dailyWrkDone_DPRNEW_Controller.clickEdit();
-                                          dailyWrkDone_DPRNEW_Controller.getLabourTablesDatas();
-                                        });
                                       },
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
@@ -272,11 +266,11 @@ class _DailyWork_done_DPR_LabourState extends State<DailyWork_done_DPR_Labour> {
                                             borderSide: BorderSide(color: Theme.of(context).primaryColor),
                                             borderRadius: const BorderRadius.all(Radius.circular(10))),
                                       ),
-                                      onChanged: (value) {
-                                        setState(() {
-                                          dailyWrkDone_DPRNEW_Controller.clickEdit();
-                                          dailyWrkDone_DPRNEW_Controller.getLabourTablesDatas();
-                                        });
+                                      onChanged: (value) async {
+                                        await dailyWrkDone_DPRNEW_Controller.clickEdit();
+                                        await dailyWrkDone_DPRNEW_Controller.getLabourTablesDatas();
+
+                                        setState(() {});
                                       }
 
                                   )),

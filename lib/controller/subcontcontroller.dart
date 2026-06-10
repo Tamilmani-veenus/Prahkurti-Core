@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../utilities/baseutitiles.dart';
+import '../utilities/requestconstant.dart';
 import 'nmrweeklybill_controller.dart';
 
 class SubcontractorController extends GetxController {
@@ -102,16 +103,46 @@ class SubcontractorController extends GetxController {
     Subcontractorname.text=selectedSubconttName.value;
   }
 
-  Future getWorkOrderNoList(int pid, int sid, int subid) async {
-    getdpDnWrkOrderValue.value = await CommonProvider.getWorkOrderNoList(pid, sid,subid);
+  Future getWorkOrderNoList(type, int pid, int sid, int subid, {String? fromDate, String? toDate}) async {
+    getdpDnWrkOrderValue.value.clear();
+    final value = await await CommonProvider.getWorkOrderNoList(pid, sid,subid,fromDate: fromDate,toDate: toDate,type: type);
+    if (value != null) {
+      if(value.success==true){
+        if(value.result!.isNotEmpty){
+          getdpDnWrkOrderValue.value = value.result!;
+        }
+        else {
+          BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+        }
+      }else {
+        BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
+      }
+    } else {
+      BaseUtitiles.showToast("Something Went Wrong...");
+    }
   }
 
   Future getInvoiceNoList(int pid,  int subid) async {
-    getInvoiceNoValue.value = await CommonProvider.getInvoiceNoList(pid,subid);
-    getInvoiceNoValue.value.forEach((element){
-      InvoiceNo.text=element.entryAutoNo.toString();
-    });
+    getInvoiceNoValue.value.clear();
+    final value = await await CommonProvider.getInvoiceNoList(pid,subid);
+    if (value != null) {
+      if(value.success==true){
+        if(value.result!.isNotEmpty){
+          getInvoiceNoValue.value = value.result!;
+          InvoiceNo.text=value.result!.first.entryAutoNo.toString();
+        }
+        else {
+          BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+        }
+      }else {
+        BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
+      }
+    } else {
+      BaseUtitiles.showToast("Something Went Wrong...");
+    }
   }
+
+
 
   setselectedWorkOrderId(String value) {
     if (getdpDnWrkOrderValue.value.length>0) {

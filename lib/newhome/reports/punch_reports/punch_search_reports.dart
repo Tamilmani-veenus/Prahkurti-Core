@@ -285,13 +285,14 @@ class PunchSearchReports extends GetView<PunchInController> {
                               ),
                             ),
                             onTap: () async {
+                              bottomsheetControllers.searchcontroller.text = "";
                               if (loginController.user.value.userType == "A") {
                                 await staffController
                                     .get_staffDropdowntList(context,"punchReport");
                                 bottomsheetControllers.StaffName(
                                     context,
                                     staffController
-                                        .getStaffDropdownvalue.value);
+                                        .getStaffDropdownvalue.value,type: "punchReport");
                                 FocusScope.of(context).unfocus();
                               } else {
                                 null;
@@ -337,10 +338,8 @@ class PunchSearchReports extends GetView<PunchInController> {
                     ),
                     Expanded(
                       child:
-                          Obx(
-                              () =>
-                                  (punchInController.punchFilterRxList.length !=
-                                          0)
+                          Obx(() =>
+                                  (punchInController.punchFilterRxList.length != 0)
                                       ? ListView.builder(
                                           itemCount: punchInController
                                               .punchFilterRxList.length,
@@ -526,8 +525,40 @@ class PunchSearchReports extends GetView<PunchInController> {
                                                                                       ),
                                                                                       Container(
                                                                                         width: 120,
+                                                                                        child:
+                                                                                          Text(index.instatus == "Alloted" || index.instatus == "Non-Alloted" ?
+                                                                                          '${index.inLocation != "" && index.inLocation != "null" ? index.inLocation! : "-"}' : index.instatus,
+                                                                                          style: const TextStyle(
+                                                                                            fontSize: 13,
+                                                                                            fontWeight: FontWeight.bold,
+                                                                                            color: Colors.black,
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                                SizedBox(
+                                                                                  height: 10,
+                                                                                ),
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets.only(left: 20),
+                                                                                  child: Row(
+                                                                                    children: [
+                                                                                      SizedBox(
+                                                                                        width: 70,
                                                                                         child: Text(
-                                                                                          '${index.inLocation != "" && index.inLocation != "null" ? index.inLocation! : "-"}',
+                                                                                          "In Address :  ",
+                                                                                          style: TextStyle(
+                                                                                            fontSize: 12,
+                                                                                            color: Colors.grey,
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                      Container(
+                                                                                        width: 120,
+                                                                                        child:  Text(index.instatus == "Alloted" || index.instatus == "Non-Alloted" ?
+                                                                                        '${index.projectAddress != "" && index.projectAddress != null ? index.projectAddress! : "-"}' : index.onPinInAddress!,
                                                                                           style: const TextStyle(
                                                                                             fontSize: 13,
                                                                                             fontWeight: FontWeight.bold,
@@ -540,8 +571,7 @@ class PunchSearchReports extends GetView<PunchInController> {
                                                                                 )
                                                                               ],
                                                                             ),
-                                                                            if (!isLastItem)
-                                                                              const Divider(),
+
                                                                           ],
                                                                         ),
                                                                         GestureDetector(
@@ -572,7 +602,6 @@ class PunchSearchReports extends GetView<PunchInController> {
                                                                   const SizedBox(
                                                                       height:
                                                                           5),
-                                                                  Divider(),
                                                                   Row(
                                                                     mainAxisAlignment:
                                                                         MainAxisAlignment
@@ -668,8 +697,40 @@ class PunchSearchReports extends GetView<PunchInController> {
                                                                                     ),
                                                                                     Container(
                                                                                       width: 120,
+                                                                                      child: Text(index.outStatus == "Alloted" || index.outStatus == "Non-Alloted" ?
+                                                                                      '${index.outLocation != null && index.outLocation != "" && index.outLocation != null ? index.outLocation! : "-"}' :
+                                                                                      index.outStatus == null || index.outStatus == "" || index.outStatus == "-" ? "-" : index.outStatus,
+                                                                                        style: const TextStyle(
+                                                                                          fontSize: 13,
+                                                                                          fontWeight: FontWeight.bold,
+                                                                                          color: Colors.black,
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                              SizedBox(
+                                                                                height: 10,
+                                                                              ),
+                                                                              Padding(
+                                                                                padding: const EdgeInsets.only(left: 20),
+                                                                                child: Row(
+                                                                                  children: [
+                                                                                    SizedBox(
+                                                                                      width: 70,
                                                                                       child: Text(
-                                                                                        '${index.outLocation != null && index.outLocation != "" && index.outLocation != "null" ? index.outLocation! : "-"}',
+                                                                                        "Out Address : ",
+                                                                                        style: TextStyle(
+                                                                                          fontSize: 12,
+                                                                                          color: Colors.grey,
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                    Container(
+                                                                                      width: 120,
+                                                                                      child:Text(index.outStatus == "Alloted" || index.outStatus == "Non-Alloted" ?
+                                                                                      '${index.outProjectAddress != null && index.outProjectAddress != "" && index.outProjectAddress != null ? index.outProjectAddress! : "-"}' : index.onPinOutAddress,
                                                                                         style: const TextStyle(
                                                                                           fontSize: 13,
                                                                                           fontWeight: FontWeight.bold,
@@ -714,6 +775,8 @@ class PunchSearchReports extends GetView<PunchInController> {
                                                                             ),
                                                                     ],
                                                                   ),
+                                                                  if (!isLastItem)
+                                                                    const Divider(),
                                                                 ],
                                                               ),
                                                             );

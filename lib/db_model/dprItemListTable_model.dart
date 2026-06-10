@@ -1,8 +1,12 @@
 class DprItemListTableModel {
+  int? reqDetId;
   int? headItemId;
   int? subItemId;
   int? level3ItemId;
   int? woDetId;
+  // int? subContractDailyWorkMasId;
+  int? scaleId;
+  int? siteId;
   String? boqCode;
   String? itemDesc;
   String? unit;
@@ -13,10 +17,12 @@ class DprItemListTableModel {
 
   DprItemListTableModelMap() {
     var mapping = Map<String, dynamic>();
+    mapping['reqDetId'] = reqDetId != null ? reqDetId : null;
     mapping['headItemId'] = headItemId != null ? headItemId : null;
     mapping['subItemId'] = subItemId != null ? subItemId : null;
     mapping['level3ItemId'] = level3ItemId != null ? level3ItemId : null;
     mapping['woDetId'] = woDetId != null ? woDetId : null;
+    // mapping['subContractDailyWorkMasId'] = subContractDailyWorkMasId != null ? subContractDailyWorkMasId : null;
     mapping['boqCode'] = boqCode != null ? boqCode : null;
     mapping['itemDesc'] = itemDesc != null ? itemDesc : null;
     mapping['unit'] = unit != null ? unit : null;
@@ -24,6 +30,9 @@ class DprItemListTableModel {
     mapping['qty'] = qty != null ? qty : null;
     mapping['amt'] = amt != null ? amt : null;
     mapping['balQty'] = balQty != null ? balQty : null;
+    mapping['scaleId'] = scaleId != null ? scaleId : null;
+    mapping['siteId'] = siteId != null ? siteId : null;
+
     return mapping;
   }
 }

@@ -54,7 +54,6 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
         });
       }
       if (mrnRequest_PreIndent_Controller.saveButton.value == RequestConstant.RESUBMIT) {
-        mrnRequest_PreIndent_Controller.saveButton.value = RequestConstant.RESUBMIT;
         mrnRequest_PreIndent_Controller.Material_EditListApiValue.forEach((element) {
           mrnRequest_PreIndent_Controller.reqId = element.reqId;
           mrnRequest_PreIndent_Controller.autoYearWiseNoController.text = element.reqNo;
@@ -73,8 +72,6 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
       if (mrnRequest_PreIndent_Controller.saveButton.value == RequestConstant.SUBMIT) {
         await autoYearWiseNoController.AutoYearWiseNo("MRN PRE INDENT");
         mrnRequest_PreIndent_Controller.autoYearWiseNoController.text = autoYearWiseNoController.MRNIndentPreIndent_autoYrsWise.value;
-        await projectController.getProjectList();
-        mrnRequest_PreIndent_Controller.saveButton.value = RequestConstant.SUBMIT;
         mrnRequest_PreIndent_Controller.reqId = 0;
         mrnRequest_PreIndent_Controller.delete_MaterialIntent_itemlist_Table();
         mrnRequest_PreIndent_Controller.Material_itemview_GetDbList.clear();
@@ -382,16 +379,15 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
                                         vertical: 8, horizontal: 8),
                                     child: ConstIcons.projectName),
                               ),
-                              onTap: () {
-                                // await projectController.getProjectList(context, 0);
-                                setState(() {
+                              onTap: () async {
                                   if (mrnRequest_PreIndent_Controller.saveButton.value == RequestConstant.VERIFY ||
                                       mrnRequest_PreIndent_Controller.saveButton.value == RequestConstant.APPROVAL ||
                                       mrnRequest_PreIndent_Controller.saveButton.value == RequestConstant.RESUBMIT ) {
                                   } else {
+                                    await projectController.getProjectList();
                                     bottomsheetControllers.ProjectName(context, projectController.getdropDownvalue.value);
                                   }
-                                });
+
                               },
                               validator: (value) {
                                 if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
@@ -584,9 +580,10 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
                                   primary: Setmybackground,
                                 ),
                                 onPressed: () {
-                                  if(  mrnRequest_PreIndent_Controller.screenCheck=="PendingScreen"){
-
-                                  }else{
+                                  // if(mrnRequest_PreIndent_Controller.saveButton.value != RequestConstant.VERIFY ||
+                                  //     mrnRequest_PreIndent_Controller.saveButton.value != RequestConstant.APPROVAL){
+                                  //
+                                  // }else{
                                     if (_formKey.currentState!.validate()) {
                                       mrnRequest_PreIndent_Controller.getMaterialList(
                                           context,
@@ -594,7 +591,7 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
                                               .toString(),
                                           projectController.selectedProjectId.value,
                                           siteController.selectedsiteId.value);
-                                    }
+                                    // }
                                   }
                                 },
                                 child: Row(
@@ -690,7 +687,7 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Visibility(
-                    visible: mrnRequest_PreIndent_Controller.screenCheck != "PendingScreen"
+                    visible: mrnRequest_PreIndent_Controller.saveButton.value != RequestConstant.VERIFY && mrnRequest_PreIndent_Controller.saveButton.value != RequestConstant.APPROVAL
                         ? true
                         : false,
                     child: Expanded(
@@ -700,9 +697,7 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
                           height: BaseUtitiles.getheightofPercentage(context, 4),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
-                            color: mrnRequest_PreIndent_Controller.checkColor == 0
-                                ? Colors.white
-                                : Theme.of(context).primaryColor,
+                            color: Colors.white,
                           ),
                           alignment: Alignment.center,
                           child: Text(
@@ -710,14 +705,11 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: RequestConstant.Lable_Font_SIZE,
-                                color: mrnRequest_PreIndent_Controller.checkColor == 0
-                                    ? Theme.of(context).primaryColor
-                                    : Colors.white),
+                                color: Theme.of(context).primaryColor),
                           ),
                         ),
                         onTap: () {
                           setState(() {
-                            mrnRequest_PreIndent_Controller.checkColor = 1;
                             ResetAlert(context);
                           });
                         },
@@ -732,9 +724,7 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
                           height: BaseUtitiles.getheightofPercentage(context, 4),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
-                            color: mrnRequest_PreIndent_Controller.checkColor == 0
-                                ? Theme.of(context).primaryColor
-                                : Colors.white,
+                            color:Theme.of(context).primaryColor,
                           ),
                           alignment: Alignment.center,
                           child:
@@ -743,13 +733,10 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: RequestConstant.Lable_Font_SIZE,
-                                color: mrnRequest_PreIndent_Controller.checkColor == 0
-                                    ? Colors.white
-                                    : Theme.of(context).primaryColor),
+                                color: Colors.white
+                            ),
                           ))),
                       onTap: () async {
-                        mrnRequest_PreIndent_Controller.checkColor = 0;
-
                         if (mrnRequest_PreIndent_Controller.Material_itemview_GetDbList.value.length < 1) {
                           BaseUtitiles.showToast("Plese select item list");
                         } else if (_formKey.currentState!.validate()) {
@@ -1112,7 +1099,6 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
                   Expanded(
                     child: TextButton(
                         onPressed: () async {
-                          mrnRequest_PreIndent_Controller.entrycheck == 0;
                           mrnRequest_PreIndent_Controller.reqId = 0;
                           mrnRequest_PreIndent_Controller.saveButton.value = RequestConstant.SUBMIT;
                           mrnRequest_PreIndent_Controller.delete_MaterialIntent_itemlist_Table();

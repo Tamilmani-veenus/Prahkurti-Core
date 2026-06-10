@@ -1,6 +1,5 @@
 import 'package:prahkurticore/controller/logincontroller.dart';
 import 'package:prahkurticore/controller/reports_controller.dart';
-
 import '../controller/projectcontroller.dart';
 import '../controller/subcontcontroller.dart';
 import '../home/attendance_report/attendance_popup.dart';
@@ -8,7 +7,6 @@ import '../home/pdf_generate/pdf_model/pdfmodel.dart';
 import '../provider/reports_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
 
@@ -32,7 +30,7 @@ class AttendanceController extends GetxController {
 
 
   Future getAttendance_rptList(workType) async {
-    attendanceDatas.value.clear();
+    attendanceDatas.value=[];
     final value = await ReportsProvider.getAttendancereportList(
         reportsController.selectedProjectId.value,
         reportsController.selectedsiteId.value,

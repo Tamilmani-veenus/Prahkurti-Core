@@ -56,8 +56,8 @@ class _SiteVoucher_EntryScreenState extends State<SiteVoucher_EntryScreen> {
     var duration = const Duration(seconds: 0);
     Future.delayed(duration, () async {
       if (siteVoucher_Controller.SaveButton.value == RequestConstant.SUBMIT) {
-        siteVoucher_Controller.imageFiles.value = [];
         siteVoucher_Controller.gettingNetworkImages.value = [];
+        siteVoucher_Controller.imageFiles.value = [];
         projectController.projectname.text = "--SELECT--";
         projectController.selectedProjectId.value = 0;
         siteVoucher_Controller.sitevocDate.text =
@@ -79,8 +79,7 @@ class _SiteVoucher_EntryScreenState extends State<SiteVoucher_EntryScreen> {
         await autoYearWiseNoController.AutoYearWiseNo("SITE VOUCHER");
         siteVoucher_Controller.AutoYearwiseSiteVoc.text =
             autoYearWiseNoController.SiteVoucher_autoYrsWise.value;
-      }
-      else if (siteVoucher_Controller.SaveButton.value ==
+      } else if (siteVoucher_Controller.SaveButton.value ==
           RequestConstant.RESUBMIT) {
         await siteVoucher_Controller.gettingImage();
         siteVoucher_Controller.Sitevoucher_EditListApiValue.forEach((element) {
@@ -550,11 +549,6 @@ class _SiteVoucher_EntryScreenState extends State<SiteVoucher_EntryScreen> {
                                       color: Colors.white),
                                 ),
                                 onTap: () async {
-
-                                  print("wwwwwww...${commonVoucherController.AddAccountname.text.toUpperCase()}");
-                                  print("rrrrrrrr...${commonVoucherController
-                                      .Accountname.text}");
-
                                   if (commonVoucherController
                                               .AccountTypename.text ==
                                           "OTHERS" ||
@@ -626,8 +620,7 @@ class _SiteVoucher_EntryScreenState extends State<SiteVoucher_EntryScreen> {
                           padding: const EdgeInsets.only(
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
                             controller: commonVoucherController.namethrough,
                             cursorColor: Colors.black,
                             style: TextStyle(color: Colors.black),
@@ -935,6 +928,8 @@ class _SiteVoucher_EntryScreenState extends State<SiteVoucher_EntryScreen> {
                             onChanged: (value) {
                               setState(() {
                                 siteVoucher_Controller.type.value = value!;
+                                siteVoucher_Controller.Sitevoucher_itemview_GetDbList.value = [];
+                                siteVoucher_Controller.Amount.text = "0.0";
                               });
                             },
                           ),

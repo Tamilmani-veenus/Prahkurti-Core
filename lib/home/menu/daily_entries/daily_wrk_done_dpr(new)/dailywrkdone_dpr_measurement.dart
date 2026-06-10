@@ -27,17 +27,6 @@ class _DailyWork_done_DPR_MeasurementState
   SiteController siteController = Get.put(SiteController());
 
   @override
-  void initState() {
-    dailyWrkDone_DPRNEW_Controller.entrycheck=1;
-    dailyWrkDone_DPRNEW_Controller.saveId=0;
-    dailyWrkDone_DPRNEW_Controller.saveButton.value=RequestConstant.SUBMIT;
-    if(dailyWrkDone_DPRNEW_Controller.editcheck==1){
-      dailyWrkDone_DPRNEW_Controller.ButtonChanges(dailyWrkDone_DPRNEW_Controller.dprNew_EditApiList[0].workId, dailyWrkDone_DPRNEW_Controller.aprovedButton);
-    }
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -138,6 +127,7 @@ class _DailyWork_done_DPR_MeasurementState
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
+                                  keyboardType: TextInputType.number,
                                   controller: dailyWrkDone_DPRNEW_Controller.dpr_new_Measur_NosController,
                                   cursorColor: Colors.black,
                                   style: const TextStyle(color: Colors.black),
@@ -183,6 +173,7 @@ class _DailyWork_done_DPR_MeasurementState
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
+                                  keyboardType: TextInputType.number,
                                   controller: dailyWrkDone_DPRNEW_Controller.dpr_new_Measur_LengthController,
                                   cursorColor: Colors.black,
                                   style: const TextStyle(color: Colors.black),
@@ -235,6 +226,7 @@ class _DailyWork_done_DPR_MeasurementState
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
+                                  keyboardType: TextInputType.number,
                                   controller: dailyWrkDone_DPRNEW_Controller.dpr_new_Measur_BreathController,
                                   cursorColor: Colors.black,
                                   style: const TextStyle(color: Colors.black),
@@ -280,6 +272,7 @@ class _DailyWork_done_DPR_MeasurementState
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
+                                  keyboardType: TextInputType.number,
                                   controller: dailyWrkDone_DPRNEW_Controller.dpr_new_Measur_DepthController,
                                   cursorColor: Colors.black,
                                   style: const TextStyle(color: Colors.black),
@@ -326,16 +319,14 @@ class _DailyWork_done_DPR_MeasurementState
                           height: BaseUtitiles.getheightofPercentage(context, 4),
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.all(Radius.circular(10)),
-                            color: dailyWrkDone_DPRNEW_Controller.checkColor == 0 ?  Theme.of(context).primaryColor : Colors.white  ,
+                            color: Theme.of(context).primaryColor,
                           ),
                           alignment: Alignment.center,
                           child: Text("ADD",  style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,
-                              color:  dailyWrkDone_DPRNEW_Controller.checkColor == 0 ? Colors.white :  Theme.of(context).primaryColor ),),
+                              color:  Colors.white ),),
                         ),
                         onTap: () async {
-                            dailyWrkDone_DPRNEW_Controller.checkColor = 0;
-
                             if (dailyWrkDone_DPRNEW_Controller.dpr_new_Measur_DescController.text == "" ||
                                 dailyWrkDone_DPRNEW_Controller
                                     .dpr_new_Measur_DepthController.text ==
@@ -392,230 +383,6 @@ class _DailyWork_done_DPR_MeasurementState
                     ],
                   ),
 
-                  // Container(
-                  //   height: BaseUtitiles.getheightofPercentage(context, 4),
-                  //   margin: EdgeInsets.only(left: 10, right: 10, top: 10),
-                  //   decoration: BoxDecoration(),
-                  //   child: TextField(
-                  //     style: TextStyle(
-                  //         fontSize: 12,
-                  //         color: Theme.of(context).primaryColor,
-                  //         fontWeight: FontWeight.bold),
-                  //     controller: dailyWrkDone_DPRNEW_Controller.dpr_new_Measur_DescController,
-                  //     textAlign: TextAlign.justify,
-                  //     decoration: InputDecoration(
-                  //       contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                  //       labelText: "Description of work",
-                  //       border: OutlineInputBorder(),
-                  //       enabledBorder: OutlineInputBorder(
-                  //         borderSide: BorderSide(
-                  //             color: Theme.of(context).primaryColor, width: 1.0),
-                  //       ),
-                  //     ),
-                  //     onChanged: (value) {
-                  //       //nmrWklyController.deduction_paymentCalculation();
-                  //     },
-                  //   ),
-                  // ),
-                  // Container(
-                  //   margin: EdgeInsets.only(top: 5),
-                  //   child: Row(
-                  //     children: <Widget>[
-                  //       Expanded(
-                  //         flex: 1,
-                  //         child: Container(
-                  //           height:
-                  //               BaseUtitiles.getheightofPercentage(context, 4),
-                  //           margin: EdgeInsets.only(left: 10, right: 10, top: 10),
-                  //           decoration: BoxDecoration(),
-                  //           child: TextField(
-                  //             style: TextStyle(
-                  //                 fontSize: 12,
-                  //                 color: Theme.of(context).primaryColor,
-                  //                 fontWeight: FontWeight.bold),
-                  //             controller: dailyWrkDone_DPRNEW_Controller.dpr_new_Measur_NosController,
-                  //             textAlign: TextAlign.center,
-                  //             keyboardType: TextInputType.number,
-                  //             decoration: InputDecoration(
-                  //               contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                  //               labelText: "Nos",
-                  //               border: OutlineInputBorder(),
-                  //               enabledBorder: OutlineInputBorder(
-                  //                 borderSide: BorderSide(
-                  //                     color: Theme.of(context).primaryColor,
-                  //                     width: 1.0),
-                  //               ),
-                  //             ),
-                  //             onChanged: (value) {
-                  //               //nmrWklyController.deduction_paymentCalculation();
-                  //             },
-                  //           ),
-                  //         ),
-                  //       ),
-                  //       Expanded(
-                  //         flex: 1,
-                  //         child: Container(
-                  //           height:
-                  //               BaseUtitiles.getheightofPercentage(context, 4),
-                  //           margin: EdgeInsets.only(left: 10, right: 10, top: 10),
-                  //           decoration: BoxDecoration(),
-                  //           child: TextField(
-                  //             style: TextStyle(
-                  //                 fontSize: 12,
-                  //                 color: Theme.of(context).primaryColor,
-                  //                 fontWeight: FontWeight.bold),
-                  //             controller: dailyWrkDone_DPRNEW_Controller
-                  //                 .dpr_new_Measur_LengthController,
-                  //             textAlign: TextAlign.center,
-                  //             keyboardType: TextInputType.number,
-                  //             decoration: InputDecoration(
-                  //               contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                  //               labelText: "Length",
-                  //               border: OutlineInputBorder(),
-                  //               enabledBorder: OutlineInputBorder(
-                  //                 borderSide: BorderSide(
-                  //                     color: Theme.of(context).primaryColor,
-                  //                     width: 1.0),
-                  //               ),
-                  //             ),
-                  //             onChanged: (value) {
-                  //               //nmrWklyController.deduction_paymentCalculation();
-                  //             },
-                  //           ),
-                  //         ),
-                  //       ),
-                  //       Expanded(
-                  //         flex: 1,
-                  //         child: Container(
-                  //           height: BaseUtitiles.getheightofPercentage(context, 4),
-                  //           margin: EdgeInsets.only(left: 10, right: 10, top: 10),
-                  //           decoration: BoxDecoration(),
-                  //           child: TextField(
-                  //             style: TextStyle(
-                  //                 fontSize: 12,
-                  //                 color: Theme.of(context).primaryColor,
-                  //                 fontWeight: FontWeight.bold),
-                  //             controller: dailyWrkDone_DPRNEW_Controller.dpr_new_Measur_BreathController,
-                  //             textAlign: TextAlign.center,
-                  //             keyboardType: TextInputType.number,
-                  //             decoration: InputDecoration(
-                  //               contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                  //               labelText: "Breath",
-                  //               border: OutlineInputBorder(),
-                  //               enabledBorder: OutlineInputBorder(
-                  //                 borderSide: BorderSide(
-                  //                     color: Theme.of(context).primaryColor,
-                  //                     width: 1.0),
-                  //               ),
-                  //             ),
-                  //             onChanged: (value) {
-                  //               //nmrWklyController.deduction_paymentCalculation();
-                  //             },
-                  //           ),
-                  //         ),
-                  //       ),
-                  //       Expanded(
-                  //         flex: 1,
-                  //         child: Container(
-                  //           height:
-                  //               BaseUtitiles.getheightofPercentage(context, 4),
-                  //           margin: EdgeInsets.only(left: 10, right: 10, top: 10),
-                  //           decoration: BoxDecoration(),
-                  //           child: TextField(
-                  //             style: TextStyle(
-                  //                 fontSize: 12,
-                  //                 color: Theme.of(context).primaryColor,
-                  //                 fontWeight: FontWeight.bold),
-                  //             controller: dailyWrkDone_DPRNEW_Controller.dpr_new_Measur_DepthController,
-                  //             textAlign: TextAlign.center,
-                  //             keyboardType: TextInputType.number,
-                  //             decoration: InputDecoration(
-                  //               contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                  //               labelText: "Depth",
-                  //               border: OutlineInputBorder(),
-                  //               enabledBorder: OutlineInputBorder(
-                  //                 borderSide: BorderSide(
-                  //                     color: Theme.of(context).primaryColor,
-                  //                     width: 1.0),
-                  //               ),
-                  //             ),
-                  //             onChanged: (value) {
-                  //               //nmrWklyController.deduction_paymentCalculation();
-                  //             },
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-                  // Container(
-                  //   height: BaseUtitiles.getheightofPercentage(context, 5),
-                  //   width: BaseUtitiles.getWidthtofPercentage(context,30),
-                  //   margin: EdgeInsets.only(top: 25),
-                  //   child: ElevatedButton(
-                  //       style: ElevatedButton.styleFrom(
-                  //         primary: Theme.of(context).primaryColor,
-                  //         side: BorderSide(width: 3, color: Colors.black),
-                  //         elevation: 3,
-                  //         shape: RoundedRectangleBorder(
-                  //             borderRadius: BorderRadius.circular(30)),
-                  //       ),
-                  //       child: Text("ADD"),
-                  //       onPressed: () async {
-                  //         if (dailyWrkDone_DPRNEW_Controller.dpr_new_Measur_DescController.text == "" ||
-                  //             dailyWrkDone_DPRNEW_Controller
-                  //                     .dpr_new_Measur_DepthController.text ==
-                  //                 "" ||
-                  //             dailyWrkDone_DPRNEW_Controller
-                  //                     .dpr_new_Measur_DepthController.text ==
-                  //                 "0" ||
-                  //             dailyWrkDone_DPRNEW_Controller
-                  //                     .dpr_new_Measur_DepthController.text ==
-                  //                 "0.0" ||
-                  //             dailyWrkDone_DPRNEW_Controller
-                  //                     .dpr_new_Measur_NosController.text ==
-                  //                 "" ||
-                  //             dailyWrkDone_DPRNEW_Controller
-                  //                     .dpr_new_Measur_NosController.text ==
-                  //                 "0" ||
-                  //             dailyWrkDone_DPRNEW_Controller
-                  //                     .dpr_new_Measur_NosController.text ==
-                  //                 "0.0" ||
-                  //             dailyWrkDone_DPRNEW_Controller
-                  //                     .dpr_new_Measur_LengthController.text ==
-                  //                 "" ||
-                  //             dailyWrkDone_DPRNEW_Controller
-                  //                     .dpr_new_Measur_LengthController.text ==
-                  //                 "0" ||
-                  //             dailyWrkDone_DPRNEW_Controller
-                  //                     .dpr_new_Measur_LengthController.text ==
-                  //                 "0.0" ||
-                  //             dailyWrkDone_DPRNEW_Controller
-                  //                     .dpr_new_Measur_BreathController.text ==
-                  //                 "" ||
-                  //             dailyWrkDone_DPRNEW_Controller
-                  //                     .dpr_new_Measur_BreathController.text ==
-                  //                 "0" ||
-                  //             dailyWrkDone_DPRNEW_Controller
-                  //                     .dpr_new_Measur_BreathController.text ==
-                  //                 "0.0") {
-                  //           BaseUtitiles.showToast("Some field is empty");
-                  //         }
-                  //         else if(dailyWrkDone_DPRNEW_Controller.dprNew_EntryDetReadList.value.isEmpty){
-                  //           BaseUtitiles.showToast("Please select BOQ details");
-                  //         }
-                  //         else {
-                  //           dailyWrkDone_DPRNEW_Controller.dprNew_MesurmentTableSave();
-                  //           await dailyWrkDone_DPRNEW_Controller.getMesurmentTablesDatas();
-                  //          dailyWrkDone_DPRNEW_Controller.dpr_new_Measur_DescController .text="";
-                  //          dailyWrkDone_DPRNEW_Controller.dpr_new_Measur_NosController .text="";
-                  //          dailyWrkDone_DPRNEW_Controller.dpr_new_Measur_LengthController.text="";
-                  //          dailyWrkDone_DPRNEW_Controller.dpr_new_Measur_BreathController.text="";
-                  //          dailyWrkDone_DPRNEW_Controller.dpr_new_Measur_DepthController.text="";
-                  //         }
-                  //       }),
-                  // ),
-
                 ],
               ),
 
@@ -637,24 +404,66 @@ class _DailyWork_done_DPR_MeasurementState
                   child:   InkWell(
                     child: Container(
                       margin: EdgeInsets.only(left: 20 , right: 20, top: 15),
-                      // width: BaseUtitiles.getWidthtofPercentage(context, 25),
-                      // height: BaseUtitiles.getheightofPercentage(context, 4),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
-                        color: dailyWrkDone_DPRNEW_Controller.checkColor == 0 ?  Theme.of(context).primaryColor : Colors.white  ,
+                        color: Theme.of(context).primaryColor,
                       ),
                       alignment: Alignment.center,
                       child: Text(
                         dailyWrkDone_DPRNEW_Controller.saveButton.value,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,
-                            color:  dailyWrkDone_DPRNEW_Controller.checkColor == 0 ? Colors.white :  Theme.of(context).primaryColor ),),
+                            color:  Colors.white),),
                     ),
-                    onTap: () async {
-                      dailyWrkDone_DPRNEW_Controller.checkColor = 0;
-                      SubmitAlert(context);
-                    },
-                  ),
+                      onTap: () async {
+
+                        bool hasInvalid = false;
+
+                        for (int i = 0;
+                        i < dailyWrkDone_DPRNEW_Controller
+                            .dprNewGetMSRreadListdata.length;
+                        i++) {
+
+                          final controller =
+                          dailyWrkDone_DPRNEW_Controller
+                              .dpr_new_MeasurListNosController[i];
+
+                          final text = controller.text.trim();
+
+                          if (text.isEmpty) {
+                            hasInvalid = true;
+                            break;
+                          }
+
+                          final value = double.tryParse(text);
+
+                          if (value == null || value <= 0) {
+                            hasInvalid = true;
+                            break;
+                          }
+                        }
+
+                        if (hasInvalid) {
+
+                          BaseUtitiles.showToast(
+                              "Nos Should Not be Zero or Empty");
+
+                        } else {
+                          await dailyWrkDone_DPRNEW_Controller.getMesurmentTablesDatas();
+                          await dailyWrkDone_DPRNEW_Controller.addMessListQty();
+
+                          if (dailyWrkDone_DPRNEW_Controller.dprNew_EntryDetReadList.value[0].balQty! <= dailyWrkDone_DPRNEW_Controller.AddQty) {
+                            BaseUtitiles.showToast(
+                              "Your Qty value is greater than BalQty "
+                                  "${dailyWrkDone_DPRNEW_Controller.dprNew_EntryDetReadList.value[0].balQty!}",
+                            );
+
+                          } else {
+
+                            SubmitAlert(context);
+                          }
+                        }
+                      }                  ),
                 ),
 
               ],
@@ -795,8 +604,9 @@ class _DailyWork_done_DPR_MeasurementState
                             height: BaseUtitiles.getheightofPercentage(context, 4),
                             child: TextFormField(
                                 onTap: (){
+                                  if(dailyWrkDone_DPRNEW_Controller.dpr_new_MeasurListNosController[index].text=="0.0"|| dailyWrkDone_DPRNEW_Controller.dpr_new_MeasurListNosController[index].text=="0"){
                                   dailyWrkDone_DPRNEW_Controller.dpr_new_MeasurListNosController[index].text = "";
-                                  dailyWrkDone_DPRNEW_Controller.MSRclickChanged();
+                                  }
                                 },
                                 controller: dailyWrkDone_DPRNEW_Controller.dpr_new_MeasurListNosController[index],
                                 textAlign: TextAlign.center,
@@ -833,8 +643,11 @@ class _DailyWork_done_DPR_MeasurementState
                             height: BaseUtitiles.getheightofPercentage(context, 4),
                             child: TextFormField(
                                 onTap: (){
-                                  dailyWrkDone_DPRNEW_Controller.dpr_new_MeasurListLengthController[index].text = "";
-                                  dailyWrkDone_DPRNEW_Controller.MSRclickChanged();
+                                  if(dailyWrkDone_DPRNEW_Controller.dpr_new_MeasurListLengthController[index].text=="0.0"|| dailyWrkDone_DPRNEW_Controller.dpr_new_MeasurListLengthController[index].text=="0") {
+                                    dailyWrkDone_DPRNEW_Controller
+                                        .dpr_new_MeasurListLengthController[index]
+                                        .text = "";
+                                  }
                                 },
                                 controller: dailyWrkDone_DPRNEW_Controller.dpr_new_MeasurListLengthController[index],
                                 textAlign: TextAlign.center,
@@ -876,8 +689,11 @@ class _DailyWork_done_DPR_MeasurementState
                             height: BaseUtitiles.getheightofPercentage(context, 4),
                             child: TextFormField(
                                 onTap: () {
-                                  dailyWrkDone_DPRNEW_Controller.dpr_new_MeasurListBreathController[index].text = "";
-                                  dailyWrkDone_DPRNEW_Controller.MSRclickChanged();
+                                  if(dailyWrkDone_DPRNEW_Controller.dpr_new_MeasurListBreathController[index].text=="0.0"|| dailyWrkDone_DPRNEW_Controller.dpr_new_MeasurListBreathController[index].text=="0") {
+                                    dailyWrkDone_DPRNEW_Controller
+                                        .dpr_new_MeasurListBreathController[index]
+                                        .text = "";
+                                  }
                                 },
                                 controller: dailyWrkDone_DPRNEW_Controller.dpr_new_MeasurListBreathController[index],
                                 textAlign: TextAlign.center,
@@ -916,8 +732,11 @@ class _DailyWork_done_DPR_MeasurementState
                             height: BaseUtitiles.getheightofPercentage(context, 4),
                             child: TextFormField(
                                 onTap: (){
-                                  dailyWrkDone_DPRNEW_Controller.dpr_new_MeasurListDepthController[index].text = "";
-                                  dailyWrkDone_DPRNEW_Controller.MSRclickChanged();
+                                  if(dailyWrkDone_DPRNEW_Controller.dpr_new_MeasurListDepthController[index].text=="0.0"|| dailyWrkDone_DPRNEW_Controller.dpr_new_MeasurListDepthController[index].text=="0") {
+                                    dailyWrkDone_DPRNEW_Controller
+                                        .dpr_new_MeasurListDepthController[index]
+                                        .text = "";
+                                  }
                                 },
                                 controller: dailyWrkDone_DPRNEW_Controller.dpr_new_MeasurListDepthController[index],
                                 textAlign: TextAlign.center,
@@ -989,13 +808,11 @@ class _DailyWork_done_DPR_MeasurementState
   }
 
   Future SubmitAlert(BuildContext context) async {
-    dailyWrkDone_DPRNEW_Controller.buttonControl=0;
     return await showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Alert!'),
-        content: Text(dailyWrkDone_DPRNEW_Controller.aprovedButton == 1 ? 'Are you sure to Approval?' :
-        dailyWrkDone_DPRNEW_Controller.editcheck == 1 ? 'Are you sure to Re-Submit?' : 'Are you sure to Submit?' ),
+        content: Text('Are you sure to ${dailyWrkDone_DPRNEW_Controller.saveButton.value}?' ),
         actions:[
           Container(
             margin: const EdgeInsets.only(left: 20,right: 20),
@@ -1015,81 +832,31 @@ class _DailyWork_done_DPR_MeasurementState
                     indent: 15, //Spacing at the top of divider.
                     endIndent: 15, //Spacing at the bottom of divider.
                   ),
-                  // Expanded(
-                  //   child: TextButton(
-                  //       onPressed: () async {
-                  //         if(dailyWrkDone_DPRNEW_Controller.buttonControl==0){
-                  //           await dailyWrkDone_DPRNEW_Controller.getMesurmentTablesDatas();
-                  //           dailyWrkDone_DPRNEW_Controller. addMessListQty();
-                  //           if(dailyWrkDone_DPRNEW_Controller.dprNew_EntryDetReadList.value[0].balQty!=0){
-                  //             if(dailyWrkDone_DPRNEW_Controller.dprNew_EntryDetReadList.value[0].balQty!<=dailyWrkDone_DPRNEW_Controller.AddQty){
-                  //               BaseUtitiles.showToast("Your Qty value is greater than BalQty  ${dailyWrkDone_DPRNEW_Controller.dprNew_EntryDetReadList.value[0].balQty!}");
-                  //               Navigator.pop(context);
-                  //             }
-                  //             else if(projectController.selectedProjectId.value==0 ||siteController.selectedsiteId.value==0 || dailyWrkDone_DPR_Controller.TypeSubcontId.value==0){
-                  //               BaseUtitiles.showToast("Please check EntryScreen some filed is missing");
-                  //             } else if(dailyWrkDone_DPRNEW_Controller.dprNewGetMSRreadListdata.value.isEmpty){
-                  //               BaseUtitiles.showToast("Please Add Measurements");
-                  //             }
-                  //             else{
-                  //               // BaseUtitiles.showLoadingDialog(context,Theme.of(context).primaryColor);
-                  //               await dailyWrkDone_DPRNEW_Controller.getMesurmentTablesDatas();
-                  //               await dailyWrkDone_DPRNEW_Controller.getDetTablesDatas();
-                  //               await dailyWrkDone_DPRNEW_Controller.getLabourTablesDatas();
-                  //               await dailyWrkDone_DPRNEW_Controller.getMaterialTablesDatas();
-                  //               await  dailyWrkDone_DPRNEW_Controller.SaveButton_dprNew_MSR_SaveAPI(context,dailyWrkDone_DPRNEW_Controller.saveId);
-                  //             }
-                  //         } else if(dailyWrkDone_DPRNEW_Controller.buttonControl == 1){
-                  //             dailyWrkDone_DPRNEW_Controller.buttonControl = 0;
-                  //             BaseUtitiles.showToast("Please wait... processing.");
-                  //           }
-                  //
-                  //
-                  //         }
-                  //       },
-                  //       child: Text(dailyWrkDone_DPRNEW_Controller.aprovedButton == 1 ? RequestConstant.APPROVAL :
-                  //       dailyWrkDone_DPRNEW_Controller.editcheck == 1 ? RequestConstant.RESUBMIT : RequestConstant.SUBMIT,
-                  //           style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE))),
-                  // ),
 
                   Expanded(
                     child: StatefulBuilder(
                       builder: (context, setState) => TextButton(
                         onPressed: () async {
-
-                          await dailyWrkDone_DPRNEW_Controller.getMesurmentTablesDatas();
-                          dailyWrkDone_DPRNEW_Controller.addMessListQty();
-
                           if (dailyWrkDone_DPRNEW_Controller.dprNew_EntryDetReadList.value[0].balQty != 0) {
-                            if (dailyWrkDone_DPRNEW_Controller.dprNew_EntryDetReadList.value[0].balQty! <= dailyWrkDone_DPRNEW_Controller.AddQty) {
-                              BaseUtitiles.showToast(
-                                  "Your Qty value is greater than BalQty  ${dailyWrkDone_DPRNEW_Controller.dprNew_EntryDetReadList.value[0].balQty!}");
-                              Navigator.pop(context);
-                            } else if (projectController.selectedProjectId.value == 0 ||
+                              if (projectController.selectedProjectId.value == 0 ||
                                 siteController.selectedsiteId.value == 0 ||
                                 dailyWrkDone_DPR_Controller.TypeSubcontId.value == 0) {
                               BaseUtitiles.showToast("Please check EntryScreen, some fields are missing");
                             } else if (dailyWrkDone_DPRNEW_Controller.dprNewGetMSRreadListdata.value.isEmpty) {
                               BaseUtitiles.showToast("Please Add Measurements");
                             } else {
-                              // BaseUtitiles.showLoadingDialog(context, Theme.of(context).primaryColor);
-                              await dailyWrkDone_DPRNEW_Controller.getMesurmentTablesDatas();
                               await dailyWrkDone_DPRNEW_Controller.getDetTablesDatas();
                               await dailyWrkDone_DPRNEW_Controller.getLabourTablesDatas();
                               await dailyWrkDone_DPRNEW_Controller.getMaterialTablesDatas();
                               if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
                                 await dailyWrkDone_DPRNEW_Controller.SaveButton_dprNew_MSR_SaveAPI(
-                                    context, dailyWrkDone_DPRNEW_Controller.saveId);
+                                    context, dailyWrkDone_DPRNEW_Controller.saveButton.value==RequestConstant.RESUBMIT || dailyWrkDone_DPRNEW_Controller.saveButton.value==RequestConstant.APPROVAL?dailyWrkDone_DPRNEW_Controller.dprNew_EditApiList[0].id:0);
                               }
                             }
                           }
                         },
                         child: Text(
-                          dailyWrkDone_DPRNEW_Controller.aprovedButton == 1
-                              ? RequestConstant.APPROVAL
-                              : dailyWrkDone_DPRNEW_Controller.editcheck == 1
-                              ? RequestConstant.RESUBMIT
-                              : RequestConstant.SUBMIT,
+                          dailyWrkDone_DPRNEW_Controller.saveButton.value,
                           style: TextStyle(
                             color:  Theme.of(context).primaryColor, // Change color when disabled
                             fontWeight: FontWeight.bold,

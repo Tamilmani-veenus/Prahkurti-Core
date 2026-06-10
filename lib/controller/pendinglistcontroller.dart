@@ -44,7 +44,6 @@ class PendingListController extends GetxController {
   List<TransferAckMatList> transAckMaterialList = [];
   RxList Search_transAckMaterialList = [].obs;
 
-  int checkColor = 0;
 
   RxString mrn_preapproval_autoYrsWise = "".obs;
 
@@ -191,15 +190,18 @@ class PendingListController extends GetxController {
     return getPoAprovalDetList.value;
   }
 
-
-  Future PO_Approval_DeleteApi(int reqId) async {
-    await PendingListProvider.PO_Approval_deleteAPI(reqId)
-        .then((value) async {
-      if (value != null && value.length > 0) {
-        return value;
-      }
-    });
+  Future<bool> PO_Approval_DeleteApi(int reqId) async {
+    return PendingListProvider.PO_Approval_deleteAPI(reqId);
   }
+
+  // Future PO_Approval_DeleteApi(int reqId) async {
+  //   await PendingListProvider.PO_Approval_deleteAPI(reqId)
+  //       .then((value) async {
+  //     if (value != null && value.length > 0) {
+  //       return value;
+  //     }
+  //   });
+  // }
 
   ///---------------------------mrnfinal_approval_delete----------------------------------------
   Future mrnfinal_approvil_delete(BuildContext context, id) async {
@@ -232,18 +234,18 @@ class PendingListController extends GetxController {
   }
 
 
-  Future poAproval_buttonApi(BuildContext context, String Urlname) async {
+  Future poAproval_buttonApi(BuildContext context, String Urlname, {int? id}) async {
 
     List body = [];
 
     List<ApprovalDet>? finalList = getPoAprovalDetList.value.length == 0
-        ? getPoApprovalDet()
+        ? getPoApprovalDet(id)
         : getPoAprovalDetList.value;
 
     if (finalList != null) {
       body = finalList.map((e) => e.toJson()).toList();
     }
-    if (add_PoaprovalListvalue.isNotEmpty) {
+    // if (add_PoaprovalListvalue.isNotEmpty) {
       if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
         var response = await PendingListProvider.PoAprovalAPI(Urlname, body, context);
         if (response != null) {
@@ -254,7 +256,7 @@ class PendingListController extends GetxController {
           Navigator.pop(context);
           BaseUtitiles.showToast('Something went wrong..');
         }
-      }
+      // }
     }
   }
 
@@ -263,14 +265,14 @@ class PendingListController extends GetxController {
 
 
 
-  List<ApprovalDet>? getPoApprovalDet() {
-    add_PoaprovalListvalue.value.forEach((element) {
+  List<ApprovalDet>? getPoApprovalDet(id) {
+    // add_PoaprovalListvalue.value.forEach((element) {
       var list = new ApprovalDet(
-        id: element.PoId,
+        id: id,
         poWoType: "PO",
       );
       getPoAprovalDetList.value.add(list);
-    });
+    // });
     return getPoAprovalDetList.value;
   }
 
@@ -581,18 +583,29 @@ class PendingListController extends GetxController {
   }
 
   Future PoVerification_ApproveDetDetails(
-      String Url, int RID, String Reqno,BuildContext context,{String? purchaseType}) async {
+      String Url, int RID, String Reqno,BuildContext context,
+      String projectName, String siteName,String supName,String preparedBy,
+      String date,String dueDate,String netAmount,{String? purchaseType}) async {
     onclickPendingListDet.clear();
     var response = await PendingListProvider.getOnclickDetProvider(Url, RID, purchaseType:purchaseType);
     if (response != null ) {
       if(response.success==true){
-        onclickPendingListDet = response.result!.mMatPurOrdLink!;
+        onclickPendingListDet = response.result?.mMatPurOrdLink ?? [];
         print(onclickPendingListDet.toString());
         return Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => PendingPo_Approvel_Popup(
-                    heading: Url, list: onclickPendingListDet, ReqNo: Reqno)));
+                builder: (context) => PendingPo_Approval_Popup(id: RID,
+                    heading: Url, list: onclickPendingListDet,
+                  ReqNo: Reqno,
+                  projectName: projectName,
+                  siteName: siteName,
+                  supplierName: supName,
+                  preparedBy: preparedBy,
+                  Date: date,
+                  dueDate: dueDate,
+                  netAmount: netAmount,
+                )));
       }
       else {
         BaseUtitiles.showToast(response.message ?? 'Something went wrong..');
@@ -602,6 +615,8 @@ class PendingListController extends GetxController {
       BaseUtitiles.showToast("Something went wrong..");
     }
   }
+
+
 
 
   Future GetDirectTransVerifyApproveDet(String Url, int RID, String Reqno,
@@ -1199,8 +1214,8 @@ class PendingListController extends GetxController {
                   onclickPendingListData: onclickPendingListData,
                   heading: name)),
             )
-                : name == "STAFF REQUISITION APPROVAL" ||
-                name == "STAFF REQUISITION VERIFICATION"
+                : name == "STAFF L & P APPROVAL" ||
+                name == "STAFF L & P VERIFICATION"
                 ? Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => StaffRequisitionVerify(
@@ -1240,6 +1255,31 @@ class PendingListController extends GetxController {
                 ? Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => QuoteVerifyandApproval(
+                  onclickPendingListData: onclickPendingListData,
+                  heading: name)),
+            ) : name ==
+                "BILL VERIFICATION - NMR" || name == "BILL APPROVAL - NMR"
+                ? Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => NMRBillVerification(
+                  onclickPendingListData: onclickPendingListData,
+                  heading: name)),
+            ): name == "BILL VERIFICATION - DIRECT" || name == "BILL APPROVAL - DIRECT"
+                ? Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => BillDirectVerification(
+                  onclickPendingListData: onclickPendingListData,
+                  heading: name)),
+            ): name == "BILL VERIFICATION - BOQ" || name == "BILL APPROVAL - BOQ"
+                ? Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => BillBoqVerification(
+                  onclickPendingListData: onclickPendingListData,
+                  heading: name)),
+            ): name == "BOQ REVISED - APPROVAL"
+                ? Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => BOQRevisedApproval(
                   onclickPendingListData: onclickPendingListData,
                   heading: name)),
             )

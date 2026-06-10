@@ -42,7 +42,8 @@ class Result {
   String? longitude;
   String? latitude;
   String? pinStatus;
-  String? status;
+  String? statusValue;
+  String? statusName;
 
   Result({
     this.punchId,
@@ -54,7 +55,8 @@ class Result {
     this.longitude,
     this.latitude,
     this.pinStatus,
-    this.status,
+    this.statusValue,
+    this.statusName,
   });
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
@@ -67,7 +69,8 @@ class Result {
     longitude: json["Longitude"],
     latitude: json["Latitude"],
     pinStatus: json["PinStatus"],
-    status: json["Status"],
+    statusName: json["StatusName"],
+    statusValue: json["StatusValue"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -80,6 +83,7 @@ class Result {
     "Longitude": longitude,
     "Latitude": latitude,
     "PinStatus": pinStatus,
-    "Status": status,
+    "StatusValue":statusValue,
+    "StatusName": statusName,
   };
 }

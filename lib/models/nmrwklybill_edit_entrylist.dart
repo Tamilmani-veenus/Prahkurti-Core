@@ -1,191 +1,261 @@
+// To parse this JSON data, do
+//
+//     final nmrEditResponse = nmrEditResponseFromJson(jsonString);
+
 import 'dart:convert';
 
-List<NmrEditResponse> nmrEditResponseFromJson(String str) => List<NmrEditResponse>.from(json.decode(str).map((x) => NmrEditResponse.fromJson(x)));
+NmrEditResponse nmrEditResponseFromJson(String str) => NmrEditResponse.fromJson(json.decode(str));
 
-String nmrEditResponseToJson(List<NmrEditResponse> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String nmrEditResponseToJson(NmrEditResponse data) => json.encode(data.toJson());
 
 class NmrEditResponse {
+  bool? success;
+  String? message;
+  Result? result;
+
   NmrEditResponse({
-    this.workId,
-    this.workNo,
-    this.workDate,
-    this.projectId,
-    this.siteId,
-    this.subContId,
-    this.projectName,
-    this.siteName,
-    this.subContName,
-    this.entryType,
-    this.fromDate,
-    this.toDate,
-    this.rndOff,
-    this.billNo,
-    this.billAmt,
-    this.actAdvAmt,
-    this.advAmt,
-    this.netPayAmt,
-    this.debitAmt,
-    this.creditAmt,
-    this.debitRemarks,
-    this.creditRemarks,
-    this.remarks,
-    this.preparedby,
-    this.preparedbyName,
-    this.userId,
-    this.entryMode,
-    this.nmrBillDet,
+    this.success,
+    this.message,
+    this.result,
   });
 
-  int? workId;
-  String? workNo;
-  String? workDate;
-  int? projectId;
-  int? siteId;
-  int? subContId;
-  String? projectName;
-  String? siteName;
-  String? subContName;
-  String? entryType;
-  String? fromDate;
-  String? toDate;
-  double? rndOff;
-  String? billNo;
-  double? billAmt;
-  double? actAdvAmt;
-  double? advAmt;
-  double? netPayAmt;
-  double? debitAmt;
-  double? creditAmt;
-  String? debitRemarks;
-  String? creditRemarks;
-  String? remarks;
-  int? preparedby;
-  String? preparedbyName;
-  String? userId;
-  String? entryMode;
-  List<NmrBillDet>? nmrBillDet;
-
   factory NmrEditResponse.fromJson(Map<String, dynamic> json) => NmrEditResponse(
-    workId: json["WorkId"],
-    workNo: json["WorkNo"],
-    workDate: json["WorkDate"],
-    projectId: json["ProjectId"],
-    siteId: json["SiteId"],
-    subContId: json["SubContId"],
-    projectName: json["ProjectName"],
-    siteName: json["SiteName"],
-    subContName: json["SubContName"],
-    entryType: json["EntryType"],
-    fromDate: json["FromDate"],
-    toDate: json["ToDate"],
-    rndOff: json["RndOff"],
-    billNo: json["BillNo"],
-    billAmt: json["BillAmt"].toDouble(),
-    actAdvAmt: json["ActAdvAmt"],
-    advAmt: json["AdvAmt"],
-    netPayAmt: json["NetPayAmt"],
-    debitAmt: json["DebitAmt"],
-    creditAmt: json["CreditAmt"],
-    debitRemarks: json["DebitRemarks"],
-    creditRemarks: json["CreditRemarks"],
-    remarks: json["remarks"],
-    preparedby: json["Preparedby"],
-    preparedbyName: json["PreparedbyName"],
-    userId: json["UserId"],
-    entryMode: json["EntryMode"],
-    nmrBillDet: List<NmrBillDet>.from(json["NMRBillDet"].map((x) => NmrBillDet.fromJson(x))),
+    success: json["success"],
+    message: json["message"],
+    result: json["result"]==null?null:Result.fromJson(json["result"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "WorkId": workId,
-    "WorkNo": workNo,
-    "WorkDate": workDate,
-    "ProjectId": projectId,
-    "SiteId": siteId,
-    "SubContId": subContId,
-    "ProjectName": projectName,
-    "SiteName": siteName,
-    "SubContName": subContName,
-    "EntryType": entryType,
-    "FromDate": fromDate,
-    "ToDate": toDate,
-    "RndOff": rndOff,
-    "BillNo": billNo,
-    "BillAmt": billAmt,
-    "ActAdvAmt": actAdvAmt,
-    "AdvAmt": advAmt,
-    "NetPayAmt": netPayAmt,
-    "DebitAmt": debitAmt,
-    "CreditAmt": creditAmt,
-    "DebitRemarks": debitRemarks,
-    "CreditRemarks": creditRemarks,
-    "remarks": remarks,
-    "Preparedby": preparedby,
-    "PreparedbyName": preparedbyName,
-    "UserId": userId,
-    "EntryMode": entryMode,
-    "NMRBillDet": List<dynamic>.from(nmrBillDet!.map((x) => x.toJson())),
+    "success": success,
+    "message": message,
+    "result": result==null?null:result!.toJson(),
   };
 }
 
-class NmrBillDet {
-  NmrBillDet({
-    this.sno,
-    // this.projectId,
-    this.siteName,
-    this.categoryName,
-    this.totnos,
-    this.totalOtamt,
-    this.categoryId,
-    this.siteId,
-    this.nmrAmt,
-    this.amt,
-    this.totalOthrs,
-    this.wages,
+class Result {
+  int? id;
+  String? workNo;
+  String? entryDate;
+  int? projectId;
+  int? siteId;
+  int? subContractorId;
+  String? fromDate;
+  String? toDate;
+  String? billNo;
+  double? billAmount;
+  double? foodAmount;
+  double? bankCharges;
+  double? debitAmount;
+  String? debitRemarks;
+  double? creditAmount;
+  String? creditRemarks;
+  double? advanceAmount;
+  double? actualAdvanceAmount;
+  double? roundOff;
+  double? netPayAmount;
+  double? balanceAmount;
+  String? remarks;
+  String? projectName;
+  String? siteName;
+  String? subContractorName;
+  String? createdName;
+  String? status;
+  dynamic appSts;
+  dynamic verSts;
+  List<SubContractorNmrBillDet>? subContractorNmrBillDetS;
+  List<SubContractorNmrBillAddLessSetup>? subContractorNmrBillAddLessSetupS;
 
+  Result({
+    this.id,
+    this.workNo,
+    this.entryDate,
+    this.projectId,
+    this.siteId,
+    this.subContractorId,
+    this.fromDate,
+    this.toDate,
+    this.billNo,
+    this.billAmount,
+    this.foodAmount,
+    this.bankCharges,
+    this.debitAmount,
+    this.debitRemarks,
+    this.creditAmount,
+    this.creditRemarks,
+    this.advanceAmount,
+    this.actualAdvanceAmount,
+    this.roundOff,
+    this.netPayAmount,
+    this.balanceAmount,
+    this.remarks,
+    this.projectName,
+    this.siteName,
+    this.subContractorName,
+    this.createdName,
+    this.status,
+    this.appSts,
+    this.verSts,
+    this.subContractorNmrBillDetS,
+    this.subContractorNmrBillAddLessSetupS,
   });
 
-  int? sno;
-  // String? projectId;
-  String? siteName;
-  String? categoryName;
-  double? totnos;
-  double? totalOtamt;
-  int? categoryId;
-  int? siteId;
-  double? wages;
-  double? amt;
-  double?totalOthrs;
-  double? nmrAmt;
-
-  factory NmrBillDet.fromJson(Map<String, dynamic> json) => NmrBillDet(
-    sno: json["Sno"],
-    // projectId: json["ProjectId"],
-    siteName: json["SiteName"],
-    categoryName: json["CategoryName"],
-    totnos: json["totnos"],
-    totalOtamt: json["total_otamt"],
-    totalOthrs: json["total_othrs"],
-    categoryId: json["CategoryID"],
-    siteId: json["SiteId"],
-    wages: json["wages"],
-    amt: json["amt"],
-    nmrAmt: json["NMRAMT"],
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    id: json["id"],
+    workNo: json["workNo"],
+    entryDate: json["entryDate"],
+    projectId: json["projectId"],
+    siteId: json["siteId"],
+    subContractorId: json["subContractorId"],
+    fromDate: json["fromDate"],
+    toDate: json["toDate"],
+    billNo: json["billNo"],
+    billAmount: json["billAmount"],
+    foodAmount: json["foodAmount"],
+    bankCharges: json["bankCharges"],
+    debitAmount: json["debitAmount"],
+    debitRemarks: json["debitRemarks"],
+    creditAmount: json["creditAmount"],
+    creditRemarks: json["creditRemarks"],
+    advanceAmount: json["advanceAmount"],
+    actualAdvanceAmount: json["actualAdvanceAmount"],
+    roundOff: json["roundOff"],
+    netPayAmount: json["netPayAmount"].toDouble(),
+    balanceAmount: json["balanceAmount"],
+    remarks: json["remarks"],
+    projectName: json["projectName"],
+    siteName: json["siteName"],
+    subContractorName: json["subContractorName"],
+    createdName: json["createdName"],
+    status: json["status"],
+    appSts: json["appSts"],
+    verSts: json["verSts"],
+    subContractorNmrBillDetS: List<SubContractorNmrBillDet>.from(json["subContractorNMRBillDetS"].map((x) => SubContractorNmrBillDet.fromJson(x))),
+    subContractorNmrBillAddLessSetupS: List<SubContractorNmrBillAddLessSetup>.from(json["subContractorNMRBillAddLessSetupS"].map((x) => SubContractorNmrBillAddLessSetup.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "Sno": sno,
-    // "ProjectId": projectId,
-    "SiteName": siteName,
-    "CategoryName": categoryName,
-    "totnos": totnos,
-    "total_otamt": totalOtamt,
-    "CategoryID": categoryId,
-    "SiteId": siteId,
-    "NMRAMT": nmrAmt,
-    "amt": amt,
-    "total_othrs": totalOthrs,
-    "wages": wages,
+    "id": id,
+    "workNo": workNo,
+    "entryDate": entryDate,
+    "projectId": projectId,
+    "siteId": siteId,
+    "subContractorId": subContractorId,
+    "fromDate": fromDate,
+    "toDate": toDate,
+    "billNo": billNo,
+    "billAmount": billAmount,
+    "foodAmount": foodAmount,
+    "bankCharges": bankCharges,
+    "debitAmount": debitAmount,
+    "debitRemarks": debitRemarks,
+    "creditAmount": creditAmount,
+    "creditRemarks": creditRemarks,
+    "advanceAmount": advanceAmount,
+    "actualAdvanceAmount": actualAdvanceAmount,
+    "roundOff": roundOff,
+    "netPayAmount": netPayAmount,
+    "balanceAmount": balanceAmount,
+    "remarks": remarks,
+    "projectName": projectName,
+    "siteName": siteName,
+    "subContractorName": subContractorName,
+    "createdName": createdName,
+    "status": status,
+    "appSts": appSts,
+    "verSts": verSts,
+    "subContractorNMRBillDetS": List<dynamic>.from(subContractorNmrBillDetS!.map((x) => x.toJson())),
+    "subContractorNMRBillAddLessSetupS": List<dynamic>.from(subContractorNmrBillAddLessSetupS!.map((x) => x.toJson())),
+  };
+}
 
+class SubContractorNmrBillAddLessSetup {
+  int? id;
+  int? addLessId;
+  int? subContractorNmrBillMasId;
+  double? percentValue;
+  double? amount;
+
+  SubContractorNmrBillAddLessSetup({
+    this.id,
+    this.addLessId,
+    this.subContractorNmrBillMasId,
+    this.percentValue,
+    this.amount,
+  });
+
+  factory SubContractorNmrBillAddLessSetup.fromJson(Map<String, dynamic> json) => SubContractorNmrBillAddLessSetup(
+    id: json["id"],
+    addLessId: json["addLessId"],
+    subContractorNmrBillMasId: json["subContractorNMRBillMasId"],
+    percentValue: json["percentValue"],
+    amount: json["amount"].toDouble(),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "addLessId": addLessId,
+    "subContractorNMRBillMasId": subContractorNmrBillMasId,
+    "percentValue": percentValue,
+    "amount": amount,
+  };
+}
+
+class SubContractorNmrBillDet {
+  int? id;
+  int? subContractorNmrBillMasId;
+  int? projectId;
+  int? siteId;
+  int? subContractorId;
+  int? categoryId;
+  double? nmrAmount;
+  double? totalNos;
+  double? totalOtAmount;
+  String? siteName;
+  String? categoryName;
+  String? subContractorName;
+
+  SubContractorNmrBillDet({
+    this.id,
+    this.subContractorNmrBillMasId,
+    this.projectId,
+    this.siteId,
+    this.subContractorId,
+    this.categoryId,
+    this.nmrAmount,
+    this.totalNos,
+    this.totalOtAmount,
+    this.siteName,
+    this.categoryName,
+    this.subContractorName,
+  });
+
+  factory SubContractorNmrBillDet.fromJson(Map<String, dynamic> json) => SubContractorNmrBillDet(
+    id: json["id"],
+    subContractorNmrBillMasId: json["subContractorNMRBillMasId"],
+    projectId: json["projectId"],
+    siteId: json["siteId"],
+    subContractorId: json["subContractorId"],
+    categoryId: json["categoryId"],
+    nmrAmount: json["nmrAmount"],
+    totalNos: json["totalNos"],
+    totalOtAmount: json["totalOTAmount"],
+    siteName: json["siteName"],
+    categoryName: json["categoryName"],
+    subContractorName: json["subContractorName"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "subContractorNMRBillMasId": subContractorNmrBillMasId,
+    "projectId": projectId,
+    "siteId": siteId,
+    "subContractorId": subContractorId,
+    "categoryId": categoryId,
+    "nmrAmount": nmrAmount,
+    "totalNos": totalNos,
+    "totalOTAmount": totalOtAmount,
+    "siteName": siteName,
+    "categoryName": categoryName,
+    "subContractorName": subContractorName,
   };
 }

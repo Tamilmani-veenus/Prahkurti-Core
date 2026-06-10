@@ -7,7 +7,6 @@ import '../../../../controller/auto_yrwise_no_controller.dart';
 import '../../../../controller/bottomsheet_Controllers.dart';
 import '../../../../controller/logincontroller.dart';
 import '../../../../controller/reports_controller.dart';
-import '../../../../controller/requisitionslip_controller.dart';
 import '../../../../controller/requisitionslip_controller_new.dart';
 import '../../../../controller/staffcontroller.dart';
 import '../../../../utilities/baseutitiles.dart';
@@ -32,62 +31,21 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
 
  @override
   void initState() {
-   var duration = Duration(seconds: 0);
-   Future.delayed(duration, () async {
-     requisitionSlipController.reqSlip = 1;
-     await autoYearWiseNoController.AutoYearWiseNo("REQ SLIP");
-     await reportsController.getReportProjectList();
-     await requisitionSlipController.getLeaveInfo_List(loginController.user.value.empId!);
-     // await staffController.get_staffDropdowntList(context);
-     requisitionSlipController.Staffname.text = loginController.user.value.empName.toString();
-     requisitionSlipController.selectedstaffId.value = loginController.user.value.empId!;
-
-     // if(loginController.user.value.userType! == "A"){
-     //   await staffController.get_staffDropdowntList(context);
-     // }else{
-     //   await requisitionSlipController.getLeaveInfo_List(loginController.user.value.empId!);
-     // }
-
-     if(requisitionSlipController.editCheck==1){
-       requisitionSlipController.saveButton.value=RequestConstant.RESUBMIT;
-       requisitionSlipController.ReqSlipEditList.forEach((element) {
-         requisitionSlipController.reqId=element.reqId;
-         requisitionSlipController.ReqAutoyearwise.text=element.reqNo;
-         requisitionSlipController.Reqdate.text=element.reqDate;
-         requisitionSlipController.Staffname.text=element.staffName;
-         requisitionSlipController.Location.text= element.projectName;
-         requisitionSlipController.projectLocationID.value = element.projectid;
-         requisitionSlipController.type.value=element.reqType=="L"?"Leave":element.reqType=="O"?"OnDuty": element.reqType=="C"?"Compensate Leave":"Permission";
-         requisitionSlipController.Fromdate.text=element.lFrdate;
-         requisitionSlipController.Todate.text=element.lTodate;
-         requisitionSlipController.Reason.text=element.perReason;
-         requisitionSlipController.LeaveReason.text = element.leaveReason;
-         requisitionSlipController.Date.text = element.lFrdate;
-         requisitionSlipController.Fromtime.text = element.pFrTime;
-         requisitionSlipController.Totaldays.text=element.totalLeave.toString();
-         requisitionSlipController.Totime.text = element.pToTime;
-         requisitionSlipController.TotalHrs.text=element.totalPerHrs.toStringAsFixed(2);
-         // requisitionSlipController.RequiredHrs.text = element.pTimeHrs.toString();
-         // requisitionSlipController.RequiredMins.text = element.pTimeMins.toString();
-         ///**********
-         // requisitionSlipController.ondutyDate.text=element.pFrdate;
-         // requisitionSlipController.perDate.text=element.pFrdate;
-         // requisitionSlipController.pFromtime.text=element.pFrTime;
-         // requisitionSlipController.pTotime.text=element.pToTime;
-         // requisitionSlipController.OndutyReason.text=element.perReason;
-         // requisitionSlipController.PerReason.text=element.perReason;
-       });
-     }
-     else{
+   super.initState();
+   Future.delayed(Duration.zero, () async {
+     if(requisitionSlipController.saveButton.value==RequestConstant.SUBMIT){
        requisitionSlipController.reqId=0;
-       requisitionSlipController.saveButton.value = RequestConstant.SUBMIT;
-       requisitionSlipController.ReqAutoyearwise.text = autoYearWiseNoController.RequisitionSlip_autoYrsWise.value;
        requisitionSlipController.Reqdate.text = BaseUtitiles.initiateCurrentDateFormat();
-       requisitionSlipController.Staffname.text=loginController.user.value.empName!;
-       requisitionSlipController.selectedstaffId.value = loginController.user.value.empId!;
-       requisitionSlipController.Location.text  = "--SELECT--";
-       requisitionSlipController.projectLocationID.value = 0;
-       // reportsController.selectedProjectId.value = 0;
+       if(loginController.user.value.userType == "A"){
+         staffController.selectedstaffId.value = 0;
+         staffController.Staffname.text = "--SELECT--";
+       }
+       else{
+         staffController.selectedstaffId.value = loginController.user.value.empId!;
+         staffController.Staffname.text = loginController.user.value.empName!;
+       }
+       reportsController.projectname.text  = "--SELECT--";
+       reportsController.selectedProjectId.value = 0;
        requisitionSlipController.LeaveReason.text = "";
        requisitionSlipController.Reason.text = "";
        requisitionSlipController.Fromdate.text = BaseUtitiles.initiateCurrentDateFormat();
@@ -98,20 +56,37 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
        requisitionSlipController.Totime.text = "00:00";
        requisitionSlipController.RequiredHrs.text = "0";
        requisitionSlipController.RequiredMins.text = "0";
-
-       // requisitionSlipController.ondutyDate.text=BaseUtitiles.initiateCurrentDateFormat();
-       // requisitionSlipController.perDate.text = BaseUtitiles.initiateCurrentDateFormat();
-
-       requisitionSlipController.type.value = "Leave";
        requisitionSlipController.TotalHrs.text = "0.0";
+       requisitionSlipController.yearofLeavedays.value="0";
+       await autoYearWiseNoController.AutoYearWiseNo("REQ SLIP");
+       requisitionSlipController.ReqAutoyearwise.text = autoYearWiseNoController.RequisitionSlip_autoYrsWise.value;
+       await requisitionSlipController.getStaffReqTypeList();
+       requisitionSlipController.type.value = "L";
+     }
 
-       // reportsController.setSelectedProjectListName(0);
-       // requisitionSlipController.OndutyReason.text="";
-       // requisitionSlipController.PerReason.text="";
+     else if(requisitionSlipController.saveButton.value==RequestConstant.RESUBMIT){
+       requisitionSlipController.ReqSlipEditList.forEach((element) {
+         requisitionSlipController.reqId=element.id;
+         requisitionSlipController.ReqAutoyearwise.text=element.requisitionNo;
+         requisitionSlipController.Reqdate.text=element.entryDate;
+         staffController.selectedstaffId.value =element.staffId;
+         staffController.Staffname.text = element.staffName;
+         reportsController.projectname.text= element.projectName;
+         reportsController.selectedProjectId.value = element.projectId;
+         requisitionSlipController.type.value=element.requisitionType.toString();
+         requisitionSlipController.Fromdate.text=element.leaveFromDate;
+         requisitionSlipController.Todate.text=element.leaveToDate;
+         requisitionSlipController.Reason.text=element.permissionReason;
+         requisitionSlipController.LeaveReason.text = element.leaveReason;
+         requisitionSlipController.Date.text = element.permissionFromDate;
+         requisitionSlipController.Totaldays.text=element.totalLeaveDays.toString();
+         requisitionSlipController.Fromtime.text = element.permissionFromTime;
+         requisitionSlipController.Totime.text = element.permissionToTime;
+         requisitionSlipController.TotalHrs.text=element.totalPermissionHours.toStringAsFixed(2);
+         requisitionSlipController.yearofLeavedays.value="0";
+       });
      }
    });
-
-    super.initState();
   }
 
 
@@ -144,7 +119,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
-                            "Requisition Slip",
+                            "Staff L & P Slip",
                             style: TextStyle(
                                 fontSize: RequestConstant.Heading_Font_SIZE,
                                 fontWeight: FontWeight.bold),
@@ -238,7 +213,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                           child: TextFormField(
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                             readOnly: true,
-                            controller: requisitionSlipController.Staffname,
+                            controller: staffController.Staffname,
                             cursorColor: Colors.black,
                             style: const TextStyle(color: Colors.black),
                             decoration: const InputDecoration(
@@ -255,20 +230,17 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                   child: ConstIcons.projectName),
                             ),
                             onTap: () async {
-                              // setState(() {
-                              if( requisitionSlipController.editCheck == 1){
+                              if( requisitionSlipController.saveButton.value==RequestConstant.RESUBMIT){
 
                               } else if(loginController.user.value.userType == "A"){
-                                  Future.delayed(Duration(seconds: 0),()async {
-                                    // await bottomsheetControllers.StaffName(context, staffController.getStaffDropdownvalue.value, requisitionSlipController.reqSlip);
-                                  });
+                                await staffController.get_staffDropdowntList(context, "");
+                                await bottomsheetControllers.StaffName(context, staffController.getStaffDropdownvalue.value);
                                 }
                                 FocusScope.of(context).unfocus();
-                              // });
                             },
                             validator: (value) {
-                              if (value!.isEmpty) {
-                                return '\u26A0 Please select Staff Name.';
+                              if (value!.isEmpty || value=="--SELECT--") {
+                                return '\u26A0 Required';
                               }
                               return null;
                             },
@@ -289,7 +261,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                           child: TextFormField(
                             readOnly: true,
                             autovalidateMode: AutovalidateMode.onUserInteraction,
-                            controller: requisitionSlipController.Location,
+                            controller: reportsController.projectname,
                             cursorColor: Colors.black,
                             style: const TextStyle(color: Colors.black),
                             decoration: const InputDecoration(
@@ -312,7 +284,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                             },
                             validator: (value) {
                               if (value=="--SELECT--"|| value=="SELECT") {
-                                return '\u26A0 Please select Location';
+                                return '\u26A0 Required';
                               }
                               return null;
                             },
@@ -321,131 +293,86 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                       ),
                     ),
                     SizedBox(height: BaseUtitiles.getheightofPercentage(context, 1)),
-                    Padding(
-                      padding: EdgeInsets.only(left: 15, right: 15),
-                      child: Divider(
-                        thickness: 2,
-                        color: Theme.of(context).primaryColor,
-                      ),
+
+                    Obx(() =>
+                        requisitionSlipController.staffReqTypeList.value.isEmpty?const SizedBox():Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 15, right: 15),
+                              child: Divider(
+                                thickness: 2,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              itemCount:
+                              requisitionSlipController.staffReqTypeList.value.length,
+
+                              gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2, // 2 items per row
+                                childAspectRatio: 3.5,
+                              ),
+
+                              itemBuilder: (context, index) {
+                              final item = requisitionSlipController.staffReqTypeList.value[index];
+
+                              return Row(
+                                children: [
+
+                                  Expanded(
+                                    child: Obx(()=>
+                                      Radio<String>(
+                                        activeColor: Theme.of(context).primaryColor,
+                                        value: item.requisitionTypeValue.toString(),
+                                        groupValue: requisitionSlipController.type.value.toString(),
+                                        onChanged: (value) {
+                                          requisitionSlipController.type.value = value!;
+                                          requisitionSlipController.Reason.clear();
+                                          requisitionSlipController.LeaveReason.clear();
+                                          requisitionSlipController.Fromtime.text = "00:00";
+                                          requisitionSlipController.pFromtime.text = "00:00";
+                                          requisitionSlipController.Totime.text = "00:00";
+                                          requisitionSlipController.pTotime.text = "00:00";
+                                          requisitionSlipController.TotalHrs.text = "0.0";
+                                          requisitionSlipController.Totaldays.text = "1";
+                                          requisitionSlipController.RequiredHrs.text = "0";
+                                          requisitionSlipController.RequiredMins.text = "0";
+                                          requisitionSlipController.Fromdate.text =
+                                              BaseUtitiles.initiateCurrentDateFormat();
+                                          requisitionSlipController.Todate.text =
+                                              BaseUtitiles.initiateCurrentDateFormat();
+                                          },
+                                      ),
+                                    ),
+                                  ),
+
+                                  Expanded(
+                                    flex: 3,
+                                    child: Text(item.requisitionType.toString()),
+                                  ),
+                                ],
+                              );
+                            },
+                                                  ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 15, right: 15),
+                              child: Divider(
+                                thickness: 2,
+                                color: Theme.of(context).primaryColor,
+                              ),),
+
+                          ],
+                        ),
                     ),
 
-                    Row(
-                      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children:<Widget> [
-                        Obx(() =>  Expanded(
-                          child: Radio<String>(
-                            value: 'Leave',
-                            groupValue: requisitionSlipController.type.value,
-                            onChanged: (value) {
-                              setState(() {
-                                requisitionSlipController.type.value = value!;
-                                requisitionSlipController.Reason.text = "";
-                                requisitionSlipController.LeaveReason.text = "";
-                                requisitionSlipController.Fromtime.text = "00:00";
-                                requisitionSlipController.pFromtime.text = "00:00";
-                                requisitionSlipController.Totime.text="00:00";
-                                requisitionSlipController.pTotime.text="00:00";
-                                requisitionSlipController.TotalHrs.text="0.0";
-                                requisitionSlipController.Totaldays.text = "1";
-                                requisitionSlipController.Fromdate.text = BaseUtitiles.initiateCurrentDateFormat();
-                                requisitionSlipController.Todate.text = BaseUtitiles.initiateCurrentDateFormat();
-                                requisitionSlipController.checkColor = 1;
-                              });
-                            },
-                          ),
-                        )),
-                        const Expanded(
-                            flex: 1,
-                            child: Text('Leave  ')),
-
-                        Obx(() =>  Expanded(
-                          child: Radio<String>(
-                            value: 'Compensate Leave',
-                            groupValue: requisitionSlipController.type.value,
-                            onChanged: (value) {
-                              setState(() {
-                                requisitionSlipController.type.value = value!;
-                                requisitionSlipController.Reason.text="";
-                                requisitionSlipController.LeaveReason.text="";
-                                requisitionSlipController.Fromtime.text="00:00";
-                                requisitionSlipController.pFromtime.text="00:00";
-                                requisitionSlipController.Totime.text="00:00";
-                                requisitionSlipController.pTotime.text="00:00";
-                                requisitionSlipController.TotalHrs.text="0.0";
-                                requisitionSlipController.Totaldays.text = "1";
-                                requisitionSlipController.Fromdate.text = BaseUtitiles.initiateCurrentDateFormat();
-                                requisitionSlipController.Todate.text = BaseUtitiles.initiateCurrentDateFormat();
-                              });
-                            },
-                          ),
-                        ),),
-                        Expanded(
-                            flex: 2,
-                            child: const Text('Compensate Leave')),
-                      ],
-                    ),
-
-                    Row(
-                      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Obx(() =>  Expanded(
-                          child: Radio<String>(
-                            value: 'OnDuty',
-                            groupValue: requisitionSlipController.type.value,
-                            onChanged: (value) {
-                              setState(() {
-                                requisitionSlipController.type.value = value!;
-                                requisitionSlipController.LeaveReason.text="";
-                                requisitionSlipController.Reason.text="";
-                                requisitionSlipController.pFromtime.text="00:00";
-                                requisitionSlipController.pTotime.text="00:00";
-                                requisitionSlipController.TotalHrs.text="0.0";
-                                requisitionSlipController.Totaldays.text = "1";
-                                requisitionSlipController.RequiredHrs.text = "0";
-                                requisitionSlipController.RequiredMins.text = "0";
-                              });
-                            },
-                          ),
-                        ),),
-                        const Expanded(
-                            flex: 1,
-                            child: Text('OnDuty')),
-
-                        Obx(() =>  Expanded(
-                          child: Radio<String>(
-                            value: 'Permission',
-                            groupValue: requisitionSlipController.type.value,
-                            onChanged: (value) {
-                              setState(() {
-                                requisitionSlipController.type.value = value!;
-                                requisitionSlipController.Reason.text="";
-                                requisitionSlipController.LeaveReason.text="";
-                                requisitionSlipController.Fromtime.text="00:00";
-                                requisitionSlipController.Totime.text="00:00";
-                                requisitionSlipController.TotalHrs.text="0.0";
-                                requisitionSlipController.Totaldays.text = "1";
-                                requisitionSlipController.RequiredHrs.text = "0";
-                                requisitionSlipController.RequiredMins.text = "0";
-                              });
-                            },
-                          ),
-                        ),),
-                        const Expanded(
-                            flex: 2,
-                            child: Text('Permission   ')),
-                      ],
-                    ),
-
-                    Padding(
-                      padding: EdgeInsets.only(left: 15, right: 15),
-                      child: Divider(
-                        thickness: 2,
-                        color: Theme.of(context).primaryColor,
-                      ),),
 
                     Obx(() => Container(
                       child: Visibility(
-                        visible: requisitionSlipController.type.value=="Leave"?true:false,
+                        visible: requisitionSlipController.type.value=="L"?true:false,
                         child: Container(
                           child: Column(
                             children: <Widget>[
@@ -480,7 +407,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                       ),
                                       validator: (value) {
                                         if (value!.isEmpty) {
-                                          return '\u26A0 Please enter reason';
+                                          return '\u26A0 Required';
                                         }
                                         return null;
                                       },
@@ -524,29 +451,30 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                               ),
                                               onTap: () async {
                                                 var Frdate = await showDatePicker(
-                                                    fieldHintText: "From",
-                                                    context: context,
-                                                    initialDate: DateTime.parse(requisitionSlipController.Fromdate.text),
-                                                    firstDate: DateTime(1900),
-                                                    lastDate: DateTime(2100),
-                                                    builder: (context, child) {
-                                                  return Theme(
-                                                    data: Theme.of(context).copyWith(
-                                                      colorScheme: ColorScheme.light(
-                                                        primary: Theme.of(context).primaryColor,
-                                                        onPrimary: Colors.white,
-                                                        onSurface:
-                                                        Colors.black, // body text color
-                                                      ),
-                                                      textButtonTheme: TextButtonThemeData(
-                                                        style: TextButton.styleFrom(
-                                                          primary: Colors.black, // button text color
+                                                  fieldHintText: "From",
+                                                  context: context,
+                                                  initialDate: DateTime.now(),
+                                                  firstDate: DateTime.now(), // disables previous dates
+                                                  lastDate: DateTime(2100),
+
+                                                  builder: (context, child) {
+                                                    return Theme(
+                                                      data: Theme.of(context).copyWith(
+                                                        colorScheme: ColorScheme.light(
+                                                          primary: Theme.of(context).primaryColor,
+                                                          onPrimary: Colors.white,
+                                                          onSurface: Colors.black,
+                                                        ),
+                                                        textButtonTheme: TextButtonThemeData(
+                                                          style: TextButton.styleFrom(
+                                                            foregroundColor: Colors.black,
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                    child: child!,
-                                                  );
-                                                });
+                                                      child: child!,
+                                                    );
+                                                  },
+                                                );
                                                 requisitionSlipController.Fromdate.text = BaseUtitiles.selectDateFormat(Frdate!);
                                                 requisitionSlipController.vehicleAge(DateTime.parse(requisitionSlipController.Fromdate.text),DateTime.parse(requisitionSlipController.Todate.text));
 
@@ -589,7 +517,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                                     context: context,
                                                     initialDate: DateTime.parse(requisitionSlipController.Fromdate.text),
                                                     firstDate:DateTime.parse(requisitionSlipController.Fromdate.text),
-                                                    lastDate: DateTime.parse(requisitionSlipController.Fromdate.text).add(Duration(days: 3)),
+                                                    lastDate: DateTime(2100),
                                                     builder: (context, child) {
                                                   return Theme(
                                                     data: Theme.of(context).copyWith(
@@ -655,7 +583,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                       },
                                       validator: (value) {
                                         if (value!.isEmpty) {
-                                          return '\u26A0 Please enter total days';
+                                          return '\u26A0 Required';
                                         }
                                         return null;
                                       },
@@ -663,54 +591,6 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                 ),
                               ),
                               ),
-
-                              // Container(
-                              //   margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                              //   child: Card(
-                              //     shape: RoundedRectangleBorder(
-                              //       side: const BorderSide(color: Colors.white70, width: 1),
-                              //       borderRadius: BorderRadius.circular(15),
-                              //     ),
-                              //     elevation: 3,
-                              //     child: Padding(
-                              //       padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                              //       child: TextFormField(
-                              //
-                              //         textAlign: TextAlign.right,
-                              //         readOnly: false,
-                              //         autovalidateMode: AutovalidateMode.onUserInteraction,
-                              //         controller: requisitionSlipController.yearofLeavedays,
-                              //         cursorColor: Colors.black,
-                              //         style: const TextStyle(color: Colors.black),
-                              //         decoration: const InputDecoration(
-                              //           contentPadding: EdgeInsets.zero,
-                              //           border: InputBorder.none,
-                              //           // labelText: "Total Days",
-                              //           // labelStyle: TextStyle(
-                              //           //     color: Colors.grey,
-                              //           //     fontSize: RequestConstant.Lable_Font_SIZE),
-                              //           prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                              //           prefixIcon: Padding(
-                              //             padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                              //             child: Text("Previous Leave Taken (This Year)"),
-                              //             // Icon(Icons.format_list_numbered_rounded, color: ConstIcons.IconColor),
-                              //           ),
-                              //           // suffixIcon: Padding(
-                              //           //   padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                              //           //   child: Text(requisitionSlipController.yearofLeavedays.text),
-                              //           //   // Icon(Icons.format_list_numbered_rounded, color: ConstIcons.IconColor),
-                              //           // ),
-                              //         ),
-                              //         validator: (value) {
-                              //           if (value!.isEmpty) {
-                              //             return '\u26A0 Please enter total days';
-                              //           }
-                              //           return null;
-                              //         },
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
 
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -732,178 +612,6 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                 ),
                               ),
 
-
-
-                              // Container(
-                              //   padding: EdgeInsets.only(left: 1, bottom: 8),
-                              //   child: Row(
-                              //     children: [
-                              //       Expanded(
-                              //         flex: 1,
-                              //         child: Container(
-                              //           margin: EdgeInsets.only(left: 20,top: 10),
-                              //           height: BaseUtitiles.getheightofPercentage(context, 4),
-                              //           child: Text("Reason",style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
-                              //         ),
-                              //       ),
-                              //       Expanded(
-                              //         flex: 1,
-                              //         child: Container(
-                              //           height: BaseUtitiles.getheightofPercentage(context, 4),
-                              //           margin: EdgeInsets.only(left: 10, right: 20),
-                              //           decoration: BoxDecoration(),
-                              //           child: TextField(
-                              //             style: TextStyle(fontSize: 12,color: Theme.of(context).primaryColor),
-                              //             controller: requisitionSlipController.Reason,
-                              //             textAlign: TextAlign.center,
-                              //             decoration: InputDecoration(
-                              //               contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                              //               focusedBorder: OutlineInputBorder(
-                              //                 borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                              //               ),
-                              //               enabledBorder: OutlineInputBorder(
-                              //                 borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                              //               ),
-                              //               border: OutlineInputBorder(),
-                              //             ),
-                              //
-                              //             onTap: () {
-                              //
-                              //             },
-                              //           ),
-                              //
-                              //         ),
-                              //
-                              //       ),
-                              //     ],
-                              //   ),
-                              // ),
-                              // Container(
-                              //   child: Row(
-                              //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              //     children: <Widget>[
-                              //       Container(
-                              //         height: BaseUtitiles.getheightofPercentage(context, 4),
-                              //         width: BaseUtitiles.getWidthtofPercentage(context, 40),
-                              //         margin: EdgeInsets.only(left: 5, right: 5),
-                              //         decoration: BoxDecoration(),
-                              //         child: TextField(
-                              //           style: TextStyle(fontSize: 13),
-                              //           readOnly: true,
-                              //           controller: requisitionSlipController.Fromdate,
-                              //           decoration: InputDecoration(
-                              //             contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                              //             focusedBorder: OutlineInputBorder(
-                              //               borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                              //             ),
-                              //             enabledBorder: OutlineInputBorder(
-                              //               borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                              //             ),
-                              //             border: OutlineInputBorder(),
-                              //             prefixIcon: Icon(Icons.date_range_sharp,
-                              //                 color: Theme.of(context).primaryColor),
-                              //           ),
-                              //           onTap: () async {
-                              //
-                              //             var Frdate = await showDatePicker(
-                              //                 fieldHintText: "From",
-                              //                 context: context,
-                              //                 initialDate: DateTime.now(),
-                              //                 firstDate: DateTime(1900),
-                              //                 lastDate: DateTime(2100));
-                              //             requisitionSlipController.Fromdate.text = BaseUtitiles.selectDateFormat(Frdate!);
-                              //             requisitionSlipController.vehicleAge(DateTime.parse(requisitionSlipController.Fromdate.text),DateTime.parse(requisitionSlipController.Todate.text));
-                              //
-                              //           },
-                              //         ),
-                              //       ),
-                              //       Container(
-                              //         height: BaseUtitiles.getheightofPercentage(context, 4),
-                              //         width: BaseUtitiles.getWidthtofPercentage(context, 40),
-                              //         margin: EdgeInsets.only(left: 4, right: 5),
-                              //         decoration: BoxDecoration(),
-                              //         child: TextField(
-                              //           readOnly: true,
-                              //           style: TextStyle(fontSize: 13),
-                              //           controller: requisitionSlipController.Todate,
-                              //           decoration: InputDecoration(
-                              //             contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                              //             focusedBorder: OutlineInputBorder(
-                              //               borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                              //             ),
-                              //             enabledBorder: OutlineInputBorder(
-                              //               borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                              //             ),
-                              //             border: OutlineInputBorder(),
-                              //             prefixIcon: Icon(Icons.date_range_sharp,
-                              //                 color: Theme.of(context).primaryColor),
-                              //           ),
-                              //           onTap: () async {
-                              //             var Todate = await showDatePicker(
-                              //                 context: context,
-                              //                 initialDate: DateTime.now(),
-                              //                 firstDate: DateTime(1900),
-                              //                 lastDate: DateTime(2100));
-                              //             requisitionSlipController.Todate.text =BaseUtitiles.selectDateFormat(Todate!);
-                              //             requisitionSlipController.vehicleAge(DateTime.parse(requisitionSlipController.Fromdate.text),DateTime.parse(requisitionSlipController.Todate.text));
-                              //
-                              //           },
-                              //
-                              //         ),
-                              //       ),
-                              //
-                              //     ],
-                              //   ),
-                              // ),
-                              // Container(
-                              //   padding: EdgeInsets.only(left: 1, bottom: 8,top: 8),
-                              //   child: Row(
-                              //     children: [
-                              //       Expanded(
-                              //         flex: 1,
-                              //         child: Container(
-                              //           margin: EdgeInsets.only(left: 20,top: 10),
-                              //           height: BaseUtitiles.getheightofPercentage(context, 4),
-                              //           child: Text("Total Days",style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
-                              //         ),
-                              //       ),
-                              //       Expanded(
-                              //         flex: 1,
-                              //         child: Container(
-                              //           height: BaseUtitiles.getheightofPercentage(context, 4),
-                              //           margin: EdgeInsets.only(left: 10, right: 20),
-                              //           decoration: BoxDecoration(),
-                              //           child: TextField(
-                              //             readOnly: true,
-                              //             style: TextStyle(fontSize: 12,color: Theme.of(context).primaryColor),
-                              //             controller: requisitionSlipController.Totaldays,
-                              //             textAlign: TextAlign.center,
-                              //             decoration: InputDecoration(
-                              //               contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                              //               focusedBorder: OutlineInputBorder(
-                              //                 borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                              //               ),
-                              //               enabledBorder: OutlineInputBorder(
-                              //                 borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                              //               ),
-                              //               border: OutlineInputBorder(),
-                              //             ),
-                              //
-                              //             onTap: () {
-                              //
-                              //             },
-                              //           ),
-                              //
-                              //         ),
-                              //
-                              //       ),
-                              //     ],
-                              //   ),
-                              // ),
-                              // Divider(
-                              //   thickness: 2,
-                              //   color: Theme.of(context).primaryColor,
-                              // )
                             ],
                           ),
                         ),
@@ -912,7 +620,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
 
                     Obx(() => Container(
                       child: Visibility(
-                        visible: requisitionSlipController.type.value=="Compensate Leave"?true:false,
+                        visible: requisitionSlipController.type.value=="C"?true:false,
                         child: Container(
                           child: Column(
                             children: <Widget>[
@@ -947,7 +655,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                       ),
                                       validator: (value) {
                                         if (value!.isEmpty) {
-                                          return '\u26A0 Please enter reason';
+                                          return '\u26A0 Required';
                                         }
                                         return null;
                                       },
@@ -991,29 +699,30 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                               ),
                                               onTap: () async {
                                                 var Frdate = await showDatePicker(
-                                                    fieldHintText: "From",
-                                                    context: context,
-                                                    initialDate: DateTime.parse(requisitionSlipController.Fromdate.text),
-                                                    firstDate: DateTime(1900),
-                                                    lastDate: DateTime(2100),
-                                                    builder: (context, child) {
-                                                      return Theme(
-                                                        data: Theme.of(context).copyWith(
-                                                          colorScheme: ColorScheme.light(
-                                                            primary: Theme.of(context).primaryColor,
-                                                            onPrimary: Colors.white,
-                                                            onSurface:
-                                                            Colors.black, // body text color
-                                                          ),
-                                                          textButtonTheme: TextButtonThemeData(
-                                                            style: TextButton.styleFrom(
-                                                              primary: Colors.black, // button text color
-                                                            ),
+                                                  fieldHintText: "From",
+                                                  context: context,
+                                                  initialDate: DateTime.now(),
+                                                  firstDate: DateTime.now(), // disables previous dates
+                                                  lastDate: DateTime(2100),
+
+                                                  builder: (context, child) {
+                                                    return Theme(
+                                                      data: Theme.of(context).copyWith(
+                                                        colorScheme: ColorScheme.light(
+                                                          primary: Theme.of(context).primaryColor,
+                                                          onPrimary: Colors.white,
+                                                          onSurface: Colors.black,
+                                                        ),
+                                                        textButtonTheme: TextButtonThemeData(
+                                                          style: TextButton.styleFrom(
+                                                            foregroundColor: Colors.black,
                                                           ),
                                                         ),
-                                                        child: child!,
-                                                      );
-                                                    });
+                                                      ),
+                                                      child: child!,
+                                                    );
+                                                  },
+                                                );
                                                 requisitionSlipController.Fromdate.text = BaseUtitiles.selectDateFormat(Frdate!);
                                                 requisitionSlipController.vehicleAge(DateTime.parse(requisitionSlipController.Fromdate.text),DateTime.parse(requisitionSlipController.Todate.text));
 
@@ -1056,7 +765,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                                     context: context,
                                                     initialDate: DateTime.parse(requisitionSlipController.Fromdate.text),
                                                     firstDate:DateTime.parse(requisitionSlipController.Fromdate.text),
-                                                    lastDate: DateTime.parse(requisitionSlipController.Fromdate.text).add(Duration(days: 3)),
+                                                    lastDate: DateTime(2100),
                                                     builder: (context, child) {
                                                       return Theme(
                                                         data: Theme.of(context).copyWith(
@@ -1122,7 +831,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                       },
                                       validator: (value) {
                                         if (value!.isEmpty) {
-                                          return '\u26A0 Please enter total days';
+                                          return '\u26A0 Required';
                                         }
                                         return null;
                                       },
@@ -1131,56 +840,10 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                 ),
                               ),
 
-                              // Container(
-                              //   margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                              //   child: Card(
-                              //     shape: RoundedRectangleBorder(
-                              //       side: const BorderSide(color: Colors.white70, width: 1),
-                              //       borderRadius: BorderRadius.circular(15),
-                              //     ),
-                              //     elevation: 3,
-                              //     child: Padding(
-                              //       padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                              //       child: TextFormField(
-                              //
-                              //         textAlign: TextAlign.right,
-                              //         readOnly: false,
-                              //         autovalidateMode: AutovalidateMode.onUserInteraction,
-                              //         controller: requisitionSlipController.yearofLeavedays,
-                              //         cursorColor: Colors.black,
-                              //         style: const TextStyle(color: Colors.black),
-                              //         decoration: const InputDecoration(
-                              //           contentPadding: EdgeInsets.zero,
-                              //           border: InputBorder.none,
-                              //           // labelText: "Total Days",
-                              //           // labelStyle: TextStyle(
-                              //           //     color: Colors.grey,
-                              //           //     fontSize: RequestConstant.Lable_Font_SIZE),
-                              //           prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                              //           prefixIcon: Padding(
-                              //             padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                              //             child: Text("Previous Leave Taken (This Year)"),
-                              //             // Icon(Icons.format_list_numbered_rounded, color: ConstIcons.IconColor),
-                              //           ),
-                              //           // suffixIcon: Padding(
-                              //           //   padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                              //           //   child: Text(requisitionSlipController.yearofLeavedays.text),
-                              //           //   // Icon(Icons.format_list_numbered_rounded, color: ConstIcons.IconColor),
-                              //           // ),
-                              //         ),
-                              //         validator: (value) {
-                              //           if (value!.isEmpty) {
-                              //             return '\u26A0 Please enter total days';
-                              //           }
-                              //           return null;
-                              //         },
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
+
 
                               Visibility(
-                                visible: requisitionSlipController.type.value == "Compensate Leave"? false : true,
+                                visible: requisitionSlipController.type.value == "C"? false : true,
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Container(
@@ -1198,179 +861,6 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                   ),
                                 ),
                               ),
-
-
-
-                              // Container(
-                              //   padding: EdgeInsets.only(left: 1, bottom: 8),
-                              //   child: Row(
-                              //     children: [
-                              //       Expanded(
-                              //         flex: 1,
-                              //         child: Container(
-                              //           margin: EdgeInsets.only(left: 20,top: 10),
-                              //           height: BaseUtitiles.getheightofPercentage(context, 4),
-                              //           child: Text("Reason",style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
-                              //         ),
-                              //       ),
-                              //       Expanded(
-                              //         flex: 1,
-                              //         child: Container(
-                              //           height: BaseUtitiles.getheightofPercentage(context, 4),
-                              //           margin: EdgeInsets.only(left: 10, right: 20),
-                              //           decoration: BoxDecoration(),
-                              //           child: TextField(
-                              //             style: TextStyle(fontSize: 12,color: Theme.of(context).primaryColor),
-                              //             controller: requisitionSlipController.Reason,
-                              //             textAlign: TextAlign.center,
-                              //             decoration: InputDecoration(
-                              //               contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                              //               focusedBorder: OutlineInputBorder(
-                              //                 borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                              //               ),
-                              //               enabledBorder: OutlineInputBorder(
-                              //                 borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                              //               ),
-                              //               border: OutlineInputBorder(),
-                              //             ),
-                              //
-                              //             onTap: () {
-                              //
-                              //             },
-                              //           ),
-                              //
-                              //         ),
-                              //
-                              //       ),
-                              //     ],
-                              //   ),
-                              // ),
-                              // Container(
-                              //   child: Row(
-                              //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              //     children: <Widget>[
-                              //       Container(
-                              //         height: BaseUtitiles.getheightofPercentage(context, 4),
-                              //         width: BaseUtitiles.getWidthtofPercentage(context, 40),
-                              //         margin: EdgeInsets.only(left: 5, right: 5),
-                              //         decoration: BoxDecoration(),
-                              //         child: TextField(
-                              //           style: TextStyle(fontSize: 13),
-                              //           readOnly: true,
-                              //           controller: requisitionSlipController.Fromdate,
-                              //           decoration: InputDecoration(
-                              //             contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                              //             focusedBorder: OutlineInputBorder(
-                              //               borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                              //             ),
-                              //             enabledBorder: OutlineInputBorder(
-                              //               borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                              //             ),
-                              //             border: OutlineInputBorder(),
-                              //             prefixIcon: Icon(Icons.date_range_sharp,
-                              //                 color: Theme.of(context).primaryColor),
-                              //           ),
-                              //           onTap: () async {
-                              //
-                              //             var Frdate = await showDatePicker(
-                              //                 fieldHintText: "From",
-                              //                 context: context,
-                              //                 initialDate: DateTime.now(),
-                              //                 firstDate: DateTime(1900),
-                              //                 lastDate: DateTime(2100));
-                              //             requisitionSlipController.Fromdate.text = BaseUtitiles.selectDateFormat(Frdate!);
-                              //             requisitionSlipController.vehicleAge(DateTime.parse(requisitionSlipController.Fromdate.text),DateTime.parse(requisitionSlipController.Todate.text));
-                              //
-                              //           },
-                              //         ),
-                              //       ),
-                              //       Container(
-                              //         height: BaseUtitiles.getheightofPercentage(context, 4),
-                              //         width: BaseUtitiles.getWidthtofPercentage(context, 40),
-                              //         margin: EdgeInsets.only(left: 4, right: 5),
-                              //         decoration: BoxDecoration(),
-                              //         child: TextField(
-                              //           readOnly: true,
-                              //           style: TextStyle(fontSize: 13),
-                              //           controller: requisitionSlipController.Todate,
-                              //           decoration: InputDecoration(
-                              //             contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                              //             focusedBorder: OutlineInputBorder(
-                              //               borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                              //             ),
-                              //             enabledBorder: OutlineInputBorder(
-                              //               borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                              //             ),
-                              //             border: OutlineInputBorder(),
-                              //             prefixIcon: Icon(Icons.date_range_sharp,
-                              //                 color: Theme.of(context).primaryColor),
-                              //           ),
-                              //           onTap: () async {
-                              //             var Todate = await showDatePicker(
-                              //                 context: context,
-                              //                 initialDate: DateTime.now(),
-                              //                 firstDate: DateTime(1900),
-                              //                 lastDate: DateTime(2100));
-                              //             requisitionSlipController.Todate.text =BaseUtitiles.selectDateFormat(Todate!);
-                              //             requisitionSlipController.vehicleAge(DateTime.parse(requisitionSlipController.Fromdate.text),DateTime.parse(requisitionSlipController.Todate.text));
-                              //
-                              //           },
-                              //
-                              //         ),
-                              //       ),
-                              //
-                              //     ],
-                              //   ),
-                              // ),
-                              // Container(
-                              //   padding: EdgeInsets.only(left: 1, bottom: 8,top: 8),
-                              //   child: Row(
-                              //     children: [
-                              //       Expanded(
-                              //         flex: 1,
-                              //         child: Container(
-                              //           margin: EdgeInsets.only(left: 20,top: 10),
-                              //           height: BaseUtitiles.getheightofPercentage(context, 4),
-                              //           child: Text("Total Days",style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
-                              //         ),
-                              //       ),
-                              //       Expanded(
-                              //         flex: 1,
-                              //         child: Container(
-                              //           height: BaseUtitiles.getheightofPercentage(context, 4),
-                              //           margin: EdgeInsets.only(left: 10, right: 20),
-                              //           decoration: BoxDecoration(),
-                              //           child: TextField(
-                              //             readOnly: true,
-                              //             style: TextStyle(fontSize: 12,color: Theme.of(context).primaryColor),
-                              //             controller: requisitionSlipController.Totaldays,
-                              //             textAlign: TextAlign.center,
-                              //             decoration: InputDecoration(
-                              //               contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                              //               focusedBorder: OutlineInputBorder(
-                              //                 borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                              //               ),
-                              //               enabledBorder: OutlineInputBorder(
-                              //                 borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.0),
-                              //               ),
-                              //               border: OutlineInputBorder(),
-                              //             ),
-                              //
-                              //             onTap: () {
-                              //
-                              //             },
-                              //           ),
-                              //
-                              //         ),
-                              //
-                              //       ),
-                              //     ],
-                              //   ),
-                              // ),
-                              // Divider(
-                              //   thickness: 2,
-                              //   color: Theme.of(context).primaryColor,
-                              // )
                             ],
                           ),
                         ),
@@ -1379,7 +869,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
 
                     Obx(() => Container(
                       child: Visibility(
-                        visible: requisitionSlipController.type.value=="OnDuty"?true:false,
+                        visible: requisitionSlipController.type.value=="O"?true:false,
                         child: Container(
                           child: Column(
                             children: <Widget>[
@@ -1415,7 +905,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                       ),
                                       validator: (value) {
                                         if (value!.isEmpty) {
-                                          return '\u26A0 Please enter reason';
+                                          return '\u26A0 Required';
                                         }
                                         return null;
                                       },
@@ -1454,7 +944,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                         var Entrydate = await showDatePicker(
                                             context: context,
                                             initialDate: DateTime.now(),
-                                            firstDate: DateTime(1900),
+                                            firstDate: DateTime.now(),
                                             lastDate: DateTime(2100),
                                             builder: (context, child) {
                                           return Theme(
@@ -1515,7 +1005,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                               ),
                                               validator: (value) {
                                                 if (value!.isEmpty || value=="00:00") {
-                                                  return '\u26A0 Please enter From Time';
+                                                  return '\u26A0 Required';
                                                 }
                                                 return null;
                                               },
@@ -1560,7 +1050,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                             ),
                                               validator: (value) {
                                                 if (value!.isEmpty || value=="00:00") {
-                                                  return '\u26A0 Please enter To Time';
+                                                  return '\u26A0 Required';
                                                 }
                                                 return null;
                                               },
@@ -1610,7 +1100,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                                 ),
                                                 validator: (value) {
                                                   if (value!.isEmpty) {
-                                                    return '\u26A0 Please enter from time';
+                                                    return '\u26A0 Required';
                                                   }
                                                   return null;
                                                 },
@@ -1651,7 +1141,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                                 ),
                                                 validator: (value) {
                                                   if (value!.isEmpty) {
-                                                    return '\u26A0 Please enter to time';
+                                                    return '\u26A0 Required';
                                                   }
                                                   return null;
                                                 },
@@ -1694,7 +1184,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                       ),
                                       validator: (value) {
                                         if (value!.isEmpty) {
-                                          return '\u26A0 Please enter total hours';
+                                          return '\u26A0 Required';
                                         }
                                         return null;
                                       },
@@ -1713,7 +1203,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
 
                     Obx(() => Container(
                       child: Visibility(
-                        visible: requisitionSlipController.type.value=="Permission"?true:false,
+                        visible: requisitionSlipController.type.value=="P"?true:false,
                         child: Container(
                           child: Column(
                             children: <Widget>[
@@ -1748,7 +1238,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                       ),
                                       validator: (value) {
                                         if (value!.isEmpty) {
-                                          return '\u26A0 Please enter reason';
+                                          return '\u26A0 Required';
                                         }
                                         return null;
                                       },
@@ -1787,7 +1277,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                         var Entrydate = await showDatePicker(
                                             context: context,
                                             initialDate: DateTime.now(),
-                                            firstDate: DateTime(1900),
+                                            firstDate: DateTime.now(),
                                             lastDate: DateTime(2100),
                                             builder: (context, child) {
                                               return Theme(
@@ -1848,7 +1338,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                                 ),
                                                 validator: (value) {
                                                   if (value!.isEmpty || value=="00:00") {
-                                                    return '\u26A0 Please enter From Time';
+                                                    return '\u26A0 Required';
                                                   }
                                                   return null;
                                                 },
@@ -1893,7 +1383,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                                 ),
                                                 validator: (value) {
                                                   if (value!.isEmpty || value=="00:00" ) {
-                                                    return '\u26A0 Please enter To Time';
+                                                    return '\u26A0 Required';
                                                   }
                                                   return null;
                                                 },
@@ -1943,7 +1433,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                                 ),
                                                 validator: (value) {
                                                   if (value!.isEmpty) {
-                                                    return '\u26A0 Please enter from time';
+                                                    return '\u26A0 Required';
                                                   }
                                                   return null;
                                                 },
@@ -1984,7 +1474,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                                 ),
                                                 validator: (value) {
                                                   if (value!.isEmpty) {
-                                                    return '\u26A0 Please enter to time';
+                                                    return '\u26A0 Required';
                                                   }
                                                   return null;
                                                 },
@@ -2026,7 +1516,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                       ),
                                       validator: (value) {
                                         if (value!.isEmpty) {
-                                          return '\u26A0 Please enter total hours';
+                                          return '\u26A0 Required';
                                         }
                                         return null;
                                       },
@@ -2126,7 +1616,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                           if (formKey.currentState!.validate()) {
                             final type = requisitionSlipController.type.value.trim();
 
-                            if (type == "Leave") {
+                            if (type == "L") {
                               final totalDays = double.tryParse(requisitionSlipController.Totaldays.text.trim()) ?? 0;
 
                               if (totalDays == 0) {
@@ -2135,7 +1625,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                               }
                             }
 
-                            if (type == "Permission") {
+                            if (type == "P") {
                               final totalHours = double.tryParse(requisitionSlipController.TotalHrs.text.trim()) ?? 0;
 
                               if (totalHours == 0) {
@@ -2143,7 +1633,6 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                 return;
                               }
                             }
-                            requisitionSlipController.checkColor = 0;
                             await SubmitAlert(context);
                           }
                         }
@@ -2197,17 +1686,18 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                     child: TextButton(
                         onPressed: () async {
                           requisitionSlipController.reqId=0;
-                          requisitionSlipController.saveButton.value=RequestConstant.SAVE;
-                          requisitionSlipController.Staffname.text=loginController.EmpName();
-                          requisitionSlipController.Reqdate.text=BaseUtitiles.initiateCurrentDateFormat();
+                          requisitionSlipController.saveButton.value=RequestConstant.SUBMIT;
+                          staffController.selectedstaffId.value = loginController.user.value.empId!;
+                          staffController.Staffname.text = loginController.user.value.empName!;                          requisitionSlipController.Reqdate.text=BaseUtitiles.initiateCurrentDateFormat();
                           requisitionSlipController.Fromdate.text=BaseUtitiles.initiateCurrentDateFormat();
                           requisitionSlipController.Todate.text=BaseUtitiles.initiateCurrentDateFormat();
                           requisitionSlipController.ondutyDate.text=BaseUtitiles.initiateCurrentDateFormat();
                           requisitionSlipController.perDate.text=BaseUtitiles.initiateCurrentDateFormat();
                           requisitionSlipController.ReqAutoyearwise.text=autoYearWiseNoController.RequisitionSlip_autoYrsWise.value;
-                          requisitionSlipController.Location.text="--SELECT--";
+                          reportsController.projectname.text  = "--SELECT--";
+                          reportsController.selectedProjectId.value = 0;
                           requisitionSlipController.Totaldays.text="1";
-                          requisitionSlipController.type.value="Leave";
+                          requisitionSlipController.type.value="L";
                           requisitionSlipController.TotalHrs.text="0";
                           requisitionSlipController.Reason.text="";
                           requisitionSlipController.LeaveReason.text="";
@@ -2238,9 +1728,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
         child: AlertDialog(
           title: const Text('Alert!'),
           content: Text(
-              requisitionSlipController.editCheck == 1
-              ? 'Are you sure to Re-Submit?'
-              : 'Are you sure to submit?'),
+              'Are you sure to ${requisitionSlipController.saveButton.value}?'),
           actions: [
             Container(
               margin: const EdgeInsets.only(left: 20, right: 20),
@@ -2275,10 +1763,9 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                         onPressed: () async {
                              if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
                              await requisitionSlipController.SaveButtonStaffReqScreen(
-                               context, requisitionSlipController.selectedstaffId.value,
-                               requisitionSlipController.reqId != 0
-                                   ? requisitionSlipController.reqId
-                                   : 0,);
+                               context,
+                               requisitionSlipController.reqId
+                             );
                            }
                         },
                         child: Text(

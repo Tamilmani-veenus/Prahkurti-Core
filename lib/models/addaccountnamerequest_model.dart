@@ -15,6 +15,8 @@ class AccountnamesaveRequest {
   int? accountMainGroupId;
   String? accountName;
   String? active;
+  int? createdBy;
+  String? createdDt;
 
   AccountnamesaveRequest({
     this.id,
@@ -23,6 +25,8 @@ class AccountnamesaveRequest {
     this.accountMainGroupId,
     this.accountName,
     this.active,
+    this.createdBy,
+    this.createdDt
   });
 
   factory AccountnamesaveRequest.fromJson(Map<String, dynamic> json) => AccountnamesaveRequest(
@@ -32,6 +36,8 @@ class AccountnamesaveRequest {
     accountMainGroupId: json["accountMainGroupId"],
     accountName: json["accountName"],
     active: json["active"],
+    createdBy: json["createdBy"],
+    createdDt: json["createdDt"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -41,5 +47,7 @@ class AccountnamesaveRequest {
     "accountMainGroupId": accountMainGroupId,
     "accountName": accountName,
     "active": active,
+    "createdBy": createdBy,
+    "createdDt": createdDt,
   };
 }

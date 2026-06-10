@@ -22,13 +22,12 @@ class ConumEditResponse {
   factory ConumEditResponse.fromJson(Map<String, dynamic> json) => ConumEditResponse(
     success: json["success"],
     message: json["message"],
-    result: ConsumEditResult.fromJson(json["result"]),
-  );
+    result: json["result"]==null?null:ConsumEditResult.fromJson(json["result"]),  );
 
   Map<String, dynamic> toJson() => {
     "success": success,
     "message": message,
-    "result": result!.toJson(),
+    "result": result==null?null:result!.toJson(),
   };
 }
 

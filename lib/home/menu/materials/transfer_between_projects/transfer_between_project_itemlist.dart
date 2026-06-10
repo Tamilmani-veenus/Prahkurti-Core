@@ -68,92 +68,95 @@ class _Transfer_Between_Project_ItemListState extends State<Transfer_Between_Pro
           FocusManager.instance.primaryFocus?.unfocus();
         }
       },
-      child: Scaffold(
-        backgroundColor: Setmybackground,
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () async {
-            await transferBW_project_Controller.itemlistPopup_saveLabTableDatas(context);
-            await transferBW_project_Controller.getItemlistTablesDatas();
-          },
-          label: Text(
-            "Done",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: RequestConstant.Lable_Font_SIZE,
+      child: SafeArea(
+        top: false,
+        child: Scaffold(
+          backgroundColor: Setmybackground,
+          floatingActionButton: FloatingActionButton.extended(
+            onPressed: () async {
+              await transferBW_project_Controller.itemlistPopup_saveLabTableDatas(context);
+              await transferBW_project_Controller.getItemlistTablesDatas();
+            },
+            label: Text(
+              "Done",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: RequestConstant.Lable_Font_SIZE,
+              ),
             ),
+            icon: Icon(
+              Icons.library_add_check_outlined,
+              color: Colors.white,
+              size: RequestConstant.Heading_Font_SIZE,
+            ),
+            backgroundColor: Theme.of(context).primaryColor,
           ),
-          icon: Icon(
-            Icons.library_add_check_outlined,
-            color: Colors.white,
-            size: RequestConstant.Heading_Font_SIZE,
-          ),
-          backgroundColor: Theme.of(context).primaryColor,
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 40),
-              Container(
-                margin: EdgeInsets.only(left: 15, right: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: Text(
-                        "Add Items",
-                        style: TextStyle(
-                            fontSize: RequestConstant.Heading_Font_SIZE,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Container(
-                        height: BaseUtitiles.getheightofPercentage(context, 5),
-                        width: BaseUtitiles.getWidthtofPercentage(context, 40),
-                        margin: EdgeInsets.only(left: 15),
-                        child: TextField(
-                          cursorColor: Theme.of(context).primaryColor,
-                          controller: editingController,
-                          decoration: InputDecoration(
-                            filled: true,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide.none,
-                            ),
-                            prefixIcon: const Icon(
-                              Icons.search,
-                              color: Colors.black,
-                            ),
-                            hintText: "Search..",
-                            hintStyle: TextStyle(color: Colors.black),
-                            isDense: true,
-                            // fillColor: Setmybackground,
-                            fillColor: Colors.white,
-                          ),
-                          onEditingComplete: () {
-                            FocusScope.of(context).unfocus();
-                            // if (onSearch != null) onSearch!(searchcontroller.text);
-                          },
-                          textInputAction: TextInputAction.search,
-                          onChanged: (value) {
-                            setState(() {
-                              transferBW_project_Controller.mainlist.value = BaseUtitiles.materialPopupAlert(value, transferBW_project_Controller.transferItemListdatas);
-                            });
-                          },
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: 40),
+                Container(
+                  margin: EdgeInsets.only(left: 15, right: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          "Add Items",
+                          style: TextStyle(
+                              fontSize: RequestConstant.Heading_Font_SIZE,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
-                    ),
-                  ],
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          height: BaseUtitiles.getheightofPercentage(context, 5),
+                          width: BaseUtitiles.getWidthtofPercentage(context, 40),
+                          margin: EdgeInsets.only(left: 15),
+                          child: TextField(
+                            cursorColor: Theme.of(context).primaryColor,
+                            controller: editingController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide.none,
+                              ),
+                              prefixIcon: const Icon(
+                                Icons.search,
+                                color: Colors.black,
+                              ),
+                              hintText: "Search..",
+                              hintStyle: TextStyle(color: Colors.black),
+                              isDense: true,
+                              // fillColor: Setmybackground,
+                              fillColor: Colors.white,
+                            ),
+                            onEditingComplete: () {
+                              FocusScope.of(context).unfocus();
+                              // if (onSearch != null) onSearch!(searchcontroller.text);
+                            },
+                            textInputAction: TextInputAction.search,
+                            onChanged: (value) {
+                              setState(() {
+                                transferBW_project_Controller.mainlist.value = BaseUtitiles.materialPopupAlert(value, transferBW_project_Controller.transferItemListdatas);
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: 10),
+                SizedBox(height: 10),
 
-              ListDetails(),
+                ListDetails(),
 
-            ],
+              ],
+            ),
           ),
         ),
       ),

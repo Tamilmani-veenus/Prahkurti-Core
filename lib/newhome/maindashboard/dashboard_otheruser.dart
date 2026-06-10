@@ -21,10 +21,13 @@ import '../../controller/subcontcontroller.dart';
 import '../../home/account_settings/account_setting.dart';
 import '../../home/dashboard/button_widget.dart';
 import '../../home/dashboard/site_locations_view.dart';
+import '../../home/punch_in_out/punch_in.dart';
+import '../../home/punch_in_out/punch_out.dart';
 import '../../login/animation_signinpage/Animations/FadeAnimation.dart';
 import '../../login/animation_signinpage/signin_page.dart';
 import '../../login/animation_signinpage/welcomepage.dart';
 import '../../provider/daily_wrkdone_dprNew_provider.dart';
+import '../../signalr_service.dart';
 import '../../utilities/baseutitiles.dart';
 import '../../utilities/requestconstant.dart';
 import '../menus/main_menuslist.dart';
@@ -51,34 +54,8 @@ class _DashboardScreen_OtherUserState extends State<DashboardScreen_OtherUser> {
 
   int _currentPage = 0;
   final _pageController = PageController();
-  final searchcontroller = TextEditingController();
-
   LoginController loginController = Get.put(LoginController());
-  ProjectController projectController = Get.put(ProjectController());
-  SubcontractorController subcontractorController = Get.put(SubcontractorController());
-  CompanyController Companycontroller = Get.put(CompanyController());
-  StockSiteController stockSiteController = Get.put(StockSiteController());
-  AutoYearWiseNoController autoYearWiseNoController = Get.put(AutoYearWiseNoController());
-  // MenuController menuController = Get.put(MenuController());
   Menu_Controller menuController=Get.put(Menu_Controller());
-  PendingListController pendingListController = Get.put(PendingListController());
-  RequisitionSlipController requisitionSlipController = Get.put(RequisitionSlipController());
-  CommanController commanController = Get.put(CommanController());
-  Dashboard_Controller dashboard_controller = Get.put(Dashboard_Controller());
-
-
-  @override
-  void initState() {
-    setState(() {
-      punchIn = false;
-      loginController.getPunchInStatus();
-    });
-    var duration = const Duration(seconds: 0);
-    Future.delayed(duration, () {
-      SignInPage.checkVersion(context);
-    });
-    super.initState();
-  }
 
 
   @override
@@ -90,6 +67,7 @@ class _DashboardScreen_OtherUserState extends State<DashboardScreen_OtherUser> {
           bottomNavigationBar: BottomBar(
             selectedIndex: _currentPage,
             onTap: (int index) {
+              menuController.formMenuId.value = 0;
               _pageController.jumpToPage(index);
               setState(() => _currentPage = index);
             },
@@ -142,6 +120,7 @@ class _DashboardScreen_OtherUserState extends State<DashboardScreen_OtherUser> {
                           },
                         ),
                       ),
+
                       Container(
                         child: InkWell(
                           child: Container(
@@ -153,7 +132,7 @@ class _DashboardScreen_OtherUserState extends State<DashboardScreen_OtherUser> {
                           },
                         ),
                       ),
-                      const SizedBox(width: 8)
+                      const SizedBox(width: 15)
                     ],
                   ),
                   const Divider(),
@@ -258,7 +237,7 @@ class HomeScreenOtherUser extends StatefulWidget {
 class _HomeScreenOtherUserState extends State<HomeScreenOtherUser> {
   LoginController loginController = Get.put(LoginController());
   SiteLocationController siteLocationController = Get.put(SiteLocationController());
-  PunchInController punchInController = Get.put(PunchInController());
+  // PunchInController punchInController = Get.put(PunchInController());
 
   Future<bool> showExitPopup(BuildContext context) async {
     return await showDialog(
@@ -331,28 +310,30 @@ class _HomeScreenOtherUserState extends State<HomeScreenOtherUser> {
     borderRadius: BorderRadius.circular(32),
   );
 
-  void _handleRadioValueChange(int? value) {
-    setState(() {
-      punchInController.selectedRadio.value = value!;
-    });
-  }
+  // void _handleRadioValueChange(int? value) {
+  //   setState(() {
+  //     punchInController.selectedRadio.value = value!;
+  //   });
+  // }
 
   @override
   void initState() {
-    // TODO: implement initState
-    punchInController.getProjectPunchInSts();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // punchInController.getPunchTypeList();
+      // punchInController.getProjectPunchInSts();
+      SignInPage.checkVersion(context);
+    });
   }
-
 
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context);
     return GestureDetector(
       onTap: () {
-        setState(() {
-          punchInController.selectedRadio.value = 0;
-        });
+        // setState(() {
+        //   punchInController.selectedRadio.value = 0;
+        // });
         FocusScopeNode currentFocus = FocusScope.of(context);
         if (!currentFocus.hasPrimaryFocus &&
             currentFocus.focusedChild != null) {
@@ -423,116 +404,209 @@ class _HomeScreenOtherUserState extends State<HomeScreenOtherUser> {
                           const SizedBox(height: 20,),
                         ],
                       )),
-                      // FadeAnimation(  1.5,
-                      //   Card(elevation: 5,
-                      //     shape: RoundedRectangleBorder(
-                      //       borderRadius: BorderRadius.circular(32), // Apply rounded corners here
-                      //     ),
-                      //     child: Container(
-                      //       decoration: kGradientBoxDecoration,
-                      //       child: Padding(
-                      //         padding: const EdgeInsets.all(2.0),
-                      //         child: Container(
-                      //           decoration: BoxDecoration(
-                      //             color: Colors.white,
-                      //             borderRadius: BorderRadius.circular(32),
-                      //           ),
-                      //           width: BaseUtitiles.getWidthtofPercentage(context, 70),
-                      //           child: Column(
-                      //             children: [
-                      //               SizedBox( height: BaseUtitiles.getheightofPercentage(context, 2),),
-                      //
-                      //               FadeAnimation(
-                      //                 1.5,
-                      //                 Obx(()=>
-                      //                     Container(
-                      //
-                      //                         width: BaseUtitiles.getWidthtofPercentage(context, 65),
-                      //                         height: BaseUtitiles.getheightofPercentage(context, 5),
-                      //                         child: ListTile(
-                      //                           title: GestureDetector(
-                      //                               onTap: (){
-                      //                                 _handleRadioValueChange(1);
-                      //                               },
-                      //                               child: Text('Alloted Projects',style: const TextStyle(color: Colors.black,fontSize: 15,fontWeight: FontWeight.bold))),
-                      //                           leading: Radio<int>(
-                      //                             activeColor: Theme.of(context).primaryColor,
-                      //                             value: 1,
-                      //                             groupValue: punchInController.selectedRadio.value,
-                      //                             onChanged: _handleRadioValueChange,
-                      //                           ),
-                      //                         )),
-                      //                 ),
-                      //               ),
-                      //               Obx(()=>
-                      //                   FadeAnimation(
-                      //                     1.5, Container(
-                      //                     width: BaseUtitiles.getWidthtofPercentage(context, 65),
-                      //                     height: BaseUtitiles.getheightofPercentage(context, 5),
-                      //                     child: ListTile(
-                      //                       title: GestureDetector(
-                      //                           onTap: (){
-                      //                             _handleRadioValueChange(2);
-                      //                           },
-                      //                           child: Text('Non-Alloted Projects',style: const TextStyle(color: Colors.black,fontSize: 15,fontWeight: FontWeight.bold))),
-                      //                       leading: Radio<int>(
-                      //                         activeColor: Theme.of(context).primaryColor,
-                      //                         value: 2,
-                      //                         groupValue: punchInController.selectedRadio.value,
-                      //                         onChanged: _handleRadioValueChange,
-                      //                       ),
-                      //                     ),
-                      //                   ),
-                      //                   ),
-                      //               ),
-                      //
-                      //               SizedBox( height: BaseUtitiles.getheightofPercentage(context, 3),),
-                      //
-                      //               FadeAnimation(
-                      //                 1.5, Padding(
-                      //                 padding: EdgeInsets.only(bottom: 16.r,left: 16.r,right: 16.r),
-                      //                 child: PunchButtonWidget(
-                      //                   maxHeight: 40.h,
-                      //                   maxWidth: 150.w,
-                      //                   color: Theme.of(context).primaryColor,
-                      //                   title:
-                      //                   Obx(()=>
-                      //                       Text(
-                      //                         punchInController.resPunchSts.value=="TRUE" ?"Punch Out":"Punch In",
-                      //                         style: TextStyle(
-                      //                           color: Colors.white,
-                      //                           fontSize: 14.0,
-                      //                           fontWeight: FontWeight.bold,
-                      //                         ),
-                      //                         textAlign: TextAlign.center,
-                      //                       ),
-                      //                   ),
-                      //                   onTap: () async {
-                      //                     int selected = punchInController.selectedRadio.value;
-                      //
-                      //                     if (selected == 1 || selected == 2) {
-                      //                       String allotedStatus = selected == 1 ? "Y" : "N";
-                      //
-                      //                       await punchInController.getProjectPunchInSts();
-                      //                       punchIn = punchInController.resPunchSts.value == "FALSE";
-                      //
-                      //                       await siteLocationController.getProjectName(allotedStatus, "0");
-                      //                       Get.to(() => SiteLocationView(allotedStatus: allotedStatus, checkValue: "0"));
-                      //                     } else {
-                      //                       BaseUtitiles.showToast("Please select any one");
-                      //                     }
-                      //
-                      //                   },
-                      //                 ),
-                      //               ),
-                      //               ),
-                      //             ],
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
+                      // Text(
+                      //   SignalRService().isSignalRConnected()
+                      //       ? "Connected"
+                      //       : "Disconnected",
                       // ),
+                      //
+                      // ElevatedButton(
+                      //   onPressed: () {
+                      //     SignalRService().startLocalMaintenanceTest();
+                      //   },
+                      //   child:Text("Start Maintenance Test"),
+                      // ),
+                      // ElevatedButton(
+                      //   onPressed: () {
+                      //     SignalRService().stopLocalMaintenanceTest();
+                      //   },
+                      //   child:Text("stop Maintenance Test"),
+                      // ),
+
+                          // Obx(() {
+                          //   return punchInController.punchTypeList.isNotEmpty
+                          //       ? FadeAnimation(
+                          //     1.5,
+                          //     Card(
+                          //       elevation: 5,
+                          //       shape: RoundedRectangleBorder(
+                          //         borderRadius: BorderRadius.circular(32),
+                          //       ),
+                          //       child: Container(
+                          //         decoration: kGradientBoxDecoration,
+                          //         child: Padding(
+                          //           padding: const EdgeInsets.all(2.0),
+                          //           child: Container(
+                          //             decoration: BoxDecoration(
+                          //               color: Colors.white,
+                          //               borderRadius: BorderRadius.circular(32),
+                          //             ),
+                          //             width: BaseUtitiles.getWidthtofPercentage(context, 70),
+                          //             child: Column(
+                          //               children: [
+                          //
+                          //                 SizedBox(
+                          //                   height: BaseUtitiles.getheightofPercentage(context, 1),
+                          //                 ),
+                          //
+                          //                 /// ACTIVE LIST
+                          //                 Obx(() {
+                          //                   final activeList = punchInController.punchTypeList
+                          //                       .where((item) => item.active == "Y" || item.active == "y")
+                          //                       .toList();
+                          //
+                          //                   return activeList.length==0?SizedBox():ListView.builder(
+                          //                     shrinkWrap: true,
+                          //                     padding: EdgeInsets.zero,
+                          //                     physics: const NeverScrollableScrollPhysics(),
+                          //                     itemCount: activeList.length,
+                          //                     itemBuilder: (context, index) {
+                          //                       final item = activeList[index];
+                          //
+                          //                       return FadeAnimation(
+                          //                         1.5,
+                          //                         Center(
+                          //                           child: Container(
+                          //                             width: BaseUtitiles.getWidthtofPercentage(
+                          //                                 context, 55),
+                          //                             height: BaseUtitiles.getheightofPercentage(
+                          //                                 context, 5),
+                          //                             child: Obx(()=>
+                          //                               ListTile(
+                          //                                 title: GestureDetector(
+                          //                                   onTap: () {
+                          //                                     _handleRadioValueChange(item.id);
+                          //                                   },
+                          //                                   child: Text(
+                          //                                     item.punchinandOutType,
+                          //                                     style: const TextStyle(
+                          //                                       color: Colors.black,
+                          //                                       fontSize: 15,
+                          //                                       fontWeight: FontWeight.bold,
+                          //                                     ),
+                          //                                   ),
+                          //                                 ),
+                          //                                 leading: Radio<int>(
+                          //                                   activeColor: Theme
+                          //                                       .of(context)
+                          //                                       .primaryColor,
+                          //                                   value: item.id,
+                          //                                   groupValue:
+                          //                                   punchInController.selectedRadio.value,
+                          //                                   onChanged: (value) {
+                          //                                     _handleRadioValueChange(value);
+                          //                                   },
+                          //                                 ),
+                          //                               ),
+                          //                             ),
+                          //                           ),
+                          //                         ),
+                          //                       );
+                          //                     },
+                          //                   );
+                          //                 }),
+                          //
+                          //                 SizedBox(
+                          //                   height: BaseUtitiles.getheightofPercentage(context, 3),
+                          //                 ),
+                          //
+                          //                 FadeAnimation(
+                          //                   1.5,
+                          //                   Padding(
+                          //                     padding: EdgeInsets.only(
+                          //                       bottom: 16.r,
+                          //                       left: 16.r,
+                          //                       right: 16.r,
+                          //                     ),
+                          //                     child: PunchButtonWidget(
+                          //                       maxHeight: 40.h,
+                          //                       maxWidth: 150.w,
+                          //                       color: Theme
+                          //                           .of(context)
+                          //                           .primaryColor,
+                          //                       title: Obx(
+                          //                             () =>
+                          //                             Text(
+                          //                               punchInController.resPunchSts.value == "TRUE"
+                          //                                   ? "Punch Out"
+                          //                                   : "Punch In",
+                          //                               style: const TextStyle(
+                          //                                 color: Colors.white,
+                          //                                 fontSize: 14.0,
+                          //                                 fontWeight: FontWeight.bold,
+                          //                               ),
+                          //                               textAlign: TextAlign.center,
+                          //                             ),
+                          //                       ),
+                          //                       onTap: () async {
+                          //                         int selected =
+                          //                             punchInController.selectedRadio.value;
+                          //
+                          //                         final selectedItem = punchInController.punchTypeList
+                          //                             .firstWhereOrNull(
+                          //                               (item) => item.id == selected,
+                          //                         );
+                          //
+                          //                         if (selectedItem != null) {
+                          //                           if (selectedItem.punchinandOutValues == "OD") {
+                          //                             await punchInController.getProjectPunchInSts();
+                          //
+                          //                             if (punchInController.resPunchSts.value == "FALSE") {
+                          //                               await Get.to(() =>
+                          //                                   PunchIn(
+                          //                                       latitude: "",
+                          //                                       longitude: "",
+                          //                                       radius: "",
+                          //                                   allotedStatus: selectedItem.punchinandOutValues));
+                          //                             }
+                          //                             else {
+                          //                               await Get.to(() =>
+                          //                                   PunchOut(
+                          //                                       latitude: "",
+                          //                                       longitude: "",
+                          //                                       radius: "",
+                          //                                   allotedStatus: selectedItem.punchinandOutValues));
+                          //                             }
+                          //                           }
+                          //                           else {
+                          //                             await punchInController
+                          //                                 .getProjectPunchInSts();
+                          //
+                          //                             punchIn = punchInController
+                          //                                 .resPunchSts.value ==
+                          //                                 "FALSE";
+                          //
+                          //                             await siteLocationController
+                          //                                 .getProjectName(
+                          //                               selectedItem
+                          //                                   .punchinandOutValues,
+                          //                               "0",
+                          //                             );
+                          //
+                          //                             Get.to(() =>
+                          //                                 SiteLocationView(
+                          //                                   allotedStatus: selectedItem.punchinandOutValues,
+                          //                                   checkValue: "0",
+                          //                                 ),
+                          //                             );
+                          //                           }
+                          //                         } else {
+                          //                           BaseUtitiles.showToast(
+                          //                             "Please select any one",
+                          //                           );
+                          //                         }
+                          //                       },
+                          //                     ),
+                          //                   ),
+                          //                 ),
+                          //               ],
+                          //             ),
+                          //           ),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ) : SizedBox();
+                          // } )
                     ],
                   ),
                   const SizedBox(height: 150),

@@ -5,6 +5,7 @@ class DirectBillGenItemListTableModel{
   double? qty;
   double? rate;
   double? amount;
+  int? reqDetId;
 
   DirectBillGenItemListTableMap() {
     var mapping = Map<String, dynamic>();
@@ -14,6 +15,7 @@ class DirectBillGenItemListTableModel{
     mapping['qty'] = qty != null ? qty : null;
     mapping['rate'] = rate != null ? rate : null;
     mapping['amount'] = amount != null ? amount : null;
+    mapping['reqDetId'] = reqDetId != null ? reqDetId : null;
     return mapping;
   }
 }

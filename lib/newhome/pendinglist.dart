@@ -108,8 +108,7 @@ class _PendingList_ScreenState extends State<PendingList_Screen> {
                                       ),
 
                                     ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 10),
+                                    child: Center(
                                       child: Text(
                                         pendingListController.pendingList_datas.value[index].count.toString(),
                                         style: TextStyle(color: Colors.white, fontSize: RequestConstant.Lable_Font_SIZE),

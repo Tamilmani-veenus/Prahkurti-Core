@@ -177,6 +177,7 @@ class _Subcontractor_Site_CategoryState extends State<Subcontractor_Site_Categor
                                               },
                                               controller: dailyEntriesController.NosControllers[index],
                                               cursorColor: Colors.black,
+                                              keyboardType: TextInputType.number,
                                               style: const TextStyle(color: Colors.black),
                                               decoration: InputDecoration(
                                                 contentPadding: EdgeInsets.zero,
@@ -233,6 +234,7 @@ class _Subcontractor_Site_CategoryState extends State<Subcontractor_Site_Categor
                                               },
                                               controller: dailyEntriesController.OtHrsController[index],
                                               cursorColor: Colors.black,
+                                              keyboardType: TextInputType.number,
                                               style: const TextStyle(color: Colors.black),
                                               decoration: InputDecoration(
                                                 contentPadding: EdgeInsets.zero,

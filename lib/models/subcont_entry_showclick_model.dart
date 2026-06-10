@@ -36,22 +36,54 @@ class Result {
   int? categoryId;
   String? categoryName;
   double? wages;
+  double? dprWages;
+  int? labourId;
+  int? labCategoryId;
+  String? dprcategoryName;
+  double? nos;
+  double? amount;
+  double? otHrs;
+  double? otAmount;
 
   Result({
     this.categoryId,
     this.categoryName,
     this.wages,
+    this.dprWages,
+    this.labourId,
+    this.labCategoryId,
+    this.dprcategoryName,
+    this.nos,
+    this.amount,
+    this.otHrs,
+    this.otAmount,
   });
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
     categoryId: json["id"],
     categoryName: json["labCategory"],
     wages: json["rate"],
+    labourId: json["labourId"],
+    labCategoryId: json["labCategoryId"],
+    dprWages: json["wages"],
+    nos: json["nos"],
+    dprcategoryName: json["categoryName"],
+    amount: json["amount"],
+    otHrs: json["otHrs"],
+    otAmount: json["otAmount"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": categoryId,
     "labCategory": categoryName,
     "rate": wages,
+    "labourId": labourId,
+    "labCategoryId": labCategoryId,
+    "wages": dprWages,
+    "nos": nos,
+    "categoryName": dprcategoryName,
+    "amount": amount,
+    "otHrs": otHrs,
+    "otAmount": otAmount,
   };
 }

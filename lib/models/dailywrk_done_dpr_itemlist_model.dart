@@ -1,63 +1,122 @@
+// To parse this JSON data, do
+//
+//     final dprItemListResponse = dprItemListResponseFromJson(jsonString);
+
 import 'dart:convert';
 
-List<DprItemListResponse> dprItemListResponseFromJson(String str) => List<DprItemListResponse>.from(json.decode(str).map((x) => DprItemListResponse.fromJson(x)));
+DprItemListResponse dprItemListResponseFromJson(String str) => DprItemListResponse.fromJson(json.decode(str));
 
-String dprItemListResponseToJson(List<DprItemListResponse> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String dprItemListResponseToJson(DprItemListResponse data) => json.encode(data.toJson());
 
 class DprItemListResponse {
+  bool? success;
+  List<Result>? result;
+  String? message;
+
   DprItemListResponse({
-    this.headItemId,
-    this.subItemId,
-    this.level3ItemId,
-    this.woDetId,
-    this.boqCode,
-    this.itemDesc,
-    this.unit,
-    this.rate,
-    this.qty,
-    this.amt,
-    this.balQty,
+    this.success,
+    this.result,
+    this.message
   });
 
-  int? headItemId;
-  int? subItemId;
-  int? level3ItemId;
-  int? woDetId;
-  String? boqCode;
-  String? itemDesc;
-  String? unit;
-  double? rate;
-  double? qty;
-  double? amt;
-  double? balQty;
-  bool? isCheck = false;
-
   factory DprItemListResponse.fromJson(Map<String, dynamic> json) => DprItemListResponse(
-    headItemId: json["HeadItemId"],
-    subItemId: json["SubItemId"],
-    level3ItemId: json["Level3ItemId"],
-    woDetId: json["WODetId"],
-    boqCode: json["BoqCode"],
-    itemDesc: json["ItemDesc"],
-    unit: json["Unit"],
-    rate: json["Rate"],
-    qty: json["Qty"],
-    amt: json["Amt"],
-    balQty: json["BalQty"],
+      success: json["success"],
+      result: List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
+      message: json["message"]
   );
 
   Map<String, dynamic> toJson() => {
-    "HeadItemId": headItemId,
-    "SubItemId": subItemId,
-    "Level3ItemId": level3ItemId,
-    "WODetId": woDetId,
-    "BoqCode": boqCode,
-    "ItemDesc": itemDesc,
-    "Unit": unit,
-    "Rate": rate,
-    "Qty": qty,
-    "Amt": amt,
-    "BalQty": balQty,
+    "success": success,
+    "result": List<dynamic>.from(result!.map((x) => x.toJson())),
+    "message": message
   };
 }
 
+class Result {
+  int? woDetId;
+  int? headItemId;
+  int? subItemId;
+  String? boqCode;
+  String? itemDesc;
+  int? scaleId;
+  String? unit;
+  double? rate;
+  double? qty;
+  double? amount;
+  String? cement;
+  int? level3ItemId;
+  String? workRemarks;
+  double? boqQty;
+  double? workQty;
+  double? balQty;
+  int? siteId;
+  String? siteName;
+  String? activeSatus;
+  bool? isCheck = false;
+
+  Result({
+    this.woDetId,
+    this.headItemId,
+    this.subItemId,
+    this.boqCode,
+    this.itemDesc,
+    this.scaleId,
+    this.unit,
+    this.rate,
+    this.qty,
+    this.amount,
+    this.cement,
+    this.level3ItemId,
+    this.workRemarks,
+    this.boqQty,
+    this.workQty,
+    this.balQty,
+    this.siteId,
+    this.siteName,
+    this.activeSatus,
+  });
+
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    woDetId: json["Workdetid"],
+    headItemId: json["HeadItemIdd"],
+    subItemId: json["SubItemId"],
+    boqCode: json["boqCode"],
+    itemDesc: json["itemdesc"],
+    scaleId: json["Unit"],
+    unit: json["ScaleName"],
+    rate: json["Rate"],
+    qty: json["Qty"],
+    amount: json["Amt"],
+    cement: json["cement"],
+    level3ItemId: json["measureLevel3ItemId"],
+    workRemarks: json["workRemarks"],
+    boqQty: json["Boqqty"],
+    workQty: json["WorkQty"],
+    balQty: json["balQty"],
+    siteId: json["siteid"],
+    siteName: json["sitename"],
+    activeSatus: json["activeStatus"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "Workdetid": woDetId,
+    "HeadItemIdd": headItemId,
+    "SubItemId": subItemId,
+    "boqCode": boqCode,
+    "itemdesc": itemDesc,
+    "Unit": scaleId,
+    "ScaleName": unit,
+    "Rate": rate,
+    "Qty": qty,
+    "Amt": amount,
+    "cement": cement,
+    "measureLevel3ItemId": level3ItemId,
+    "workRemarks": workRemarks,
+    "Boqqty": boqQty,
+    "WorkQty": workQty,
+    "balQty": balQty,
+    "siteid": siteId,
+    "sitename": siteName,
+    "activeStatus": activeSatus,
+  };
+}

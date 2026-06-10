@@ -18,6 +18,7 @@ import '../app_theme/app_colors.dart';
 import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
 import 'advance_reqvoucher_new_controller.dart';
+import 'billgeneration_boq_controller.dart';
 import 'billgenerationdirect_controller.dart';
 import 'boqrevised_controller.dart';
 import 'cashbookstaff_controller.dart';
@@ -56,6 +57,7 @@ class BottomsheetControllers {
   StockSiteController stockSiteController=Get.put(StockSiteController());
   AdvanceReqVoucherController_new advanceReqVoucherController_new =
   Get.put(AdvanceReqVoucherController_new());
+  BillGenerationBoqController billGenerationBoqController=Get.put(BillGenerationBoqController());
   final CompanyController companyController = Get.put(CompanyController());
   CashBookStaffController cashBookStaffController = Get.put(CashBookStaffController());
   TransferBW_project_Controller transferBW_project_Controller=Get.put(TransferBW_project_Controller());
@@ -158,15 +160,10 @@ class BottomsheetControllers {
                           dailyWrkDone_DPR_Controller.TypeSubcontractorname.text = "--SELECT--";
                           consumption_controller.expenseTypeController.text = "--SELECT--";
                           consumption_controller.expenseType = "0";
+                          siteController.headNameController.text = "--SELECT--";
+                          siteController.selectedHeadId.value=0;
                           consumption_controller.Consum_itemview_GetDbList.value=[];
                           await subcontractorController.getSubcontList(context, projectcontroller.selectedProjectId.value, siteController.selectedsiteId.value, subcontractorController.checkScreen);
-                          dailyWrkDone_DPRNEW_Controller.dprNew_DetTable_Delete();
-                          dailyWrkDone_DPRNEW_Controller.dprNew_EntryDetReadList.value=[];
-                          await dailyWrkDone_DPRNEW_Controller.getDetTablesDatas();
-                          transferBt_Site_Controller.ItemGetTableListdata.value=[];
-                          dailyWrkDone_DPR_Controller.delete_dpr_itemlist_Table();
-                          dailyWrkDone_DPR_Controller.dpr_itemview_DbList.value=[];
-                          dailyWrkDone_DPR_Controller.getDprTablesDatas();
                           Navigator.pop(context);
                         },
                       ),
@@ -282,7 +279,7 @@ class BottomsheetControllers {
       },);
   }
 
-  WorkOrderName(context, list){
+  WorkOrderName(context, list,{String? type,String? todate}){
     showModalBottomSheet(context: context,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
@@ -358,13 +355,19 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].workOrderNo.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(type == "BILL BOQ" ? list[index].workOrderNoBoq.toString() : list[index].workOrderNo.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold),),
                         ),
                         onTap: ()  async {
-                          subcontractorController.WorkOrderNo.text = list[index].workOrderNo.toString();
+                          subcontractorController.WorkOrderNo.text = type == "BILL BOQ" ? list[index].workOrderNoBoq.toString() : list[index].workOrderNo.toString();
                           subcontractorController.selectedWorkOrderId.value = list[index].workOrderId;
                           searchcontroller.text = "";
-                          await billGenerationDirectController.getWorkOrderList();
+                          if(type == "BILL DIRECT"){
+                            await billGenerationDirectController.getWorkOrderList("ItemListDet",type,todate);
+                          }
+                          else if(type == "BILL BOQ"){
+                            await billGenerationBoqController.getWorkOrderList("ItemListDet",todate);
+                          }
+                          await billGenerationDirectController.getNmrAdvance();
                           Navigator.pop(context);
                         },
                       ),
@@ -557,8 +560,10 @@ class BottomsheetControllers {
                           dailyEntriesController.readListdata.value=[];
                           siteController.Sitename.text = list[index].siteName.toString();
                           siteController.selectedsiteId.value = list[index].siteId;
-                          // await supplierController.getSupplierList(context);
-                          dailyWrkDone_DPR_Controller.TypeSubcontractorname.text = "--Select--";
+                          dailyWrkDone_DPR_Controller.TypeSubcontractorname.text = "--SELECT--";
+                          dailyWrkDone_DPR_Controller.TypeSubcontId.value=0;
+                          siteController.headNameController.text = "--SELECT--";
+                          siteController.selectedHeadId.value=0;
                           dailyWrkDone_DPRNEW_Controller.dprNew_DetTable_Delete();
                           dailyWrkDone_DPRNEW_Controller.dprNew_EntryDetReadList.value.clear();
                           dailyWrkDone_DPRNEW_Controller.getDetTablesDatas();
@@ -923,6 +928,102 @@ class BottomsheetControllers {
       },);
   }
 
+  dprNewHeadName(context, list, type){
+    showModalBottomSheet(context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+      builder: (BuildContext context) {
+        return Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: BaseUtitiles.getWidthtofPercentage(context, 50),
+                  margin: EdgeInsets.only(top: 10, left: 15),
+                  child: TextField(
+                    controller: searchcontroller,
+                    decoration: InputDecoration(
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      prefixIcon: const Icon(Icons.search,
+                        color: Colors.black,
+                      ),
+                      hintText: "search..",
+                      hintStyle: TextStyle(color: Colors.black),
+                      isDense: true,
+                      fillColor: Setmybackground,
+                    ),
+                    onEditingComplete: () {
+                      FocusScope.of(context).unfocus();
+                    },
+                    textInputAction: TextInputAction.search,
+                    onChanged: (value)  {
+                      list = BaseUtitiles.sitePopupAlert(value, siteController.getSiteDropdownvalue.value);
+                    },
+                  ),
+                ),
+                SizedBox(width: 20),
+                Container(
+                  width: BaseUtitiles.getWidthtofPercentage(context, 25),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(3),
+                    child: Text("Head Name", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                  ),
+                ),
+                InkWell(
+                    onTap: (){
+                      Navigator.pop(context);
+                      searchcontroller.text = "";
+                    },
+                    child: Container(
+                        margin: EdgeInsets.only(right: 10),
+                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+              ],
+            ),
+            Divider(),
+
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.zero,
+                physics: BouncingScrollPhysics(),
+                itemCount: list.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
+                    children: [
+                      InkWell(
+                        child: Container(
+                          margin: EdgeInsets.only(left: 10),
+                          alignment: Alignment.center,
+                          child: Text(type=="DPRNEW"?list[index].headItemName:list[index].headName, textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+                        ),
+                        onTap: () async {
+                          siteController.headNameController.text = type=="DPRNEW"?list[index].headItemName:list[index].headName;
+                          siteController.selectedHeadId.value = list[index].id;
+                          searchcontroller.text = "";
+                          Navigator.pop(context);
+                        },
+                      ),
+                      Divider(),
+                    ],
+                  );
+
+                }, ),
+            )
+
+          ],
+        );
+      },);
+  }
+
   SubcontractorName(context, list){
     showModalBottomSheet(context: context,
       shape: RoundedRectangleBorder(
@@ -1005,19 +1106,8 @@ class BottomsheetControllers {
                           subcontractorController.Subcontractorname.text = list[index].subContName.toString();
                           subcontractorController.selectedSubcontId.value = list[index].subContId;
                           searchcontroller.text = "";
-                          // await nmrWklyController.getNmrAdvance();
-                          // await billGenerationDirectController.getNmrAdvance();
-                          // await subcontractorController.getInvoiceNoList( projectcontroller.selectedProjectId.value,subcontractorController.selectedSubcontId.value);
-                          // await nmrWklyController.getNMRBillNoList( projectcontroller.selectedProjectId.value,subcontractorController.selectedSubcontId.value);
-                          await dailyEntriesController.deleteSubcontDetTableDatas();
-                          dailyEntriesController.readListdata.clear();
-
-                          // await subcontractorController.getSubcontList(context, projectcontroller.selectedProjectId.value);
-
-                          //--Subcontractor attendence-----------
-                          // await dailyEntriesController.deleteSubcontDetTableDatas();
-                          // dailyEntriesController.readListdata.value.clear();
-                          // await dailyEntriesController.getDetTablesDatas();
+                          await subcontractorController.getInvoiceNoList(projectcontroller.selectedProjectId.value,subcontractorController.selectedSubcontId.value);
+                          await billGenerationDirectController.getNmrAdvance();
                           Navigator.pop(context);
                         },
                       ),
@@ -1516,7 +1606,6 @@ class BottomsheetControllers {
                           commonVoucherController.AccPayforname.text = list[index].acPayForName.toString();
                           searchcontroller.text = "";
                           Navigator.pop(context);
-                          print("wwwwwwwww...${commonVoucherController.selectedAccPayId.value}");
                         },
                       ),
                       Divider(),
@@ -1611,6 +1700,12 @@ class BottomsheetControllers {
                         onTap: (){
                           commonVoucherController.selectedPaymodeId.value = list[index].paymodeid;
                           commonVoucherController.Paymodename.text = list[index].paymode.toString();
+                          if(commonVoucherController.selectedPaymodeId.value!=2){
+                            staffVoucher_Controller.ChequeNo.text = "";
+                            staffVoucher_Controller.ChequeDate.text = BaseUtitiles.initiateCurrentDateFormat();
+                            staffVoucher_Controller.BankName.text = "--SELECT--";
+                            staffVoucher_Controller.payeeType.value = false;
+                          }
                           searchcontroller.text = "";
                           Navigator.pop(context);
                         },
@@ -1725,6 +1820,167 @@ class BottomsheetControllers {
 
 
   //-------voucher------------
+  // StaffName(context, list, {String? type}) {
+  //
+  //   List filterList = List.from(list ?? []);
+  //
+  //   showModalBottomSheet(
+  //     context: context,
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(
+  //         top: Radius.circular(25.0),
+  //       ),
+  //     ),
+  //     builder: (BuildContext context) {
+  //
+  //       return StatefulBuilder(
+  //         builder: (context, setState) {
+  //
+  //           return Column(
+  //             children: [
+  //
+  //               Row(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                 children: [
+  //
+  //                   Container(
+  //                     width: BaseUtitiles.getWidthtofPercentage(context, 50),
+  //                     margin: EdgeInsets.only(top: 10, left: 15),
+  //
+  //                     child: TextField(
+  //                       controller: searchcontroller,
+  //
+  //                       decoration: InputDecoration(
+  //                         filled: true,
+  //                         border: OutlineInputBorder(
+  //                           borderRadius: BorderRadius.circular(10),
+  //                           borderSide: BorderSide.none,
+  //                         ),
+  //                         prefixIcon: Icon(
+  //                           Icons.search,
+  //                           color: Colors.black,
+  //                         ),
+  //                         hintText: "search..",
+  //                         hintStyle: TextStyle(color: Colors.black),
+  //                         isDense: true,
+  //                         fillColor: Setmybackground,
+  //                       ),
+  //
+  //                       onChanged: (value) {
+  //
+  //                         setState(() {
+  //
+  //                           filterList =
+  //                               BaseUtitiles.empNameamePopupAlert(
+  //                                 value,
+  //                                 list,
+  //                               );
+  //
+  //                         });
+  //
+  //                       },
+  //                     ),
+  //                   ),
+  //
+  //                   SizedBox(width: 20),
+  //
+  //                   Container(
+  //                     width: BaseUtitiles.getWidthtofPercentage(context, 25),
+  //                     alignment: Alignment.center,
+  //                     decoration: BoxDecoration(
+  //                       border: Border.all(
+  //                         width: 2,
+  //                         color: Theme.of(context).primaryColor,
+  //                       ),
+  //                       borderRadius: BorderRadius.circular(12),
+  //                     ),
+  //                     child: Padding(
+  //                       padding: EdgeInsets.all(3),
+  //                       child: Text(
+  //                         "Staff Name",
+  //                         style: TextStyle(
+  //                           color: Theme.of(context).primaryColor,
+  //                           fontWeight: FontWeight.bold,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ),
+  //
+  //                   InkWell(
+  //                     onTap: () {
+  //                       Navigator.pop(context);
+  //                       searchcontroller.clear();
+  //                     },
+  //                     child: Container(
+  //                       margin: EdgeInsets.only(right: 10),
+  //                       child: Icon(
+  //                         Icons.expand_circle_down,
+  //                         color: Theme.of(context).primaryColor,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //
+  //               Divider(),
+  //
+  //               Expanded(
+  //                 child: ListView.builder(
+  //                   itemCount: filterList.length,
+  //
+  //                   itemBuilder: (context, index) {
+  //
+  //                     return Column(
+  //                       children: [
+  //
+  //                         InkWell(
+  //                           onTap: () {
+  //
+  //                             staffController.selectedstaffId.value =
+  //                                 filterList[index].id;
+  //
+  //                             staffController.Staffname.text =
+  //                             type == "staffVoucher"
+  //                                 ? filterList[index].employeeName.toString()
+  //                                 : filterList[index].staffName.toString();
+  //
+  //                             searchcontroller.clear();
+  //
+  //                             Navigator.pop(context);
+  //                           },
+  //
+  //                           child: Container(
+  //                             margin: EdgeInsets.only(left: 10),
+  //                             alignment: Alignment.center,
+  //
+  //                             child: Text(
+  //                               type == "staffVoucher"
+  //                                   ? filterList[index].employeeName
+  //                                   : filterList[index].staffName,
+  //
+  //                               textAlign: TextAlign.center,
+  //
+  //                               style: TextStyle(
+  //                                 fontSize: RequestConstant.Lable_Font_SIZE,
+  //                                 fontWeight: FontWeight.bold,
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ),
+  //
+  //                         Divider(),
+  //                       ],
+  //                     );
+  //                   },
+  //                 ),
+  //               ),
+  //             ],
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
   StaffName(context, list,{String? type} ){
     showModalBottomSheet(context: context,
@@ -1733,96 +1989,96 @@ class BottomsheetControllers {
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            return Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      width: BaseUtitiles.getWidthtofPercentage(context, 50),
-                      margin: EdgeInsets.only(top: 10, left: 15),
-                      child: TextField(
-                        controller: searchcontroller,
-                        decoration: InputDecoration(
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
-                          ),
-                          prefixIcon: const Icon(Icons.search,
-                            color: Colors.black,
-                          ),
-                          hintText: "search..",
-                          hintStyle: TextStyle(color: Colors.black),
-                          isDense: true,
-                          fillColor: Setmybackground,
+          return Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: BaseUtitiles.getWidthtofPercentage(context, 50),
+                    margin: EdgeInsets.only(top: 10, left: 15),
+                    child: TextField(
+                      controller: searchcontroller,
+                      decoration: InputDecoration(
+                        filled: true,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
                         ),
-                        onEditingComplete: () {
-                          FocusScope.of(context).unfocus();
-                        },
-                        textInputAction: TextInputAction.search,
-                        onChanged: (value)  {
+                        prefixIcon: const Icon(Icons.search,
+                          color: Colors.black,
+                        ),
+                        hintText: "search..",
+                        hintStyle: TextStyle(color: Colors.black),
+                        isDense: true,
+                        fillColor: Setmybackground,
+                      ),
+                      onEditingComplete: () {
+                        FocusScope.of(context).unfocus();
+                      },
+                      textInputAction: TextInputAction.search,
+                      onChanged: (value)  {
 
-                          list = BaseUtitiles.empNameamePopupAlert(value, staffController.getStaffDropdownvalue.value);
-                        },
-                      ),
+                        list = BaseUtitiles.empNameamePopupAlert(value, staffController.getStaffDropdownvalue.value);
+                      },
                     ),
-                    SizedBox(width: 20),
-                    Container(
-                      width: BaseUtitiles.getWidthtofPercentage(context, 25),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 2, color: Theme.of(context).primaryColor),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(3),
-                        child: Text("Staff Name", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
-                      ),
+                  ),
+                  SizedBox(width: 20),
+                  Container(
+                    width: BaseUtitiles.getWidthtofPercentage(context, 25),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    InkWell(
-                        onTap: (){
-                          Navigator.pop(context);
-                          searchcontroller.text = "";
-                        },
-                        child: Container(
-                            margin: EdgeInsets.only(right: 10),
-                            child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
-                  ],
-                ),
-                Divider(),
+                    child: Padding(
+                      padding: EdgeInsets.all(3),
+                      child: Text("Staff Name", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    ),
+                  ),
+                  InkWell(
+                      onTap: (){
+                        Navigator.pop(context);
+                        searchcontroller.text = "";
+                      },
+                      child: Container(
+                          margin: EdgeInsets.only(right: 10),
+                          child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                ],
+              ),
+              Divider(),
 
-                Expanded(
-                  child: ListView.builder(
-                    padding: EdgeInsets.zero,
-                    physics: BouncingScrollPhysics(),
-                    itemCount: list.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Column(
-                        children: [
-                          InkWell(
-                            child: Container(
-                              margin: EdgeInsets.only(left: 10),
-                              alignment: Alignment.center,
-                              child: Text(type=="staffVoucher"?list[index].employeeName :type=="punchReport"? list[index].employeeName : list[index].staffName,
-                                textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
-                            ),
-                            onTap: (){
-                              staffController.selectedstaffId.value = list[index].id;
-                              staffController.Staffname.text = type=="staffVoucher"?list[index].employeeName.toString():type=="punchReport"? list[index].employeeName:list[index].staffName.toString();
-                              searchcontroller.text = "";
-                              Navigator.pop(context);
-                            },
+              Expanded(
+                child: ListView.builder(
+                  padding: EdgeInsets.zero,
+                  physics: BouncingScrollPhysics(),
+                  itemCount: list.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Column(
+                      children: [
+                        InkWell(
+                          child: Container(
+                            margin: EdgeInsets.only(left: 10),
+                            alignment: Alignment.center,
+                            child: Text(type == "staffVoucher" || type == "punchReport" ? list[index].employeeName : list[index].staffName,
+                              textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
                           ),
-                          Divider(),
-                        ],
-                      );
+                          onTap: (){
+                            staffController.selectedstaffId.value = list[index].id;
+                            staffController.Staffname.text = type == "staffVoucher" || type == "punchReport" ? list[index].employeeName.toString() : list[index].staffName.toString();
+                            searchcontroller.text = "";
+                            Navigator.pop(context);
+                          },
+                        ),
+                        Divider(),
+                      ],
+                    );
 
-                    }, ),
-                )
+                  }, ),
+              )
 
-              ],
-            );},
+            ],
+          );},
         );
       },);
   }
@@ -1902,11 +2158,11 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].bank.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(list[index].bankName.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
                         ),
                         onTap: (){
-                          staffVoucher_Controller.selectedbankId.value = list[index].bankId;
-                          staffVoucher_Controller.BankName.text = list[index].bank.toString();
+                          staffVoucher_Controller.selectedbankId.value = list[index].id;
+                          staffVoucher_Controller.BankName.text = list[index].bankName.toString();
                           searchcontroller.text = "";
                           Navigator.pop(context);
                         },
@@ -2065,7 +2321,7 @@ class BottomsheetControllers {
                     },
                     textInputAction: TextInputAction.search,
                     onChanged: (value)  {
-                      dailyWrkDone_DPRNEW_Controller.mainlist.value = BaseUtitiles.materialName_DPRNew(value,dailyWrkDone_DPRNEW_Controller.MaterialApiLIst.value);
+                      dailyWrkDone_DPRNEW_Controller.mainlist.value = BaseUtitiles.materialName_DPRNew(value,dailyWrkDone_DPRNEW_Controller.MaterialApiList.value);
 
                       // dailyWrkDone_DPRNEW_Controller.MaterialApiLIst.value = BaseUtitiles.materialNamePopupAlert(value,dailyWrkDone_DPRNEW_Controller.mainlist.value);
                     },
@@ -2100,15 +2356,15 @@ class BottomsheetControllers {
               margin: const EdgeInsets.only(top: 5),
               width: BaseUtitiles.getWidthtofPercentage(context, 100),
               height: BaseUtitiles.getheightofPercentage(context, 45),
-              child:
-              Obx(() =>  ListView.builder(
-                  itemCount: dailyWrkDone_DPRNEW_Controller.mainlist.value.length,
+              child:ListView.builder(
+                  itemCount: list.length,
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
                       onTap: (){
-                        dailyWrkDone_DPRNEW_Controller.setSelectedMaterialID(dailyWrkDone_DPRNEW_Controller.mainlist.value[index].materialName!);
-                        dailyWrkDone_DPRNEW_Controller.dpr_new_Mat_ScaleController.text=dailyWrkDone_DPRNEW_Controller.selectedMatUnit.toString();
-                        dailyWrkDone_DPRNEW_Controller.getMaterialName(context);
+                        dailyWrkDone_DPRNEW_Controller.dpr_new_Mat_NameController.text=list[index]["materialName"];
+                        dailyWrkDone_DPRNEW_Controller.selectedMatId.value=list[index]["materialId"];
+                        dailyWrkDone_DPRNEW_Controller.dpr_new_Mat_ScaleController.text=list[index]["scaleName"];
+                        dailyWrkDone_DPRNEW_Controller.matScaleId.value=list[index]["scaleId"];
                         searchcontroller.text = "";
                         Navigator.pop(context);
                       },
@@ -2121,7 +2377,7 @@ class BottomsheetControllers {
                             children: <Widget>[
                               Container(
                                   width: BaseUtitiles.getWidthtofPercentage(context, 60),
-                                  child: Text(dailyWrkDone_DPRNEW_Controller.mainlist.value[index].materialName.toString(),
+                                  child: Text(list[index]["materialName"],
                                     textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold),)),
                               Divider(color: Theme.of(context).primaryColorLight)
                             ],
@@ -2130,35 +2386,7 @@ class BottomsheetControllers {
                       ),
                     );
                   }),
-              ),)
-
-            // Expanded(
-            //   child: ListView.builder(
-            //     padding: EdgeInsets.zero,
-            //     physics: BouncingScrollPhysics(),
-            //     itemCount: list.length,
-            //     itemBuilder: (BuildContext context, int index) {
-            //       return Column(
-            //         children: [
-            //           InkWell(
-            //             child: Container(
-            //               margin: EdgeInsets.only(left: 10),
-            //               alignment: Alignment.center,
-            //               child: Text(list[index].empName.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
-            //             ),
-            //             onTap: (){
-            //               staffController.selectedstaffId.value = list[index].empid;
-            //               staffController. Staffname.text = list[index].empName.toString();
-            //               searchcontroller.text = "";
-            //               Navigator.pop(context);
-            //             },
-            //           ),
-            //           Divider(),
-            //         ],
-            //       );
-            //
-            //     }, ),
-            // )
+              )
 
           ],
         );
@@ -2750,19 +2978,10 @@ class BottomsheetControllers {
                           child: Text(list[index].project.toString(), textAlign: TextAlign.center,style: const TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
                         ),
                         onTap: () async {
-                          if(requisitionSlipController.reqSlip == 0){
                             reportsController.projectname.text = list[index].project.toString();
                             reportsController.selectedProjectId.value = list[index].projectId;
-                            // await reportsController.getReportMaterialList();
                             reportsController.selectedsiteId.value=0;
                             reportsController.sitename.text = "--ALL--";
-                            // reportsController.selectedSubcontId.value = 0;
-                            // reportsController.subcontractorname.text = "--ALL--";
-                            // reportsController.getSubcontactorReportList(context,reportsController.selectedProjectId.value);
-                          }else{
-                            requisitionSlipController.Location.text = list[index].project.toString();
-                            requisitionSlipController.projectLocationID.value = list[index].projectId;
-                          }
                           searchcontroller.text = "";
                           Navigator.pop(context);
                           },

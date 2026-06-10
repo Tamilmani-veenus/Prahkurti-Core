@@ -17,6 +17,7 @@ import '../models/authendication_model.dart';
 import '../newhome/maindashboard/dashboard_otheruser.dart';
 import '../provider/authendication_provider.dart';
 import '../provider/common_provider.dart';
+import '../signalr_service.dart';
 import '../utilities/baseutitiles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

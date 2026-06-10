@@ -1,8 +1,7 @@
 import 'package:flutter/foundation.dart';
-// import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import '../../../../app_theme/app_colors.dart';
+import '../../../../commonpopup/billtype_alert.dart';
 import '../../../../constants/ui_constant/icons_const.dart';
 import '../../../../controller/auto_yrwise_no_controller.dart';
 import '../../../../controller/billgenerationdirect_controller.dart';
@@ -16,7 +15,6 @@ import '../../../../utilities/requestconstant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'bill_generation_itemlist.dart';
-import 'package:path/path.dart' as path;
 
 
 class Bill_Generation_EntryScreen extends StatefulWidget {
@@ -48,85 +46,69 @@ class _Subcont_Nmr_EntryScreenState_Site
   void initState() {
     var duration = Duration(seconds: 0);
     Future.delayed(duration, () async {
-      await autoYearWiseNoController.AutoYearWiseNo("DIRECT BILL");
-     billGenerationDirectController.autoYearWiseNoController.text =
-          autoYearWiseNoController.DirectBillautoYrsWise.value;
-      if (billGenerationDirectController.editCheck == 1) {
-        billGenerationDirectController.ButtonChanges(
-            billGenerationDirectController.bill_editListApiDatas[0].workId);
+
+      if (billGenerationDirectController.saveButton.value == RequestConstant.RESUBMIT || billGenerationDirectController.saveButton.value == RequestConstant.VERIFY || billGenerationDirectController.saveButton.value == RequestConstant.APPROVAL) {
         billGenerationDirectController.bill_editListApiDatas.forEach((element) {
-          billGenerationDirectController.workid = element.workId!;
+          billGenerationDirectController.workid = element.id!;
+          billGenerationDirectController.autoYearWiseNoController.text =
+              element.workNo.toString();
+          billGenerationDirectController.billentryDateController.text =
+              element.workDate.toString();
           projectController.projectname.text = element.projectName.toString();
-          subcontractorController.InvoiceNo.text = element.billNo.toString();
           projectController.selectedProjectId.value = element.projectId;
+          siteController.Sitename.text = element.siteName.toString();
+          siteController.selectedsiteId.value = element.siteId;
           subcontractorController.Subcontractorname.text =
               element.subContName.toString();
           subcontractorController.selectedSubcontId.value = element.subContId;
+          billGenerationDirectController.DirectBillTypeText.text = element.billTypeDesc;
+          billGenerationDirectController.directBillTypeID.value = element.billType;
+          subcontractorController.InvoiceNo.text = element.billNo.toString();
+          billGenerationDirectController.billInvoiceDateController.text =
+              element.workDate.toString();
+          billGenerationDirectController.billPaymentWkDateController.text = element.paymentDate;
+
+          subcontractorController.selectedWorkOrderId.value =element.workOrderId;
+          subcontractorController.WorkOrderNo.text =element.workOrderNo == null ? "--SELECT--":element.workOrderNo;
+          billGenerationDirectController.FromdateController.text =
+              element.fromWorkDate.toString();
+          billGenerationDirectController.TodateController.text =
+              element.toWorkDate.toString();
+
           billGenerationDirectController.RemarksController.text =
               element.remarks.toString();
-          billGenerationDirectController.billentryDateController.text =
-              element.workDate.toString();
-          subcontractorController.selectedWorkOrderId.value =element.workOrderId;
-          subcontractorController.WorkOrderNo.text = element.workOrderNo;
-          billGenerationDirectController.FromdateController.text =
-              element.fromDate.toString();
-          billGenerationDirectController.TodateController.text =
-              element.toDate.toString();
-          billGenerationDirectController.autoYearWiseNoController.text =
-              element.workNo.toString();
-          siteController.selectedsiteId.value = element.siteId;
-          siteController.Sitename.text = element.siteName.toString();
-          billGenerationDirectController.billamount.text =
-              element.billAmt.toString();
-          billGenerationDirectController.tobededadv.text =
-              element.actAdvAmt.toString();
-          billGenerationDirectController.Creditamt.text =
-              element.creditAmt.toString();
-          billGenerationDirectController.Debitamt.text =
-              element.debitAmt.toString();
-          billGenerationDirectController.CreditRemarksController.text =
-              element.creditRemarks.toString();
-          billGenerationDirectController.DebitRemarksController.text =
-              element.debitRemarks.toString();
-          billGenerationDirectController.to_be_dection_advance =
-              element.advAmt.toString();
-          billGenerationDirectController.Advded.text =
-              element.advAmt.toString();
-          billGenerationDirectController.Roundoff.text =
-              element.rndOff.toString();
-          billGenerationDirectController.netpayamt.text =
-              element.netPayAmt.toString();
         });
       }
-      if (billGenerationDirectController.entrycheck == 0) {
+      if (billGenerationDirectController.saveButton.value == RequestConstant.SUBMIT) {
+        await autoYearWiseNoController.AutoYearWiseNo("DIRECT BILL");
+        billGenerationDirectController.autoYearWiseNoController.text =
+            autoYearWiseNoController.DirectBillautoYrsWise.value;
+        billGenerationDirectController.billentryDateController.text = BaseUtitiles.initiateCurrentDateFormat();
         billGenerationDirectController.workid = 0;
-        projectController.selectedProjectId.value = 0;
         subcontractorController.selectedWorkOrderId.value = 0;
+        projectController.projectname.text = "--SELECT--";
+        projectController.selectedProjectId.value = 0;
+        siteController.Sitename.text = "--SELECT--";
         siteController.selectedsiteId.value = 0;
+        subcontractorController.Subcontractorname.text = "--SELECT--";
         subcontractorController.selectedSubcontId.value=0;
-        await projectController.getProjectList();
-        await subcontractorController.getSubcontList(context, projectController.selectedProjectId.value,siteController.selectedsiteId.value,"billdirect");
-        await subcontractorController.getWorkOrderNoList( projectController.selectedProjectId.value,siteController.selectedsiteId.value,subcontractorController.selectedSubcontId.value);
+        billGenerationDirectController.DirectBillTypeText.text = "--SELECT--";
+        billGenerationDirectController.directBillTypeID.value = "0";
+        subcontractorController.WorkOrderNo.text = "--SELECT--";
+        billGenerationDirectController.billInvoiceDateController.text = BaseUtitiles.initiateCurrentDateFormat();
         subcontractorController.InvoiceNo.text="";
+        billGenerationDirectController.billPaymentWkDateController
+            .text = BaseUtitiles.initiateCurrentDateFormat();
+        billGenerationDirectController.RemarksController.text = "";
         billGenerationDirectController.to_be_dection_advance = "0";
         billGenerationDirectController.saveButton.value = RequestConstant.SUBMIT;
-        projectController.projectname.text = "--SELECT--";
-        subcontractorController.Subcontractorname.text = "--SELECT--";
-        subcontractorController.WorkOrderNo.text = "--SELECT--";
-        billGenerationDirectController.RemarksController.clear();
-        billGenerationDirectController.billentryDateController.text = BaseUtitiles.initiateCurrentDateFormat();
-        billGenerationDirectController.FromdateController.text = BaseUtitiles.initiateCurrentDateFormat();
-        billGenerationDirectController.TodateController.text = BaseUtitiles.initiateCurrentDateFormat();
-        billGenerationDirectController.autoYearWiseNoController.text = autoYearWiseNoController.DirectBillautoYrsWise.value;
-        siteController.selectedsitedropdownName = "--SELECT--".obs;
-        siteController.getSiteDropdownvalue.value.clear();
-        siteController.Sitename.text = "--SELECT--";
-        siteController.siteDropdownName.clear();
         billGenerationDirectController.billgen_itemlistTable_Delete();
         billGenerationDirectController.ItemGetTableListdata.value.clear();
         billGenerationDirectController.billamount.text = "0.0";
         billGenerationDirectController.Creditamt.text = "0.0";
         billGenerationDirectController.Debitamt.text = "0.0";
+        billGenerationDirectController.materialDebitamt.text = "0.0";
+        billGenerationDirectController.materialDebitRemarks.text = "";
         billGenerationDirectController.CreditRemarksController.text = "";
         billGenerationDirectController.DebitRemarksController.text = "";
         billGenerationDirectController.Advded.text = billGenerationDirectController.tobededadv.text;
@@ -214,6 +196,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                       ),
                     ),
                   ),
+
                   Container(
                     margin: EdgeInsets.only(top: 5, left: 10, right: 10),
                     child: Card(
@@ -232,7 +215,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.zero,
                             border: InputBorder.none,
-                            labelText: "Invoice Date",
+                            labelText: "Entry Date",
                             labelStyle: TextStyle(
                                 color: Colors.grey,
                                 fontSize: RequestConstant.Lable_Font_SIZE),
@@ -244,7 +227,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                 child: ConstIcons.date),
                           ),
                           onTap: () async {
-                            if (billGenerationDirectController.editCheck == 1) {
+                            if (billGenerationDirectController.saveButton.value == RequestConstant.RESUBMIT) {
                             } else {
                               var Entrydate = await showDatePicker(
                                   context: context,
@@ -310,12 +293,12 @@ class _Subcont_Nmr_EntryScreenState_Site
                                     vertical: 8, horizontal: 8),
                                 child: ConstIcons.projectName),
                           ),
-                          onTap: () {
-                            setState(() {
+                          onTap: () async {
+                            await projectController.getProjectList();
+                            if(mounted) {
                               bottomsheetControllers.ProjectName(context,
                                   projectController.getdropDownvalue.value);
-                            });
-                          },
+                            }},
                           validator: (value) {
                             if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
                               return '\u26A0 ${RequestConstant.VALIDATE}';
@@ -403,7 +386,9 @@ class _Subcont_Nmr_EntryScreenState_Site
                                 child: ConstIcons.subcontractorName),
                           ),
                           onTap: () async {
-                            await subcontractorController.getSubcontList(context, projectController.selectedProjectId.value,siteController.selectedsiteId.value,"billdirect");
+                            await subcontractorController.getSubcontList(context,
+                                projectController.selectedProjectId.value,
+                                siteController.selectedsiteId.value,"billdirect");
                             bottomsheetControllers.SubcontractorName(context,
                                 subcontractorController.getdropDownvalue.value);
                           },
@@ -412,6 +397,57 @@ class _Subcont_Nmr_EntryScreenState_Site
                               return '\u26A0 ${RequestConstant.VALIDATE}';
                             }
                             return null;
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 5, left: 10, right: 10),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: Colors.white70, width: 1),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      elevation: 3,
+                      child: Padding(
+                        padding:
+                        const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                        child: TextFormField(
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          readOnly: true,
+                          controller: billGenerationDirectController.DirectBillTypeText,
+                          cursorColor: Colors.black,
+                          style: TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.zero,
+                            border: InputBorder.none,
+                            labelText: "Bill Type",
+                            labelStyle: TextStyle(
+                                color: Colors.grey,
+                                fontSize: RequestConstant.Lable_Font_SIZE),
+                            prefixIconConstraints:
+                            BoxConstraints(minWidth: 0, minHeight: 0),
+                            prefixIcon: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 8),
+                                child: ConstIcons.billType),
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty ||
+                                value == "--Select--" ||
+                                value == "--SELECT--") {
+                              return '\u26A0 ${RequestConstant.VALIDATE}';
+                            }
+                            return null;
+                          },
+                          onTap: () async {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return BillType_Alert();
+                                });
+
                           },
                         ),
                       ),
@@ -448,15 +484,145 @@ class _Subcont_Nmr_EntryScreenState_Site
                                 child: ConstIcons.dcNo),
                           ),
                           onTap: ()  async {
-                            await subcontractorController.getWorkOrderNoList( projectController.selectedProjectId.value,siteController.selectedsiteId.value,subcontractorController.selectedSubcontId.value);
+                            await subcontractorController.getWorkOrderNoList("BILL DIRECT",
+                                projectController.selectedProjectId.value,
+                                siteController.selectedsiteId.value,
+                                subcontractorController.selectedSubcontId.value);
                             bottomsheetControllers.WorkOrderName(context,
-                                subcontractorController.getdpDnWrkOrderValue.value);
+                                subcontractorController.getdpDnWrkOrderValue.value,type: "BILL DIRECT");
                           },
-                          validator: (value) {
-                            if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
-                              return '\u26A0 ${RequestConstant.VALIDATE}';
+
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 5, left: 10, right: 10),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: Colors.white70, width: 1),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      elevation: 3,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                        child: TextFormField(
+                          readOnly: true,
+                          controller: billGenerationDirectController.billInvoiceDateController,
+                          cursorColor: Colors.black,
+                          style: TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.zero,
+                            border: InputBorder.none,
+                            labelText: "Invoice Date",
+                            labelStyle: TextStyle(
+                                color: Colors.grey,
+                                fontSize: RequestConstant.Lable_Font_SIZE),
+                            prefixIconConstraints:
+                            BoxConstraints(minWidth: 0, minHeight: 0),
+                            prefixIcon: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 8),
+                                child: ConstIcons.date),
+                          ),
+                          onTap: () async {
+                            if (billGenerationDirectController.saveButton.value == RequestConstant.RESUBMIT) {
+                            } else {
+                              var Entrydate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(1900),
+                                  lastDate: DateTime.now(),
+                                  builder: (context, child) {
+                                    return Theme(
+                                      data: Theme.of(context).copyWith(
+                                        colorScheme: ColorScheme.light(
+                                          primary: Theme.of(context).primaryColor,
+                                          // header background color
+                                          onPrimary: Colors.white,
+                                          // header text color
+                                          onSurface:
+                                          Colors.black, // body text color
+                                        ),
+                                        textButtonTheme: TextButtonThemeData(
+                                          style: TextButton.styleFrom(
+                                            primary:
+                                            Colors.black, // button text color
+                                          ),
+                                        ),
+                                      ),
+                                      child: child!,
+                                    );
+                                  });
+                              billGenerationDirectController.billInvoiceDateController
+                                  .text = BaseUtitiles.selectDateFormat(Entrydate!);
                             }
-                            return null;
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 5, left: 10, right: 10),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: Colors.white70, width: 1),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      elevation: 3,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                        child: TextFormField(
+                          readOnly: true,
+                          controller: billGenerationDirectController.billPaymentWkDateController,
+                          cursorColor: Colors.black,
+                          style: TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.zero,
+                            border: InputBorder.none,
+                            labelText: "Payment Wk Date",
+                            labelStyle: TextStyle(
+                                color: Colors.grey,
+                                fontSize: RequestConstant.Lable_Font_SIZE),
+                            prefixIconConstraints:
+                            BoxConstraints(minWidth: 0, minHeight: 0),
+                            prefixIcon: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 8),
+                                child: ConstIcons.date),
+                          ),
+                          onTap: () async {
+                            if (billGenerationDirectController.saveButton.value == RequestConstant.RESUBMIT) {
+                            } else {
+                              var Entrydate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(1900),
+                                  lastDate: DateTime.now(),
+                                  builder: (context, child) {
+                                    return Theme(
+                                      data: Theme.of(context).copyWith(
+                                        colorScheme: ColorScheme.light(
+                                          primary: Theme.of(context).primaryColor,
+                                          // header background color
+                                          onPrimary: Colors.white,
+                                          // header text color
+                                          onSurface:
+                                          Colors.black, // body text color
+                                        ),
+                                        textButtonTheme: TextButtonThemeData(
+                                          style: TextButton.styleFrom(
+                                            primary:
+                                            Colors.black, // button text color
+                                          ),
+                                        ),
+                                      ),
+                                      child: child!,
+                                    );
+                                  });
+                              billGenerationDirectController.billPaymentWkDateController
+                                  .text = BaseUtitiles.selectDateFormat(Entrydate!);
+                            }
                           },
                         ),
                       ),
@@ -474,6 +640,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                         padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
                           autovalidateMode: AutovalidateMode.onUserInteraction,
+                          readOnly: true,
                           controller: subcontractorController.InvoiceNo,
                           cursorColor: Colors.black,
                           style: TextStyle(color: Colors.black),
@@ -503,183 +670,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                       ),
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(top: 10),
-                        alignment: Alignment.center,
-                        height: BaseUtitiles.getheightofPercentage(context, 4),
-                        width: BaseUtitiles.getWidthtofPercentage(context, 65),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(40),
-                          // color: Colors.pink.shade50,
-                          color: Theme.of(context).primaryColor,
-                          boxShadow: [
-                            BoxShadow(
-                                offset: Offset(0, 10),
-                                blurRadius: 50,
-                                color: Color(0xffEEEEEE)),
-                          ],
-                        ),
-                        child: Text(
-                          "Sub Contractor Work Done",
-                          style: TextStyle(
-                              fontSize: RequestConstant.Lable_Font_SIZE,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.white70, width: 1),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 3,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 3, left: 10, bottom: 5),
-                              child: TextFormField(
-                                readOnly: true,
-                                controller: billGenerationDirectController.FromdateController,
-                                cursorColor: Colors.black,
-                                style: TextStyle(color: Colors.black),
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.zero,
-                                  border: InputBorder.none,
-                                  labelText: RequestConstant.FROMDATE,
-                                  labelStyle: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: RequestConstant.Lable_Font_SIZE),
-                                  prefixIconConstraints:
-                                      BoxConstraints(minWidth: 0, minHeight: 0),
-                                  prefixIcon: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 8, horizontal: 8),
-                                      child: ConstIcons.date),
-                                ),
-                                onTap: () async {
-                                  if (billGenerationDirectController.editCheck ==
-                                      1) {
-                                  } else {
-                                    var Frdate = await showDatePicker(
-                                        fieldHintText: "From",
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(1900),
-                                        lastDate: DateTime(2100),
-                                        builder: (context, child) {
-                                          return Theme(
-                                            data: Theme.of(context).copyWith(
-                                              colorScheme: ColorScheme.light(
-                                                primary:
-                                                    Theme.of(context).primaryColor,
-                                                // header background color
-                                                onPrimary: Colors.white,
-                                                // header text color
-                                                onSurface:
-                                                    Colors.black, // body text color
-                                              ),
-                                              textButtonTheme: TextButtonThemeData(
-                                                style: TextButton.styleFrom(
-                                                  primary: Colors
-                                                      .black, // button text color
-                                                ),
-                                              ),
-                                            ),
-                                            child: child!,
-                                          );
-                                        });
-                                    billGenerationDirectController
-                                            .FromdateController.text =
-                                        BaseUtitiles.selectDateFormat(Frdate!);
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 10, left: 10, right: 10),
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.white70, width: 1),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 3,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 3, left: 10, bottom: 5),
-                              child: TextFormField(
-                                readOnly: true,
-                                controller: billGenerationDirectController.TodateController,
-                                cursorColor: Colors.black,
-                                style: TextStyle(color: Colors.black),
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.zero,
-                                  border: InputBorder.none,
-                                  labelText: RequestConstant.TODATE,
-                                  labelStyle: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: RequestConstant.Lable_Font_SIZE),
-                                  prefixIconConstraints:
-                                      BoxConstraints(minWidth: 0, minHeight: 0),
-                                  prefixIcon: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 8, horizontal: 8),
-                                      child: ConstIcons.date),
-                                ),
-                                onTap: () async {
-                                  if (billGenerationDirectController.editCheck == 1) {
-                                  } else {
-                                    var Todate = await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(1900),
-                                        lastDate: DateTime(2100),
-                                        builder: (context, child) {
-                                          return Theme(
-                                            data: Theme.of(context).copyWith(
-                                              colorScheme: ColorScheme.light(
-                                                primary:
-                                                    Theme.of(context).primaryColor,
-                                                // header background color
-                                                onPrimary: Colors.white,
-                                                // header text color
-                                                onSurface:
-                                                    Colors.black, // body text color
-                                              ),
-                                              textButtonTheme: TextButtonThemeData(
-                                                style: TextButton.styleFrom(
-                                                  primary: Colors
-                                                      .black, // button text color
-                                                ),
-                                              ),
-                                            ),
-                                            child: child!,
-                                          );
-                                        });
-                                    billGenerationDirectController
-                                            .TodateController.text =
-                                        BaseUtitiles.selectDateFormat(Todate!);
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+
                   Container(
                     margin: EdgeInsets.only(top: 5, left: 10, right: 10),
                     child: Card(
@@ -715,36 +706,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                       ),
                     ),
                   ),
-                  // SizedBox(
-                  //     width: BaseUtitiles.getWidthtofPercentage(context, 42),
-                  //   child: ElevatedButton(
-                  //       style: ElevatedButton.styleFrom(
-                  //         primary: Setmybackground,
-                  //       ),
-                  //       onPressed: () async {
-                  //       },
-                  //       child: Row(
-                  //         mainAxisAlignment:
-                  //         MainAxisAlignment.spaceEvenly,
-                  //         children: [
-                  //           Padding(
-                  //             padding: const EdgeInsets.only(right: 10),
-                  //             child: Icon(
-                  //               Icons.add,
-                  //               color: Theme.of(context).primaryColor,
-                  //             ),
-                  //           ),
-                  //           Expanded(
-                  //             child: Text(
-                  //               "Attach Image",
-                  //               style: TextStyle(
-                  //                   color:
-                  //                   Theme.of(context).primaryColor),
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       )),
-                  // ),
+
                   SizedBox(height: BaseUtitiles.getheightofPercentage(context, 1)),
                 ],
               ),
@@ -762,9 +724,8 @@ class _Subcont_Nmr_EntryScreenState_Site
                       height: BaseUtitiles.getheightofPercentage(context, 4),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
-                        color: billGenerationDirectController.checkColor == 0
-                            ? Theme.of(context).primaryColor
-                            : Colors.white,
+                        color: Theme.of(context).primaryColor
+
                       ),
                       alignment: Alignment.center,
                       child: Text(
@@ -772,14 +733,12 @@ class _Subcont_Nmr_EntryScreenState_Site
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: RequestConstant.Lable_Font_SIZE,
-                            color: billGenerationDirectController.checkColor == 0
-                                ? Colors.white
-                                : Theme.of(context).primaryColor),
+                            color: Colors.white
+                                ),
                       ),
                     ),
                     onTap: () {
                       setState(() {
-                        billGenerationDirectController.checkColor = 0;
                         if(_formKey.currentState!.validate()){
                           _formKey.currentState!.save();
                           Navigator.push(
@@ -787,8 +746,6 @@ class _Subcont_Nmr_EntryScreenState_Site
                               MaterialPageRoute(
                                   builder: (context) => Bill_Generation_Itemlist()));
                         }
-
-
                       });
                     },
                   ),

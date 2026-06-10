@@ -146,7 +146,12 @@ class _CashBook_SiteState extends State<CashBook_Site> {
                                       cashBookSiteController.cashbooksite_frdateController.text = Frdate.toString().substring(0, 10);
 
                                     },
-
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Select Date';
+                                      }
+                                      return null;
+                                    },
                                   ),
                                 ),
                               ),
@@ -208,7 +213,12 @@ class _CashBook_SiteState extends State<CashBook_Site> {
                                           });
                                       cashBookSiteController.cashbooksite_todateController.text = Todate.toString().substring(0, 10);
                                     },
-
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Select Date';
+                                      }
+                                      return null;
+                                    },
                                   ),
                                 ),
                               ),
@@ -231,7 +241,6 @@ class _CashBook_SiteState extends State<CashBook_Site> {
                           child: TextFormField(
                             readOnly: true,
                             controller: projectController.projectname,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
                             cursorColor: Colors.black,
                             style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
@@ -250,11 +259,11 @@ class _CashBook_SiteState extends State<CashBook_Site> {
                             ),
                             onTap: () async {
 
-                              await projectController.getProjectList();
-                              if (mounted) {
-                                bottomsheetControllers.ProjectName(context, projectController.getdropDownvalue.value);
-                              }
-                              FocusScope.of(context).unfocus();
+                                await projectController.getProjectList();
+                                if (mounted) {
+                                  bottomsheetControllers.ProjectName(context, projectController.getdropDownvalue.value);
+                                }
+                                FocusScope.of(context).unfocus();
 
                             },
                             validator: (value) {
@@ -288,13 +297,13 @@ class _CashBook_SiteState extends State<CashBook_Site> {
                                   fontWeight: FontWeight.bold,
                                   fontSize: RequestConstant.Lable_Font_SIZE,
                                   color: Colors.white
-                              ),
+                                      ),
                             ),
                           ),
                           onTap: () async {
                             if(_formKey.currentState!.validate()){
                               _formKey.currentState!.save();
-                            cashBookSiteController.getcashbooksitedetails();
+                              cashBookSiteController.getcashbooksitedetails();
                             }
                           },
                         ),
@@ -531,6 +540,7 @@ class _CashBook_SiteState extends State<CashBook_Site> {
                                         )),
                                   ],
                                 ),
+
                                 SizedBox(height: 10,),
                                 Row(
                                   children: [

@@ -17,12 +17,15 @@ import 'fromsite_controller.dart';
 
 class SiteController extends GetxController {
   final Sitename = TextEditingController();
+  final headNameController = TextEditingController();
   RxList getSiteDropdownvalue = [].obs;
   RxList getToSiteDropdownvalue = [].obs;
+  RxList getHeadNameDropdownvalue = [].obs;
   RxList mainlist = [].obs;
   RxList siteDropdownId = [].obs;
   RxList siteDropdownName = [].obs;
   RxInt selectedsiteId = 0.obs;
+  RxInt selectedHeadId = 0.obs;
   RxString selectedsitedropdownName = "".obs;
   ProjectController projectController = Get.put(ProjectController());
   ReportsController reportsController = Get.put(ReportsController());
@@ -91,6 +94,28 @@ class SiteController extends GetxController {
         BaseUtitiles.showToast("Something went wrong..");
       }
   }
+
+  Future headNameList(type) async {
+    getHeadNameDropdownvalue.value=[];
+    final value = await CommonProvider.dprNewHeadNameDropdown(selectedsiteId.value,type);
+    if (value != null) {
+      if(value.success == true){
+        if(value.result!.isNotEmpty) {
+          getHeadNameDropdownvalue.value = value.result!;
+        }
+        else {
+          BaseUtitiles.showToast(value.message ?? "No Data Found");
+        }
+      }
+      else{
+        BaseUtitiles.showToast(value.message ??"Something went wrong..");
+      }
+    }else
+    {
+      BaseUtitiles.showToast("Something went wrong..");
+    }
+  }
+
 
   Future getMrnReporttList() async {
     mrnListValue.value.clear();

@@ -15,14 +15,10 @@ import '../utilities/requestconstant.dart';
 class Mrn_Req_provider{
 
   static Future<MrNentrylist?> getmrnreqEntry_List(String frdate, String todate) async {
-
     try {
       var value = await ApiManager.getAPICall("${ApiConstant.GETMRNREQUEST_ENTRY_LIST}?Frdate=$frdate&Todate=$todate&projectId=0");
-
       MrNentrylist data = mrNentrylistFromJson(value);
-
       return data;
-
     } catch (error) {
       print(error);
       return null;

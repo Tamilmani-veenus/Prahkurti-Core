@@ -58,118 +58,48 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
     var duration = Duration(seconds:0);
     dailyWrkDone_DPR_Controller.imageFiles.value=[];
     Future.delayed(duration,() async {
-      await autoYearWiseNoController.AutoYearWiseNo("DPR");
-      await  dailyWrkDone_DPR_Controller.dpr_getSubcotType();
-      await projectController.getProjectList();
-      dailyWrkDone_DPR_Controller.dpr_autoYearWiseNoController.text=autoYearWiseNoController.DPR_autoYrsWise.value;
-      if(dailyWrkDone_DPR_Controller.editCheck==1){
-        dailyWrkDone_DPR_Controller.ButtonChanges(1,dailyWrkDone_DPR_Controller.aprovedButton);
+      if(dailyWrkDone_DPR_Controller.saveButton.value==RequestConstant.RESUBMIT || dailyWrkDone_DPR_Controller.saveButton.value==RequestConstant.APPROVAL){
+        await dailyWrkDone_DPR_Controller.gettingImage();
         dailyWrkDone_DPR_Controller.dpr_EditListApiValue.value.forEach((element) {
-          dailyWrkDone_DPR_Controller.workId=element.workId!;
+          dailyWrkDone_DPR_Controller.workId=element.id!;
           projectController.projectname.text=element.projectName;
-          dailyWrkDone_DPR_Controller.TypeSubcontractorname.text=element.subContName;
-          dailyWrkDone_DPR_Controller.entryTypeController.text=element.entryTypeName;
+          dailyWrkDone_DPR_Controller.TypeSubcontractorname.text=element.subcontractorName;
+          dailyWrkDone_DPR_Controller.entryTypeController.text=element.entryType == "N" ? "NMR" : "BOQ";
           siteController.Sitename.text=element.siteName;
-          dailyWrkDone_DPR_Controller.dpr_preparedbyController.text=element.preparedbyName;
+          dailyWrkDone_DPR_Controller.dpr_preparedbyController.text=element.createdName;
           dailyWrkDone_DPR_Controller.dpr_autoYearWiseNoController.text=element.workNo;
           dailyWrkDone_DPR_Controller.dpr_dateController.text=element.workDate;
           dailyWrkDone_DPR_Controller.dpr_referenceController.text=element.refNo;
           dailyWrkDone_DPR_Controller.dpr_remarksController.text=element.remarks;
           projectController.selectedProjectId.value=element.projectId;
           siteController.selectedsiteId.value=element.siteId;
-          subcontractorController.selectedSubcontId.value=element.subContId;
-          dailyWrkDone_DPR_Controller.TypeSubcontId.value=element.subContId;
+          dailyWrkDone_DPR_Controller.TypeSubcontId.value=element.subContractorId;
           dailyWrkDone_DPR_Controller.entryType=element.entryType.toString();
         });
       }
-      if(dailyWrkDone_DPR_Controller.entrycheck==0){
-        dailyWrkDone_DPR_Controller.saveButton.value=RequestConstant.SUBMIT;
-        dailyWrkDone_DPR_Controller.workId=0;
-        // dailyWrkDone_DPR_Controller.TypeSubcontractorname.text=RequestConstant.SELECT;
-        // subcontractorController.selectedSubcontId.value=0;
-        // projectController.projectname.text=RequestConstant.SELECT;
-        // projectController.selectedProjectId.value=0;
-        // dailyWrkDone_DPR_Controller.entryTypeController.text="TYPE";
 
-
-
+      if(dailyWrkDone_DPR_Controller.saveButton.value==RequestConstant.SUBMIT){
+        dailyWrkDone_DPR_Controller.dpr_dateController.text=BaseUtitiles.initiateCurrentDateFormat();
+        projectController.projectname.text = "--SELECT--";
+        projectController.selectedProjectId.value=0;
         siteController.Sitename.text = "--SELECT--";
         siteController.selectedsiteId.value = 0;
-        // siteController.setSelectedMRNListName(0);
-
-        subcontractorController.setSelectedsubcontListName(0);
-        dailyWrkDone_DPR_Controller.setSelectedTypeSubcontListName(0);
-        dailyWrkDone_DPR_Controller.TypeSubcontId.value=0;
-
-        dailyWrkDone_DPR_Controller.delete_dpr_itemlist_Table();
-        dailyWrkDone_DPR_Controller.dpr_itemview_DbList.value.clear();
-
+        dailyWrkDone_DPR_Controller.workId=0;
+        dailyWrkDone_DPR_Controller.TypeSubcontractorname.text = "--SELECT--";
+        dailyWrkDone_DPR_Controller.TypeSubcontId.value = 0;
+        dailyWrkDone_DPR_Controller.entryTypeController.text="NMR";
+        dailyWrkDone_DPR_Controller.entryType="N";
         dailyWrkDone_DPR_Controller.dpr_preparedbyController.text = loginController.EmpName();
-        dailyWrkDone_DPR_Controller.dpr_autoYearWiseNoController.text=autoYearWiseNoController.DPR_autoYrsWise.value;
-        dailyWrkDone_DPR_Controller.dpr_dateController.text=BaseUtitiles.initiateCurrentDateFormat();
-        dailyWrkDone_DPR_Controller.dpr_referenceController.clear();
         dailyWrkDone_DPR_Controller.dpr_remarksController.text="";
-        dailyWrkDone_DPR_Controller.entryTypeController.text="BOQ";
-        dailyWrkDone_DPR_Controller.entryType="B";
         dailyWrkDone_DPR_Controller.gettingNetworkImages.value = [];
+        await autoYearWiseNoController.AutoYearWiseNo("DPR");
+        dailyWrkDone_DPR_Controller.dpr_autoYearWiseNoController.text=autoYearWiseNoController.DPR_autoYrsWise.value;
       }
      });
     super.initState();
   }
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  Future<void> takePicture() async {
-    var status = await Permission.camera.request();
-    if (status.isGranted) {
-      final picker = ImagePicker();
-      final XFile? pickedFile =
-      await picker.pickImage(source: ImageSource.camera);
-
-      if (pickedFile != null) {
-        final appDir = await getApplicationDocumentsDirectory();
-        final fileName = path.basename(pickedFile.path);
-        await pickedFile.saveTo('${appDir.path}/$fileName');
-        setState(() {
-          dailyWrkDone_DPR_Controller.imageFiles.add(File(pickedFile.path));
-        });
-      } else {
-        setState(() {
-          printToLog('Something went wrong');
-        });
-        if (kDebugMode) {
-          printToLog('No image selected.');
-        }
-      }
-    }
-    else if (status.isPermanentlyDenied) {
-      BaseUtitiles.showToast(
-          'Camera permissions are permanently denied, we cannot request permissions.');
-    }
-  }
-
-
-  Future<void> takeNetPicture() async {
-    final picker = ImagePicker();
-    final XFile? pickedFile =
-    await picker.pickImage(source: ImageSource.camera);
-
-    if (pickedFile != null) {
-      final appDir = await getApplicationDocumentsDirectory();
-      final fileName = path.basename(pickedFile.path);
-      await pickedFile.saveTo('${appDir.path}/$fileName');
-      setState(() {
-        dailyWrkDone_DPR_Controller.imageFiles.add(File(pickedFile.path));
-      });
-    } else {
-      setState(() {
-        printToLog('Something went wrong');
-      });
-      if (kDebugMode) {
-        printToLog('No image selected.');
-      }
-    }
-  }
 
 
   @override
@@ -290,7 +220,7 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                                         child: ConstIcons.date),
                                   ),
                                   onTap: () async {
-                                    if(dailyWrkDone_DPR_Controller.screenchek.value==1){
+                                    if(dailyWrkDone_DPR_Controller.saveButton.value==RequestConstant.APPROVAL){
 
                                     }
                                     else{
@@ -359,13 +289,12 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                                       vertical: 8, horizontal: 8),
                                   child: ConstIcons.projectName),
                             ),
-                            onTap: () {
-                              if(dailyWrkDone_DPR_Controller.screenchek.value==1){
+                            onTap: () async {
+                              if(dailyWrkDone_DPR_Controller.saveButton.value==RequestConstant.APPROVAL){
 
                               }else{
-                                setState(() {
-                                  bottomsheetControllers.ProjectName(context, projectController.getdropDownvalue.value );
-                                });
+                                await projectController.getProjectList();
+                                bottomsheetControllers.ProjectName(context, projectController.getdropDownvalue.value );
                               }
                             },
 
@@ -412,12 +341,10 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                                   child: ConstIcons.siteName),
                             ),
                             onTap: () {
-                              if(dailyWrkDone_DPR_Controller.screenchek.value==1){
+                              if(dailyWrkDone_DPR_Controller.saveButton.value==RequestConstant.APPROVAL){
 
                               }else{
-                                setState(() {
                                   bottomsheetControllers.SiteName(context, siteController.getSiteDropdownvalue.value );
-                                });
                               }
                             },
                             validator: (value) {
@@ -463,18 +390,16 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                                   child: ConstIcons.types),
                             ),
                             onTap: () {
-                              // if(dailyWrkDone_DPR_Controller.screenchek.value==1
-                              //
-                              // ){
-                              //
-                              // }
-                              // else{
-                              //   showDialog(
-                              //       context: context,
-                              //       builder: (BuildContext context) {
-                              //         return  EntryTypeAlert();
-                              //       });
-                              // }
+                              if(dailyWrkDone_DPR_Controller.saveButton.value==RequestConstant.APPROVAL){
+
+                              }
+                              else{
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return  EntryTypeAlert(from: 'DPR',);
+                                    });
+                              }
 
                             },
                             validator: (value) {
@@ -521,18 +446,8 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                                   child: ConstIcons.subcontractorName),
                             ),
                             onTap: ()  async {
-                              if(dailyWrkDone_DPR_Controller.screenchek.value==1){
-
-                              }else{
-                                await dailyWrkDone_DPR_Controller.dpr_getSubcotType();
-                                dailyWrkDone_DPR_Controller.SubcontractorName(context, dailyWrkDone_DPR_Controller.dpr_subcontractorList.value);
-                              }
-
-                              // showDialog(
-                              //     context: context,
-                              //     builder: (BuildContext context) {
-                              //       return  TypeSubcontAlert(list: dailyWrkDone_DPR_Controller.dpr_subcontractorList,);
-                              //     });
+                              await dailyWrkDone_DPR_Controller.dpr_getSubcotType();
+                              dailyWrkDone_DPR_Controller.SubcontractorName(context, dailyWrkDone_DPR_Controller.dpr_subcontractorList.value);
 
                             },
                             validator: (value) {
@@ -634,11 +549,16 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                                 onPressed: () async {
                                   if(_formKey.currentState!.validate()){
                                     _formKey.currentState!.save();
-                                    if(dailyWrkDone_DPR_Controller.screenchek.value==1){
+                                    if(dailyWrkDone_DPR_Controller.saveButton.value==RequestConstant.APPROVAL){
 
                                     }
                                     else{
-                                      dailyWrkDone_DPR_Controller.dpr_getItemList(projectController.selectedProjectId.value,siteController.selectedsiteId.value,dailyWrkDone_DPR_Controller.TypeSubcontId.value,dailyWrkDone_DPR_Controller.entryType,context);
+                                      dailyWrkDone_DPR_Controller.dpr_getItemList(
+                                          projectController.selectedProjectId.value,
+                                          siteController.selectedsiteId.value,
+                                          dailyWrkDone_DPR_Controller.TypeSubcontId.value,
+                                          context
+                                      );
                                     }
                                   }
                                 },
@@ -668,17 +588,6 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                                           "DPR",
                                         )),
                                   );
-                                  // if (dailyWrkDone_DPR_Controller.screenchek ==
-                                  //     "PendingScreen") {
-                                  //   Fluttertoast.showToast(msg:
-                                  //   "Image can't add in approve stage");
-                                  // }  else {
-                                  //   if (dailyWrkDone_DPR_Controller.gettingNetworkImages.length==0) {
-                                  //     takeNetPicture();
-                                  //   } else {
-                                  //     takePicture();
-                                    // }
-                                  // }
                                 },
                                 child: Row(
                                   mainAxisAlignment:
@@ -812,7 +721,7 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
 
               Obx(()=>Container(
                 child: Visibility(
-                  visible: dailyWrkDone_DPR_Controller.dpr_itemview_DbList.value.isEmpty?false:true,
+                  visible: dailyWrkDone_DPR_Controller.dpr_itemview_DbList.value.isEmpty ? false : true,
                   child: Container(
                     height: BaseUtitiles.getheightofPercentage(context, 100),
                     child: DraggableScrollableSheet(
@@ -888,7 +797,7 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                children: <Widget>[
                  Visibility(
-                   visible: dailyWrkDone_DPR_Controller.editCheck==1 ? false : true,
+                   visible: dailyWrkDone_DPR_Controller.saveButton.value == RequestConstant.RESUBMIT ? false : true,
                    child: Expanded(
                      child: InkWell(
                        child: Container(
@@ -896,18 +805,17 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                          height: BaseUtitiles.getheightofPercentage(context, 4),
                          decoration: BoxDecoration(
                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                           color:  dailyWrkDone_DPR_Controller.checkColor == 0 ? Colors.white : Theme.of(context).primaryColor ,
+                           color: Colors.white ,
                          ),
                          alignment: Alignment.center,
                          child: Text("Reset",
                            style: TextStyle(
                                fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,
-                               color:  dailyWrkDone_DPR_Controller.checkColor == 0 ?  Theme.of(context).primaryColor : Colors.white ),
+                               color: Theme.of(context).primaryColor ),
                          ),
                        ),
                        onTap: (){
                          setState(() {
-                           dailyWrkDone_DPR_Controller.checkColor = 1;
                            ResetAlert(context);
                          });
                        },
@@ -921,18 +829,15 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                        height: BaseUtitiles.getheightofPercentage(context, 4),
                        decoration: BoxDecoration(
                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                         color: dailyWrkDone_DPR_Controller.checkColor == 0 ?  Theme.of(context).primaryColor : Colors.white  ,
+                         color: Theme.of(context).primaryColor ,
                        ),
                        alignment: Alignment.center,
                        child: Text(
-                         // dailyWrkDone_DPR_Controller.appEnb==1 ? RequestConstant.APPROVAL :
-                         // editCheck==1? RequestConstant.RESUBMIT:RequestConstant.SUBMIT
                          dailyWrkDone_DPR_Controller.saveButton.value,  style: TextStyle(
                            fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,
-                           color:  dailyWrkDone_DPR_Controller.checkColor == 0 ? Colors.white :  Theme.of(context).primaryColor ),),
+                           color: Colors.white ),),
                      ),
                      onTap: () {
-                       dailyWrkDone_DPR_Controller.checkColor = 0;
                        if(_formKey.currentState!.validate()){
                          _formKey.currentState!.save();
                          if(dailyWrkDone_DPR_Controller.dpr_itemview_DbList.isEmpty){
@@ -985,7 +890,7 @@ Widget ListDetails(BuildContext context, ScrollController scrollController) {
                               dailyWrkDone_DPR_Controller.dpr_itemview_DbList.value[index].itemDesc.toString()+" ("+dailyWrkDone_DPR_Controller.dpr_itemview_DbList.value[index].unit.toString()+")",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: RequestConstant.App_Font_SIZE,
+                                  fontSize: 16,
                                   color: Theme.of(context).primaryColor),
                             ),
                           ),
@@ -1291,22 +1196,9 @@ Widget ListDetails(BuildContext context, ScrollController scrollController) {
                           Future.delayed(Duration(seconds: 0),(){
                             dailyWrkDone_DPR_Controller.saveButton.value=RequestConstant.SUBMIT;
                             dailyWrkDone_DPR_Controller.workId=0;
-
-                            // projectController.projectname.text=RequestConstant.SELECT;
-                            // projectController.selectedProjectId.value=0;
-                            // siteController.Sitename.text=RequestConstant.SELECT;
-                            // siteController.selectedsiteId.value=0;
-                            // dailyWrkDone_DPR_Controller.TypeSubcontractorname.text=RequestConstant.SELECT;
-                            // subcontractorController.selectedSubcontId.value=0;
-                            subcontractorController.setSelectedsubcontListName(0);
-                            dailyWrkDone_DPR_Controller.setSelectedTypeSubcontListName(0);
                             dailyWrkDone_DPR_Controller.TypeSubcontId.value=0;
-
                             dailyWrkDone_DPR_Controller.delete_dpr_itemlist_Table();
                             dailyWrkDone_DPR_Controller.dpr_itemview_DbList.value.clear();
-
-
-                            // dailyWrkDone_DPR_Controller.entryTypeController.text="TYPE";
                             dailyWrkDone_DPR_Controller.dpr_preparedbyController.text=loginController.EmpName();
                             dailyWrkDone_DPR_Controller.dpr_autoYearWiseNoController.text=autoYearWiseNoController.DPR_autoYrsWise.value;
                             dailyWrkDone_DPR_Controller.dpr_dateController.text=BaseUtitiles.initiateCurrentDateFormat();
@@ -1316,26 +1208,6 @@ Widget ListDetails(BuildContext context, ScrollController scrollController) {
                             dailyWrkDone_DPR_Controller.entryType="B";
                             dailyWrkDone_DPR_Controller.imageFiles.value=[];
                           });
-                          // dailyWrkDone_DPR_Controller.saveButton.value=RequestConstant.SUBMIT;
-                          // dailyWrkDone_DPR_Controller.workId=0;
-                          // projectController.selectedProjectId.value=0;
-                          // siteController.selectedsiteId.value=0;
-                          // subcontractorController.selectedSubcontId.value=0;
-                          // dailyWrkDone_DPR_Controller.delete_dpr_itemlist_Table();
-                          // dailyWrkDone_DPR_Controller.dpr_itemview_DbList.value.clear();
-                          // projectController.projectname.text=RequestConstant.SELECT;
-                          // dailyWrkDone_DPR_Controller.TypeSubcontractorname.text=RequestConstant.SELECT;
-                          // siteController.Sitename.text=RequestConstant.SELECT;
-                          // // dailyWrkDone_DPR_Controller.entryTypeController.text="TYPE";
-                          // dailyWrkDone_DPR_Controller.dpr_preparedbyController.text=loginController.EmpName();
-                          // dailyWrkDone_DPR_Controller.dpr_autoYearWiseNoController.text=autoYearWiseNoController.DPR_autoYrsWise.value;
-                          // dailyWrkDone_DPR_Controller.dpr_dateController.text=BaseUtitiles.initiateCurrentDateFormat();
-                          // dailyWrkDone_DPR_Controller.dpr_referenceController.clear();
-                          // dailyWrkDone_DPR_Controller.TypeSubcontId.value=0;
-                          // dailyWrkDone_DPR_Controller.dpr_remarksController.text="-";
-                          //
-                          // dailyWrkDone_DPR_Controller.entryTypeController.text="BOQ";
-                          // dailyWrkDone_DPR_Controller.entryType="B";
                           Navigator.pop(context);
                         },
                         child: Text("Reset", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE))),
@@ -1350,14 +1222,12 @@ Widget ListDetails(BuildContext context, ScrollController scrollController) {
   }
 
   Future SubmitAlert(BuildContext context) async {
-    dailyWrkDone_DPR_Controller.buttonControl = 0;
     return await showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Alert!'),
         content: Text(
-            dailyWrkDone_DPR_Controller.screenchek.value==1 ? 'Are you sure to Approval?' :
-        dailyWrkDone_DPR_Controller.editCheck == 1 ? 'Are you sure to Re-Submit?' : 'Are you sure to Submit?' ),
+        'Are you sure to ${dailyWrkDone_DPR_Controller.saveButton.value}?' ),
         actions:[
           Container(
             margin: EdgeInsets.only(left: 20,right: 20),
@@ -1378,76 +1248,28 @@ Widget ListDetails(BuildContext context, ScrollController scrollController) {
                     endIndent: 15, //Spacing at the bottom of divider.
                   ),
 
-                  // Expanded(
-                  //   child: TextButton(
-                  //       onPressed: () async {
-                  //
-                  //         if(dailyWrkDone_DPR_Controller.buttonControl == 0){
-                  //           if(dailyWrkDone_DPR_Controller.dpr_itemview_DbList.value.isEmpty){
-                  //             BaseUtitiles.showToast("Please add items");
-                  //           }
-                  //           else{
-                  //             BaseUtitiles.showLoadingDialog(context,Theme.of(context).primaryColor);
-                  //             await dailyWrkDone_DPR_Controller.getDprTablesDatas();
-                  //             if(mounted){
-                  //               dailyWrkDone_DPR_Controller.SaveButton_EntryScreen_Save(context,dailyWrkDone_DPR_Controller.workId);
-                  //             }
-                  //             // Navigator.pop(context);
-                  //           }
-                  //         }
-                  //         else if(dailyWrkDone_DPR_Controller.buttonControl == 1){
-                  //           dailyWrkDone_DPR_Controller.buttonControl = 0;
-                  //           BaseUtitiles.showToast("Please wait... processing.");
-                  //         }
-                  //
-                  //       },
-                  //       child:
-                  //       Obx(() => Text(
-                  //       dailyWrkDone_DPR_Controller.screenchek.value==1 ? RequestConstant.APPROVAL :
-                  //       dailyWrkDone_DPR_Controller.screenchek.value ==2? RequestConstant.RESUBMIT : RequestConstant.SUBMIT,
-                  //       style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE)))
-                  //       ),
-                  // ),
-
                   Expanded(
                     child: StatefulBuilder(
                       builder: (context, setState) => TextButton(
-                        onPressed:
-                        // dailyWrkDone_DPR_Controller.buttonControl == 0 ?
-                            () async {
-                          // setState(() {
-                          //   dailyWrkDone_DPR_Controller.buttonControl = 1; // Disable the button
-                          // });
-
+                        onPressed: () async {
                           if (dailyWrkDone_DPR_Controller.dpr_itemview_DbList.value.isEmpty) {
                             BaseUtitiles.showToast("Please add items");
                           } else {
                          if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
-                           await dailyWrkDone_DPR_Controller.getDprTablesDatas();
+                           await dailyWrkDone_DPR_Controller
+                               .getDprTablesDatas();
                            if (mounted) {
-                             dailyWrkDone_DPR_Controller.SaveButton_EntryScreen_Save(
+                             dailyWrkDone_DPR_Controller
+                                 .SaveButton_EntryScreen_Save(
                                  context, dailyWrkDone_DPR_Controller.workId);
                            }
                          }
-                            // setState(() {
-                            //   dailyWrkDone_DPR_Controller.buttonControl = 0; // Re-enable the button
-                            // });
-                            // Navigator.pop(context); Uncomment if you want to close the dialog
                           }
                         },
-                        //     : () {
-                        //   BaseUtitiles.showToast("Please wait... processing.");
-                        // },
                         child: Obx(() => Text(
-                          dailyWrkDone_DPR_Controller.screenchek.value == 1
-                              ? RequestConstant.APPROVAL
-                              : dailyWrkDone_DPR_Controller.screenchek.value == 2
-                              ? RequestConstant.RESUBMIT
-                              : RequestConstant.SUBMIT,
+                          dailyWrkDone_DPR_Controller.saveButton.value,
                           style: TextStyle(
-                            color: dailyWrkDone_DPR_Controller.buttonControl == 0
-                                ? Theme.of(context).primaryColor
-                                : Colors.grey, // Change color when disabled
+                            color: Theme.of(context).primaryColor, // Change color when disabled
                             fontWeight: FontWeight.bold,
                             fontSize: RequestConstant.Lable_Font_SIZE,
                           ),
@@ -1493,12 +1315,16 @@ Widget ListDetails(BuildContext context, ScrollController scrollController) {
                     child: TextButton(
                         onPressed: () async {
                           if(itemType=="String"){
-                            // await dailyEntriesController.deletingImage(
-                            //   dailyWrkDone_DPR_Controller.imageIds[index],"DPR"
-                            // );
-                            setState(() {
-                              dailyWrkDone_DPR_Controller.gettingNetworkImages.removeAt(index);
-                            });
+                            final imageId =
+                            dailyWrkDone_DPR_Controller.imageIds[index];
+
+                            final isDeleted = await dailyWrkDone_DPR_Controller
+                                .deletingImage(imageId);
+
+                            if (isDeleted) {
+                              dailyWrkDone_DPR_Controller.gettingNetworkImages
+                                  .removeAt(index);
+                            }
                           }
                           else if (itemType == "File") {
                             int localIndex = index - dailyWrkDone_DPR_Controller.gettingNetworkImages.length;

@@ -22,13 +22,13 @@ class TransferbetEditApiRes {
   factory TransferbetEditApiRes.fromJson(Map<String, dynamic> json) => TransferbetEditApiRes(
     success: json["success"],
     message: json["message"],
-    result: transEditResult.fromJson(json["result"]),
+    result: json["result"]==null?null:transEditResult.fromJson(json["result"]),
   );
 
   Map<String, dynamic> toJson() => {
     "success": success,
     "message": message,
-    "result": result!.toJson(),
+    "result": result==null?null:result!.toJson(),
   };
 }
 

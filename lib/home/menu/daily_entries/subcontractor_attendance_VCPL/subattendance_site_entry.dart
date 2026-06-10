@@ -13,17 +13,14 @@ import '../../../../controller/auto_yrwise_no_controller.dart';
 import '../../../../controller/bottomsheet_Controllers.dart';
 import '../../../../controller/companycontroller.dart';
 import '../../../../controller/dailyentries_controller.dart';
-import '../../../../controller/dailyentries_controller.dart';
 import '../../../../controller/projectcontroller.dart';
 import '../../../../controller/sitecontroller.dart';
 import '../../../../controller/subcontcontroller.dart';
 import '../../../../utilities/baseutitiles.dart';
 import '../../../../utilities/image_view.dart';
-import '../../../../utilities/print_logger.dart';
 import '../../../../utilities/requestconstant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:path/path.dart' as path;
 
 import '../../../punch_in_out/camera_screen.dart';
 
@@ -86,9 +83,9 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
           subcontractorController.selectedSubcontId.value = element.subcontractorId;
           siteController.Sitename.text = element.siteName;
           siteController.selectedsiteId.value = element.siteId;
-          dailyEntriesController.RemarksController.text = element.remarks;
           dailyEntriesController.WorkTypeTextController.text = element.workType! == "N" ? "NMR" : element.workType! == "R" ? "Rate" : "";
           dailyEntriesController.Nmr_Rate.value = element.workType!;
+          dailyEntriesController.RemarksController.text = element.remarks==null?"-":element.remarks;
         });
         await dailyEntriesController.gettingImage();
       }
@@ -1115,7 +1112,7 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                                         .text !=
                                                     "0.0"
                                             ? ""
-                                            : " *",
+                                            : "",
                                         style: TextStyle(
                                           color: dailyEntriesController
                                                           .EntrySCreenNosControllers[

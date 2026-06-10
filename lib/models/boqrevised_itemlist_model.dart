@@ -1,66 +1,126 @@
 // To parse this JSON data, do
 //
-//     final boqRevisedItemlistResponse = boqRevisedItemlistResponseFromJson(jsonString);
+//     final boqRevisedItemResponse = boqRevisedItemResponseFromJson(jsonString);
 
 import 'dart:convert';
 
-List<BoqRevisedItemlistResponse> boqRevisedItemlistResponseFromJson(String str) => List<BoqRevisedItemlistResponse>.from(json.decode(str).map((x) => BoqRevisedItemlistResponse.fromJson(x)));
+BoqRevisedItemResponse boqRevisedItemResponseFromJson(String str) => BoqRevisedItemResponse.fromJson(json.decode(str));
 
-String boqRevisedItemlistResponseToJson(List<BoqRevisedItemlistResponse> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String boqRevisedItemResponseToJson(BoqRevisedItemResponse data) => json.encode(data.toJson());
 
-class BoqRevisedItemlistResponse {
-  BoqRevisedItemlistResponse({
-    this.headItemId,
-    this.subItemId,
-    this.level3ItemId,
-    this.woDetId,
-    this.boqCode,
-    this.itemDesc,
-    this.unit,
-    this.rate,
-    this.qty,
-    this.amt,
-    this.balQty,
+class BoqRevisedItemResponse {
+  bool? success;
+  String? message;
+  List<Result>? result;
+
+  BoqRevisedItemResponse({
+    this.success,
+    this.message,
+    this.result,
   });
 
-  int? headItemId;
-  int? subItemId;
-  int? level3ItemId;
-  int? woDetId;
-  String? boqCode;
-  String? itemDesc;
-  String? unit;
-  double? rate;
-  double? qty;
-  double? amt;
-  double? balQty;
-  bool? isCheck=false;
-
-  factory BoqRevisedItemlistResponse.fromJson(Map<String, dynamic> json) => BoqRevisedItemlistResponse(
-    headItemId: json["HeadItemId"],
-    subItemId: json["SubItemId"],
-    level3ItemId: json["Level3ItemId"],
-    woDetId: json["WODetId"],
-    boqCode: json["BoqCode"],
-    itemDesc: json["ItemDesc"],
-    unit: json["Unit"],
-    rate: json["Rate"],
-    qty: json["Qty"],
-    amt: json["Amt"],
-    balQty: json["BalQty"],
+  factory BoqRevisedItemResponse.fromJson(Map<String, dynamic> json) => BoqRevisedItemResponse(
+    success: json["success"],
+    message: json["message"],
+    result: json["result"]==null?[]:List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "HeadItemId": headItemId,
-    "SubItemId": subItemId,
-    "Level3ItemId": level3ItemId,
-    "WODetId": woDetId,
-    "BoqCode": boqCode,
-    "ItemDesc": itemDesc,
-    "Unit": unit,
-    "Rate": rate,
-    "Qty": qty,
-    "Amt": amt,
-    "BalQty": balQty,
+    "success": success,
+    "message": message,
+    "result": result==null?[]:List<dynamic>.from(result!.map((x) => x.toJson())),
+  };
+}
+
+class Result {
+  int? measureHeadItemId;
+  String? headItemName;
+  List<SubItem>? subItems;
+
+  Result({
+    this.measureHeadItemId,
+    this.headItemName,
+    this.subItems,
+  });
+
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    measureHeadItemId: json["measureHeadItemId"],
+    headItemName: json["headItemName"],
+    subItems: List<SubItem>.from(json["subItems"].map((x) => SubItem.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "measureHeadItemId": measureHeadItemId,
+    "headItemName": headItemName,
+    "subItems": List<dynamic>.from(subItems!.map((x) => x.toJson())),
+  };
+}
+
+class SubItem {
+  int? measureSubItemId;
+  String? subItem;
+  String? seqno;
+  List<Level3Item>? level3Items;
+
+  SubItem({
+    this.measureSubItemId,
+    this.subItem,
+    this.seqno,
+    this.level3Items,
+  });
+
+  factory SubItem.fromJson(Map<String, dynamic> json) => SubItem(
+    measureSubItemId: json["measureSubItemId"],
+    subItem: json["subItem"],
+    seqno: json["seqno"],
+    level3Items: List<Level3Item>.from(json["level3Items"].map((x) => Level3Item.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "measureSubItemId": measureSubItemId,
+    "subItem": subItem,
+    "seqno": seqno,
+    "level3Items": List<dynamic>.from(level3Items!.map((x) => x.toJson())),
+  };
+}
+
+class Level3Item {
+  int? level3ItemId;
+  String? name;
+  String? seqno;
+  double? qty;
+  int? unit;
+  String? scaleName;
+  double? rate;
+  bool? isCheck=false;
+
+  Level3Item({
+    this.level3ItemId,
+    this.name,
+    this.seqno,
+    this.qty,
+    this.unit,
+    this.scaleName,
+    this.rate,
+  });
+
+  factory Level3Item.fromJson(Map<String, dynamic> json) => Level3Item(
+    level3ItemId: json["level3ItemId"],
+    name: json["name"],
+    seqno: json["seqno"],
+    qty: json["qty"],
+    unit: json["unit"],
+    scaleName: json["scaleName"],
+    rate: json["rate"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "level3ItemId": level3ItemId,
+    "name": name,
+    "seqno": seqno,
+    "qty": qty,
+    "unit": unit,
+    "scaleName": scaleName,
+    "rate": rate,
   };
 }

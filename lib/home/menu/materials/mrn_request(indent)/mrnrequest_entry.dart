@@ -58,9 +58,7 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
       if (mrn_request_controller.saveButton.value == RequestConstant.SUBMIT) {
         await autoYearWiseNoController.AutoYearWiseNo("MRN INDENT");
         mrn_request_controller.autoYearWiseNoController.text = autoYearWiseNoController.MRNIndent_autoYrsWise.value;
-        await projectController.getProjectList();
         mrn_request_controller.reqId = 0;
-        mrn_request_controller.saveButton.value = RequestConstant.SUBMIT;
         mrn_request_controller.delete_MaterialIntent_itemlist_Table();
         mrn_request_controller.Material_itemview_GetDbList.clear();
         mrn_request_controller.RemarksController.text = "";
@@ -85,7 +83,6 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
       }
 
       if (mrn_request_controller.saveButton.value == RequestConstant.RESUBMIT) {
-        mrn_request_controller.saveButton.value = RequestConstant.RESUBMIT;
         mrn_request_controller.Material_EditListApiValue.forEach((element) {
           mrn_request_controller.reqId = element.reqId;
           mrn_request_controller.autoYearWiseNoController.text = element.reqNo;
@@ -289,8 +286,7 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                         ),
                       ),
                       Container(
-                        margin:
-                            const EdgeInsets.only(top: 2, left: 10, right: 10),
+                        margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
                         child: Card(
                           shape: RoundedRectangleBorder(
                             side: const BorderSide(
@@ -543,20 +539,21 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                                         vertical: 8, horizontal: 8),
                                     child: ConstIcons.projectName),
                               ),
-                              onTap: () {
-                                setState(() {
+                              onTap: () async {
+
                                   if (mrn_request_controller.saveButton.value == RequestConstant.VERIFY ||
                                       mrn_request_controller
                                           .Material_itemview_GetDbList
                                           .value
                                           .isNotEmpty) {
                                   } else {
+                                    await projectController.getProjectList();
                                     bottomsheetControllers.ProjectName(
                                         context,
                                         projectController
                                             .getdropDownvalue.value);
                                   }
-                                });
+
                               },
                               validator: (value) {
                                 if (value!.isEmpty ||

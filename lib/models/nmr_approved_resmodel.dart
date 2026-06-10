@@ -1,56 +1,101 @@
 import 'dart:convert';
 
-List<GetNmrAprovedstatusmodel> getNmrAprovedstatusmodelFromJson(String str) => List<GetNmrAprovedstatusmodel>.from(json.decode(str).map((x) => GetNmrAprovedstatusmodel.fromJson(x)));
+// To parse this JSON data, do
+//
+//     final nmrApprovedStatus = nmrApprovedStatusFromJson(jsonString);
 
-String getNmrAprovedstatusmodelToJson(List<GetNmrAprovedstatusmodel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+import 'dart:convert';
 
-class GetNmrAprovedstatusmodel {
-  GetNmrAprovedstatusmodel({
-    this.labrAttnDate,
-    this.labrAttnNo,
-    this.appStatus,
+NmrApprovedStatus nmrApprovedStatusFromJson(String str) => NmrApprovedStatus.fromJson(json.decode(str));
+
+String nmrApprovedStatusToJson(NmrApprovedStatus data) => json.encode(data.toJson());
+
+class NmrApprovedStatus {
+  bool? success;
+  String? message;
+  List<DetailsResult>? result;
+
+  NmrApprovedStatus({
+    this.success,
+    this.message,
+    this.result,
   });
 
-  String? labrAttnDate;
-  String? labrAttnNo;
-  String? appStatus;
-
-  factory GetNmrAprovedstatusmodel.fromJson(Map<String, dynamic> json) => GetNmrAprovedstatusmodel(
-    labrAttnDate: json["LabrAttn_Date"],
-    labrAttnNo: json["LabrAttn_No"],
-    appStatus: json["App_Status"],
+  factory NmrApprovedStatus.fromJson(Map<String, dynamic> json) => NmrApprovedStatus(
+    success: json["success"],
+    message: json["message"],
+    result: json["result"]==null?[]:List<DetailsResult>.from(json["result"].map((x) => DetailsResult.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "LabrAttn_Date": labrAttnDate,
-    "LabrAttn_No": labrAttnNo,
-    "App_Status": appStatus,
+    "success": success,
+    "message": message,
+    "result": result==null?[]:List<dynamic>.from(result!.map((x) => x.toJson())),
+  };
+}
+
+class DetailsResult {
+  String? labourAttendanceDate;
+  String? labourAttendanceNo;
+  String? approveStatus;
+
+  DetailsResult({
+    this.labourAttendanceDate,
+    this.labourAttendanceNo,
+    this.approveStatus,
+  });
+
+  factory DetailsResult.fromJson(Map<String, dynamic> json) => DetailsResult(
+    labourAttendanceDate: json["LabourAttendanceDate"],
+    labourAttendanceNo: json["LabourAttendanceNo"],
+    approveStatus: json["ApproveStatus"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "LabourAttendanceDate": labourAttendanceDate,
+    "LabourAttendanceNo": labourAttendanceNo,
+    "ApproveStatus": approveStatus,
   };
 }
 
 
+NmrCountList nmrCountListFromJson(String str) => NmrCountList.fromJson(json.decode(str));
 
+String nmrCountListToJson(NmrCountList data) => json.encode(data.toJson());
 
+class NmrCountList {
+  bool? success;
+  String? message;
+  List<Result>? result;
 
+  NmrCountList({
+    this.success,
+    this.message,
+    this.result,
+  });
 
+  factory NmrCountList.fromJson(Map<String, dynamic> json) => NmrCountList(
+    success: json["success"],
+    message: json["message"],
+    result: json["result"]==null?[]:List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
+  );
 
+  Map<String, dynamic> toJson() => {
+    "success": success,
+    "result": result==null?[]:List<dynamic>.from(result!.map((x) => x.toJson())),
+  };
+}
 
-List<GetNmrstatuscountresmodel> getNmrstatuscountresmodelFromJson(String str) => List<GetNmrstatuscountresmodel>.from(json.decode(str).map((x) => GetNmrstatuscountresmodel.fromJson(x)));
+class Result {
+  int? reccount;
+  int? appCount;
 
-String getNmrstatuscountresmodelToJson(List<GetNmrstatuscountresmodel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-
-
-
-class GetNmrstatuscountresmodel {
-  GetNmrstatuscountresmodel({
+  Result({
     this.reccount,
     this.appCount,
   });
 
-  int? reccount;
-  int? appCount;
-
-  factory GetNmrstatuscountresmodel.fromJson(Map<String, dynamic> json) => GetNmrstatuscountresmodel(
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
     reccount: json["Reccount"],
     appCount: json["AppCount"],
   );
@@ -60,5 +105,6 @@ class GetNmrstatuscountresmodel {
     "AppCount": appCount,
   };
 }
+
 
 

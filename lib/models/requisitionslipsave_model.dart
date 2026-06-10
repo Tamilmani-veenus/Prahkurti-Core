@@ -9,97 +9,109 @@ RequisitonSlipsaveRequest requisitonSlipsaveRequestFromJson(String str) => Requi
 String requisitonSlipsaveRequestToJson(RequisitonSlipsaveRequest data) => json.encode(data.toJson());
 
 class RequisitonSlipsaveRequest {
+  int? id;
+  String? requisitionNo;
+  String? requisitionType;
+  String? entryDate;
+  int? staffId;
+  int? projectId;
+  String? leaveReason;
+  String? leaveFromDate;
+  String? leaveToDate;
+  double? totalLeaveDays;
+  String? permissionReason;
+  String? permissionFromDate;
+  String? permissionToDate;
+  String? permissionFromTime;
+  String? permissionToTime;
+  int? permissionTimeHrs;
+  int? permissionTimeMins;
+  double? totalPermissionHours;
+  int? createdBy;
+  String? createdDt;
+  String? verifyStatus;
+  String? approveStatus;
+  String? verifyRemarks;
+  String? approveRemarks;
+
   RequisitonSlipsaveRequest({
-    this.reqId,
-    this.reqNo,
-    this.reqDate,
+    this.id,
+    this.requisitionNo,
+    this.requisitionType,
+    this.entryDate,
     this.staffId,
-    this.projectid,
-    this.reqType,
+    this.projectId,
     this.leaveReason,
-    this.lFrdate,
-    this.lTodate,
-    this.totalLeave,
-    this.perReason,
-    this.pFrdate,
-    this.pTodate,
-    this.pFrTime,
-    this.pToTime,
-    this.totalPerHrs,
-    this.userId,
-    this.entryMode,
-    this.deviceName,
-    this.pTimeHrs,
-    this.pTimeMins,
+    this.leaveFromDate,
+    this.leaveToDate,
+    this.totalLeaveDays,
+    this.permissionReason,
+    this.permissionFromDate,
+    this.permissionToDate,
+    this.permissionFromTime,
+    this.permissionToTime,
+    this.permissionTimeHrs,
+    this.permissionTimeMins,
+    this.totalPermissionHours,
+    this.createdBy,
+    this.createdDt,
+    this.verifyStatus,
+    this.approveStatus,
+    this.verifyRemarks,
+    this.approveRemarks,
   });
 
-  String? reqId;
-  String? reqNo;
-  String? reqDate;
-  String? staffId;
-  String? projectid;
-  String? reqType;
-  String? leaveReason;
-  String? lFrdate;
-  String? lTodate;
-  String? totalLeave;
-  String? perReason;
-  String? pFrdate;
-  String? pTodate;
-  String? pFrTime;
-  String? pToTime;
-  String? totalPerHrs;
-  String? userId;
-  String? entryMode;
-  String? deviceName;
-  String? pTimeHrs;
-  String? pTimeMins;
-
   factory RequisitonSlipsaveRequest.fromJson(Map<String, dynamic> json) => RequisitonSlipsaveRequest(
-    reqId: json["ReqId"],
-    reqNo: json["ReqNo"],
-    reqDate: json["ReqDate"],
-    staffId: json["StaffId"],
-    projectid: json["Projectid"],
-    reqType: json["ReqType"],
-    leaveReason: json["LeaveReason"],
-    lFrdate: json["LFrdate"],
-    lTodate: json["LTodate"],
-    totalLeave: json["TotalLeave"],
-    perReason: json["PerReason"],
-    pFrdate: json["PFrdate"],
-    pTodate: json["PTodate"],
-    pFrTime: json["PFrTime"],
-    pToTime: json["PToTime"],
-    totalPerHrs: json["TotalPerHrs"],
-    userId: json["UserId"],
-    entryMode: json["EntryMode"],
-    deviceName: json["DeviceName"],
-    pTimeHrs: json["PTimeHrs"],
-    pTimeMins: json["PTimeMins"],
+    id: json["id"],
+    requisitionNo: json["requisitionNo"],
+    requisitionType: json["requisitionType"],
+    entryDate: json["entryDate"],
+    staffId: json["staffId"],
+    projectId: json["projectId"],
+    leaveReason: json["leaveReason"],
+    leaveFromDate: json["leaveFromDate"],
+    leaveToDate: json["leaveToDate"],
+    totalLeaveDays: json["totalLeaveDays"],
+    permissionReason: json["permissionReason"],
+    permissionFromDate: json["permissionFromDate"],
+    permissionToDate: json["permissionToDate"],
+    permissionFromTime: json["permissionFromTime"],
+    permissionToTime: json["permissionToTime"],
+    permissionTimeHrs: json["permissionTimeHrs"],
+    permissionTimeMins: json["permissionTimeMins"],
+    totalPermissionHours: json["totalPermissionHours"],
+    createdBy: json["createdBy"],
+    createdDt: json["createdDt"],
+    verifyStatus: json["verifyStatus"],
+    approveStatus: json["approveStatus"],
+    verifyRemarks: json["verifyRemarks"],
+    approveRemarks: json["approveRemarks"],
   );
 
   Map<String, dynamic> toJson() => {
-    "ReqId": reqId,
-    "ReqNo": reqNo,
-    "ReqDate": reqDate,
-    "StaffId": staffId,
-    "Projectid": projectid,
-    "ReqType": reqType,
-    "LeaveReason": leaveReason,
-    "LFrdate": lFrdate,
-    "LTodate": lTodate,
-    "TotalLeave": totalLeave,
-    "PerReason": perReason,
-    "PFrdate": pFrdate,
-    "PTodate": pTodate,
-    "PFrTime": pFrTime,
-    "PToTime": pToTime,
-    "TotalPerHrs": totalPerHrs,
-    "UserId": userId,
-    "EntryMode": entryMode,
-    "DeviceName": deviceName,
-    "PTimeHrs": pTimeHrs,
-    "PTimeMins": pTimeMins,
+    "id": id,
+    "requisitionNo": requisitionNo,
+    "requisitionType": requisitionType,
+    "entryDate": entryDate,
+    "staffId": staffId,
+    "projectId": projectId,
+    "leaveReason": leaveReason,
+    "leaveFromDate": leaveFromDate,
+    "leaveToDate": leaveToDate,
+    "totalLeaveDays": totalLeaveDays,
+    "permissionReason": permissionReason,
+    "permissionFromDate": permissionFromDate,
+    "permissionToDate": permissionToDate,
+    "permissionFromTime": permissionFromTime,
+    "permissionToTime": permissionToTime,
+    "permissionTimeHrs": permissionTimeHrs,
+    "permissionTimeMins": permissionTimeMins,
+    "totalPermissionHours": totalPermissionHours,
+    "createdBy": createdBy,
+    "createdDt": createdDt,
+    "verifyStatus": verifyStatus,
+    "approveStatus": approveStatus,
+    "verifyRemarks": verifyRemarks,
+    "approveRemarks": approveRemarks,
   };
 }

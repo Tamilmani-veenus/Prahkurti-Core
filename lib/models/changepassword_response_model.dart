@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'dart:convert';
 
 ChangedPasswordResponse changedPasswordResponseFromJson(String str) =>
     ChangedPasswordResponse.fromJson(json.decode(str));

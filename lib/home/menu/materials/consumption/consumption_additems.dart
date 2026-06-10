@@ -29,75 +29,78 @@ class _Consumption_AddItemsState extends State<Consumption_AddItems> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Setmybackground,
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () async {
-            await consumption_controller.consum_itemlist_Save_DB(context);
-            consumption_controller.getConumTablesDatas();
-          },
-          label: Text("Done", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,),),
-          icon: Icon(Icons.library_add_check_outlined, color: Colors.white, size: RequestConstant.Heading_Font_SIZE, ),
-          backgroundColor: Theme.of(context).primaryColor,
-        ),
-        body:SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Column(
-            children: [
-              SizedBox(height: 40),
-              Container(
-                margin: EdgeInsets.only(left: 15, right: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Add Items",
-                      style: TextStyle(
-                          fontSize: RequestConstant.Heading_Font_SIZE,
-                          fontWeight: FontWeight.bold),
-                    ),
-
-                    Container(
-                      height: BaseUtitiles.getheightofPercentage(context, 5),
-                      width: BaseUtitiles.getWidthtofPercentage(context, 50),
-                      margin: EdgeInsets.only(left: 15),
-                      child: TextField(
-                        cursorColor: Theme.of(context).primaryColor,
-                        controller: editingController,
-                        decoration: InputDecoration(
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
-                          ),
-                          prefixIcon: const Icon(Icons.search,
-                            color: Colors.black,
-                          ),
-                          hintText: "Search..",
-                          hintStyle: TextStyle(color: Colors.black),
-                          isDense: true,
-                          // fillColor: Setmybackground,
-                          fillColor: Colors.white,
-                        ),
-                        onEditingComplete: () {
-                          FocusScope.of(context).unfocus();
-                          // if (onSearch != null) onSearch!(searchcontroller.text);
-                        },
-                        textInputAction: TextInputAction.search,
-                        onChanged: (value) {
-                          setState(() {
-                            consumption_controller.mainlist.value = BaseUtitiles.filterSearchResults_Consumptionitemlist(value, consumption_controller.Stock_List);
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              listDetails(),
-            ],
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+          backgroundColor: Setmybackground,
+          floatingActionButton: FloatingActionButton.extended(
+            onPressed: () async {
+              await consumption_controller.consum_itemlist_Save_DB(context);
+              consumption_controller.getConumTablesDatas();
+            },
+            label: Text("Done", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,),),
+            icon: Icon(Icons.library_add_check_outlined, color: Colors.white, size: RequestConstant.Heading_Font_SIZE, ),
+            backgroundColor: Theme.of(context).primaryColor,
           ),
-        )
+          body:SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Column(
+              children: [
+                SizedBox(height: 40),
+                Container(
+                  margin: EdgeInsets.only(left: 15, right: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Add Items",
+                        style: TextStyle(
+                            fontSize: RequestConstant.Heading_Font_SIZE,
+                            fontWeight: FontWeight.bold),
+                      ),
+
+                      Container(
+                        height: BaseUtitiles.getheightofPercentage(context, 5),
+                        width: BaseUtitiles.getWidthtofPercentage(context, 50),
+                        margin: EdgeInsets.only(left: 15),
+                        child: TextField(
+                          cursorColor: Theme.of(context).primaryColor,
+                          controller: editingController,
+                          decoration: InputDecoration(
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                            prefixIcon: const Icon(Icons.search,
+                              color: Colors.black,
+                            ),
+                            hintText: "Search..",
+                            hintStyle: TextStyle(color: Colors.black),
+                            isDense: true,
+                            // fillColor: Setmybackground,
+                            fillColor: Colors.white,
+                          ),
+                          onEditingComplete: () {
+                            FocusScope.of(context).unfocus();
+                            // if (onSearch != null) onSearch!(searchcontroller.text);
+                          },
+                          textInputAction: TextInputAction.search,
+                          onChanged: (value) {
+                            setState(() {
+                              consumption_controller.mainlist.value = BaseUtitiles.filterSearchResults_Consumptionitemlist(value, consumption_controller.Stock_List);
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                listDetails(),
+              ],
+            ),
+          )
+      ),
     );
   }
 

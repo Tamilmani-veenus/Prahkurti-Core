@@ -29,7 +29,7 @@ class _DailyWork_done_DPRLabour_ItemListScreenState extends State<DailyWork_done
   void initState() {
     dailyWrkDone_DPRLabour_Controller.screencheck=1;
     dailyWrkDone_DPR_Controller.TypeSubcontractorname.text=RequestConstant.SELECT;
-    dailyWrkDone_DPRLabour_Controller.saveButton=RequestConstant.SAVE.obs;
+    dailyWrkDone_DPRLabour_Controller.saveButton=RequestConstant.SUBMIT.obs;
 
     if(dailyWrkDone_DPRLabour_Controller.editCheck==1){
       dailyWrkDone_DPRLabour_Controller.ButtonChanges(dailyWrkDone_DPRLabour_Controller.dpr_EditListApiValue.value[0].workId, 0);
@@ -105,7 +105,7 @@ class _DailyWork_done_DPRLabour_ItemListScreenState extends State<DailyWork_done
                       borderRadius: BorderRadius.circular(30)),),
                 child: Text("SHOW"),
                 onPressed: () {
-                 dailyWrkDone_DPRLabour_Controller.getLab_ShowClickPopList(context);
+                 // dailyWrkDone_DPRLabour_Controller.getLab_ShowClickPopList(context);
                 },
               ),
             ),
