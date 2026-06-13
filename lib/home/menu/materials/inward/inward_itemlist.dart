@@ -1,8 +1,5 @@
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import '../../../../../app_theme/app_colors.dart';
 import '../../../../controller/inward_pending_controller.dart';
 import '../../../../controller/projectcontroller.dart';
@@ -12,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../utilities/image_view.dart';
 import '../../../../utilities/requestconstant.dart';
+import '../../../punch_in_out/Image_galleryScreen.dart';
 import '../../../punch_in_out/camera_screen.dart';
 
 class Inward_Itemlist extends StatefulWidget {
@@ -99,13 +97,18 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                           ),
                         ),
                         onTap: () async {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => CameraCapturePage(
-                                      fromScreen: "Inward",
-                                    )),
-                          );
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return const ImageGalleryPopup_Alert(imageUrl: "Inward");
+                              });
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (_) => CameraCapturePage(
+                          //             fromScreen: "Inward",
+                          //           )),
+                          // );
                         },
                       )),
                 listDetails(),
@@ -644,13 +647,18 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                     ),
                   ),
                   onTap: () async {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => CameraCapturePage(
-                                fromScreen: "Inward",
-                              )),
-                    );
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const ImageGalleryPopup_Alert(imageUrl: "Inward");
+                        });
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (_) => CameraCapturePage(
+                    //             fromScreen: "Inward",
+                    //           )),
+                    // );
                   },
                 );
               } else {
@@ -658,12 +666,17 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                   padding: EdgeInsets.only(left: 16.4, bottom: 24.r),
                   child: GestureDetector(
                     onTap: () async {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => CameraCapturePage(
-                                    fromScreen: "InwardAddButton",
-                                  )));
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return const ImageGalleryPopup_Alert(imageUrl: "InwardButton");
+                          });
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (_) => CameraCapturePage(
+                      //               fromScreen: "InwardAddButton",
+                      //             )));
                       // await getImage(ImageSource.camera);
                     },
                     child: CircleAvatar(
@@ -727,12 +740,17 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                     ),
                   ),
                   onTap: () async {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => CameraCapturePage(
-                                  fromScreen: "Inward",
-                                )));
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const ImageGalleryPopup_Alert(imageUrl: "Inward");
+                        });
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (_) => CameraCapturePage(
+                    //               fromScreen: "Inward",
+                    //             )));
                   },
                 );
               }
@@ -889,12 +907,17 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
       padding: EdgeInsets.only(left: 16.4, bottom: 24.r),
       child: GestureDetector(
         onTap: () async {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => CameraCapturePage(
-                        fromScreen: "InwardAddButton",
-                      )));
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const ImageGalleryPopup_Alert(imageUrl: "InwardButton");
+            });
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (_) => CameraCapturePage(
+          //               fromScreen: "InwardAddButton",
+          //             )));
           // await getImage(ImageSource.camera);
         },
         child: CircleAvatar(

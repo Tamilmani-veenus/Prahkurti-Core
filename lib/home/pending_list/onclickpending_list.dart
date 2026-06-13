@@ -31,6 +31,7 @@ import '../../controller/mrnrequest_preIndent_controller.dart';
 import '../../controller/preapproval_controller.dart';
 import '../../controller/requisitionslip_controller.dart';
 import '../../controller/requisitionslip_controller_new.dart';
+import '../../controller/sitevoucher_controller.dart';
 import '../../controller/transfer_acknowledgment_pending_controller.dart';
 import '../../controller/transferbw_site_controller.dart';
 import '../../utilities/apiconstant.dart';
@@ -18526,6 +18527,401 @@ class _BillBoqVerificationState extends State<BillBoqVerification> {
                                                           .value[index]
                                                           .preparedName
                                                           .toString(),
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                  ),
+                                                )),
+                                          ],
+                                        ),
+                                        SizedBox(height: 10),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          })),
+                  SizedBox(height: 20)
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class SiteVoucherApproval extends StatefulWidget {
+  SiteVoucherApproval(
+      {Key? key, required this.onclickPendingListData, required this.heading})
+      : super(key: key);
+  List<OnClickListResult> onclickPendingListData;
+  String heading;
+
+  @override
+  State<SiteVoucherApproval> createState() => _SiteVoucherApprovalState();
+}
+
+class _SiteVoucherApprovalState extends State<SiteVoucherApproval> {
+  TextEditingController editingController = TextEditingController();
+  PendingListController pendingListController =
+  Get.put(PendingListController());
+  SiteVoucher_Controller siteVoucher_Controller =
+  Get.put(SiteVoucher_Controller());
+
+
+  @override
+  void initState() {
+    pendingListController.pendingmainlist.value.clear();
+    pendingListController.pendingmainlist.value = widget.onclickPendingListData;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        await pendingListController.getPendingList();
+        return true;
+      },
+      child: SafeArea(
+        top: false,
+        child: Scaffold(
+          backgroundColor: Setmybackground,
+          body: GestureDetector(
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus &&
+                  currentFocus.focusedChild != null) {
+                FocusManager.instance.primaryFocus?.unfocus();
+              }
+            },
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(height: 50),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        widget.heading.toString(),
+                        style: TextStyle(
+                            fontSize: RequestConstant.Lable_Font_SIZE,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    //margin: EdgeInsets.only(left: 10, right: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Container(
+                            // width: BaseUtitiles.getWidthtofPercentage(context, 40),
+                            margin:
+                            EdgeInsets.only(top: 10, left: 15, bottom: 5),
+                            child: TextField(
+                              cursorColor: Theme.of(context).primaryColor,
+                              controller: editingController,
+                              decoration: InputDecoration(
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide.none,
+                                ),
+                                prefixIcon: const Icon(
+                                  Icons.search,
+                                  color: Colors.black,
+                                ),
+                                hintText: "search..",
+                                hintStyle: TextStyle(color: Colors.black),
+                                isDense: true,
+                                fillColor: Setmybackground,
+                              ),
+                              onEditingComplete: () {
+                                FocusScope.of(context).unfocus();
+                                // if (onSearch != null) onSearch!(searchcontroller.text);
+                              },
+                              textInputAction: TextInputAction.search,
+                              onChanged: (value) {
+                                setState(() {
+                                  pendingListController.mainlist.value =
+                                      BaseUtitiles
+                                          .filterSearchResults_PendingList(
+                                          value,
+                                          pendingListController
+                                              .pendingmainlist);
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                "Back",
+                                style:
+                                TextStyle(color: Colors.grey, fontSize: 18),
+                              )),
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                      margin: EdgeInsets.only(left: 6, right: 6),
+                      height: BaseUtitiles.getheightofPercentage(context, 80),
+                      child: ListView.builder(
+                          padding: EdgeInsets.zero,
+                          physics: BouncingScrollPhysics(),
+                          itemCount: pendingListController.mainlist.length,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () async {
+                                vocId = pendingListController.mainlist.value[index].id;
+                                await siteVoucher_Controller.SiteVoucher_List_EditApi(pendingListController.mainlist.value[index].id,context,"Approval");
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(left: 3, right: 3),
+                                child: Card(
+                                  elevation: 5,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                  child: Container(
+                                    margin: EdgeInsets.all(3),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.end,
+                                          children: <Widget>[
+                                            Container(
+                                              margin:
+                                              EdgeInsets.only(right: 15),
+                                              child: Text(
+                                                pendingListController
+                                                    .mainlist[index].siteVoucherNo
+                                                    .toString(),
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                    FontWeight.bold),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 5),
+                                        Row(
+                                          children: <Widget>[
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                  top: 8, left: 10),
+                                              child: Text(""),
+                                            ),
+                                            Expanded(
+                                                flex: 3,
+                                                child: Text(
+                                                  "Date",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                  ),
+                                                )),
+                                            Expanded(
+                                                flex: 8,
+                                                child: Text(
+                                                  pendingListController
+                                                      .mainlist[index]
+                                                      .vocdate
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                  ),
+                                                )),
+                                          ],
+                                        ),
+                                        SizedBox(height: 5),
+                                        Row(
+                                          children: <Widget>[
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                  top: 8, left: 10),
+                                              child: Text(""),
+                                            ),
+                                            Expanded(
+                                                flex: 3,
+                                                child: Text(
+                                                  "AccType",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                  ),
+                                                )),
+                                            Expanded(
+                                                flex: 8,
+                                                child: Text(
+                                                  pendingListController
+                                                      .mainlist[index]
+                                                      .accountTypeName
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                  ),
+                                                )),
+                                          ],
+                                        ),
+                                        SizedBox(height: 5),
+                                        Row(
+                                          children: <Widget>[
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                  top: 5, left: 10),
+                                              child: Text(""),
+                                            ),
+                                            Expanded(
+                                                flex: 3,
+                                                child: Text(
+                                                  "AccName",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                  ),
+                                                )),
+                                            Expanded(
+                                                flex: 8,
+                                                child: Text(
+                                                  pendingListController
+                                                      .mainlist[index].accountName
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                  ),
+                                                )),
+                                          ],
+                                        ),
+                                        SizedBox(height: 5),
+                                        Row(
+                                          children: <Widget>[
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                  top: 5, left: 10),
+                                              child: Text(""),
+                                            ),
+                                            Expanded(
+                                                flex: 3,
+                                                child: Text(
+                                                  "PayFor",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                  ),
+                                                )),
+                                            Expanded(
+                                                flex: 8,
+                                                child: Text(
+                                                  pendingListController
+                                                      .mainlist[index].payfor
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                  ),
+                                                )),
+                                          ],
+                                        ),
+                                        SizedBox(height: 5),
+                                        Row(
+                                          children: <Widget>[
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                  top: 5, left: 10),
+                                              child: Text(""),
+                                            ),
+                                            Expanded(
+                                                flex: 3,
+                                                child: Text(
+                                                  "PayMode",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                  ),
+                                                )),
+                                            Expanded(
+                                                flex: 8,
+                                                child: Text(
+                                                  pendingListController
+                                                      .mainlist[index].payMode
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                  ),
+                                                )),
+                                          ],
+                                        ),
+                                        SizedBox(height: 5),
+                                        Row(
+                                          children: <Widget>[
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                  top: 5, left: 10),
+                                              child: Text(""),
+                                            ),
+                                            Expanded(
+                                                flex: 3,
+                                                child: Text(
+                                                  "VocAmt",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                  ),
+                                                )),
+                                            Expanded(
+                                                flex: 8,
+                                                child: Text(
+                                                  pendingListController
+                                                      .mainlist[index].siteVoucherAmount
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                  ),
+                                                )),
+                                          ],
+                                        ),
+                                        SizedBox(height: 5),
+                                        Divider(thickness: 1),
+                                        Row(
+                                          children: <Widget>[
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                  top: 5, left: 10),
+                                              child: Text(""),
+                                            ),
+                                            Expanded(
+                                              flex: 3,
+                                              child: Text(
+                                                "Prepared By       ",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                            Expanded(
+                                                flex: 8,
+                                                child: Text(
+                                                  pendingListController
+                                                      .mainlist
+                                                      .value[index]
+                                                      .preparebyname
+                                                      .toString(),
                                                   style: TextStyle(
                                                     color: Colors.black,
                                                   ),

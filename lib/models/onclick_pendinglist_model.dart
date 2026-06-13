@@ -193,6 +193,15 @@ class OnClickListResult {
   String? entryNo;
   String? billStatus;
   String? billType;
+  String? siteVoucherNo;
+  String? vocdate;
+  String? accountName;
+  String? payMode;
+  String? accountTypeName;
+  double? siteVoucherAmount;
+  String? payfor;
+  double? advanceReqVoucherAmount;
+  String? advanceReqVoucherType;
 
   OnClickListResult({
     this.id,
@@ -351,7 +360,16 @@ class OnClickListResult {
     this.netPayAmount,
     this.entryNo,
     this.billType,
-    this.billStatus
+    this.billStatus,
+    this.siteVoucherNo,
+    this.vocdate,
+    this.accountName,
+    this.payMode,
+    this.accountTypeName,
+    this.siteVoucherAmount,
+    this.payfor,
+    this.advanceReqVoucherAmount,
+    this.advanceReqVoucherType,
   });
 
   factory OnClickListResult.fromJson(Map<String, dynamic> json) => OnClickListResult(
@@ -511,7 +529,16 @@ class OnClickListResult {
     netPayAmount: json["netPayAmount"],
     entryNo: json["entryNo"],
     billStatus: json["billStatus"],
-    billType: json["billType"]
+    billType: json["billType"],
+    siteVoucherNo: json["siteVoucherNo"],
+    vocdate: json["vocdate"],
+    accountName: json["accountName"],
+    payMode: json["payMode"],
+    accountTypeName: json["accountTypeName"],
+    siteVoucherAmount: json["SiteVoucherAmount"],
+    payfor: json["payfor"],
+    advanceReqVoucherAmount: json["advanceReqVoucherAmount"],
+    advanceReqVoucherType: json["advanceReqVoucherType"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -671,6 +698,16 @@ class OnClickListResult {
     "netPayAmount":netPayAmount,
     "entryNo": entryNo,
     "billStatus": billStatus,
-    "billType": billType
+    "billType": billType,
+    "siteVoucherNo": siteVoucherNo,
+    "vocdate": vocdate,
+    "accountName": accountName,
+    "payMode": payMode,
+    "accountTypeName": accountTypeName,
+    "SiteVoucherAmount": siteVoucherAmount,
+    "payfor": payfor,
+    "advanceReqVoucherType": advanceReqVoucherType,
+    "advanceReqVoucherAmount": advanceReqVoucherAmount,
+
   };
 }

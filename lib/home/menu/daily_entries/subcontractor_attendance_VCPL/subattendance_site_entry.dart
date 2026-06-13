@@ -22,6 +22,7 @@ import '../../../../utilities/requestconstant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../punch_in_out/Image_galleryScreen.dart';
 import '../../../punch_in_out/camera_screen.dart';
 
 class SubattendanceSiteEntry extends StatefulWidget {
@@ -598,14 +599,19 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                       Fluttertoast.showToast(
                                           msg: "No Work can't add Image");
                                     } else {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (_) => CameraCapturePage(
-                                                  fromScreen:
-                                                      "Subcontractor Attendance",
-                                                )),
-                                      );
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return const ImageGalleryPopup_Alert(imageUrl: "DLR");
+                                          });
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //       builder: (_) => CameraCapturePage(
+                                      //             fromScreen:
+                                      //                 "Subcontractor Attendance",
+                                      //           )),
+                                      // );
                                     }
                                   },
                                   child: Row(

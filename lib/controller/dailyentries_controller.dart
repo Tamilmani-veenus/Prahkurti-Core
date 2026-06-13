@@ -586,6 +586,9 @@ class DailyEntriesController extends GetxController {
   var gettingNetworkImages = <String>[].obs;
   List<int> imageIds = []; // store IDs for delete
 
+  RxInt pickedImageCount = 0.obs;
+
+
   /// Getting image.....
 
   Future<void> gettingImage() async {
