@@ -31,6 +31,8 @@ class SitevoucherSaveRequest {
   int? requisitionId;
   int? createdBy;
   String? createdDt;
+  String? verifyStatus;
+  String? approveStatus;
   List<AccountSiteVoucherSwPayment>? accountSiteVoucherSwPayments;
 
   SitevoucherSaveRequest({
@@ -56,6 +58,8 @@ class SitevoucherSaveRequest {
     this.requisitionId,
     this.createdBy,
     this.createdDt,
+    this.verifyStatus,
+    this.approveStatus,
     this.accountSiteVoucherSwPayments,
   });
 
@@ -82,6 +86,8 @@ class SitevoucherSaveRequest {
     requisitionId: json["requisitionId"],
     createdBy: json["createdBy"],
     createdDt: json["createdDt"],
+    verifyStatus: json["VerifyStatus"],
+    approveStatus: json["ApproveStatus"],
     accountSiteVoucherSwPayments: List<AccountSiteVoucherSwPayment>.from(json["accountSiteVoucherSWPayments"].map((x) => AccountSiteVoucherSwPayment.fromJson(x))),
   );
 
@@ -108,6 +114,8 @@ class SitevoucherSaveRequest {
     "requisitionId": requisitionId,
     "createdBy": createdBy,
     "createdDt": createdDt,
+    "VerifyStatus": verifyStatus,
+    "ApproveStatus": approveStatus,
     "accountSiteVoucherSWPayments": List<dynamic>.from(accountSiteVoucherSwPayments!.map((x) => x.toJson())),
   };
 }

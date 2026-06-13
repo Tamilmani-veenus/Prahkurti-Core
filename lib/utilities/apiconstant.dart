@@ -258,6 +258,8 @@ class ApiConstant{
   static String GETSTAFFREQAPPLIST = BASE_URL_CORE + "api/StaffRequisition/GetToBeApproved";
   static String GETSTORETRANSPENDINGVIEWLIST = BASE_URL_CORE + "api/StoreTransferPending/GetReqordDetailsById";
   static String GETBOQAPPROLIST = BASE_URL_CORE + "api/BOQRevised/GetBOQRevisedToBeApproved";
+  static String GETSITEVOUCHERAPPROLIST = BASE_URL_CORE + "api/SiteVoucher/GetAccountSiteVoucherToBeApproved";
+
 
   static String GETMRNREQUEST_PREINDENT_ENTRYLIST = BASE_URL_CORE + "api/SiteRequest/GetAllPreIndent";
   static String GET_MATERIALREQPREINDEDNT_EDIT_API = BASE_URL_CORE + "api/SiteRequest/GetPreIndentByID";

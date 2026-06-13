@@ -104,6 +104,8 @@ class DailyWrkDone_DPR_Controller extends GetxController {
   var imageFiles = <File>[].obs;
   var gettingNetworkImages = <String>[].obs;
   List<int> imageIds = [];
+  RxInt pickedImageCount = 0.obs;
+
 
 
   Future dpr_getItemList(int prid,int siteid,int subcontid,BuildContext context) async {

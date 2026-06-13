@@ -1282,6 +1282,12 @@ class PendingListController extends GetxController {
               MaterialPageRoute(builder: (context) => BOQRevisedApproval(
                   onclickPendingListData: onclickPendingListData,
                   heading: name)),
+            ): name == "SITE VOUCHER APPROVAL"
+                ? Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SiteVoucherApproval(
+                  onclickPendingListData: onclickPendingListData,
+                  heading: name)),
             )
                 : Navigator.push(context, MaterialPageRoute(
                 builder: (context) => OfficeVoucherApproval(

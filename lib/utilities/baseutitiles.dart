@@ -586,6 +586,37 @@ class BaseUtitiles {
     }
   }
 
+  static filterSearchResultsSiteVouchers(String value,list)  {
+    dummyListData.value.clear();
+    if (value.isNotEmpty) {
+      list.value.forEach((item) {
+        if (
+        item.siteVoucherNo.toString().toLowerCase().contains(value) ||
+            item.siteVoucherNo.toString().toUpperCase().contains(value) ||
+            item.projectName.toString().toLowerCase().contains(value) ||
+            item.projectName.toString().toUpperCase().contains(value) ||
+            item.siteVoucherDate.toString().toLowerCase().contains(value) ||
+            item.siteVoucherDate.toString().toUpperCase().contains(value) ||
+            item.accountName.toString().toLowerCase().contains(value) ||
+            item.accountName.toString().toUpperCase().contains(value) ||
+            item.accountTypeName.toString().toLowerCase().contains(value) ||
+            item.accountTypeName.toString().toUpperCase().contains(value) ||
+            item.siteVoucherAmount.toString().toLowerCase().contains(value) ||
+            item.siteVoucherAmount.toString().toUpperCase().contains(value) ||
+            item.createdName.toString().toLowerCase().contains(value) ||
+            item.createdName.toString().toUpperCase().contains(value))
+        {
+          dummyListData.value.add(item);
+        }
+      });
+      return  dummyListData.value;
+    }
+    else {
+      return  list;
+    }
+  }
+
+
   static filterSearchResults_PendingList(String value,list)  {
     dummyListData.value.clear();
     if (value.isNotEmpty) {

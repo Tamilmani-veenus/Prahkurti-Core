@@ -42,6 +42,8 @@ class DailyWrkDone_DPRNEW_Controller extends GetxController {
   double AddQty=0.0;
   RxList dprNew_mainList = [].obs;
   var imageFiles = <File>[].obs;
+  RxInt pickedImageCount = 0.obs;
+
   var gettingNetworkImages = <String>[].obs;
   List<int> imageIds = [];
   double currentQty=0.0;

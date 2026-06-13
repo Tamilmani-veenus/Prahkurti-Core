@@ -37,14 +37,14 @@ class Sitevoucher_provider{
 
   static Future<dynamic> SaveSitevoucherScreenEntryAPI(SitevoucherSaveRequest data, List<File> imagesPath, saveButton,id) async {
     try {
-      final url = saveButton == RequestConstant.RESUBMIT
+      final url = saveButton == RequestConstant.RESUBMIT || saveButton == RequestConstant.APPROVAL
           ? "${ApiConstant.PUT_SITEVOUCHER_UPDATE_API}?id=$id"
           : ApiConstant.SITEVOUCHER_SAVE;
 
       print('API url: ${url}');
 
       final request = http.MultipartRequest(
-        saveButton == RequestConstant.RESUBMIT ? 'PUT' : 'POST',
+        saveButton == RequestConstant.RESUBMIT || saveButton == RequestConstant.APPROVAL? 'PUT' : 'POST',
         Uri.parse(url),
       );
 
