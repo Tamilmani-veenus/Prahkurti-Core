@@ -10,7 +10,8 @@ import '../../../../utilities/baseutitiles.dart';
 import 'bill_generationdirect_entry.dart';
 
 class Bill_Generation_direct_Entrylist extends StatefulWidget {
-  const Bill_Generation_direct_Entrylist({Key? key}) : super(key: key);
+  final String heading;
+  const Bill_Generation_direct_Entrylist({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<Bill_Generation_direct_Entrylist> createState() =>
@@ -58,7 +59,7 @@ class _Subcont_NMR_EntryListScreenState_Site
             floatingActionButton: FloatingActionButton.extended(
               onPressed: (){
               billGenerationDirectController.saveButton.value = RequestConstant.SUBMIT;
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Bill_Generation_EntryScreen()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Bill_Generation_EntryScreen(heading: widget.heading,)));
               },
               label: Text("Add", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,),),
               icon: Icon(Icons.add, color: Colors.white, size: RequestConstant.Heading_Font_SIZE, ),
@@ -73,11 +74,13 @@ class _Subcont_NMR_EntryListScreenState_Site
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "Direct - Bill",
-                          style: TextStyle(
-                              fontSize: RequestConstant.Heading_Font_SIZE,
-                              fontWeight: FontWeight.bold),
+                        Expanded(
+                          child: Text(
+                            widget.heading,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Heading_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         TextButton(
                             onPressed: () {
@@ -93,133 +96,132 @@ class _Subcont_NMR_EntryListScreenState_Site
                   Container(
                     margin: EdgeInsets.only(top: 3),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Expanded(
-                          child: Container(
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(color: Colors.white70, width: 1),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 3),
-                                child: TextFormField(
-                                  readOnly: true,
-                                  controller: billGenerationDirectController.EntrylistFrDate,
-                                  cursorColor: Colors.black,
-                                  style: TextStyle(color: Colors.black),
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.zero,
-                                    border: InputBorder.none,
-                                    labelText: "From Date",
-                                    labelStyle: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: RequestConstant.Lable_Font_SIZE),
-                                    prefixIconConstraints:
-                                    BoxConstraints(minWidth: 0, minHeight: 0),
-                                    prefixIcon: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 8, horizontal: 8),
-                                        child: ConstIcons.date),
-                                  ),
-                                  onTap: () async {
-                                    billGenerationDirectController.bill_entryList.clear();
-                                    var Frdate = await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(1900),
-                                        lastDate: DateTime(2100),builder: (context, child) {
-                                      return Theme(data: Theme.of(context).copyWith(
-                                        colorScheme: ColorScheme.light(
-                                          primary: Theme.of(context).primaryColor, // header background color
-                                          onPrimary: Colors.white, // header text color
-                                          onSurface: Colors.black, // body text color
-                                        ),
-                                        textButtonTheme: TextButtonThemeData(
-                                          style: TextButton.styleFrom(
-                                            primary: Colors.black, // button text color
-                                          ),
+                        Container(
+                          width: BaseUtitiles.getWidthtofPercentage(context, 38),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(color: Colors.white70, width: 1),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 3,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 3),
+                              child: TextFormField(
+                                readOnly: true,
+                                controller: billGenerationDirectController.EntrylistFrDate,
+                                cursorColor: Colors.black,
+                                style: TextStyle(color: Colors.black),
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.zero,
+                                  border: InputBorder.none,
+                                  labelText: "From Date",
+                                  labelStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: RequestConstant.Lable_Font_SIZE),
+                                  prefixIconConstraints:
+                                  BoxConstraints(minWidth: 0, minHeight: 0),
+                                  prefixIcon: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 8, horizontal: 8),
+                                      child: ConstIcons.date),
+                                ),
+                                onTap: () async {
+                                  billGenerationDirectController.bill_entryList.clear();
+                                  var Frdate = await showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime(1900),
+                                      lastDate: DateTime.now(),builder: (context, child) {
+                                    return Theme(data: Theme.of(context).copyWith(
+                                      colorScheme: ColorScheme.light(
+                                        primary: Theme.of(context).primaryColor, // header background color
+                                        onPrimary: Colors.white, // header text color
+                                        onSurface: Colors.black, // body text color
+                                      ),
+                                      textButtonTheme: TextButtonThemeData(
+                                        style: TextButton.styleFrom(
+                                          primary: Colors.black, // button text color
                                         ),
                                       ),
-                                        child: child!,
-                                      );
-                                    });
-                                    billGenerationDirectController.EntrylistFrDate.text = Frdate.toString().substring(0, 10);
-                                  },
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Select Date';
-                                    }
-                                    return null;
-                                  },
-                                ),
+                                    ),
+                                      child: child!,
+                                    );
+                                  });
+                                  billGenerationDirectController.EntrylistFrDate.text = Frdate.toString().substring(0, 10);
+                                },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Select Date';
+                                  }
+                                  return null;
+                                },
                               ),
                             ),
                           ),
                         ),
-                        Expanded(
-                          child: Container(
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(color: Colors.white70, width: 1),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 3),
-                                child: TextFormField(
-                                  readOnly: true,
-                                  controller: billGenerationDirectController.EntrylistToDate,
-                                  cursorColor: Colors.black,
-                                  style: TextStyle(color: Colors.black),
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.zero,
-                                    border: InputBorder.none,
-                                    labelText: "ToDate",
-                                    labelStyle: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: RequestConstant.Lable_Font_SIZE),
-                                    prefixIconConstraints:
-                                    BoxConstraints(minWidth: 0, minHeight: 0),
-                                    prefixIcon: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 8, horizontal: 8),
-                                        child: ConstIcons.date),
-                                  ),
-                                  onTap: () async {
-                                    billGenerationDirectController.bill_entryList.clear();
-                                    var Todate = await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(1900),
-                                        lastDate: DateTime(2100),
-                                        builder: (context, child) {
-                                          return Theme(data: Theme.of(context).copyWith(
-                                            colorScheme: ColorScheme.light(
-                                              primary: Theme.of(context).primaryColor, // header background color
-                                              onPrimary: Colors.white, // header text color
-                                              onSurface: Colors.black, // body text color
-                                            ),
-                                            textButtonTheme: TextButtonThemeData(
-                                              style: TextButton.styleFrom(
-                                                primary: Colors.black, // button text color
-                                              ),
+                        Container(
+                          width: BaseUtitiles.getWidthtofPercentage(context, 38),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(color: Colors.white70, width: 1),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 3,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 3),
+                              child: TextFormField(
+                                readOnly: true,
+                                controller: billGenerationDirectController.EntrylistToDate,
+                                cursorColor: Colors.black,
+                                style: TextStyle(color: Colors.black),
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.zero,
+                                  border: InputBorder.none,
+                                  labelText: "ToDate",
+                                  labelStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: RequestConstant.Lable_Font_SIZE),
+                                  prefixIconConstraints:
+                                  BoxConstraints(minWidth: 0, minHeight: 0),
+                                  prefixIcon: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 8, horizontal: 8),
+                                      child: ConstIcons.date),
+                                ),
+                                onTap: () async {
+                                  billGenerationDirectController.bill_entryList.clear();
+                                  var Todate = await showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime(1900),
+                                      lastDate: DateTime(2100),
+                                      builder: (context, child) {
+                                        return Theme(data: Theme.of(context).copyWith(
+                                          colorScheme: ColorScheme.light(
+                                            primary: Theme.of(context).primaryColor, // header background color
+                                            onPrimary: Colors.white, // header text color
+                                            onSurface: Colors.black, // body text color
+                                          ),
+                                          textButtonTheme: TextButtonThemeData(
+                                            style: TextButton.styleFrom(
+                                              primary: Colors.black, // button text color
                                             ),
                                           ),
-                                            child: child!,
-                                          );
-                                        });
-                                    billGenerationDirectController.EntrylistToDate.text =
-                                        Todate.toString().substring(0, 10);
-                                  },
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Select Date';
-                                    }
-                                    return null;
-                                  },
-                                ),
+                                        ),
+                                          child: child!,
+                                        );
+                                      });
+                                  billGenerationDirectController.EntrylistToDate.text =
+                                      Todate.toString().substring(0, 10);
+                                },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Select Date';
+                                  }
+                                  return null;
+                                },
                               ),
                             ),
                           ),
@@ -230,6 +232,7 @@ class _Subcont_NMR_EntryListScreenState_Site
                                   primary: Theme.of(context).primaryColor),
                               onPressed: () async {
                                 setState(() {
+                                  editingController.text = "";
                                   billGenerationDirectController.DirectBill_EntryList();
                                 });
                               },
@@ -283,7 +286,7 @@ class _Subcont_NMR_EntryListScreenState_Site
                               textInputAction: TextInputAction.search,
                               onChanged: (value) {
                                 setState(() {
-                                   BaseUtitiles.filterSearchResults_billGenerationDirect(value, billGenerationDirectController.bill_entryList.value);
+                                  billGenerationDirectController.bill_entryList.value= BaseUtitiles.filterSearchResults_billGenerationDirect(value,billGenerationDirectController.main_entryList);
                                 });
                               },
                             ),
@@ -332,37 +335,42 @@ class _Subcont_NMR_EntryListScreenState_Site
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-
-
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
                                   children: [
                                     Row(
                                       children: [
-
                                         Container(
-                                          width: BaseUtitiles.getWidthtofPercentage(context, 50),
+                                          width: BaseUtitiles
+                                              .getWidthtofPercentage(
+                                              context, 50),
                                           child: Row(
                                             children: [
                                               Container(
-                                                  margin: EdgeInsets.only(left:5,right: 5),
-                                                  child: ConstIcons.list_date),
+                                                margin: EdgeInsets.only(
+                                                    left: 5, right: 3),
+                                                child: ConstIcons.list_date,
+                                              ),
                                               Text(
-                                                billGenerationDirectController.bill_entryList.value[index].workDate.toString(),
+                                                  billGenerationDirectController.bill_entryList.value[index].workDate.toString(),
                                                 style: TextStyle(
-                                                    color: Theme.of(context).primaryColor,
-                                                    fontWeight: FontWeight.bold),
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
+                                                    fontWeight:
+                                                    FontWeight.bold),
                                               ),
                                             ],
                                           ),
                                         )
                                       ],
                                     ),
-                                    Expanded(
-                                      flex: 1,
+                                    Container(
+                                      margin: EdgeInsets.only(right: 10),
                                       child: Text(
-                                        billGenerationDirectController.bill_entryList.value[index].workNo.toString(),
-                                        style: TextStyle(fontWeight: FontWeight.bold),
+                                          billGenerationDirectController.bill_entryList.value[index].workNo.toString(),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     )
                                   ],
@@ -498,6 +506,32 @@ class _Subcont_NMR_EntryListScreenState_Site
                                   ],
                                 ),
 
+                                SizedBox(height: 5),
+
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      margin: EdgeInsets.only(top: 2, left: 10),
+                                      child: Text(""),
+                                    ),
+                                    Expanded(
+                                        flex: 4,
+                                        child: Text(
+                                          "Preparedby",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,),
+                                        )),
+                                    Expanded(
+                                        flex: 8,
+                                        child: Text(
+                                          billGenerationDirectController.bill_entryList.value[index].createdName.toString(),
+                                          style: TextStyle(
+                                            color: Colors.black,),
+                                        )),
+                                  ],
+                                ),
+
                                 Divider(thickness: 1),
 
                                 Row(
@@ -509,7 +543,7 @@ class _Subcont_NMR_EntryListScreenState_Site
                                     Expanded(
                                         flex: 3,
                                         child: Text(
-                                          "Preparedby",
+                                          "Status",
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               color: Colors.black),
@@ -517,8 +551,8 @@ class _Subcont_NMR_EntryListScreenState_Site
                                     Expanded(
                                         flex: 5,
                                         child: Text(
-                                          billGenerationDirectController.bill_entryList.value[index].createdName.toString(),
-                                          style: TextStyle(color: Colors.black),
+                                          billGenerationDirectController.bill_entryList.value[index].status.toString(),
+                                          style: TextStyle(color: billGenerationDirectController.bill_entryList.value[index].status== "Approved"?Colors.green:Colors.black),
                                         )),
                                     Expanded(
                                         flex: 1,
@@ -532,121 +566,127 @@ class _Subcont_NMR_EntryListScreenState_Site
                                                         top: Radius.circular(25.0)),
                                                   ),
                                                   builder: (context) {
-                                                    return Container(
-                                                      margin: EdgeInsets.only(
-                                                        left: 15,
-                                                      ),
-                                                      height: BaseUtitiles
-                                                          .getheightofPercentage(
-                                                          context, 25),
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                        children: [
-                                                          Row(
-                                                            mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                            children: [
-                                                              Container(
-                                                                margin: EdgeInsets.only(
-                                                                    right: 10),
-                                                                child: Text(
-                                                                  billGenerationDirectController.bill_entryList.value[index].workNo.toString(),
-                                                                  style: TextStyle(
-                                                                      fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                      color: Theme.of(
-                                                                          context)
-                                                                          .primaryColor),
+                                                    return SafeArea(
+                                                      top: false,
+                                                      child: Container(
+                                                        margin: EdgeInsets.only(
+                                                          left: 15,
+                                                        ),
+                                                        height: BaseUtitiles
+                                                            .getheightofPercentage(
+                                                            context, 25),
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                          children: [
+                                                            Row(
+                                                              mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                              children: [
+                                                                Container(
+                                                                  margin: EdgeInsets.only(
+                                                                      right: 10),
+                                                                  child: Text(
+                                                                    billGenerationDirectController.bill_entryList.value[index].workNo.toString(),
+                                                                    style: TextStyle(
+                                                                        fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                        color: Theme.of(
+                                                                            context)
+                                                                            .primaryColor),
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                              IconButton(
-                                                                  onPressed: () {
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                  },
-                                                                  icon: ConstIcons.cancle)
-                                                            ],
-                                                          ),
+                                                                IconButton(
+                                                                    onPressed: () {
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                    },
+                                                                    icon: ConstIcons.cancle)
+                                                              ],
+                                                            ),
 
-                                                          InkWell(
-                                                              child: Row(
-                                                                children: [
-                                                                  Card(
-                                                                    color: Colors
-                                                                        .lightGreen,
-                                                                    child: Padding(
-                                                                      padding:
-                                                                      const EdgeInsets
-                                                                          .all(8),
-                                                                      child: Icon(
-                                                                        Icons.edit,
-                                                                        color: Colors
-                                                                            .white,
+                                                            InkWell(
+                                                                child: Row(
+                                                                  children: [
+                                                                    Card(
+                                                                      color: Colors
+                                                                          .lightGreen,
+                                                                      child: Padding(
+                                                                        padding:
+                                                                        const EdgeInsets
+                                                                            .all(8),
+                                                                        child: Icon(
+                                                                          Icons.edit,
+                                                                          color: Colors
+                                                                              .white,
+                                                                        ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                  SizedBox(width: 5),
-                                                                  Text(
-                                                                    "Edit",
-                                                                    style: TextStyle(
-                                                                        color:
-                                                                        Colors.grey,
-                                                                        fontSize: 15),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                              onTap: () async {
-                                                                billGenerationDirectController.billgen_itemlistTable_Delete();
-                                                                billGenerationDirectController.ItemGetTableListdata.clear();
-                                                                billGenerationDirectController.bill_editListApiDatas.value.clear();
-                                                                FocusScope.of(context).unfocus();
-                                                                await billGenerationDirectController.directBillEntryList_EditApi(billGenerationDirectController.bill_entryList.value[index].id,context,"ReSubmit");
+                                                                    SizedBox(width: 5),
+                                                                    Text(
+                                                                      "Edit",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                          Colors.grey,
+                                                                          fontSize: 15),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                                onTap: () async {
+                                                                  billGenerationDirectController.billgen_itemlistTable_Delete();
+                                                                  billGenerationDirectController.ItemGetTableListdata.clear();
+                                                                  billGenerationDirectController.bill_editListApiDatas.value.clear();
+                                                                  FocusScope.of(context).unfocus();
+                                                                  await billGenerationDirectController.directBillEntryList_EditApi(
+                                                                      billGenerationDirectController.bill_entryList.value[index].id,
+                                                                      widget.heading,
+                                                                      context,"ReSubmit",true);
 
-                                                              }),
+                                                                }),
 
-                                                          Container(
-                                                              margin: EdgeInsets.only(right: 20),
-                                                              child: Divider(thickness: 1)),
+                                                            Container(
+                                                                margin: EdgeInsets.only(right: 20),
+                                                                child: Divider(thickness: 1)),
 
-                                                          InkWell(
-                                                              child: Row(
-                                                                children: [
-                                                                  Card(
-                                                                    color: Colors.red,
-                                                                    child: Padding(
-                                                                      padding:
-                                                                      const EdgeInsets
-                                                                          .all(8),
-                                                                      child: Icon(
-                                                                        Icons
-                                                                            .delete_forever,
-                                                                        color: Colors
-                                                                            .white,
+                                                            InkWell(
+                                                                child: Row(
+                                                                  children: [
+                                                                    Card(
+                                                                      color: Colors.red,
+                                                                      child: Padding(
+                                                                        padding:
+                                                                        const EdgeInsets
+                                                                            .all(8),
+                                                                        child: Icon(
+                                                                          Icons
+                                                                              .delete_forever,
+                                                                          color: Colors
+                                                                              .white,
+                                                                        ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                  SizedBox(width: 5),
-                                                                  Text(
-                                                                    "Delete",
-                                                                    style: TextStyle(
-                                                                        color:
-                                                                        Colors.grey,
-                                                                        fontSize: 15),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                              onTap: () async {
-                                                                Navigator.pop(context);
-                                                                setState(() {
-                                                                  billGenerationDirectController.DeleteAlert(context,index,true);
-                                                                });
-                                                              }),
-                                                          SizedBox(height: 20)
-                                                        ],
+                                                                    SizedBox(width: 5),
+                                                                    Text(
+                                                                      "Delete",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                          Colors.grey,
+                                                                          fontSize: 15),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                                onTap: () async {
+                                                                  Navigator.pop(context);
+                                                                  setState(() {
+                                                                    billGenerationDirectController.DeleteAlert(context,index,true);
+                                                                  });
+                                                                }),
+                                                            SizedBox(height: 20)
+                                                          ],
+                                                        ),
                                                       ),
                                                     );
                                                   });

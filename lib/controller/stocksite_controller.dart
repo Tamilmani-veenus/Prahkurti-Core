@@ -6,11 +6,16 @@ import 'package:prahkurticore/models/getstockprojwise_model.dart';
 import '../controller/projectcontroller.dart';
 import '../controller/sitecontroller.dart';
 import '../home/stock_site/project_details_popup.dart';
+import '../models/materialwise_materialdropdown_model.dart';
 import '../provider/common_provider.dart';
 import '../provider/reports_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../utilities/baseutitiles.dart';
+import '../models/materialwise_subhead_dropdown_model.dart';
+import '../models/materialsubitem_dropdown_model.dart';
+
+
 
 
 // class HomeState{
@@ -72,12 +77,19 @@ class StockSiteController extends GetxController{
 
   /// ----- ProjectWise -----
 
-    Future getProjectWiseSubmatList(headId) async {
-      getmaterialSubdropDownvalue.value.clear();
+    Future getProjectWiseSubmatList(headId,{String? Url}) async {
+      getmaterialSubdropDownvalue.value=[];
       final value = await CommonProvider.materialWise_sub_HeadDropdown(headId);
       if (value != null ) {
         if(value.success == true) {
           getmaterialSubdropDownvalue.value = value.result!;
+          if(Url == "Report")
+          {
+            getmaterialSubdropDownvalue.value.insert(
+            0,
+              MatSubItemResult(id: 0, materialSubName: "--ALL--"),
+          );}
+
         }else {
           BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
         }
@@ -87,7 +99,7 @@ class StockSiteController extends GetxController{
       }
     }
 
-  Future getMaterialHeadReportList() async {
+  Future getMaterialHeadReportList({String? Url}) async {
     getmaterialHeadDropDownvalue.value.clear();
     final value = await CommonProvider.materialWise_HeadDropdown();
     if (value != null)
@@ -95,7 +107,12 @@ class StockSiteController extends GetxController{
       if(value.success == true)
         {
       getmaterialHeadDropDownvalue.value = value.result!;
-        }
+      if(Url == "Report") {
+        getmaterialHeadDropDownvalue.value.insert(
+          0,
+          Result(id: 0, materialHeadName: "--ALL--"),
+        );
+      } }
       else {
         BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
       }
@@ -159,7 +176,7 @@ class StockSiteController extends GetxController{
 
 
   Future getProjectwiseshow(type) async {
-    getStockList.clear();
+    getStockList.value=[];
 
       final value = await ReportsProvider().stockReportProvider(
         reportsController.selectedProjectId.value,
@@ -189,7 +206,7 @@ class StockSiteController extends GetxController{
   }
 
 
-  Future getProjectDetailisList(BuildContext context, String pName) async {
+  Future getProjectDetailList(BuildContext context, String pName) async {
     projectDetailsList.value.clear();
     final value = await ReportsProvider.getProject_Details_List(
         reportsController.selectedProjectId.value,
@@ -222,6 +239,10 @@ class StockSiteController extends GetxController{
     if (value != null ) {
       if(value.success == true) {
         getMaterialdropDownvalue.value = value.result!;
+        getMaterialdropDownvalue.value.insert(
+          0,
+          MaterialNameResult(id: 0, materialName: "--ALL--"),
+        );
       }
       else {
         BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
@@ -254,21 +275,6 @@ class StockSiteController extends GetxController{
     Subheadername.text=materiaDropdownName.value;
   }
 
-  Future getMaterialShowList() async {
-    materialWiseShowList.value.clear();
-    await ReportsProvider.getMaterialWise_Show_List(
-        loginController.user.value.userId!,
-        loginController.user.value.userType!,
-        matDropdowntId.value,
-        materialSubDropdowntId.value,matHeadDropdowntId.value
-    ).then((value)async{
-      if(value.isNotEmpty){
-        materialWiseShowList.value=value;
-        return materialWiseShowList.value;
-      } else {
-        Fluttertoast.showToast(msg: "No details found");
-      }
-    });
-  }
+
 
 }

@@ -23,7 +23,6 @@ class StaffController extends GetxController{
   final NetAmount=TextEditingController();
   final Amount=TextEditingController();
   final Remarks=TextEditingController();
-  int editcheck=0;
   int VocID=0;
   RxString type="Direct Payment/Office".obs;
   RxString Button=RequestConstant.SUBMIT.obs;

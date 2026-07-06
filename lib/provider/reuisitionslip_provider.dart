@@ -101,7 +101,7 @@ class RequisitionslipProvider{
   //----------Satff Name leave details Pending------------
   static Future getStaffLeaveInfo_Provider(int empId) async {
     var data = null;
-    await ApiManager.getAPICall("${ApiConstant.GETSTAFFLEAVECAL}?EmpId=$empId").then((value) {
+    await ApiManager.getAPICall("${"ApiConstant.GETSTAFFLEAVECAL"}?EmpId=$empId").then((value) {
       final res = staffLeaveDetailsFromJson(value);
       if (res != null) {
         data = res;

@@ -4,70 +4,90 @@
 
 import 'dart:convert';
 
-List<SitewisePaymentList> sitewisePaymentListFromJson(String str) => List<SitewisePaymentList>.from(json.decode(str).map((x) => SitewisePaymentList.fromJson(x)));
+SitewisePaymentList sitewisePaymentListFromJson(String str) => SitewisePaymentList.fromJson(json.decode(str));
 
-String sitewisePaymentListToJson(List<SitewisePaymentList> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String sitewisePaymentListToJson(SitewisePaymentList data) => json.encode(data.toJson());
 
 class SitewisePaymentList {
-  int? purOrdMasId;
-  String? orderNo;
-  String? siteName;
-  int? siteid;
-  String? project;
-  int? projectid;
-  double? netamt;
-  double? advanceAmt;
-  double? bAmount;
-  double? amount;
-  double? tdsper;
-  double? tdsamt;
-  double? totamt;
+  bool? success;
+  String? message;
+  List<Result>? result;
 
   SitewisePaymentList({
-  this.purOrdMasId,
-  this.orderNo,
-  this.siteName,
-  this.siteid,
-  this.project,
-  this.projectid,
-  this.netamt,
-  this.advanceAmt,
-  this.bAmount,
-  this.amount,
-  this.tdsper,
-  this.tdsamt,
-  this.totamt,
+    this.success,
+    this.message,
+    this.result,
   });
 
   factory SitewisePaymentList.fromJson(Map<String, dynamic> json) => SitewisePaymentList(
-    purOrdMasId: json["Pur_ord_mas_id"],
-    orderNo: json["PoNo"],
-    siteName: json["SiteName"],
-    siteid: json["siteid"],
-    project: json["Project"],
-    projectid: json["Projectid"],
-    netamt: json["netamt"],
-    advanceAmt: json["AdvanceAmt"],
-    bAmount: json["BAmount"],
-    amount: json["Amount"],
-    tdsper: json["tdsper"],
-    tdsamt: json["tdsamt"],
-    totamt: json["totamt"],
+    success: json["success"],
+    message: json["message"],
+    result: json["result"]==null?[]:List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "Pur_ord_mas_id": purOrdMasId,
-    "PoNo": orderNo,
-    "SiteName": siteName,
-    "siteid": siteid,
-    "Project": project,
-    "Projectid": projectid,
+    "success": success,
+    "message": message,
+    "result": result==null?[]:List<dynamic>.from(result!.map((x) => x.toJson())),
+  };
+}
+
+class Result {
+  int? purOrdMasId;
+  String? billNo;
+  String? poNo;
+  String? projectName;
+  int? projectId;
+  String? siteName;
+  int? siteId;
+  double? netamt;
+  double? billAmount;
+  double? advanceAmt;
+  double? balanceAmount;
+  double? amount;
+
+  Result({
+    this.purOrdMasId,
+    this.billNo,
+    this.poNo,
+    this.projectName,
+    this.projectId,
+    this.siteName,
+    this.siteId,
+    this.netamt,
+    this.billAmount,
+    this.advanceAmt,
+    this.balanceAmount,
+    this.amount,
+  });
+
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    purOrdMasId: json["purOrdMasId"],
+    billNo: json["billNo"],
+    poNo: json["PoNo"] ?? json["poNo"],
+    projectName: json["projectName"],
+    projectId: json["projectId"],
+    siteName: json["siteName"],
+    siteId: json["siteId"],
+    netamt: json["netamt"],
+    billAmount: json["billAmount"],
+    advanceAmt: json["advanceAmt"],
+    balanceAmount: json["balanceAmount"],
+    amount: json["amount"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "purOrdMasId": purOrdMasId,
+    "billNo": billNo,
+    "PoNo": poNo,
+    "projectName": projectName,
+    "projectId": projectId,
+    "siteName": siteName,
+    "siteId": siteId,
     "netamt": netamt,
-    "AdvanceAmt": advanceAmt,
-    "BAmount": bAmount,
-    "Amount": amount,
-    "tdsper": tdsper,
-    "tdsamt": tdsamt,
-    "totamt": totamt,
+    "billAmount": billAmount,
+    "advanceAmt": advanceAmt,
+    "balanceAmount": balanceAmount,
+    "amount": amount,
   };
 }

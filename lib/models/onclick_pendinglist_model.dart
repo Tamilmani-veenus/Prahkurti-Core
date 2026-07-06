@@ -19,12 +19,12 @@ class OnclickPendingListResponse {
 
   factory OnclickPendingListResponse.fromJson(Map<String, dynamic> json) {
     return OnclickPendingListResponse(
-      success: json["success"],
-      result: json["result"] is List
-          ? List<OnClickListResult>.from(
-          json["result"].map((x) => OnClickListResult.fromJson(x)))
-          : [],
-      message: json["message"]// 👈 if string like "No Records Found"
+        success: json["success"],
+        result: json["result"] is List
+            ? List<OnClickListResult>.from(
+            json["result"].map((x) => OnClickListResult.fromJson(x)))
+            : [],
+        message: json["message"]// 👈 if string like "No Records Found"
     );
   }
 
@@ -37,10 +37,16 @@ class OnclickPendingListResponse {
 
 class OnClickListResult {
   int? id;
+  int? workOrdMasId;
+  int? voucherId;
   int? ReqOrdMasId;
   int? PONo;
   int? PoId;
+  int? CompanyId;
   String? requisitionNo;
+  String? advanceReqVoucherDate;
+  String? advanceReqVoucherNo;
+  String? NMRLabourAttendanceNo;
   String? requisitionTypeValue;
   String? reqOrdNo;
   String? ReqOrdNo;
@@ -52,6 +58,8 @@ class OnClickListResult {
   String? ReqOrdDate;
   String? reqdueDate;
   String? ReqDueDate;
+  String? NMRLabourAttendanceDate1;
+  int? Labcount;
   String? requestType;
   int? projectId;
   int? siteId;
@@ -77,6 +85,7 @@ class OnClickListResult {
   String? accType;
   String? supplierName;
   String? suppliername;
+  String? SupplierContactNo;
   String? supplier;
   String? prepareby;
   String? preparedBy;
@@ -84,7 +93,7 @@ class OnClickListResult {
   String? preparedByName;
   String? Preparedbyname;
   String? preparebyname;
-  String? preparedByBOQ;
+  dynamic preparedByBOQ;
   String? preparedName;
   int? preparedByid;
   double? netAmt;
@@ -202,14 +211,39 @@ class OnClickListResult {
   String? payfor;
   double? advanceReqVoucherAmount;
   String? advanceReqVoucherType;
+  int? Id;
+  String? punchNo;
+  int? EmployeeId;
+  String? punchInLoc;
+  String? punchInDate;
+  String? inTime;
+  String? punchOutLoc;
+  String? punchOutDate;
+  String? outTime;
+  String? toDayTask;
+  String? tomorrowTask;
+  String? remarks;
+  String? EntryType;
+  String? status;
+  String? inNAPRemarks;
+  String? outNAPRemarks;
+  String? designationName;
+  String? onDutyRemarks;
 
   OnClickListResult({
     this.id,
+    this.workOrdMasId,
+    this.voucherId,
     this.ReqOrdMasId,
     this.PONo,
     this.PoId,
     this.requisitionNo,
+    this.advanceReqVoucherDate,
+    this.advanceReqVoucherNo,
+    this.NMRLabourAttendanceNo,
     this.requisitionTypeValue,
+    this.NMRLabourAttendanceDate1,
+    this.Labcount,
     this.reqOrdNo,
     this.ReqOrdNo,
     this.reviseNo,
@@ -246,6 +280,7 @@ class OnClickListResult {
     this.accType,
     this.supplierName,
     this.suppliername,
+    this.SupplierContactNo,
     this.supplier,
     this.prepareby,
     this.preparedBy,
@@ -301,6 +336,7 @@ class OnClickListResult {
     this.dcNo,
     this.vehicleno,
     this.vehicleName,
+    this.CompanyId,
     this.staffName,
     this.StaffName,
     this.staffId,
@@ -370,19 +406,44 @@ class OnClickListResult {
     this.payfor,
     this.advanceReqVoucherAmount,
     this.advanceReqVoucherType,
+    this.Id,
+    this.punchNo,
+    this.EmployeeId,
+    this.punchInLoc,
+    this.punchInDate,
+    this.inTime,
+    this.punchOutLoc,
+    this.punchOutDate,
+    this.outTime,
+    this.toDayTask,
+    this.tomorrowTask,
+    this.remarks,
+    this.EntryType,
+    this.status,
+    this.inNAPRemarks,
+    this.outNAPRemarks,
+    this.designationName,
+    this.onDutyRemarks,
   });
 
   factory OnClickListResult.fromJson(Map<String, dynamic> json) => OnClickListResult(
+    voucherId: json["voucherId"],
+    workOrdMasId: json["WorkOrdMasId"],
     id: json["id"],
     ReqOrdMasId: json["ReqOrdMasId"],
     PONo: json["PONO"],
     PoId: json["PoId"],
     reqOrdNo: json["reqOrdNo"],
     requisitionNo: json["requisitionNo"],
+    advanceReqVoucherDate: json["advanceReqVoucherDate"],
+    advanceReqVoucherNo: json["advanceReqVoucherNo"],
+    NMRLabourAttendanceNo: json["NMRLabourAttendanceNo"],
     requisitionTypeValue: json["requisitionTypeValue"],
+    NMRLabourAttendanceDate1: json["NMRLabourAttendanceDate1"],
+    Labcount: json["Labcount"],
     ReqOrdNo: json["ReqOrdNo"],
-      reviseNo: json["reviseNo"],
-      reviseDate: json["reviseDate"],
+    reviseNo: json["reviseNo"],
+    reviseDate: json["reviseDate"],
     labourAttendanceNo: json["LabourAttendanceNo"],
     labourAttendanceDate: json["LabourAttendanceDate"],
     reqOrdDate: json["reqOrdDate"],
@@ -391,7 +452,7 @@ class OnClickListResult {
     ReqDueDate: json["ReqdueDate"],
     requestType: json["requestType"],
     projectId: json["projectID"],
-    ProjectID:json["ProjectID"],
+    ProjectID:json["ProjectID"] ?? json["projectid"],
     Projectid:json["Projectid"],
     siteId: json["siteID"],
     fromProjectName: json["fromProjectName"],
@@ -416,17 +477,18 @@ class OnClickListResult {
     accType: json["Acc_type"],
     supplierName: json["SupplierName"],
     suppliername: json["supplierName"],
+    SupplierContactNo: json["SupplierContactNo"],
     supplier: json["supplier"],
     preparedBy: json["PreparedBy"],
-    preparedby: json["Preparedby"],
+    preparedby: json["Preparedby"] ?? json["PreparedByName"],
     preparedByid: json["PreparedById"],
     Preparedbyname: json["Preparedbyname"],
     preparedName: json["preparedByName"],
     prepareby: json["preparedby"],
     appRemarks: json["appRemarks"],
     preparedByName: json["Prepared_by"],
-      preparebyname: json["PreparedByName"],
-      preparedByBOQ: json["preparedBy"],
+    preparebyname: json["PreparedByName"],
+    preparedByBOQ: json["preparedBy"],
     netAmt: json["NetAmt"],
     netAmount: json["NetAmount"],
     frProjectName: json["FrProjectName"],
@@ -440,12 +502,12 @@ class OnClickListResult {
     SubcontName: json["subcontractorName"],
     subContractor: json["subContractorName"],
     totNos: json["TotNos"],
-    totAmt: json["TotNos"],
-    Payfor: json["Payfor"],
+    totAmt: json["TotAmt"],
+    Payfor: json["Payfor"] ?? json["payFor"],
     ProjectId: json["ProjectId"],
     projId: json["projectId"],
     SiteId: json["SiteId"],
-    SiteID: json["SiteID"],
+    SiteID: json["SiteID"] ?? json["siteid"],
     VerifiedBy: json["VerifiedBy"],
     PreapprovedBy: json["PreapprovedBy"],
     potype: json["PoType"],
@@ -470,6 +532,7 @@ class OnClickListResult {
     dcNo: json["dcNo"],
     vehicleno: json["vehicleno"],
     vehicleName: json["vehicleName"],
+    CompanyId: json["CompanyId"],
     entryType: json["entryType"],
     staffName: json["StaffName"],
     StaffName: json["staffName"],
@@ -496,9 +559,9 @@ class OnClickListResult {
     totalPermissionHours: json["totalPermissionHours"],
     employeeName: json["EmployeeName"],
     empName: json["employeeName"],
-    PurchaseOrdDate: json["PurchaseOrdDate"],
-    purchaseOrdNo: json["PurchaseOrdNo"],
-    inwType: json["inw_type"],
+    PurchaseOrdDate: json["PurchaseOrdDate"] ?? json["WorkOrdDate"],
+    purchaseOrdNo: json["PurchaseOrdNo"] ?? json["WorkOrdNo"],
+    inwType: json["inw_type"] ?? json["inwType"],
     entryDate: json["entryDate"],
     entryDateMobile: json["entryDateMobile"],
     approveByName: json["ApproveByName"],
@@ -517,12 +580,12 @@ class OnClickListResult {
     SubcontractName: json["subcontractName"],
     entryName: json["entryName"],
     verifiedBy: json["verifedName"],
-      materialReqOrdMasId: json["materialReqOrdMasId"],
-      reqDueDate: json["reqDueDate"],
-      qCount: json["qCount"],
-      createdBy: json["createdBy"],
-      employeeId: json["employeeId"],
-      quoteRemarks: json["quoteRemarks"],
+    materialReqOrdMasId: json["materialReqOrdMasId"],
+    reqDueDate: json["reqDueDate"],
+    qCount: json["qCount"],
+    createdBy: json["createdBy"],
+    employeeId: json["employeeId"],
+    quoteRemarks: json["quoteRemarks"],
     workNo: json["workNo"],
     workDate: json["workDate"],
     workId: json["workId"],
@@ -539,15 +602,39 @@ class OnClickListResult {
     payfor: json["payfor"],
     advanceReqVoucherAmount: json["advanceReqVoucherAmount"],
     advanceReqVoucherType: json["advanceReqVoucherType"],
+    Id: json["Id"],
+    punchNo: json["PunchNo"],
+    EmployeeId: json["EmployeeId"], punchInLoc: json["PunchInLoc"],
+    punchInDate: json["PunchInDate"],
+    inTime: json["InTime"],
+    punchOutLoc: json["PunchOutLoc"],
+    punchOutDate: json["PunchOutDate"],
+    outTime: json["OutTime"],
+    toDayTask: json["ToDayTask"],
+    tomorrowTask: json["TomorrowTask"],
+    remarks: json["Remarks"],
+    EntryType: json["EntryType"],
+    status: json["Status"],
+    inNAPRemarks: json["InNAPRemarks"],
+    outNAPRemarks: json["OutNAPRemarks"],
+    onDutyRemarks: json["OnDutyRemarks"],
+    designationName: json["DesignationName"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
+    "voucherId": voucherId,
+    "WorkOrdMasId": workOrdMasId,
     "ReqOrdMasId": ReqOrdMasId,
     "PONO": PONo,
     "PoId": PoId,
     "requisitionNo": requisitionNo,
+    "advanceReqVoucherDate": advanceReqVoucherDate,
+    "advanceReqVoucherNo": advanceReqVoucherNo,
+    "NMRLabourAttendanceNo": NMRLabourAttendanceNo,
     "requisitionTypeValue": requisitionTypeValue,
+    "NMRLabourAttendanceDate1": NMRLabourAttendanceDate1,
+    "Labcount": Labcount,
     "reqOrdNo": reqOrdNo,
     "ReqOrdNo": ReqOrdNo,
     "reviseNo": reviseNo,
@@ -591,6 +678,7 @@ class OnClickListResult {
     "Acc_type": accType,
     "SupplierName": supplierName,
     "supplierName": suppliername,
+    "SupplierContactNo": SupplierContactNo,
     "supplier": supplier,
     "PreparedBy": preparedBy,
     "Preparedby": preparedby,
@@ -614,7 +702,7 @@ class OnClickListResult {
     "subcontractorName": SubcontName,
     "subContractorName": subContractor,
     "TotNos": totNos,
-    "TotNos": totAmt,
+    "TotAmt": totAmt,
     "Payfor": Payfor,
     "ProjectId": ProjectId,
     "SiteId": SiteId,
@@ -638,6 +726,7 @@ class OnClickListResult {
     "dcNo": dcNo,
     "vehicleno": vehicleno,
     "vehicleName": vehicleName,
+    "CompanyId": CompanyId,
     "entryType": entryType,
     "requisitionType": requisitionType,
     "StaffName":staffName,
@@ -708,6 +797,23 @@ class OnClickListResult {
     "payfor": payfor,
     "advanceReqVoucherType": advanceReqVoucherType,
     "advanceReqVoucherAmount": advanceReqVoucherAmount,
-
+    "Id": Id,
+    "PunchNo": punchNo,
+    "EmployeeId": employeeId,
+    "PunchInLoc": punchInLoc,
+    "PunchInDate": punchInDate,
+    "InTime": inTime,
+    "PunchOutLoc": punchOutLoc,
+    "PunchOutDate": punchOutDate,
+    "OutTime": outTime,
+    "ToDayTask": toDayTask,
+    "TomorrowTask": tomorrowTask,
+    "Remarks": remarks,
+    "EntryType": EntryType,
+    "Status": status,
+    "InNAPRemarks": inNAPRemarks,
+    "OutNAPRemarks": outNAPRemarks,
+    "OnDutyRemarks": onDutyRemarks,
+    "DesignationName": designationName,
   };
 }

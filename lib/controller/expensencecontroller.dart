@@ -77,20 +77,20 @@ class ExpensesController extends GetxController {
     return totalamtcontroller.text;
   }
 
-  Future getSubcontractor_ExpensesList() async {
-    await ExpensesProvider.getSubcontractorOs_Expenses_reportList(
-        companyController.selectedCompanyId.value)
-        .then((value) async {
-      if (value != null && value.length > 0) {
-        subcontractorOSExpensesList.value = value;
-        totalSubAmt();
-        update();
-        return subcontractorOSExpensesList.value;
-      }else{
-        BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
-      }
-    });
-  }
+  // Future getSubcontractor_ExpensesList() async {
+  //   await ExpensesProvider.getSubcontractorOs_Expenses_reportList(
+  //       companyController.selectedCompanyId.value)
+  //       .then((value) async {
+  //     if (value != null && value.length > 0) {
+  //       subcontractorOSExpensesList.value = value;
+  //       totalSubAmt();
+  //       update();
+  //       return subcontractorOSExpensesList.value;
+  //     }else{
+  //       BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+  //     }
+  //   });
+  // }
 
   final totalamtSubcontcontroller = TextEditingController();
 

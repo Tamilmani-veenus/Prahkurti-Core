@@ -5,29 +5,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../app_theme/app_colors.dart';
 import '../../constants/storage_constant.dart';
-import '../../controller/auto_yrwise_no_controller.dart';
-import '../../controller/comman_controller.dart';
-import '../../controller/companycontroller.dart';
-import '../../controller/dashboard_controller.dart';
 import '../../controller/logincontroller.dart';
 import '../../controller/menu_controller.dart';
-import '../../controller/pendinglistcontroller.dart';
-import '../../controller/projectcontroller.dart';
 import '../../controller/punch_in_controller.dart';
-import '../../controller/requisitionslip_controller.dart';
 import '../../controller/site_location_controller.dart';
-import '../../controller/stocksite_controller.dart';
-import '../../controller/subcontcontroller.dart';
 import '../../home/account_settings/account_setting.dart';
-import '../../home/dashboard/button_widget.dart';
-import '../../home/dashboard/site_locations_view.dart';
-import '../../home/punch_in_out/punch_in.dart';
-import '../../home/punch_in_out/punch_out.dart';
 import '../../login/animation_signinpage/Animations/FadeAnimation.dart';
 import '../../login/animation_signinpage/signin_page.dart';
-import '../../login/animation_signinpage/welcomepage.dart';
-import '../../provider/daily_wrkdone_dprNew_provider.dart';
-import '../../signalr_service.dart';
 import '../../utilities/baseutitiles.dart';
 import '../../utilities/requestconstant.dart';
 import '../menus/main_menuslist.dart';
@@ -237,7 +221,7 @@ class HomeScreenOtherUser extends StatefulWidget {
 class _HomeScreenOtherUserState extends State<HomeScreenOtherUser> {
   LoginController loginController = Get.put(LoginController());
   SiteLocationController siteLocationController = Get.put(SiteLocationController());
-  // PunchInController punchInController = Get.put(PunchInController());
+  PunchInController punchInController = Get.put(PunchInController());
 
   Future<bool> showExitPopup(BuildContext context) async {
     return await showDialog(
@@ -353,7 +337,7 @@ class _HomeScreenOtherUserState extends State<HomeScreenOtherUser> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  const SizedBox(height: 150),
+                  const SizedBox(height: 80),
                   Column(
                     children: [
                       FadeAnimation(1.2,
@@ -404,24 +388,6 @@ class _HomeScreenOtherUserState extends State<HomeScreenOtherUser> {
                           const SizedBox(height: 20,),
                         ],
                       )),
-                      // Text(
-                      //   SignalRService().isSignalRConnected()
-                      //       ? "Connected"
-                      //       : "Disconnected",
-                      // ),
-                      //
-                      // ElevatedButton(
-                      //   onPressed: () {
-                      //     SignalRService().startLocalMaintenanceTest();
-                      //   },
-                      //   child:Text("Start Maintenance Test"),
-                      // ),
-                      // ElevatedButton(
-                      //   onPressed: () {
-                      //     SignalRService().stopLocalMaintenanceTest();
-                      //   },
-                      //   child:Text("stop Maintenance Test"),
-                      // ),
 
                           // Obx(() {
                           //   return punchInController.punchTypeList.isNotEmpty

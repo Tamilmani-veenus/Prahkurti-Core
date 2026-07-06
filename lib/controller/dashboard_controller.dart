@@ -16,14 +16,14 @@ class Dashboard_Controller extends GetxController {
 
   Future DirectBill_EntryList() async {
     main_List.value.clear();
-    await Dashboard_Provider.getDashboardAPI_List(loginController.user.value.userType.toString()).then((value) async {
-      if (value != null && value.length > 0) {
-        main_List.value = value;
-        return main_List.value;
-      } else {
-        BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
-      }
-    });
+    // await Dashboard_Provider.getDashboardAPI_List(loginController.user.value.userType.toString()).then((value) async {
+    //   if (value != null && value.length > 0) {
+    //     main_List.value = value;
+    //     return main_List.value;
+    //   } else {
+    //     BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+    //   }
+    // });
   }
 
 

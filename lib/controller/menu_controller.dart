@@ -21,6 +21,7 @@ import '../home/menu/accounts/staff_voucher/staff_voucher_entrylist.dart';
 import '../home/menu/daily_entries/advancereques_voucher_new/advance_req_entrylist_new.dart';
 import '../home/menu/daily_entries/bill_generation/bill_generation_boq_entrylist.dart';
 import '../home/menu/daily_entries/bill_generation_direct/bill_generation_entrylist.dart';
+import '../home/menu/daily_entries/company_nmr_attendance/company_nmr_entrylist.dart';
 import '../home/menu/daily_entries/company_nmr_attendance/company_nmr_main.dart';
 import '../home/menu/daily_entries/daily_wrk_done_dpr(labour)/daily_wrkdone_dpr_labour.dart';
 import '../home/menu/daily_entries/daily_wrk_done_dpr(new)/daily_wrkdone_dpr_entrylistnew.dart';
@@ -42,6 +43,7 @@ import '../models/report_list_model.dart';
 import '../provider/menu_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../utilities/apiconstant.dart';
 import '../utilities/baseutitiles.dart';
 import 'advance_reqvoucher_new_controller.dart';
 import 'boqrevised_controller.dart';
@@ -183,21 +185,53 @@ class Menu_Controller extends GetxController {
   }
 
 
- MaterialScreen(String value, BuildContext context) {
+ MaterialScreen(String value,String MenuName, BuildContext context) async {
     if (value == "MRN Request (Indent)") {
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => MRN_RequestIndent_Entrylist()));
+      if (!AppClient.isAnusamm) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MRN_RequestIndent_Entrylist(heading: MenuName),
+          ),
+        );
+        return;
+      }
 
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => MRN_Request_Indent(0)),
-      // );
+      if (loginController.user.value.userType == "A" ||
+          loginController.user.value.userType == "O") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MRN_RequestIndent_Entrylist(heading: MenuName),
+          ),
+        );
+        return;
+      }
+
+      await punchInController.getNetworkTime();
+
+      if (punchInController.dayName == "Tuesday" ||
+          punchInController.dayName == "Wednesday") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MRN_RequestIndent_Entrylist(heading: MenuName),
+          ),
+        );
+      } else {
+        BaseUtitiles.showToast(
+          "You can't save this record on this date. It is only allowed on Tuesday and Wednesday.",
+        );
+      }
+      // Navigator.of(context).push(MaterialPageRoute(builder: (context) => MRN_RequestIndent_Entrylist()));
+
 
     }
     else if (value == "Site Request (Issue Slip)") {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => MRNRequest_PreIndent_List()),);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => MRNRequest_PreIndent_List(heading: MenuName,)),);
     }
     else if (value == "Inward") {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Inward_ListScreen()),);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Inward_ListScreen(heading: MenuName,)),);
 
       // Navigator.push(
       //   context,
@@ -207,26 +241,25 @@ class Menu_Controller extends GetxController {
     } else if (value == "Transfer Between Projects") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) =>  TransferBtweenProjects_Entrylist()),
+        MaterialPageRoute(builder: (context) =>  TransferBtweenProjects_Entrylist(heading: MenuName)),
       );
       // Navigator.push(
       //   context,
-      //   MaterialPageRoute(builder: (context) => Transfer_Between_Projects(0)),
-      // );
+      //   MaterialPageRoute(builder: (context) => Transfer_Between_Projects(0)),      // );
     } else if (value == "Transfer Between Sites") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => TransferBetweenSites_Entrylist()),
+        MaterialPageRoute(builder: (context) => TransferBetweenSites_Entrylist(heading: MenuName,)),
       );
       // Navigator.push(
       //   context,
       //   MaterialPageRoute(builder: (context) => Transfer_Between_Sites(0)),
       // );
     }else if(value == "Material Transfer Request"){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => MatTransReqList()),);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => MatTransReqList(heading: MenuName,)),);
     }
     else if (value == "Consumption") {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Consumption_List()),);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Consumption_List(heading: MenuName,)),);
 
       // Navigator.push(
       //   context,
@@ -236,29 +269,29 @@ class Menu_Controller extends GetxController {
     }
   }
 
-  NavigateScreen(String value, BuildContext context) async {
+  NavigateScreen(String value,String MenuName, BuildContext context) async {
     if (value == "SubContractor Attendance") {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => SubAttendanceSiteEntryList()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => SubAttendanceSiteEntryList(heading: MenuName)));
 
     }
     else if(value=="Company NMR Attendance"){
-      Navigator.push(context, MaterialPageRoute(builder: (context) =>  CompanyNmrMain(0)),);
+      Navigator.push(context, MaterialPageRoute(builder: (context) =>  Company_nmr_entrylist(heading: MenuName)),);
     }
 
     else if (value == "SubCont NMR Wkly Bill - Generation") {
       Navigator.push(
         context, MaterialPageRoute(
-            builder: (context) => Subcont_NMR_EntryListScreen_Site()),
+            builder: (context) => Subcont_NMR_EntryListScreen_Site(heading: MenuName)),
       );
     } else if (value == "Daily Work Done (DPR)") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => DailyWork_done_DPR_EntryList()),
+        MaterialPageRoute(builder: (context) => DailyWork_done_DPR_EntryList(heading: MenuName,)),
       );
     } else if (value == "Daily Work Done [DPR New]") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => DailyWork_done_DPR_EntryListNew()),
+        MaterialPageRoute(builder: (context) => DailyWork_done_DPR_EntryListNew(heading: MenuName,)),
       );
     }
 
@@ -271,7 +304,7 @@ class Menu_Controller extends GetxController {
     else if (value == "Bill Generation") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Bill_Generation_Boq_Entrylist()),
+        MaterialPageRoute(builder: (context) => Bill_Generation_Boq_Entrylist(heading: MenuName,)),
       );
 
     }
@@ -279,51 +312,50 @@ class Menu_Controller extends GetxController {
     else if (value == "Bill Generation - Direct") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Bill_Generation_direct_Entrylist()),
+        MaterialPageRoute(builder: (context) => Bill_Generation_direct_Entrylist(heading: MenuName,)),
       );
 
     } else if (value == "Advance Requisition Voucher") {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => AdvReq_Voucher_EntryList_new()),
+      Navigator.push(context, MaterialPageRoute(builder: (context) => AdvReq_Voucher_EntryList_new(heading: MenuName)),
       );
     }
   }
 
-  AccountsScreen(String value, BuildContext context) {
+  AccountsScreen(String value,String MenuName, BuildContext context) {
     if (value == "Site Voucher") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => SiteVoucher_EntryListNew()),
+        MaterialPageRoute(builder: (context) => SiteVoucher_EntryListNew(heading: MenuName,)),
       );
     } else if (value == "Staff Voucher") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Staff_Voucher_EntryListScreen()),
+        MaterialPageRoute(builder: (context) => Staff_Voucher_EntryListScreen(heading: MenuName,)),
       );
     } else if (value == "Cash Book/Staff") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Case_Book_Staff()),
+        MaterialPageRoute(builder: (context) => Case_Book_Staff(heading: MenuName)),
       );
     }
     else if (value == "Cash Book/Site") {
       Navigator.push(
-        // context, MaterialPageRoute(builder: (context) => Case_Book_Site()),
-        context, MaterialPageRoute(builder: (context) => CashBook_Site()),
+        context, MaterialPageRoute(builder: (context) => CashBook_Site(heading: MenuName,)),
       );
     }
   }
 
-  MainmenuScreen(String value, BuildContext context) {
+  MainmenuScreen(String value, String MenuName,BuildContext context) {
     if (value == "BOQ - Revised") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Boq_Revised_EntryList()),
+        MaterialPageRoute(builder: (context) => Boq_Revised_EntryList(heading: MenuName,)),
       );
     }
   }
-  PayrollScreen(String value, BuildContext context) {
+  PayrollScreen(String value, String MenuName, BuildContext context) {
     if (value == "Staff L & P Slip") {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Requisitionslip_EntryList()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Requisitionslip_EntryList(heading: MenuName,)));
     }
   }
 }

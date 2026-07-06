@@ -66,7 +66,7 @@ class TextInputFieldState extends State<TextInputField> {
           padding: EdgeInsets.only(top: 4.r),
           child: SizedBox(
             child: TextFormField(
-              autovalidateMode: AutovalidateMode.onUserInteraction,
+              autovalidateMode: AutovalidateMode.always,
               onTap: widget.onTap,
               autocorrect: true,
               initialValue: widget.initialValue,

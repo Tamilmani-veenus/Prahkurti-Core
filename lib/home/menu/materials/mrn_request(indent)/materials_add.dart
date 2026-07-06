@@ -20,7 +20,6 @@ class _Materials_AddState extends State<Materials_Add> {
   final ProjectController projectController = Get.put(ProjectController());
   final SiteController siteController = Get.put(SiteController());
   final MRN_Request_Controller mrn_request_controller = Get.put(MRN_Request_Controller());
-  String datas = "";
 
 
   @override

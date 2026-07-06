@@ -42,7 +42,7 @@ String supplierDropdownResponseToJson(SupplierDropdownResponse data) => json.enc
 class SupplierDropdownResponse {
   bool? success;
   String? message;
-  List<Response>? response;
+  List<SupplierResponse>? response;
 
   SupplierDropdownResponse({
     this.success,
@@ -53,7 +53,7 @@ class SupplierDropdownResponse {
   factory SupplierDropdownResponse.fromJson(Map<String, dynamic> json) => SupplierDropdownResponse(
     success: json["success"],
     message: json["message"],
-    response: List<Response>.from(json["response"].map((x) => Response.fromJson(x))),
+    response: List<SupplierResponse>.from(json["response"].map((x) => SupplierResponse.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -63,18 +63,18 @@ class SupplierDropdownResponse {
   };
 }
 
-class Response {
+class SupplierResponse {
   int? id;
   String? supplierName;
 
 
-  Response({
+  SupplierResponse({
     this.id,
     this.supplierName,
 
   });
 
-  factory Response.fromJson(Map<String, dynamic> json) => Response(
+  factory SupplierResponse.fromJson(Map<String, dynamic> json) => SupplierResponse(
     id: json["id"],
     supplierName: json["supplierName"],
   );

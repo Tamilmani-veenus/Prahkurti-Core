@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart';
+
 import '../../../../constants/ui_constant/icons_const.dart';
 import '../../../../controller/billgeneration_boq_controller.dart';
 import '../../../../utilities/requestconstant.dart';
@@ -296,6 +298,11 @@ class _Bill_Generation_Boq_ItemlistState extends State<Bill_Generation_Boq_Iteml
                                 style: const TextStyle(color: Colors.black),
                                 cursorColor: Colors.black,
                                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                                   focusedBorder: OutlineInputBorder(
@@ -346,6 +353,11 @@ class _Bill_Generation_Boq_ItemlistState extends State<Bill_Generation_Boq_Iteml
                                 style: const TextStyle(color: Colors.black),
                                 cursorColor: Colors.black,
                                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                                   focusedBorder: OutlineInputBorder(
@@ -382,6 +394,11 @@ class _Bill_Generation_Boq_ItemlistState extends State<Bill_Generation_Boq_Iteml
                                 style: const TextStyle(color: Colors.black),
                                 cursorColor: Colors.black,
                                 keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                                   focusedBorder: OutlineInputBorder(
@@ -430,6 +447,11 @@ class _Bill_Generation_Boq_ItemlistState extends State<Bill_Generation_Boq_Iteml
                                 style: const TextStyle(color: Colors.black),
                                 cursorColor: Colors.black,
                                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                                   focusedBorder: OutlineInputBorder(
@@ -471,6 +493,11 @@ class _Bill_Generation_Boq_ItemlistState extends State<Bill_Generation_Boq_Iteml
                                 style: const TextStyle(color: Colors.black),
                                 cursorColor: Colors.black,
                                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                                   focusedBorder: OutlineInputBorder(

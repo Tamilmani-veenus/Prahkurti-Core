@@ -86,9 +86,9 @@ class DirectBillGenerateProvider {
     }
   }
 
-  static Future<DirectbillEditApiResModel?> directBill_entryList_editAPI(int workId) async {
+  static Future<DirectbillEditApiResModel?> directBill_entryList_editAPI(int workId,checksts) async {
     try{
-      final value = await ApiManager.getAPICall("${ApiConstant.EDIT_DIRECTBILL_API}?id=$workId");
+      final value = await ApiManager.getAPICall("${ApiConstant.EDIT_DIRECTBILL_API}?id=$workId&isEdit=$checksts");
       print("AdvEntryList:" + value);
       return directbillEditApiResModelFromJson(value);
     }

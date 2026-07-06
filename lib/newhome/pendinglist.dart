@@ -78,7 +78,7 @@ class _PendingList_ScreenState extends State<PendingList_Screen> {
                       SizedBox(height: 10),
                       InkWell(
                           onTap: () async {
-                            await pendingListController.getSubcontractor_ExpensesList(pendingListController.pendingList_datas.value[index].mobilemenuname!, context);
+                            await pendingListController.getSubcontractor_ExpensesList(pendingListController.pendingList_datas.value[index].mobilemenuname!, context,entryTypeName: pendingListController.pendingList_datas.value[index].entrytype!);
                           },
                           child: Container(
                               height: BaseUtitiles.getheightofPercentage(context, 5),
@@ -94,7 +94,7 @@ class _PendingList_ScreenState extends State<PendingList_Screen> {
                                   Container(
                                     width: BaseUtitiles.getWidthtofPercentage(context, 70),
                                     margin: EdgeInsets.only(left: 10),
-                                    child: Text(pendingListController.pendingList_datas.value[index].mobilemenuname!),
+                                    child: Text(pendingListController.pendingList_datas.value[index].entrytype!.toString(),),
                                   ),
 
                                   Container(
@@ -129,11 +129,9 @@ class _PendingList_ScreenState extends State<PendingList_Screen> {
 
   Future<bool> homeScreen() async {
     if (loginController.user.value.userType == "A") {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Dashboard_screen()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Dashboard_screen()));
     } else {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => DashboardScreen_OtherUser()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen_OtherUser()));
     }
     return false; // Prevent the default back navigation
   }

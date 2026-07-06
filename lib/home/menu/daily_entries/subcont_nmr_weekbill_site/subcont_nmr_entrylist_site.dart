@@ -9,7 +9,8 @@ import '../../../../controller/nmrweeklybill_controller.dart';
 import '../../../../utilities/baseutitiles.dart';
 
 class Subcont_NMR_EntryListScreen_Site extends StatefulWidget {
-  const Subcont_NMR_EntryListScreen_Site({Key? key}) : super(key: key);
+  final String heading;
+  const Subcont_NMR_EntryListScreen_Site({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<Subcont_NMR_EntryListScreen_Site> createState() =>
@@ -51,7 +52,7 @@ class _Subcont_NMR_EntryListScreenState_Site
             child: FloatingActionButton.extended(
               onPressed: (){
                 nmrWklyController.saveButton.value = RequestConstant.SUBMIT;
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const Subcont_Nmr_EntryScreen_Site()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Subcont_Nmr_EntryScreen_Site(heading: widget.heading,)));
               },
               label: const Text("Add", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,),),
               icon: const Icon(Icons.add, color: Colors.white, size: RequestConstant.Heading_Font_SIZE, ),
@@ -68,11 +69,13 @@ class _Subcont_NMR_EntryListScreenState_Site
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        "NMR Weekly Bill - Generation",
-                        style: TextStyle(
-                            fontSize: RequestConstant.Heading_Font_SIZE,
-                            fontWeight: FontWeight.bold),
+                      Expanded(
+                        child: Text(
+                          widget.heading,
+                          style: TextStyle(
+                              fontSize: RequestConstant.Heading_Font_SIZE,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                       TextButton(
                           onPressed: () {
@@ -281,7 +284,7 @@ class _Subcont_NMR_EntryListScreenState_Site
                             textInputAction: TextInputAction.search,
                             onChanged: (value) {
                               setState(() {
-                                nmrWklyController.NmrEtyList.value=BaseUtitiles.filterSearchResults(value, nmrWklyController.mainEtyList);
+                                nmrWklyController.NmrEtyList.value=BaseUtitiles.filterSearchNMRResults(value, nmrWklyController.mainEtyList);
                               });
                             },
                           ),
@@ -530,7 +533,7 @@ class _Subcont_NMR_EntryListScreenState_Site
                                       const Expanded(
                                           flex: 3,
                                           child: Text(
-                                            "Status",
+                                            "Prepared By",
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               color: Colors.black,),
@@ -538,8 +541,8 @@ class _Subcont_NMR_EntryListScreenState_Site
                                       Expanded(
                                           flex: 6,
                                           child: Text(
-                                            nmrWklyController.NmrEtyList.value[index].status.toString(),
-                                            style: TextStyle(color: nmrWklyController.NmrEtyList.value[index].status.toString() == "Approved" ? Colors.green : Colors.black),
+                                            nmrWklyController.NmrEtyList.value[index].createdName.toString(),
+                                            style: TextStyle(color: Colors.black),
                                           )),
                                     ],
                                   ),
@@ -553,7 +556,7 @@ class _Subcont_NMR_EntryListScreenState_Site
                                       const Expanded(
                                           flex: 4,
                                           child: Text(
-                                            "Prepared By",
+                                            "Status",
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               color: Colors.black,),
@@ -561,8 +564,8 @@ class _Subcont_NMR_EntryListScreenState_Site
                                       Expanded(
                                           flex: 6,
                                           child: Text(
-                                            nmrWklyController.NmrEtyList.value[index].createdName.toString(),
-                                            style: TextStyle(color: Colors.black),
+                                            nmrWklyController.NmrEtyList.value[index].status.toString(),
+                                            style: TextStyle(color: nmrWklyController.NmrEtyList.value[index].status.toString() == "Approved" ? Colors.green : Colors.black),
                                           )),
                                       Expanded(
                                           flex: 2,
@@ -576,108 +579,112 @@ class _Subcont_NMR_EntryListScreenState_Site
                                                             top: Radius.circular(25.0)),
                                                       ),
                                                       builder: (context) {
-                                                        return Container(
-                                                          margin: EdgeInsets.only(left: 15),
-                                                          height: BaseUtitiles.getheightofPercentage(context, 25),
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                            children: [
-                                                              Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                children: [
-                                                                  Expanded(
-                                                                    child: Container(
-                                                                      margin: EdgeInsets.only(
-                                                                          right: 10),
-                                                                      child: Text(
-                                                                        nmrWklyController.NmrEtyList.value[index].workNo.toString(),
-                                                                        style: TextStyle(
-                                                                            fontWeight:
-                                                                            FontWeight
-                                                                                .bold,
-                                                                            color: Theme.of(
-                                                                                context)
-                                                                                .primaryColor),
+                                                        return SafeArea(
+                                                          top: false,
+                                                          child: Container(
+                                                            margin: EdgeInsets.only(left: 15),
+                                                            height: BaseUtitiles.getheightofPercentage(context, 25),
+                                                            child: Column(
+                                                              mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                              children: [
+                                                                Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: Container(
+                                                                        margin: EdgeInsets.only(
+                                                                            right: 10),
+                                                                        child: Text(
+                                                                          nmrWklyController.NmrEtyList.value[index].workNo.toString(),
+                                                                          style: TextStyle(
+                                                                              fontWeight:
+                                                                              FontWeight
+                                                                                  .bold,
+                                                                              color: Theme.of(
+                                                                                  context)
+                                                                                  .primaryColor),
+                                                                        ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                  IconButton(
-                                                                    onPressed: () {
-                                                                      Navigator.pop(context);
-                                                                    },
-                                                                    icon:  ConstIcons.cancle,)
-                                                                ],
-                                                              ),
-                                                              InkWell(
-                                                                  child: const Row(
-                                                                    children: [
-                                                                      Card(
-                                                                        color: Colors
-                                                                            .lightGreen,
-                                                                        child: Padding(
-                                                                          padding:
-                                                                          EdgeInsets
-                                                                              .all(8),
-                                                                          child: Icon(
-                                                                            Icons.edit,
-                                                                            color: Colors
-                                                                                .white,
+                                                                    IconButton(
+                                                                      onPressed: () {
+                                                                        Navigator.pop(context);
+                                                                      },
+                                                                      icon:  ConstIcons.cancle,)
+                                                                  ],
+                                                                ),
+                                                                InkWell(
+                                                                    child: const Row(
+                                                                      children: [
+                                                                        Card(
+                                                                          color: Colors
+                                                                              .lightGreen,
+                                                                          child: Padding(
+                                                                            padding:
+                                                                            EdgeInsets
+                                                                                .all(8),
+                                                                            child: Icon(
+                                                                              Icons.edit,
+                                                                              color: Colors
+                                                                                  .white,
+                                                                            ),
                                                                           ),
                                                                         ),
-                                                                      ),
-                                                                      SizedBox(width: 5),
-                                                                      Text(
-                                                                        "Edit",
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                            Colors.grey,
-                                                                            fontSize: 15),
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                  onTap: () async {
-                                                                    await  nmrWklyController.NmrEntryList_EditApi(nmrWklyController.NmrEtyList.value[index].id,context,"Edit",true);
-                                                                  }),
-                                                              Container(
-                                                                  margin: EdgeInsets.only(
-                                                                      right: 20),
-                                                                  child: Divider(
-                                                                      thickness: 1)),
-                                                              InkWell(
-                                                                  child: Row(
-                                                                    children: [
-                                                                      Card(
-                                                                        color: Colors.red,
-                                                                        child: Padding(
-                                                                          padding:
-                                                                          const EdgeInsets
-                                                                              .all(8),
-                                                                          child: Icon(
-                                                                            Icons
-                                                                                .delete_forever,
-                                                                            color: Colors
-                                                                                .white,
+                                                                        SizedBox(width: 5),
+                                                                        Text(
+                                                                          "Edit",
+                                                                          style: TextStyle(
+                                                                              color:
+                                                                              Colors.grey,
+                                                                              fontSize: 15),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                    onTap: () async {
+                                                                      await  nmrWklyController.NmrEntryList_EditApi(
+                                                                          nmrWklyController.NmrEtyList.value[index].id,widget.heading,context,"Edit",true);
+                                                                    }),
+                                                                Container(
+                                                                    margin: EdgeInsets.only(
+                                                                        right: 20),
+                                                                    child: Divider(
+                                                                        thickness: 1)),
+                                                                InkWell(
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Card(
+                                                                          color: Colors.red,
+                                                                          child: Padding(
+                                                                            padding:
+                                                                            const EdgeInsets
+                                                                                .all(8),
+                                                                            child: Icon(
+                                                                              Icons
+                                                                                  .delete_forever,
+                                                                              color: Colors
+                                                                                  .white,
+                                                                            ),
                                                                           ),
                                                                         ),
-                                                                      ),
-                                                                      SizedBox(width: 5),
-                                                                      Text(
-                                                                        "Delete",
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                            Colors.grey,
-                                                                            fontSize: 15),
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                  onTap: () {
-                                                                      Navigator.pop(context);
-                                                                      nmrWklyController.DeleteAlert(context,index);
-                                                                  }),
-                                                              SizedBox(height: 20)
-                                                            ],
+                                                                        SizedBox(width: 5),
+                                                                        Text(
+                                                                          "Delete",
+                                                                          style: TextStyle(
+                                                                              color:
+                                                                              Colors.grey,
+                                                                              fontSize: 15),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                    onTap: () {
+                                                                        Navigator.pop(context);
+                                                                        nmrWklyController.DeleteAlert(context,index);
+                                                                    }),
+                                                                SizedBox(height: 20)
+                                                              ],
+                                                            ),
                                                           ),
                                                         );
                                                       });

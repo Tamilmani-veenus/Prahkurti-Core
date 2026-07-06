@@ -13,7 +13,8 @@ import '../../../../utilities/requestconstant.dart';
 import 'inward_itemlist.dart';
 
 class Inward_entry extends StatefulWidget {
-  const Inward_entry({Key? key}) : super(key: key);
+  final String heading;
+  const Inward_entry({Key? key, required this.heading}) : super(key: key);
 
   @override
   State<Inward_entry> createState() => _InwardState();
@@ -36,6 +37,10 @@ class _InwardState extends State<Inward_entry> {
     var duration = const Duration(seconds: 0);
     super.initState();
     Future.delayed(duration, () async {
+      inward_controller.checkImgList.value = false;
+      inward_controller.count.value = 0;
+      inward_controller.pickedImageCount.value = 0;
+      inward_controller.imageFiles.value=[];
 
       if (inward_controller.saveButton.value == RequestConstant.SUBMIT) {
         await autoYearWiseNoController.AutoYearWiseNo("INWARD");
@@ -49,17 +54,13 @@ class _InwardState extends State<Inward_entry> {
         inward_controller.InwardEntryDateText.text = BaseUtitiles.initiateCurrentDateFormat();
         inward_controller.InwardInvoiceDateText.text = BaseUtitiles.initiateCurrentDateFormat();
         inward_controller.InwardDCDateText.text = BaseUtitiles.initiateCurrentDateFormat();
-        inward_controller.checkImgList.value = false;
-        inward_controller.count.value = 0;
-        inward_controller.pickedImageCount.value = 0;
-        inward_controller.imageFiles.value=[];
-        if (inward_controller.inwardAllDatasList.isNotEmpty) {
-          for (var element in inward_controller.inwardAllDatasList) {
+        if (inward_controller.inwardItemListdatas.isNotEmpty) {
+          for (var element in inward_controller.inwardItemListdatas) {
             inward_controller.InwardSupplierNameText.text = element.supplierName!;
             inward_controller.InwardProjectNameText.text = element.projectName!;
             inward_controller.InwardSiteNameText.text = element.siteName!;
-            inward_controller.InwardTypeText.text = element.inwardType == "P" ? "Against PO" : "Against Request";
-            inward_controller.InwardNoText.text = element.purchaseOrdNo!;
+            inward_controller.InwardTypeText.text = element.inwardType == "P" ? "Against PO" : "Against Rental WO";
+            inward_controller.InwardNoText.text = widget.heading=="INWARD PENDING - WO"?element.workOrdNo!:element.purchaseOrdNo!;
             inward_controller.siteId = element.siteid!;
             inward_controller.projectId = element.projectid!;
             inward_controller.supId = element.supplierid!;
@@ -89,7 +90,7 @@ class _InwardState extends State<Inward_entry> {
           inward_controller.InwardDCDateText.text = element.dcDate.toString();
           inward_controller.InwardManualNoText.text = "";
           inward_controller.InwardTypeText.text =
-              element.inwType == "P" ? "Against PO" : "Against Request";
+              element.inwType == "P" ? "Against PO" : "Against Rental WO";
           inward_controller.InwardNoText.text = element.selectedNo.toString();
           inward_controller.InwardVechileNoText.text = element.vechileName.toString();
           inward_controller.InwardDriverNameText.text =
@@ -97,7 +98,7 @@ class _InwardState extends State<Inward_entry> {
           inward_controller.projectId = element.projectId;
           inward_controller.siteId = element.siteId;
           inward_controller.supId = element.supplierId;
-          inward_controller.InwardRemarksText.text = element.remarks.toString();
+          inward_controller.InwardRemarksText.text = element.remarks == null ? "" : element.remarks.toString();
         });
       }
     });
@@ -131,12 +132,14 @@ class _InwardState extends State<Inward_entry> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          "Inward",
-                          style: TextStyle(
-                              fontSize: RequestConstant.Heading_Font_SIZE,
-                              fontWeight: FontWeight.bold),
-                        ),
+                         Expanded(
+                           child: Text(
+                            widget.heading,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Heading_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                                                   ),
+                         ),
                         TextButton(
                             onPressed: () {
                               Navigator.pop(context);
@@ -264,7 +267,7 @@ class _InwardState extends State<Inward_entry> {
                         padding:
                             const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: inward_controller.InwardProjectNameText,
                           cursorColor: Colors.black,
@@ -308,7 +311,7 @@ class _InwardState extends State<Inward_entry> {
                         padding:
                             const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: inward_controller.InwardSiteNameText,
                           cursorColor: Colors.black,
@@ -355,7 +358,7 @@ class _InwardState extends State<Inward_entry> {
                         padding:
                         const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: inward_controller.InwardSupplierNameText,
                           cursorColor: Colors.black,
@@ -402,7 +405,7 @@ class _InwardState extends State<Inward_entry> {
                         padding:
                             const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           controller: inward_controller.InwardInvoiceNoText,
                           cursorColor: Colors.black,
                           style: TextStyle(color: Colors.black),
@@ -505,7 +508,7 @@ class _InwardState extends State<Inward_entry> {
                         padding:
                             const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           // keyboardType: TextInputType.number,
                           controller: inward_controller.InwardDCNoText,
                           cursorColor: Colors.black,
@@ -611,7 +614,7 @@ class _InwardState extends State<Inward_entry> {
                         padding:
                             const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: inward_controller.InwardTypeText,
                           cursorColor: Colors.black,
@@ -658,7 +661,7 @@ class _InwardState extends State<Inward_entry> {
                         padding:
                             const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: inward_controller.InwardNoText,
                           cursorColor: Colors.black,
@@ -703,7 +706,7 @@ class _InwardState extends State<Inward_entry> {
                         padding:
                         const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           controller: inward_controller.InwardVechileNoText,
                           cursorColor: Colors.black,
                           style: TextStyle(color: Colors.black),
@@ -745,7 +748,7 @@ class _InwardState extends State<Inward_entry> {
                         padding:
                         const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           controller: inward_controller.InwardDriverNameText,
                           cursorColor: Colors.black,
                           style: const TextStyle(color: Colors.black),
@@ -825,7 +828,7 @@ class _InwardState extends State<Inward_entry> {
                         padding:
                             const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           controller: inward_controller.InwardRemarksText,
                           cursorColor: Colors.black,
                           style: TextStyle(color: Colors.black),
@@ -843,12 +846,12 @@ class _InwardState extends State<Inward_entry> {
                                     vertical: 8, horizontal: 8),
                                 child: ConstIcons.remarks),
                           ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return '\u26A0 ${RequestConstant.VALIDATE}';
-                            }
-                            return null;
-                          },
+                          // validator: (value) {
+                          //   if (value!.isEmpty) {
+                          //     return '\u26A0 ${RequestConstant.VALIDATE}';
+                          //   }
+                          //   return null;
+                          // },
                         ),
                       ),
                     ),
@@ -888,7 +891,7 @@ class _InwardState extends State<Inward_entry> {
                           (inward_controller.InwardInvoiceNoText.text!.trim().isEmpty || inward_controller.InwardInvoiceNoText.text.trim()=="null" || inward_controller.InwardInvoiceNoText.text.trim()=="0")) {
                         BaseUtitiles.showToast("Please enter Invoice No or DC No");
                       } else {
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const Inward_Itemlist()));
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Inward_Itemlist(heading: widget.heading,)));
                       }
                     }
                   });

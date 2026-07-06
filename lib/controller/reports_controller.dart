@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:prahkurticore/models/subcontract_dropdown_model.dart';
+import '../models/materialwise_materialdropdown_model.dart';
+import '../models/supplierdropwon_model.dart';
 import '../provider/common_provider.dart';
 import '../provider/reports_provider.dart';
 import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
 import 'logincontroller.dart';
+import '../models/project_dropdownlist_model.dart';
+
 
 class ReportsController extends GetxController{
 
@@ -16,45 +21,50 @@ class ReportsController extends GetxController{
   final Subheadername = TextEditingController();
   final suppliername = TextEditingController();
   final subcontractorname = TextEditingController();
+  final companyName = TextEditingController();
 
   //---Projects--
   RxList getProjectdropDownvalue=[].obs;
-  RxList projectDropdownName=[].obs;
-  RxString selectedProjectName = "".obs;
   RxInt selectedProjectId = 0.obs;
 
   //---Sites--
   RxList getSiteDropdownvalue = [].obs;
-  RxList siteDropdownName = [].obs;
-  RxString selectedsitedropdownName = "".obs;
   RxInt selectedsiteId = 0.obs;
 
   //---Supplier--
   RxList supplierListDropdown = [].obs;
-  RxList supplierDropdownName = [].obs;
-  RxString selectedSupplierName = "".obs;
   RxInt selectedsuppliertId = 0.obs;
 
 
   //---Subcontractor--
   RxList getdropDownvalue=[].obs;
-  RxList getSuncontDropdownvalue=[].obs;
-  RxString selectedSubconttName = "".obs;
   RxInt selectedSubcontId = 0.obs;
 
+  //---Material--
   RxList getMaterialdropDownvalue = [].obs;
   RxInt materialDropdowntId = 0.obs;
-  RxString materiaDropdownName = "".obs;
+  RxBool validateProject = false.obs;
+
+  //---Company--
+  RxList getCompanyDropDownvalue=[].obs;
+  RxInt selectedCompanyId = 0.obs;
 
 
   //-------------Get Projects Reports---------------
 
-  Future getReportProjectList({String? type}) async {
+  Future getReportProjectList({String? type,String? Url}) async {
     getProjectdropDownvalue.value=[];
-    final value = await CommonProvider.getproject();
+    final value = await CommonProvider.getproject(type:type,companyId:selectedCompanyId.value);
     if (value != null ) {
     if(value.success == true) {
       getProjectdropDownvalue.value = value.result!;
+      if(Url == "Report" || type=="mrnReqTracker"){
+        getProjectdropDownvalue.value.insert(
+          0,
+          Result(projectId: 0, project: "--ALL--"),
+        );
+      }
+
     }
     else {
       BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
@@ -65,12 +75,16 @@ class ReportsController extends GetxController{
     }
   }
 
-  Future getReportMaterialList() async {
-    getMaterialdropDownvalue.value.clear();
-    final value = await ReportsProvider.getReportMrnMaterial();
+  Future getReportMaterialList({type}) async {
+    getMaterialdropDownvalue.value=[];
+    final value = await ReportsProvider.getReportMrnMaterial(type);
     if (value != null ) {
       if(value.success == true) {
         getMaterialdropDownvalue.value = value.result!;
+        getMaterialdropDownvalue.value.insert(
+          0,
+          MaterialNameResult(id: 0, materialName: "--ALL--"),
+        );
       }
       else {
         BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
@@ -90,9 +104,6 @@ class ReportsController extends GetxController{
       if(value.success == true)
         {
           getSiteDropdownvalue.value = value.result!;
-          getSiteDropdownvalue.forEach((element) {
-            return siteDropdownName.value.add(element.siteName);
-          });
         }
       else {
         BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
@@ -114,6 +125,10 @@ class ReportsController extends GetxController{
     if (value != null ) {
       if(value.success == true) {
         supplierListDropdown.value = value.response!;
+        supplierListDropdown.value.insert(
+          0,
+          SupplierResponse(id: 0, supplierName: "--ALL--"),
+        );
       }else {
         BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
       }
@@ -124,7 +139,7 @@ class ReportsController extends GetxController{
   }
 
 
- //------------Get Supplier Reports----------
+ //------------Get Subcontractor Reports----------
 
   Future getSubcontactorReportList() async {
     getdropDownvalue.value=[];
@@ -132,6 +147,10 @@ class ReportsController extends GetxController{
     if (value != null ) {
       if(value.success == true) {
         getdropDownvalue.value = value.result!;
+        getdropDownvalue.value.insert(
+          0,
+          SubcontResult(subContId: 0, subContName: "--ALL--"),
+        );
       }else {
         BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
       }
@@ -141,29 +160,32 @@ class ReportsController extends GetxController{
     }
   }
 
+  //------------Get Company Reports----------
 
-  ///--------ReqLeaveType Report-------
-  RxList ReqLevList = [].obs;
-
-  Future getReqLeave(StaffId,cmpId,frDate,toDate,levType) async {
-    ReqLevList.value.clear();
-    await ReportsProvider.reqSlipReportProvider(
-      StaffId,cmpId,frDate,toDate,levType,
-      loginController.user.value.userType!,
-    ).then((value)  {
-      if (value != null && value.length > 0) {
-        ReqLevList.value = value;
-        print('ReqLeaveTypeReport ::${ReqLevList.value}');
-        update();
-        return ReqLevList.value;
-      }else{
-        BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+  Future getCompanyReportList({type}) async {
+    getCompanyDropDownvalue.value=[];
+    final value = await ReportsProvider.getCompanyReports();
+    if (value != null ) {
+      if(value["success"] == true) {
+        getCompanyDropDownvalue.value = value["result"];
+        if(type=="MRNReqTracker") {
+          getCompanyDropDownvalue.insert(0, {
+            "id": 0,
+            "companyName": "--ALL--",
+          });
+        }
+        else{
+          getCompanyDropDownvalue.insert(0, {
+            "id": 0,
+            "companyName": "--SELECT--",
+          });
+        }
+      }else {
+        BaseUtitiles.showToast(value["message"] ?? 'Something went wrong..');
       }
-    });
-    return ReqLevList.value;
+    }
+    else{
+      BaseUtitiles.showToast('Something went wrong..');
+    }
   }
-
-
-
-
 }

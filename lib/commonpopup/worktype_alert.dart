@@ -49,8 +49,8 @@ class _WorkTypeAlertState extends State<WorkTypeAlert> {
                     itemBuilder: (BuildContext context, int index) {
                       return InkWell(
                         onTap: ()  {
-                          dailyEntriesController.deleteSubcontDetTableDatas();
-                          dailyEntriesController.readListdata.value=[];
+                          // dailyEntriesController.deleteSubcontDetTableDatas();
+                          // dailyEntriesController.readListdata.value=[];
                           // if(index==0){
                           //   dailyEntriesController.WorkTypeTextController.text="No Work";
                           //   dailyEntriesController.Nmr_Rate.value = RequestConstant.W;
@@ -317,7 +317,7 @@ class _wrkTypeAlertAllState extends State<wrkTypeAlertAll> {
                         }
                         else {
                         dailyWrkDone_DPR_Controller.workType_DPR_Controller.text="RATE";
-                        dailyWrkDone_DPR_Controller.wrktype_DPR.value= "RATE";
+                        dailyWrkDone_DPR_Controller.wrktype_DPR.value = "RAT";
                         }
                         Navigator.pop(context);
                       },

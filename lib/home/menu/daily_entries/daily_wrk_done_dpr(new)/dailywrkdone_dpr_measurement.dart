@@ -420,34 +420,38 @@ class _DailyWork_done_DPR_MeasurementState
                         bool hasInvalid = false;
 
                         for (int i = 0;
-                        i < dailyWrkDone_DPRNEW_Controller
-                            .dprNewGetMSRreadListdata.length;
+                        i < dailyWrkDone_DPRNEW_Controller.dprNewGetMSRreadListdata.length;
                         i++) {
 
-                          final controller =
-                          dailyWrkDone_DPRNEW_Controller
-                              .dpr_new_MeasurListNosController[i];
+                          final controllers = [
+                            dailyWrkDone_DPRNEW_Controller.dpr_new_MeasurListNosController[i],
+                            dailyWrkDone_DPRNEW_Controller.dpr_new_MeasurListLengthController[i],
+                            dailyWrkDone_DPRNEW_Controller.dpr_new_MeasurListBreathController[i],
+                            dailyWrkDone_DPRNEW_Controller.dpr_new_MeasurListDepthController[i],
+                          ];
 
-                          final text = controller.text.trim();
+                          for (final controller in controllers) {
+                            final text = controller.text.trim();
 
-                          if (text.isEmpty) {
-                            hasInvalid = true;
-                            break;
+                            if (text.isEmpty) {
+                              hasInvalid = true;
+                              break;
+                            }
+
+                            final value = double.tryParse(text);
+
+                            if (value == null || value <= 0) {
+                              hasInvalid = true;
+                              break;
+                            }
                           }
 
-                          final value = double.tryParse(text);
-
-                          if (value == null || value <= 0) {
-                            hasInvalid = true;
-                            break;
-                          }
+                          if (hasInvalid) break;
                         }
 
                         if (hasInvalid) {
-
                           BaseUtitiles.showToast(
-                              "Nos Should Not be Zero or Empty");
-
+                              "Nos, Length, Breadth and Depth should not be zero or empty");
                         } else {
                           await dailyWrkDone_DPRNEW_Controller.getMesurmentTablesDatas();
                           await dailyWrkDone_DPRNEW_Controller.addMessListQty();
@@ -457,13 +461,12 @@ class _DailyWork_done_DPR_MeasurementState
                               "Your Qty value is greater than BalQty "
                                   "${dailyWrkDone_DPRNEW_Controller.dprNew_EntryDetReadList.value[0].balQty!}",
                             );
-
                           } else {
-
                             SubmitAlert(context);
                           }
                         }
-                      }                  ),
+                      }
+                      ),
                 ),
 
               ],

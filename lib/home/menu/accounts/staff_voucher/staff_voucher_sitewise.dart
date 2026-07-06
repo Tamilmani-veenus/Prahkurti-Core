@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../../../app_theme/app_colors.dart';
 import '../../../../commonpopup/sitewisepaymenttype_alert.dart';
@@ -27,7 +28,6 @@ class _staff_voucher_sitewiseState extends State<staff_voucher_sitewise> {
   BottomsheetControllers bottomsheetControllers = Get.put(BottomsheetControllers());
   final SiteController siteController=Get.put(SiteController());
   CommonVoucherController commonVoucherController=Get.put(CommonVoucherController());
-  AdvanceReqVoucherController advanceReqVoucherController=Get.put(AdvanceReqVoucherController());
   SiteVoucher_Controller siteVoucher_Controller = Get.put(SiteVoucher_Controller());
 
   @override
@@ -151,7 +151,7 @@ class _staff_voucher_sitewiseState extends State<staff_voucher_sitewise> {
                       child: TextFormField(
                         readOnly: true,
                         controller: projectController.projectname,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        autovalidateMode: AutovalidateMode.always,
                         cursorColor: Colors.black,
                         style: TextStyle(color: Colors.black),
                         decoration: InputDecoration(
@@ -197,7 +197,7 @@ class _staff_voucher_sitewiseState extends State<staff_voucher_sitewise> {
                       child: TextFormField(
                         readOnly: true,
                         controller: siteController.Sitename,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        autovalidateMode: AutovalidateMode.always,
                         cursorColor: Colors.black,
                         style: TextStyle(color: Colors.black),
                         decoration: InputDecoration(
@@ -244,7 +244,7 @@ class _staff_voucher_sitewiseState extends State<staff_voucher_sitewise> {
                       child: TextFormField(
                         readOnly: true,
                         controller: commonVoucherController.detVoucherTypeController,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        autovalidateMode: AutovalidateMode.always,
                         cursorColor: Colors.black,
                         style: TextStyle(color: Colors.black),
                         decoration: InputDecoration(
@@ -301,8 +301,13 @@ class _staff_voucher_sitewiseState extends State<staff_voucher_sitewise> {
                               const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                               child: TextFormField(
                                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
                                 controller: staffVoucher_Controller.DetAmount,
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                autovalidateMode: AutovalidateMode.always,
                                 cursorColor: Colors.black,
                                 style: TextStyle(color: Colors.black),
                                 decoration: InputDecoration(
@@ -358,6 +363,11 @@ class _staff_voucher_sitewiseState extends State<staff_voucher_sitewise> {
                               const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                               child: TextFormField(
                                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
                                 controller: staffVoucher_Controller.Tds,
                                 cursorColor: Colors.black,
                                 style: TextStyle(color: Colors.black),

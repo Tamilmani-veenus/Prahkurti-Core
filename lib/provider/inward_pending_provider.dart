@@ -37,6 +37,27 @@ class Inward_Pending_provider {
     }
   }
 
+  static Future<InwardAllDatasaRes?> getInward_WOMasData(int? Id) async {
+    try{
+      var response = await ApiManager.getAPICall(ApiConstant.GETINWARDWOMAS_ALLDATAS + "?WoId=$Id");
+      return inwardAllDatasaResFromJson(response);
+    }
+    catch (error , e) {
+      print("Error == $error");
+      return null;
+    }
+  }
+  static Future<InwardAllDatasaRes?> getInward_WODetData(int? Id) async {
+    try{
+      var response = await ApiManager.getAPICall(ApiConstant.GETINWARDWODET_ALLDATAS + "?WoId=$Id");
+      return inwardAllDatasaResFromJson(response);
+    }
+    catch (error , e) {
+      print("Error == $error");
+      return null;
+    }
+  }
+
   static Future<GetInwardListResponse?> getInwardEntry_List(int? Userid, String UserType, String frdate, String todate) async {
     try {
       var value = await ApiManager.getAPICall(
@@ -54,10 +75,16 @@ class Inward_Pending_provider {
 
   /// -----Po Amendment List-----------
 
-  static Future<OnclickPendingDet?> getPoAmendment(int purOrdId) async {
+  static Future<OnclickPendingDet?> getPoAmendment(int Id,type) async {
     var response;
     try{
-      response = await ApiManager.getAPICall("${ApiConstant.INWARD_MOREDETAILS}?PoId=$purOrdId");
+      if(type=="INWARD PENDING - WO") {
+        response = await ApiManager.getAPICall(
+            "${ApiConstant.INWARDWO_MOREDETAILS}?woId=$Id");
+      }else{
+        response = await ApiManager.getAPICall(
+            "${ApiConstant.INWARD_MOREDETAILS}?PoId=$Id");
+      }
       return onclickPendingDetFromJson(response);
     }
     catch (error , e) {
@@ -104,20 +131,6 @@ class Inward_Pending_provider {
 
 
   ///-----invoiceNO and DCNo checking API----
-  static Future invoice_DcNoCheck(String inwardNo,String invoiceNo,String dcNo,String supplierId,String inwardId) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GET_INVOICEANDDCNOCHECK + "?InwardNo=$inwardNo&invoiceNo=$invoiceNo&partyDcNo=$dcNo&supplierId=$supplierId&inwardid=$inwardId").then((value) {
-      print("invoice_DcNoCheck:" + value);
-      data = value;
-      if (data != null && data.length > 0) {
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      // BaseUtitiles.showToast(error);
-    });
-    return data;
-  }
 
   static Future<dynamic> inward_Save(InwardPendingSaveReq data, List<File> imagesPath, saveButton,id) async {
       try {
@@ -154,6 +167,9 @@ class Inward_Pending_provider {
 
             request.fields['MaterialInwardMasLink[$i].purOrdDetId'] =
                 (det.purOrdDetId ?? 0).toString();
+
+            request.fields['MaterialInwardMasLink[$i].workOrdDetId'] =
+                (det.workOrdDetId ?? 0).toString();
 
             request.fields['MaterialInwardMasLink[$i].materialID'] =
                 (det.materialID ?? 0).toString();

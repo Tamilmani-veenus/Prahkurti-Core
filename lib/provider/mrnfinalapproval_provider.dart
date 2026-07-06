@@ -78,21 +78,7 @@ class MrnFinalApprovalProvider{
   //   });
   //   return ratingRes;
   // }
-  ///----------------------------MRL_PREAPPROVE_DELETE----------------------
-  static Future mrlpreapproveapi(String body) async {
-    var ratingRes = null;
-    await ApiManager.deletebuttonAPICall(ApiConstant.MRL_PREAPPROVE_DELETE, body).then((value) {
-      // var response = subcontEntryscreenSaveResponseFromJson (value);
-      // if (response.RetString != null) {
-      //   ratingRes = response.RetString;
-      //   BaseUtitiles.showToast(ratingRes);
-      //   return ratingRes;
-      // }
-    }, onError: (error) {
-      print(error);
-    });
-    return ratingRes;
-  }
+
   ///--------------------PO APPROVE DELETE-------------------------------------
   static Future poapprovaldeleteapi(String body) async {
     var ratingRes = null;
@@ -126,22 +112,6 @@ class MrnFinalApprovalProvider{
     return ratingRes;
   }
 
-
-  ///-------------------------mrnfinal_approval_DELETE ------------------------------------
-  static Future mrnfinaldeleteApi(String body) async {
-    var ratingRes = null;
-    await ApiManager.deletebuttonAPICall(ApiConstant.MRL_FINAL_APPROVIAL_DELETE, body).then((value) {
-      // var response = subcontEntryscreenSaveResponseFromJson (value);
-      // if (response.RetString != null) {
-      //   ratingRes = response.RetString;
-      //   BaseUtitiles.showToast(ratingRes);
-      //   return ratingRes;
-      // }
-    }, onError: (error) {
-      print(error);
-    });
-    return ratingRes;
-  }
 ///--------------------TRANSFER REQUEST verifily----------------------------
 
 

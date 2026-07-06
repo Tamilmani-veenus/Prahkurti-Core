@@ -10,7 +10,8 @@ import '../../../../utilities/requestconstant.dart';
 
 
 class TransferBetweenSites_Entrylist extends StatefulWidget {
-  const TransferBetweenSites_Entrylist({Key? key}) : super(key: key);
+  final String heading;
+  const TransferBetweenSites_Entrylist({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<TransferBetweenSites_Entrylist> createState() => _TransferBetweenSites_EntrylistState();
@@ -58,7 +59,7 @@ class _TransferBetweenSites_EntrylistState extends State<TransferBetweenSites_En
               child: FloatingActionButton.extended(
                 onPressed: (){
                   transferBt_Site_Controller.saveButton.value = RequestConstant.SUBMIT;
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => TransferBetweenSites_Entry()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => TransferBetweenSites_Entry(heading: widget.heading,)));
                 },
                 label: Text("Add", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,),),
                 icon: Icon(Icons.add, color: Colors.white, size: RequestConstant.Heading_Font_SIZE, ),
@@ -74,11 +75,13 @@ class _TransferBetweenSites_EntrylistState extends State<TransferBetweenSites_En
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                         "Transfer Between Sites",
-                          style: TextStyle(
-                              fontSize: RequestConstant.Heading_Font_SIZE,
-                              fontWeight: FontWeight.bold),
+                        Expanded(
+                          child: Text(
+                          widget.heading,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Heading_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         TextButton(
                             onPressed: () {
@@ -133,7 +136,7 @@ class _TransferBetweenSites_EntrylistState extends State<TransferBetweenSites_En
                                         context: context,
                                         initialDate: DateTime.now(),
                                         firstDate: DateTime(1900),
-                                        lastDate: DateTime(2100),builder: (context, child) {
+                                        lastDate: DateTime.now(),builder: (context, child) {
                                       return Theme(data: Theme.of(context).copyWith(
                                         colorScheme: ColorScheme.light(
                                           primary: Theme.of(context).primaryColor, // header background color
@@ -237,6 +240,7 @@ class _TransferBetweenSites_EntrylistState extends State<TransferBetweenSites_En
                                   primary: Theme.of(context).primaryColor),
                               onPressed: () async {
                                 setState(() {
+                                  editingController.text = "";
                                   transferBt_Site_Controller.getEntryList();
                                 });
                               },
@@ -320,7 +324,7 @@ class _TransferBetweenSites_EntrylistState extends State<TransferBetweenSites_En
                   () => ListView.builder(
                   shrinkWrap: true,
                   physics: BouncingScrollPhysics(),
-                      padding: EdgeInsets.zero,
+                      padding: EdgeInsets.only(bottom: BaseUtitiles.getheightofPercentage(context, 10)),
                       itemCount: transferBt_Site_Controller.entryList.value.length,
                   itemBuilder: (context, index) {
                     return Container(
@@ -459,126 +463,129 @@ class _TransferBetweenSites_EntrylistState extends State<TransferBetweenSites_En
                                                       top: Radius.circular(25.0)),
                                                 ),
                                                 builder: (context) {
-                                                  return Container(
-                                                    margin: EdgeInsets.only(
-                                                      left: 15,
-                                                    ),
-                                                    height: BaseUtitiles.getheightofPercentage(context, 25),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                      children: [
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                          children: [
-                                                            Container(
+                                                  return SafeArea(
+                                                    top: false,
+                                                    child: Container(
+                                                      margin: EdgeInsets.only(
+                                                        left: 15,
+                                                      ),
+                                                      height: BaseUtitiles.getheightofPercentage(context, 25),
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                        children: [
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                            children: [
+                                                              Container(
+                                                                margin: EdgeInsets.only(
+                                                                    right: 10),
+                                                                child: Text(
+                                                                  transferBt_Site_Controller.entryList.value[index].transferNo.toString(),
+                                                                  style: TextStyle(
+                                                                      fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                      color: Theme.of(
+                                                                          context)
+                                                                          .primaryColor),
+                                                                ),
+                                                              ),
+                                                              IconButton(
+                                                                  onPressed: () {
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  },
+                                                                  icon: ConstIcons.cancle)
+                                                            ],
+                                                          ),
+                                                          Visibility(
+                                                            visible: commanController.editMode.value == 1 ? true : false,
+                                                            child: InkWell(
+                                                                child: Row(
+                                                                  children: [
+                                                                    Card(
+                                                                      color: Colors
+                                                                          .lightGreen,
+                                                                      child: Padding(
+                                                                        padding:
+                                                                        const EdgeInsets
+                                                                            .all(8),
+                                                                        child: Icon(
+                                                                          Icons.edit,
+                                                                          color: Colors
+                                                                              .white,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(width: 5),
+                                                                    Text(
+                                                                      "Edit",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                          Colors.grey,
+                                                                          fontSize: 15),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                                onTap: () async {
+                                                                  transferBt_Site_Controller.itemlistTable_Delete();
+                                                                  transferBt_Site_Controller.ItemGetTableListdata.clear();
+                                                                  transferBt_Site_Controller.getTransfferbetDetList.clear();
+                                                                  transferBt_Site_Controller.editListApiDatas.value.clear();
+                                                                  FocusScope.of(context).unfocus();
+                                                                  await transferBt_Site_Controller.EntryList_EditApi(
+                                                                    transferBt_Site_Controller.entryList.value[index].fromProjectId,
+                                                                      transferBt_Site_Controller.entryList.value[index].toSiteId,
+                                                                      transferBt_Site_Controller.entryList.value[index].fromSiteid,
+                                                                      transferBt_Site_Controller.entryList.value[index].id,widget.heading,context);
+                                                                }),
+                                                          ),
+                                                          Container(
                                                               margin: EdgeInsets.only(
-                                                                  right: 10),
-                                                              child: Text(
-                                                                transferBt_Site_Controller.entryList.value[index].transferNo.toString(),
-                                                                style: TextStyle(
-                                                                    fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                    color: Theme.of(
-                                                                        context)
-                                                                        .primaryColor),
-                                                              ),
-                                                            ),
-                                                            IconButton(
-                                                                onPressed: () {
-                                                                  Navigator.pop(
-                                                                      context);
-                                                                },
-                                                                icon: ConstIcons.cancle)
-                                                          ],
-                                                        ),
-                                                        Visibility(
-                                                          visible: commanController.editMode.value == 1 ? true : false,
-                                                          child: InkWell(
-                                                              child: Row(
-                                                                children: [
-                                                                  Card(
-                                                                    color: Colors
-                                                                        .lightGreen,
-                                                                    child: Padding(
-                                                                      padding:
-                                                                      const EdgeInsets
-                                                                          .all(8),
-                                                                      child: Icon(
-                                                                        Icons.edit,
-                                                                        color: Colors
-                                                                            .white,
+                                                                  right: 20),
+                                                              child: Divider(
+                                                                  thickness: 1)),
+                                                          Visibility(
+                                                            visible: commanController.deleteMode.value == 1 ? true : false,
+                                                            child: InkWell(
+                                                                child: Row(
+                                                                  children: [
+                                                                    Card(
+                                                                      color: Colors.red,
+                                                                      child: Padding(
+                                                                        padding:
+                                                                        const EdgeInsets
+                                                                            .all(8),
+                                                                        child: Icon(
+                                                                          Icons
+                                                                              .delete_forever,
+                                                                          color: Colors
+                                                                              .white,
+                                                                        ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                  SizedBox(width: 5),
-                                                                  Text(
-                                                                    "Edit",
-                                                                    style: TextStyle(
-                                                                        color:
-                                                                        Colors.grey,
-                                                                        fontSize: 15),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                              onTap: () async {
-                                                                transferBt_Site_Controller.itemlistTable_Delete();
-                                                                transferBt_Site_Controller.ItemGetTableListdata.clear();
-                                                                transferBt_Site_Controller.getTransfferbetDetList.clear();
-                                                                transferBt_Site_Controller.editListApiDatas.value.clear();
-                                                                FocusScope.of(context).unfocus();
-                                                                await transferBt_Site_Controller.EntryList_EditApi(
-                                                                  transferBt_Site_Controller.entryList.value[index].fromProjectId,
-                                                                    transferBt_Site_Controller.entryList.value[index].toSiteId,
-                                                                    transferBt_Site_Controller.entryList.value[index].fromSiteid,
-                                                                    transferBt_Site_Controller.entryList.value[index].id,context);
-                                                              }),
-                                                        ),
-                                                        Container(
-                                                            margin: EdgeInsets.only(
-                                                                right: 20),
-                                                            child: Divider(
-                                                                thickness: 1)),
-                                                        Visibility(
-                                                          visible: commanController.deleteMode.value == 1 ? true : false,
-                                                          child: InkWell(
-                                                              child: Row(
-                                                                children: [
-                                                                  Card(
-                                                                    color: Colors.red,
-                                                                    child: Padding(
-                                                                      padding:
-                                                                      const EdgeInsets
-                                                                          .all(8),
-                                                                      child: Icon(
-                                                                        Icons
-                                                                            .delete_forever,
-                                                                        color: Colors
-                                                                            .white,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(width: 5),
-                                                                  Text(
-                                                                    "Delete",
-                                                                    style: TextStyle(
-                                                                        color:
-                                                                        Colors.grey,
-                                                                        fontSize: 15),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                              onTap: () async {
-                                                                Navigator.pop(context);
-                                                                  transferBt_Site_Controller.DeleteAlert(context,index);
-                                                              }),
-                                                        ),
-                                                        SizedBox(height: 20)
-                                                      ],
+                                                                    SizedBox(width: 5),
+                                                                    Text(
+                                                                      "Delete",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                          Colors.grey,
+                                                                          fontSize: 15),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                                onTap: () async {
+                                                                  Navigator.pop(context);
+                                                                    transferBt_Site_Controller.DeleteAlert(context,index);
+                                                                }),
+                                                          ),
+                                                          SizedBox(height: 20)
+                                                        ],
+                                                      ),
                                                     ),
                                                   );
                                                 });

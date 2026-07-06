@@ -1295,6 +1295,7 @@
 //   }
 // }
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart';
@@ -2112,6 +2113,173 @@ class _PendingList_PoPopupState extends State<PendingList_PoPopup> {
 }
 
 
+///-------------PO Supplier Trader Agencies------------
+class PendingList_PoSupTradAgenPopup extends StatefulWidget {
+  const PendingList_PoSupTradAgenPopup({Key? key, required this.list,required this.ReqNo, required this.ProjectName,required this.heading }) : super(key: key);
+  final List list;
+  final String ReqNo;
+  final String ProjectName;
+  final String heading;
+
+  @override
+  State<PendingList_PoSupTradAgenPopup> createState() => _PendingList_PoSupTradAgenPopupState();
+}
+
+class _PendingList_PoSupTradAgenPopupState extends State<PendingList_PoSupTradAgenPopup> {
+
+  PendingListController pendingListController = Get.put(PendingListController());
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+          backgroundColor: Setmybackground,
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: 40),
+                Container(
+                  margin: EdgeInsets.only(left: 15, right: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        widget.heading,
+                        style: TextStyle(
+                            fontSize: RequestConstant.Heading_Font_SIZE,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            "Back",
+                            style: TextStyle(color: Colors.grey, fontSize: 18),
+                          ))
+                    ],
+                  ),
+                ),
+
+                Divider(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: Container(
+                          margin: EdgeInsets.only(left: 15, bottom: 10),
+                          child: Text(widget.ProjectName,
+                            style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold,
+                            ),)),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Container(
+                          margin: EdgeInsets.only( bottom: 10),
+                          child: Text(widget.ReqNo.toString(),
+                            style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold,
+                            ),)),
+                    ),
+                  ],
+                ),
+                Divider(),
+                ListDetails(context),
+
+              ],
+            ),
+          )),
+    );
+  }
+
+  Widget ListDetails(BuildContext context){
+    return Container(
+      height: BaseUtitiles.getheightofPercentage(context, 90),
+      child: ListView.builder(
+        physics: BouncingScrollPhysics(),
+        padding: EdgeInsets.only(bottom: BaseUtitiles.getheightofPercentage(context, 15)),
+        itemCount: pendingListController.onclickPendingListDet.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Container(
+            margin: EdgeInsets.only(left: 3, right: 3),
+            child: Card(
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: Container(
+                margin: EdgeInsets.only(left: 10, right: 5, bottom: 10, top:5 ),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text("Material" + ":   ",
+                          style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
+                        ),
+                        Expanded(
+                            flex: 2,
+                            child: Text( pendingListController.onclickPendingListDet[index].MaterialName.toString(),
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            )),
+                      ],
+                    ),
+                    Divider(),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Text("Qty:",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Expanded(
+                            flex: 4,
+                            child: Text( pendingListController.onclickPendingListDet[index].Qty.toString())),
+                        Expanded(
+                            flex: 2,
+                            child: Text("Scale" + ":  ",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            )),
+                        Expanded(
+                            flex: 4,
+                            child: Text( pendingListController.onclickPendingListDet[index].ScaleName.toString())),
+                      ],
+                    ),
+                    Divider(),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Text("Po Qty" + ":  ",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Expanded(
+                            flex: 4,
+                            child: Text( pendingListController.onclickPendingListDet[index].POQty.toString())),
+                        Expanded(
+                          flex: 2,
+                          child: Text("Bal Qty" + ":  ",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Expanded(
+                            flex: 4,
+                            child: Text( pendingListController.onclickPendingListDet[index].BalQty.toString())),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },),
+    );
+  }
+}
+
+
 ///-------------PendingPo Approval------------
 
 class PendingPo_Approval_Popup extends StatefulWidget {
@@ -2137,6 +2305,27 @@ class _PendingPo_Approval_PopupState extends State<PendingPo_Approval_Popup> {
 
   PendingListController pendingListController = Get.put(PendingListController());
 
+  final ScrollController leftController = ScrollController();
+  final ScrollController rightController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    leftController.addListener(() {
+      if (rightController.hasClients &&
+          rightController.offset != leftController.offset) {
+        rightController.jumpTo(leftController.offset);
+      }
+    });
+
+    rightController.addListener(() {
+      if (leftController.hasClients &&
+          leftController.offset != rightController.offset) {
+        leftController.jumpTo(rightController.offset);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -2281,8 +2470,6 @@ class _PendingPo_Approval_PopupState extends State<PendingPo_Approval_Popup> {
                   ],
                 ),
               ),
-
-
               /// BUTTONS
               Container(
                 height: BaseUtitiles.getheightofPercentage(context, 4),
@@ -2310,7 +2497,6 @@ class _PendingPo_Approval_PopupState extends State<PendingPo_Approval_Popup> {
                                 fontSize: RequestConstant.Lable_Font_SIZE,
                                 color: Colors.white  ),),
                         ),
-
                         onTap: () {
                           setState(() {
                             verifyAlert(context, widget.id);
@@ -2384,7 +2570,7 @@ class _PendingPo_Approval_PopupState extends State<PendingPo_Approval_Popup> {
                         ),
 
                         child: Padding(
-                          padding: EdgeInsets.all(12),
+                          padding: EdgeInsets.all(10),
 
                           child: Column(
                             crossAxisAlignment:
@@ -2402,7 +2588,7 @@ class _PendingPo_Approval_PopupState extends State<PendingPo_Approval_Popup> {
                                 ),
                               ),
 
-                              SizedBox(height: 15),
+                              SizedBox(height: 10),
 
                               buildInfoRow(
                                 "Project",
@@ -2435,7 +2621,7 @@ class _PendingPo_Approval_PopupState extends State<PendingPo_Approval_Popup> {
                       ),
                     ),
 
-                    SizedBox(width: 10),
+                    SizedBox(width: 3),
 
                     /// PURCHASE INFO CARD
                     Expanded(
@@ -2486,6 +2672,8 @@ class _PendingPo_Approval_PopupState extends State<PendingPo_Approval_Popup> {
                               ),
                             ],
                           ),
+
+
                         ),
                       ),
                     ),
@@ -2493,195 +2681,454 @@ class _PendingPo_Approval_PopupState extends State<PendingPo_Approval_Popup> {
                 ),
               ),
 
-              SizedBox(height: 15),
-              /// HORIZONTAL SCROLL AREA
-              Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
+              SizedBox(height: 10),
+              Obx(() {
+                final reqNos = pendingListController.reqNoList
+                    .map((e) => e["ReqOrdNo"].toString().trim())
+                    .toList();
 
-                  child: SizedBox(
-                    width: 750,
+                List<String> rows = [];
+                for (int i = 0; i < reqNos.length; i += 2) {
+                  if (i + 1 < reqNos.length) {
+                    rows.add("${reqNos[i]}, ${reqNos[i + 1]}");
+                  } else {
+                    rows.add(reqNos[i]);
+                  }
+                }
 
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-
-                        /// HEADER
-                        Container(
-                          color: Theme.of(context).primaryColor,
-
-                          child: Table(
-                            border: TableBorder(
-                              verticalInside: BorderSide(
-                                color: Colors.white24,
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Expanded(
+                      flex: 1,
+                      child: Text(
+                        "  Req No :",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: rows.map((row) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 4),
+                            child: Text(
+                              row ?? "-",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: Theme.of(context).primaryColor,
                               ),
                             ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
+                );
+              }),
+              SizedBox(height: 15),
+              /// HORIZONTAL SCROLL AREA
 
-                            columnWidths: {
+              Expanded(
+                child: Row(
+                  children: [
 
-                              /// MATERIAL NAME BIGGER
-                              0: FixedColumnWidth(150),
+                    /// FIXED SECTION
+                    SizedBox(
+                      width: 200,
+                      child: Column(
+                        children: [
 
-                              /// ALL SAME WIDTH
-                              1: FixedColumnWidth(75),
-                              2: FixedColumnWidth(75),
-                              3: FixedColumnWidth(75),
-                              4: FixedColumnWidth(75),
-                              5: FixedColumnWidth(75),
-                              6: FixedColumnWidth(75),
-                              7: FixedColumnWidth(75),
-                              8: FixedColumnWidth(75),
-                            },
+                          /// HEADER
+                          Container(
+                            height: 50,
+                            color: Theme.of(context).primaryColor,
 
+                            child: Row(
+                              children: [
+
+                                // fixedHeaderCell("S.No", 30),
+
+                                fixedHeaderCell("", 40),
+
+                                fixedHeaderCell("Material Name", 160),
+                              ],
+                            ),
+                          ),
+
+                          /// DATA
+                          Expanded(
+                            child: ListView.builder(
+                              controller: leftController,
+                              itemCount: pendingListController
+                                  .onclickPendingListDet.length,
+                              itemBuilder: (context, index) {
+
+                                var item = pendingListController
+                                    .onclickPendingListDet[index];
+
+                                return Container(
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                        color: Colors.grey.shade300,
+                                      ),
+                                    //   right: BorderSide(
+                                    //   color: Colors.grey.shade400,
+                                    //   width: 1,
+                                    // ),
+                                    ),
+                                  ),
+
+                                  child: Row(
+                                    children: [
+
+                                      /// S.NO
+                                      // fixedDataCell(
+                                      //   "${index + 1}",
+                                      //   30,
+                                      // ),
+
+                                      /// Action
+
+                                      Container(
+                                        width: 40,
+                                        height: 60,
+                                        decoration: BoxDecoration(
+                                          border: Border(
+                                            right: BorderSide(
+                                              color: Colors.grey.shade300,
+                                            ),
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: InkWell(
+                                            onTap: () {
+                                              pendingListController.poapprovalSupplierlist(
+                                                context,
+                                                item.materialId,
+                                                item.materialName.toString(),
+                                                item.scaleName.toString(),
+                                              );
+                                            },
+                                            child: Icon(
+                                              Icons.search,
+                                              size: 25,
+                                              color: Theme.of(context).primaryColor,
+                                            ),
+                                          ),
+                                        ),
+
+                                      ),
+
+                                      /// MATERIAL
+                                      fixedDataCell(
+                                        "${item.materialName}\n(${item.scaleName})",
+                                        160,
+                                        alignment: Alignment.centerLeft,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    /// SCROLLABLE SECTION
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: SizedBox(
+                          width: 600,
+                          child: Column(
                             children: [
 
-                              TableRow(
-                                children: [
+                              /// HEADER
+                              Container(
+                                height: 50,
+                                color: Theme.of(context).primaryColor,
+                                child: Row(
+                                  children: [
 
-                                  tableHeader("Material Name"),
+                                    headerCell("Qty"),
+                                    headerCell("Data\nRate"),
+                                    headerCell("PO\nRate"),
+                                    headerCell("PO\nAmt"),
+                                    headerCell("GST%"),
+                                    headerCell("GST\nAmt"),
+                                    headerCell("Net\nAmt"),
 
-                                  tableHeader("Qty"),
+                                  ],
+                                ),
+                              ),
 
-                                  tableHeader("PO\nRate"),
+                              /// DATA
+                              Expanded(
+                                child: ListView.builder(
+                                  controller: rightController,
+                                  itemCount: pendingListController
+                                      .onclickPendingListDet.length,
+                                  itemBuilder: (context, index) {
 
-                                  tableHeader("PO\nAmt"),
+                                    var item = pendingListController
+                                        .onclickPendingListDet[index];
 
-                                  tableHeader("GST %"),
+                                    return Container(
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: Colors.grey.shade300,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
 
-                                  tableHeader("GST\nAmt"),
+                                          dataCell(
+                                            item.Poqty.toString(),
+                                          ),
+                                          dataCell("0.0"),
+                                          dataCell(
+                                            item.rate.toString(),
+                                          ),
 
-                                  tableHeader("Net\nAmt"),
+                                          dataCell(
+                                            item.amount.toString(),
+                                          ),
 
-                                  tableHeader("Data\nRate"),
+                                          dataCell(
+                                            item.GSTPer.toString(),
+                                          ),
 
-                                  tableHeader(""),
-                                ],
+                                          dataCell(
+                                            item.GSTAmt.toString(),
+                                          ),
+
+                                          dataCell(
+
+                                            item.netAmount.toString(),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
                             ],
                           ),
                         ),
-
-                        /// LIST
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: pendingListController
-                                .onclickPendingListDet.length,
-
-                            itemBuilder: (context, index) {
-
-                              var item =
-                              pendingListController
-                                  .onclickPendingListDet[index];
-
-                              return Container(
-
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    bottom: BorderSide(
-                                      color: Colors.grey.shade300,
-                                    ),
-                                  ),
-                                ),
-
-                                child: Table(
-                                  border: TableBorder(
-                                    verticalInside: BorderSide(
-                                      color: Colors.grey.shade300,
-                                    ),
-                                  ),
-
-                                  columnWidths: {
-
-                                    /// MATERIAL NAME BIGGER
-                                    0: FixedColumnWidth(150),
-
-                                    /// ALL SAME WIDTH
-                                    1: FixedColumnWidth(75),
-                                    2: FixedColumnWidth(75),
-                                    3: FixedColumnWidth(75),
-                                    4: FixedColumnWidth(75),
-                                    5: FixedColumnWidth(75),
-                                    6: FixedColumnWidth(75),
-                                    7: FixedColumnWidth(75),
-                                    8: FixedColumnWidth(75),
-                                  },
-
-                                  children: [
-
-                                    TableRow(
-                                      children: [
-
-                                        tableCell(
-                                          "${item.materialName} "
-                                              "(${item.scaleName})"
-                                        ),
-
-                                        tableCell(
-                                          item.Poqty.toString()
-                                        ),
-
-                                        tableCell(
-                                          item.rate.toString()
-                                        ),
-
-                                        tableCell(
-                                          item.amount.toString()
-                                        ),
-
-                                        tableCell(
-                                          item.GSTPer.toString()
-                                        ),
-
-                                        tableCell(
-                                          item.GSTAmt.toString()
-                                        ),
-
-                                        tableCell(
-                                          item.netAmount.toString()
-                                        ),
-
-                                        tableCell("0.0"),
-
-                                        Padding(
-                                          padding: EdgeInsets.all(8),
-
-                                          child: InkWell(
-                                            onTap: () {
-
-                                              pendingListController
-                                                  .poapprovalSupplierlist(
-                                                context,
-                                                item.materialId,
-                                                item.materialName
-                                                    .toString(),
-                                                item.scaleName
-                                                    .toString(),
-                                              );
-                                            },
-
-                                            child: Icon(
-                                              Icons
-                                                  .arrow_circle_right_outlined,
-
-                                              color:
-                                              Theme.of(context)
-                                                  .primaryColor,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ),
+              )
+              // Expanded(
+              //   child: SingleChildScrollView(
+              //     scrollDirection: Axis.horizontal,
+              //
+              //     child: SizedBox(
+              //       width: 750,
+              //
+              //       child: Column(
+              //         crossAxisAlignment: CrossAxisAlignment.start,
+              //         children: [
+              //
+              //           /// HEADER
+              //           Container(
+              //             color: Theme.of(context).primaryColor,
+              //
+              //             child: Table(
+              //               border: TableBorder(
+              //                 verticalInside: BorderSide(
+              //                   color: Colors.white24,
+              //                 ),
+              //               ),
+              //
+              //               columnWidths: {
+              //
+              //                 /// MATERIAL NAME BIGGER
+              //                 0: FixedColumnWidth(150),
+              //
+              //                 /// ALL SAME WIDTH
+              //                 1: FixedColumnWidth(75),
+              //                 2: FixedColumnWidth(75),
+              //                 3: FixedColumnWidth(75),
+              //                 4: FixedColumnWidth(75),
+              //                 5: FixedColumnWidth(75),
+              //                 6: FixedColumnWidth(75),
+              //                 7: FixedColumnWidth(75),
+              //                 8: FixedColumnWidth(75),
+              //               },
+              //
+              //               children: [
+              //
+              //                 TableRow(
+              //                   children: [
+              //
+              //                     tableHeader("Material Name"),
+              //
+              //                     tableHeader("Qty"),
+              //
+              //                     tableHeader("PO\nRate"),
+              //
+              //                     tableHeader("PO\nAmt"),
+              //
+              //                     tableHeader("GST %"),
+              //
+              //                     tableHeader("GST\nAmt"),
+              //
+              //                     tableHeader("Net\nAmt"),
+              //
+              //                     tableHeader("Data\nRate"),
+              //
+              //                     tableHeader(""),
+              //                   ],
+              //                 ),
+              //               ],
+              //             ),
+              //           ),
+              //
+              //           /// LIST
+              //           Expanded(
+              //             child: ListView.builder(
+              //               itemCount: pendingListController
+              //                   .onclickPendingListDet.length,
+              //
+              //               itemBuilder: (context, index) {
+              //
+              //                 var item =
+              //                 pendingListController
+              //                     .onclickPendingListDet[index];
+              //
+              //                 return Container(
+              //
+              //                   decoration: BoxDecoration(
+              //                     border: Border(
+              //                       bottom: BorderSide(
+              //                         color: Colors.grey.shade300,
+              //                       ),
+              //                     ),
+              //                   ),
+              //
+              //                   child: Table(
+              //                     border: TableBorder(
+              //                       verticalInside: BorderSide(
+              //                         color: Colors.grey.shade300,
+              //                       ),
+              //                     ),
+              //
+              //                     columnWidths: {
+              //
+              //                       /// MATERIAL NAME BIGGER
+              //                       0: FixedColumnWidth(150),
+              //
+              //                       /// ALL SAME WIDTH
+              //                       1: FixedColumnWidth(75),
+              //                       2: FixedColumnWidth(75),
+              //                       3: FixedColumnWidth(75),
+              //                       4: FixedColumnWidth(75),
+              //                       5: FixedColumnWidth(75),
+              //                       6: FixedColumnWidth(75),
+              //                       7: FixedColumnWidth(75),
+              //                       8: FixedColumnWidth(75),
+              //                     },
+              //
+              //                     children: [
+              //
+              //                       TableRow(
+              //                         children: [
+              //
+              //                           tableCell(
+              //                             "${item.materialName} "
+              //                                 "(${item.scaleName})"
+              //                           ),
+              //
+              //                           tableCell(
+              //                             item.Poqty.toString()
+              //                           ),
+              //
+              //                           tableCell(
+              //                             item.rate.toString()
+              //                           ),
+              //
+              //                           tableCell(
+              //                             item.amount.toString()
+              //                           ),
+              //
+              //                           tableCell(
+              //                             item.GSTPer.toString()
+              //                           ),
+              //
+              //                           tableCell(
+              //                             item.GSTAmt.toString()
+              //                           ),
+              //
+              //                           tableCell(
+              //                             item.netAmount.toString()
+              //                           ),
+              //
+              //                           tableCell("0.0"),
+              //
+              //                           Padding(
+              //                             padding: EdgeInsets.all(8),
+              //
+              //                             child: InkWell(
+              //                               onTap: () {
+              //
+              //                                 pendingListController
+              //                                     .poapprovalSupplierlist(
+              //                                   context,
+              //                                   item.materialId,
+              //                                   item.materialName
+              //                                       .toString(),
+              //                                   item.scaleName
+              //                                       .toString(),
+              //                                 );
+              //                               },
+              //
+              //                               child: Icon(
+              //                                 Icons
+              //                                     .arrow_circle_right_outlined,
+              //
+              //                                 color:
+              //                                 Theme.of(context)
+              //                                     .primaryColor,
+              //                               ),
+              //                             ),
+              //                           ),
+              //                         ],
+              //                       ),
+              //                     ],
+              //                   ),
+              //                 );
+              //               },
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // ),
+
+
+
+
+
+
+
+
+
+
               // Expanded(
               //   child: SingleChildScrollView(
               //     scrollDirection: Axis.horizontal,
@@ -2853,6 +3300,99 @@ class _PendingPo_Approval_PopupState extends State<PendingPo_Approval_Popup> {
     );
   }
 
+  Widget fixedHeaderCell(
+      String text,
+      double width,
+      ) {
+    return Container(
+      width: width,
+      height: 50,
+      alignment: Alignment.center,
+      decoration: const BoxDecoration(
+        border: Border(
+          right: BorderSide(
+            color: Colors.white24,
+          ),
+        ),
+      ),
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget fixedDataCell(
+      String text,
+      double width, {
+        Alignment alignment = Alignment.center,
+      }) {
+    return Container(
+      width: width,
+      height: 70,
+      padding: const EdgeInsets.all(6),
+      alignment: alignment,
+      decoration: BoxDecoration(
+        border: Border(
+          right: BorderSide(
+            color: Colors.grey.shade300,
+          ),
+        ),
+      ),
+      child: Text(
+        text,
+        maxLines: 3,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+
+  Widget headerCell(String text) {
+    return Container(
+      width: 85,
+      height: 50,
+      alignment: Alignment.center,
+      decoration: const BoxDecoration(
+        border: Border(
+          right: BorderSide(
+            color: Colors.white24,
+          ),
+        ),
+      ),
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget dataCell(String text) {
+    return Container(
+      width: 85,
+      height: 60,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        border: Border(
+          right: BorderSide(
+            color: Colors.grey.shade300,
+          ),
+        ),
+      ),
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
   Widget tableHeader(String text) {
 
     return SizedBox(
@@ -2902,63 +3442,6 @@ class _PendingPo_Approval_PopupState extends State<PendingPo_Approval_Popup> {
     );
   }
 
-  Widget headerCell(String title, double width) {
-    return Container(
-      width: width,
-      height: 50,
-
-      alignment: Alignment.center,
-
-      decoration: BoxDecoration(
-        border: Border(
-          right: BorderSide(
-            color: Colors.white24,
-            width: 1,
-          ),
-        ),
-      ),
-
-      child: Text(
-        title,
-        textAlign: TextAlign.center,
-
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 13,
-        ),
-      ),
-    );
-  }
-
-  Widget dataCell(String value, double width) {
-    return Container(
-      width: width,
-      height: 40,
-
-      alignment: Alignment.center,
-
-      decoration: BoxDecoration(
-        border: Border(
-          right: BorderSide(
-            color: Colors.grey.shade300,
-            width: 0.8,
-          ),
-        ),
-      ),
-
-      padding: EdgeInsets.symmetric(horizontal: 6),
-
-      child: Text(
-        value,
-        textAlign: TextAlign.center,
-
-        style: TextStyle(
-          fontSize: 13,
-        ),
-      ),
-    );
-  }
 
   Widget buildInfoRow(
       String title,
@@ -2979,7 +3462,7 @@ class _PendingPo_Approval_PopupState extends State<PendingPo_Approval_Popup> {
 
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 11,
+              fontSize: 12,
             ),
           ),
         ),
@@ -2999,7 +3482,7 @@ class _PendingPo_Approval_PopupState extends State<PendingPo_Approval_Popup> {
             value,
 
             style: TextStyle(
-              fontSize: 11,
+              fontSize: 12,
             ),
           ),
         ),
@@ -4252,9 +4735,10 @@ class _StoreTeansferPendingState extends State<StoreTeansferPending> {
 
 //-------Inward Pending---------------
 class PendingList_InwardPopup extends StatefulWidget {
-  const PendingList_InwardPopup({Key? key, required this.list,required this.ReqNo}) : super(key: key);
+  const PendingList_InwardPopup({Key? key, required this.list,required this.ReqNo,required this.heading}) : super(key: key);
   final List list;
   final String ReqNo;
+  final String heading;
 
   @override
   State<PendingList_InwardPopup> createState() => _PendingList_InwardPopupState();
@@ -4280,7 +4764,7 @@ class _PendingList_InwardPopupState extends State<PendingList_InwardPopup> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Inward Pending",
+                        widget.heading,
                         style: TextStyle(
                             fontSize: RequestConstant.Heading_Font_SIZE,
                             fontWeight: FontWeight.bold),
@@ -4345,7 +4829,7 @@ class _PendingList_InwardPopupState extends State<PendingList_InwardPopup> {
                               )),
                           Expanded(
                               flex: 4,
-                              child: Text( pendingListController.onclickPendingListDet[index].unitName.toString())),
+                              child: Text( widget.heading=="INWARD PENDING - WO"?pendingListController.onclickPendingListDet[index].ScaleName.toString():pendingListController.onclickPendingListDet[index].unitName.toString())),
 
                           Expanded(
                               flex: 2,
@@ -4364,7 +4848,7 @@ class _PendingList_InwardPopupState extends State<PendingList_InwardPopup> {
                         children: [
                           Expanded(
                             flex: 2,
-                            child: Text("Po Qty" + ":  ",
+                            child: Text(widget.heading=="INWARD PENDING - WO"?"WO Qty:  ":"Po Qty:  ",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),

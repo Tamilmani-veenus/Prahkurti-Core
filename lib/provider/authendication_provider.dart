@@ -15,6 +15,7 @@ import '../models/deviceIDres_model.dart';
 import '../models/getDeviceCheck_model.dart';
 import '../models/getversion_model.dart';
 import '../models/punch_in_model.dart';
+import '../models/register_payload.dart';
 import '../utilities/apiconstant.dart';
 import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
@@ -43,37 +44,59 @@ class AuthendicationProvider {
     }
   }
 
-  static Future<List<AppVersionResponse>> getVersion() async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GETVERSIONAPI).then((value) async{
-      final res = appVersionResponseFromJson(value);
-      if (res.length > 0 && res != null) {
-        data = res;
-        return data;
+  static Future<RegistrationResponse?> getRegistration(
+      body, BuildContext context,
+      {from}) async {
+    try {
+      final response = await ApiManager.postAPICall(
+        ApiConstant.POSTREGISTRATIONSAVEAPI,
+        jsonEncode(body),
+      );
+      print("SSSSSS....${response}");
+      return RegistrationResponse.fromJson(jsonDecode(response));
+    } catch (error) {
+      print("Error == $error");
+
+      if (from != "session") {
+        Navigator.pop(context);
       }
-    }, onError: (error) {
-      print(error.toString());
-      print("Error == ${error.toString()}");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return data;
+      BaseUtitiles.showToast(RequestConstant.NETWORKERROR);
+      return null;
+    }
   }
 
+
+  // static Future<List<AppVersionResponse>> getVersion() async {
+  //   var data = null;
+  //   await ApiManager.getAPICall(ApiConstant.GETVERSIONAPI).then((value) async{
+  //     final res = appVersionResponseFromJson(value);
+  //     if (res.length > 0 && res != null) {
+  //       data = res;
+  //       return data;
+  //     }
+  //   }, onError: (error) {
+  //     print(error.toString());
+  //     print("Error == ${error.toString()}");
+  //     BaseUtitiles.showToast('Something went wrong..');
+  //   });
+  //   return data;
+  // }
+
   ///-------Device Model Check---------------
-  static deviceModelCheck(String body) async {
-    var ratingRes = null;
-    await ApiManager.postAPICall(ApiConstant.DeviceModelAPI, body).then((value) {
-      var response = devicemodelFromJson(value);
-      if (response.retString != null) {
-        ratingRes = response.retString;
-        return ratingRes;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
-    });
-    return ratingRes;
-  }
+  // static deviceModelCheck(String body) async {
+  //   var ratingRes = null;
+  //   await ApiManager.postAPICall(ApiConstant.DeviceModelAPI, body).then((value) {
+  //     var response = devicemodelFromJson(value);
+  //     if (response.retString != null) {
+  //       ratingRes = response.retString;
+  //       return ratingRes;
+  //     }
+  //   }, onError: (error) {
+  //     print(error);
+  //     BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
+  //   });
+  //   return ratingRes;
+  // }
 
 
 

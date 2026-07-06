@@ -42,10 +42,9 @@ class DailyWrkDone_DPRNEW_Controller extends GetxController {
   double AddQty=0.0;
   RxList dprNew_mainList = [].obs;
   var imageFiles = <File>[].obs;
-  RxInt pickedImageCount = 0.obs;
-
   var gettingNetworkImages = <String>[].obs;
   List<int> imageIds = [];
+  RxInt pickedImageCount = 0.obs;
   double currentQty=0.0;
   RxInt matScaleId = 0.obs;
 
@@ -598,7 +597,7 @@ class DailyWrkDone_DPRNEW_Controller extends GetxController {
       billStatus: "N",
       totalAmount: totalNetAmnt,
       refNo: "-",
-      remarks: dpr_new_remarksController.text,
+      remarks: dpr_new_remarksController.text.isEmpty ? "-" : dpr_new_remarksController.text,
       createdBy: int.tryParse(loginController.EmpId()),
       createdDt: BaseUtitiles().convertToUtcIso(dateController.text),
       approveStatus: saveButton.value==RequestConstant.APPROVAL?"Y":"N",
@@ -817,7 +816,7 @@ class DailyWrkDone_DPRNEW_Controller extends GetxController {
     dprNewGetMSRreadListdata.value.clear();
   }
 
-  Future Dpr_New_EntryList_EditApi(int workid, BuildContext context) async {
+  Future Dpr_New_EntryList_EditApi(int workid,String MenuName,BuildContext context) async {
     dprNew_EditApiList.value=[];
     var response = await DPR_New_Provider.dpr_New_entryList_editAPI(workid);
     if (response != null) {
@@ -832,7 +831,7 @@ class DailyWrkDone_DPRNEW_Controller extends GetxController {
           await getLabourTablesDatas();
           await dprNew_EditMesurmentTableSave();
           await getMesurmentTablesDatas();
-          return Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DailyWork_done_DPR_Entry_New()),);
+          return Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DailyWork_done_DPR_Entry_New(heading: MenuName,)),);
         } else {
           BaseUtitiles.showToast("No Data Found");
         }

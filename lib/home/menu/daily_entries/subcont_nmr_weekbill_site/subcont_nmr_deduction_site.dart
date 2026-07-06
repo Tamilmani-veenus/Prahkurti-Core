@@ -1,3 +1,5 @@
+import 'package:prahkurticore/utilities/apiconstant.dart';
+
 import '../../../../app_theme/app_colors.dart';
 import '../../../../constants/ui_constant/icons_const.dart';
 import '../../../../controller/billgenerationdirect_controller.dart';
@@ -26,6 +28,8 @@ class _Subcont_NMR_DeductionState_Site
   ProjectController projectController = Get.put(ProjectController());
   SubcontractorController subcontractorController = Get.put(SubcontractorController());
   SiteController siteController = Get.put(SiteController());
+  BillGenerationDirectController billGenerationDirectController = Get.put(BillGenerationDirectController());
+
   @override
   void initState() {
     var duration = const Duration(seconds: 0);
@@ -59,7 +63,7 @@ class _Subcont_NMR_DeductionState_Site
       nmrWklyController.Debitamt.text = "0.0";
       nmrWklyController.Advded.text = "0.0";
       nmrWklyController.Roundoff.text = "0.0";
-      nmrWklyController.tobededadv.text = nmrWklyController.to_be_dection_advance;
+      nmrWklyController.tobededadv.text = billGenerationDirectController.to_be_dection_advance;
       nmrWklyController.deduction_paymentCalculation();
       nmrWklyController.CreditRemarksController.text = "-";
       nmrWklyController.DebitRemarksController.text = "-";
@@ -67,6 +71,7 @@ class _Subcont_NMR_DeductionState_Site
     });
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +148,7 @@ class _Subcont_NMR_DeductionState_Site
                     ),
                   ),
                 ),
-
+                !AppClient.isRKCPL ?
                 Container(
                   margin: EdgeInsets.only(top: 10, left: 10, right: 10),
                   child: Card(
@@ -234,7 +239,7 @@ class _Subcont_NMR_DeductionState_Site
                       ),
                     ),
                   ),
-                ),
+                ) : SizedBox(),
 
                 Row(
                   children: [
@@ -557,25 +562,68 @@ class _Subcont_NMR_DeductionState_Site
                     child: Padding(
                       padding:
                       const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                      child: TextFormField(
-                        keyboardType: TextInputType.number,
-                        readOnly: nmrWklyController.advance(nmrWklyController.tobededadv.text),
-                        controller: nmrWklyController.Advded,
-                        cursorColor: Colors.black,
-                        style: TextStyle(color: Colors.black),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.zero,
-                          border: InputBorder.none,
-                          labelText: "Advance Deduction Amt",
-                          labelStyle: TextStyle(
-                              color: Colors.grey,
-                              fontSize: RequestConstant.Lable_Font_SIZE),
-                          prefixIconConstraints:
-                          BoxConstraints(minWidth: 0, minHeight: 0),
-                          prefixIcon: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 8),
-                              child: ConstIcons.advancededuction),
+                      child: Obx(()=>
+                        TextFormField(
+                          keyboardType: TextInputType.number,
+                          readOnly: nmrWklyController.isAdvanceReadOnly.value,
+                          controller: nmrWklyController.Advded,
+                          cursorColor: Colors.black,
+                          style: TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.zero,
+                            border: InputBorder.none,
+                            labelText: "Advance Deduction Amt",
+                            labelStyle: TextStyle(
+                                color: Colors.grey,
+                                fontSize: RequestConstant.Lable_Font_SIZE),
+                            prefixIconConstraints:
+                            BoxConstraints(minWidth: 0, minHeight: 0),
+                            prefixIcon: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 8),
+                                child: ConstIcons.advancededuction),
+                          ),
+                            onChanged: (value) async {
+                              double advDed = double.tryParse(value) ?? 0;
+                              double advLimit =
+                                  double.tryParse(nmrWklyController.tobededadv.text) ?? 0;
+
+                              if (advDed > advLimit) {
+                                BaseUtitiles.showToast(
+                                    "Advance deduction should not exceed advance limit.");
+
+                                nmrWklyController.Advded.text = "0.0";
+                                nmrWklyController.Advded.selection = TextSelection.fromPosition(
+                                  TextPosition(offset: nmrWklyController.Advded.text.length),
+                                );
+
+                                await nmrWklyController.deduction_paymentCalculation();
+                                return;
+                              }
+
+                              bool success =
+                              await nmrWklyController.deduction_paymentCalculation();
+
+                              if (!success) {
+                                BaseUtitiles.showToast(
+                                    "Advance deduction should not exceed net payable amount.");
+
+                                nmrWklyController.Advded.text = "0.0";
+                                nmrWklyController.Advded.selection = TextSelection.fromPosition(
+                                  TextPosition(offset: nmrWklyController.Advded.text.length),
+                                );
+
+                                await nmrWklyController.deduction_paymentCalculation();
+                              }
+                            },
+                          onTap: (){
+                            if(nmrWklyController.isAdvanceReadOnly.value==false) {
+                              if (nmrWklyController.Advded.text == "0.0" ||
+                                  nmrWklyController.Advded.text == "0") {
+                                nmrWklyController.Advded.text = "";
+                              }
+                            }
+                          },
                         ),
                       ),
                     ),
@@ -1174,9 +1222,6 @@ class _Subcont_NMR_DeductionState_Site
                           nmrWklyController.Debitamt.text = "0.0";
                           nmrWklyController.Advded.text = "0.0";
                           nmrWklyController.Roundoff.text = "0.0";
-                          nmrWklyController.tobededadv.text =
-                              nmrWklyController.to_be_dection_advance;
-
                           nmrWklyController.deduction_paymentCalculation();
                           nmrWklyController.CreditRemarksController.text = "-";
                           nmrWklyController.DebitRemarksController.text = "-";
@@ -1197,7 +1242,6 @@ class _Subcont_NMR_DeductionState_Site
                           nmrWklyController.Advded.text = "0.0";
                           nmrWklyController.Roundoff.text = "0.0";
                           nmrWklyController.netpayamt.text = "0.0";
-                          nmrWklyController.tobededadv.text = "0.0";
 
                           Navigator.pop(context);
                         },

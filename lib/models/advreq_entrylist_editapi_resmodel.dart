@@ -1,417 +1,349 @@
+// To parse this JSON data, do
+//
+//     final advReqEditApiRes = advReqEditApiResFromJson(jsonString);
+
 import 'dart:convert';
 
-List<AdvReqEditApiResmodel> advReqEditApiResmodelFromJson(String str) => List<AdvReqEditApiResmodel>.from(json.decode(str).map((x) => AdvReqEditApiResmodel.fromJson(x)));
+AdvReqEditApiRes advReqEditApiResFromJson(String str) => AdvReqEditApiRes.fromJson(json.decode(str));
 
-String advReqEditApiResmodelToJson(List<AdvReqEditApiResmodel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String advReqEditApiResToJson(AdvReqEditApiRes data) => json.encode(data.toJson());
 
-class AdvReqEditApiResmodel {
-  AdvReqEditApiResmodel({
-    this.vocId,
-    this.vocNo,
-    this.vocDate,
-    this.projectId,
-    this.projectName,
-    this.accTypeId,
-    this.accNameId,
-    this.payMode,
-    this.vocType,
-    this.payFor,
-    this.payType,
-    this.remarks,
-    this.preparedby,
-    this.preparedbyName,
-    this.vocAmt,
-    this.nameThrough,
-    this.companyId,
-    this.bankId,
-    this.bankName,
-    this.chqNo,
-    this.chqDate,
-    this.accNameName,
-    this.accTypeName,
-    this.payForName,
-    this.PayModeName,
-    this.vocEditDet,
+class AdvReqEditApiRes {
+  bool? success;
+  String? message;
+  Result? result;
+
+  AdvReqEditApiRes({
+    this.success,
+    this.message,
+    this.result,
   });
 
-  int? vocId;
-  String? vocNo;
-  String? vocDate;
-  int? projectId;
-  String? projectName;
-  int? accTypeId;
-  int? accNameId;
-  int? payMode;
-  String? vocType;
-  String? payFor;
-  String? payType;
-  String? remarks;
-  int? preparedby;
-  String? preparedbyName;
-  double? vocAmt;
-  String? nameThrough;
-  int? companyId;
-  int? bankId;
-  String? bankName;
-  String? chqNo;
-  String? chqDate;
-  String? accNameName;
-  String? accTypeName;
-  String? payForName;
-  String? PayModeName;
-  List<VocEditDet>? vocEditDet;
-
-  factory AdvReqEditApiResmodel.fromJson(Map<String, dynamic> json) => AdvReqEditApiResmodel(
-    vocId: json["VocId"],
-    vocNo: json["VocNo"],
-    vocDate: json["VocDate"],
-    projectId: json["ProjectId"],
-    projectName: json["ProjectName"],
-    accTypeId: json["AccTypeId"],
-    accNameId: json["AccNameId"],
-    payMode: json["PayMode"],
-    vocType: json["VocType"],
-    payFor: json["PayFor"],
-    payType: json["PayType"],
-    remarks: json["Remarks"],
-    preparedby: json["Preparedby"],
-    preparedbyName: json["PreparedbyName"],
-    vocAmt: json["VocAmt"],
-    nameThrough: json["NameThrough"],
-    companyId: json["CompanyId"],
-    bankId: json["BankId"],
-    bankName: json["BankName"],
-    chqNo: json["ChqNo"],
-    chqDate: json["ChqDate"],
-    accNameName: json["AccNameName"],
-    accTypeName: json["AccTypeName"],
-    payForName: json["PayForName"],
-    PayModeName: json["PayModeName"],
-    vocEditDet: List<VocEditDet>.from(json["VocEditDet"].map((x) => VocEditDet.fromJson(x))),
+  factory AdvReqEditApiRes.fromJson(Map<String, dynamic> json) => AdvReqEditApiRes(
+    success: json["success"],
+    message: json["message"],
+    result: json["result"]==null?null:Result.fromJson(json["result"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "VocId": vocId,
-    "VocNo": vocNo,
-    "VocDate": vocDate,
-    "ProjectId": projectId,
-    "ProjectName": projectName,
-    "AccTypeId": accTypeId,
-    "AccNameId": accNameId,
-    "PayMode": payMode,
-    "VocType": vocType,
-    "PayFor": payFor,
-    "PayType": payType,
-    "Remarks": remarks,
-    "Preparedby": preparedby,
-    "PreparedbyName": preparedbyName,
-    "VocAmt": vocAmt,
-    "NameThrough": nameThrough,
-    "CompanyId": companyId,
-    "BankId": bankId,
-    "BankName": bankName,
-    "ChqNo": chqNo,
-    "ChqDate": chqDate,
-    "AccNameName": accNameName,
-    "AccTypeName": accTypeName,
-    "PayForName": payForName,
-    "PayModeName": PayModeName,
-    "VocEditDet": List<dynamic>.from(vocEditDet!.map((x) => x.toJson())),
+    "success": success,
+    "result": result==null?null:result!.toJson(),
   };
 }
 
-class VocEditDet {
-  int? siteId;
-  String? payType;
-  String? payTypeName;
-  String? siteName;
-  double? amt;
-  double? tdsPer;
-  double? tdsAmt;
-  double? netAmt;
-  int? purOrdMasId;
-  dynamic poNo;
-  int? workOrdId;
+class Result {
+  int? id;
+  String? advanceReqVoucherNo;
+  String? advanceReqVoucherDate;
+  String? advanceReqVoucherType;
   int? projectId;
-  dynamic project;
-  double? billAmt;
-  double? bAmount;
-  double? advancAmt;
-  double? amount;
+  int? companyId;
+  int? accountTypeId;
+  int? accountNameId;
+  String? payForType;
+  int? payModeId;
+  String? paymentType;
+  double? advanceReqVoucherAmount;
+  int? paidBy;
+  String? remarks;
+  int? companyBankId;
+  String? chequeNo;
+  String? chequeDate;
+  String? nameThrough;
+  double? actualVoucherAmount;
+  int? createdBy;
+  String? createdDt;
+  int? verifyBy;
+  String? verifyStatus;
+  int? approvedBy;
+  String? approveStatus;
+  String? projectName;
+  String? companyName;
+  String? accountName;
+  String? accountTypeName;
+  String? accountVoucherType;
+  String? accountPayForName;
+  String? createdName;
+  String? status;
+  List<AccountAdvanceReqVoucherSwPayment>? accountAdvanceReqVoucherSwPayments;
+  List<RAdvanceDetail>? supplierAdvanceDetails;
+  List<RAdvanceDetail>? subContractorAdvanceDetails;
 
-  VocEditDet({
-    this.siteId,
+  Result({
+    this.id,
+    this.advanceReqVoucherNo,
+    this.advanceReqVoucherDate,
+    this.advanceReqVoucherType,
+    this.projectId,
+    this.companyId,
+    this.accountTypeId,
+    this.accountNameId,
+    this.payForType,
+    this.payModeId,
+    this.paymentType,
+    this.advanceReqVoucherAmount,
+    this.paidBy,
+    this.remarks,
+    this.companyBankId,
+    this.chequeNo,
+    this.chequeDate,
+    this.nameThrough,
+    this.actualVoucherAmount,
+    this.createdBy,
+    this.createdDt,
+    this.verifyBy,
+    this.verifyStatus,
+    this.approvedBy,
+    this.approveStatus,
+    this.projectName,
+    this.companyName,
+    this.accountName,
+    this.accountTypeName,
+    this.accountVoucherType,
+    this.accountPayForName,
+    this.createdName,
+    this.status,
+    this.accountAdvanceReqVoucherSwPayments,
+    this.supplierAdvanceDetails,
+    this.subContractorAdvanceDetails,
+  });
+
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    id: json["id"],
+    advanceReqVoucherNo: json["advanceReqVoucherNo"],
+    advanceReqVoucherDate: json["advanceReqVoucherDate"],
+    advanceReqVoucherType: json["advanceReqVoucherType"],
+    projectId: json["projectId"],
+    companyId: json["companyId"],
+    accountTypeId: json["accountTypeId"],
+    accountNameId: json["accountNameId"],
+    payForType: json["payForType"],
+    payModeId: json["payModeId"],
+    paymentType: json["paymentType"],
+    advanceReqVoucherAmount: json["advanceReqVoucherAmount"],
+    paidBy: json["paidBy"],
+    remarks: json["remarks"],
+    companyBankId: json["companyBankId"],
+    chequeNo: json["chequeNo"],
+    chequeDate: json["chequeDate"],
+    nameThrough: json["nameThrough"],
+    actualVoucherAmount: json["actualVoucherAmount"],
+    createdBy: json["createdBy"],
+    createdDt: json["createdDt"],
+    verifyBy: json["verifyBy"],
+    verifyStatus: json["verifyStatus"],
+    approvedBy: json["approvedBy"],
+    approveStatus: json["approveStatus"],
+    projectName: json["projectName"],
+    companyName: json["companyName"],
+    accountName: json["accountName"],
+    accountTypeName: json["accountTypeName"],
+    accountVoucherType: json["accountVoucherType"],
+    accountPayForName: json["accountPayForName"],
+    createdName: json["createdName"],
+    status: json["status"],
+    accountAdvanceReqVoucherSwPayments: List<AccountAdvanceReqVoucherSwPayment>.from(json["accountAdvanceReqVoucherSWPayments"].map((x) => AccountAdvanceReqVoucherSwPayment.fromJson(x))),
+    supplierAdvanceDetails: List<RAdvanceDetail>.from(json["supplierAdvanceDetails"].map((x) => RAdvanceDetail.fromJson(x))),
+    subContractorAdvanceDetails: List<RAdvanceDetail>.from(json["subContractorAdvanceDetails"].map((x) => RAdvanceDetail.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "advanceReqVoucherNo": advanceReqVoucherNo,
+    "advanceReqVoucherDate": advanceReqVoucherDate,
+    "advanceReqVoucherType": advanceReqVoucherType,
+    "projectId": projectId,
+    "companyId": companyId,
+    "accountTypeId": accountTypeId,
+    "accountNameId": accountNameId,
+    "payForType": payForType,
+    "payModeId": payModeId,
+    "paymentType": paymentType,
+    "advanceReqVoucherAmount": advanceReqVoucherAmount,
+    "paidBy": paidBy,
+    "remarks": remarks,
+    "companyBankId": companyBankId,
+    "chequeNo": chequeNo,
+    "chequeDate": chequeDate,
+    "nameThrough": nameThrough,
+    "actualVoucherAmount": actualVoucherAmount,
+    "createdBy": createdBy,
+    "createdDt": createdDt,
+    "verifyBy": verifyBy,
+    "verifyStatus": verifyStatus,
+    "approvedBy": approvedBy,
+    "approveStatus": approveStatus,
+    "projectName": projectName,
+    "companyName": companyName,
+    "accountName": accountName,
+    "accountTypeName": accountTypeName,
+    "accountVoucherType": accountVoucherType,
+    "accountPayForName": accountPayForName,
+    "createdName": createdName,
+    "status": status,
+    "accountAdvanceReqVoucherSWPayments": List<dynamic>.from(accountAdvanceReqVoucherSwPayments!.map((x) => x.toJson())),
+    "supplierAdvanceDetails": List<dynamic>.from(supplierAdvanceDetails!.map((x) => x.toJson())),
+    "subContractorAdvanceDetails": List<dynamic>.from(subContractorAdvanceDetails!.map((x) => x.toJson())),
+  };
+}
+
+class AccountAdvanceReqVoucherSwPayment {
+  int? id;
+  int? advanceReqVoucherId;
+  String? payType;
+  int? siteId;
+  int? purOrdmasId;
+  int? purOrdBillmasId;
+  int? workOrderId;
+  int? workId;
+  double? tdsPercentage;
+  double? tdsAmount;
+  double? amount;
+  double? netAmount;
+  double? actualNetAmount;
+  String? siteName;
+  String? payTypeDesc;
+
+  AccountAdvanceReqVoucherSwPayment({
+    this.id,
+    this.advanceReqVoucherId,
     this.payType,
-    this.payTypeName,
+    this.siteId,
+    this.purOrdmasId,
+    this.purOrdBillmasId,
+    this.workOrderId,
+    this.workId,
+    this.tdsPercentage,
+    this.tdsAmount,
+    this.amount,
+    this.netAmount,
+    this.actualNetAmount,
     this.siteName,
-    this.amt,
+    this.payTypeDesc,
+  });
+
+  factory AccountAdvanceReqVoucherSwPayment.fromJson(Map<String, dynamic> json) => AccountAdvanceReqVoucherSwPayment(
+    id: json["id"],
+    advanceReqVoucherId: json["advanceReqVoucherId"],
+    payType: json["payType"],
+    siteId: json["siteId"],
+    purOrdmasId: json["purOrdmasId"],
+    purOrdBillmasId: json["purOrdBillmasId"],
+    workOrderId: json["workOrderId"],
+    workId: json["workId"],
+    tdsPercentage: json["tdsPercentage"],
+    tdsAmount: json["tdsAmount"],
+    amount: json["amount"],
+    netAmount: json["netAmount"],
+    actualNetAmount: json["actualNetAmount"],
+    siteName: json["siteName"],
+    payTypeDesc: json["payTypeDesc"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "advanceReqVoucherId": advanceReqVoucherId,
+    "payType": payType,
+    "siteId": siteId,
+    "purOrdmasId": purOrdmasId,
+    "purOrdBillmasId": purOrdBillmasId,
+    "workOrderId": workOrderId,
+    "workId": workId,
+    "tdsPercentage": tdsPercentage,
+    "tdsAmount": tdsAmount,
+    "amount": amount,
+    "netAmount": netAmount,
+    "actualNetAmount": actualNetAmount,
+    "siteName": siteName,
+    "payTypeDesc": payTypeDesc,
+  };
+}
+
+class RAdvanceDetail {
+  int? swPayId;
+  int? purOrdMasId;
+  String? billNo;
+  String? poNo;
+  String? siteName;
+  int? siteId;
+  String? projectName;
+  int? projectId;
+  double? netAmt;
+  double? paidAmt;
+  double? advanceAmt;
+  double? bAmount;
+  double? amount;
+  int? tdsPer;
+  int? tdsAmt;
+  double? totAmt;
+  double? billAmt;
+  String? payType;
+  String? paymentTypeName;
+
+  RAdvanceDetail({
+    this.swPayId,
+    this.purOrdMasId,
+    this.billNo,
+    this.poNo,
+    this.siteName,
+    this.siteId,
+    this.projectName,
+    this.projectId,
+    this.netAmt,
+    this.paidAmt,
+    this.advanceAmt,
+    this.bAmount,
+    this.amount,
     this.tdsPer,
     this.tdsAmt,
-    this.netAmt,
-    this.purOrdMasId,
-    this.poNo,
-    this.workOrdId,
-    this.projectId,
-    this.project,
+    this.totAmt,
     this.billAmt,
-    this.bAmount,
-    this.advancAmt,
-    this.amount,
+    this.payType,
+    this.paymentTypeName,
   });
 
-  factory VocEditDet.fromJson(Map<String, dynamic> json) => VocEditDet(
-    siteId: json["SiteId"],
-    payType: json["PayType"],
-    payTypeName: json["PayTypeName"],
-    siteName: json["SiteName"],
-    amt: json["Amt"],
-    tdsPer: json["TdsPer"],
-    tdsAmt: json["TdsAmt"],
-    netAmt: json["NetAmt"],
-    purOrdMasId: json["PurOrdMasId"],
-    poNo: json["PoNo"],
-    workOrdId: json["WorkOrdId"],
+  factory RAdvanceDetail.fromJson(Map<String, dynamic> json) => RAdvanceDetail(
+    swPayId: json["swPayId"],
+    purOrdMasId: json["purOrdMasId"],
+    billNo: json["billNo"],
+    poNo: json["poNo"],
+    siteName: json["siteName"],
+    siteId: json["siteId"],
+    projectName: json["projectName"],
     projectId: json["projectId"],
-    project: json["project"],
-    billAmt: json["BillAmt"],
-    bAmount: json["BAmount"],
-    advancAmt: json["AdvancAmt"],
-    amount: json["Amount"],
+    netAmt: json["netAmt"],
+    paidAmt: json["paidAmt"],
+    advanceAmt: json["advanceAmt"],
+    bAmount: json["bAmount"],
+    amount: json["amount"],
+    tdsPer: json["tdsPer"],
+    tdsAmt: json["tdsAmt"],
+    totAmt: json["totAmt"],
+    billAmt: json["billAmt"],
+    payType: json["payType"],
+    paymentTypeName: json["paymentTypeName"],
   );
 
   Map<String, dynamic> toJson() => {
-    "SiteId": siteId,
-    "PayType": payType,
-    "PayTypeName": payTypeName,
-    "SiteName": siteName,
-    "Amt": amt,
-    "TdsPer": tdsPer,
-    "TdsAmt": tdsAmt,
-    "NetAmt": netAmt,
-    "PurOrdMasId": purOrdMasId,
-    "PoNo": poNo,
-    "WorkOrdId": workOrdId,
+    "swPayId": swPayId,
+    "purOrdMasId": purOrdMasId,
+    "billNo": billNo,
+    "poNo": poNo,
+    "siteName": siteName,
+    "siteId": siteId,
+    "projectName": projectName,
     "projectId": projectId,
-    "project": project,
-    "BillAmt": billAmt,
-    "BAmount": bAmount,
-    "AdvancAmt": advancAmt,
-    "Amount": amount,
+    "netAmt": netAmt,
+    "paidAmt": paidAmt,
+    "advanceAmt": advanceAmt,
+    "bAmount": bAmount,
+    "amount": amount,
+    "tdsPer": tdsPer,
+    "tdsAmt": tdsAmt,
+    "totAmt": totAmt,
+    "billAmt": billAmt,
+    "payType": payType,
+    "paymentTypeName": paymentTypeName,
   };
 }
 
-
-
-// To parse this JSON data, do
-//
-//     final advReqEditApiResmodel = advReqEditApiResmodelFromJson(jsonString);
-
-// To parse this JSON data, do
-//
-//     final advReqEditApiResmodel = advReqEditApiResmodelFromJson(jsonString);
-
-// import 'dart:convert';
-//
-// List<AdvReqEditApiResmodel> advReqEditApiResmodelFromJson(String str) => List<AdvReqEditApiResmodel>.from(json.decode(str).map((x) => AdvReqEditApiResmodel.fromJson(x)));
-//
-// String advReqEditApiResmodelToJson(List<AdvReqEditApiResmodel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-//
-// class AdvReqEditApiResmodel {
-//   int? vocId;
-//   String? vocNo;
-//   String? vocDate;
-//   String? vocType;
-//   int? projectId;
-//   int? accTypeId;
-//   int? accNameId;
-//   String? projectName;
-//   String? accTypeName;
-//   String? accNameName;
-//   String? payFor;
-//   String? payForName;
-//   int? payMode;
-//   String? payModeName;
-//   String? payType;
-//   double? vocAmt;
-//   int? companyId;
-//   int? bankId;
-//   String? bankName;
-//   String? chqNo;
-//   String? chqDate;
-//   String? nameThrough;
-//   String? remarks;
-//   int? preparedby;
-//   String? preparedbyName;
-//   int? userId;
-//   String? entryMode;
-//   List<VocDet>? vocDet;
-//
-//   AdvReqEditApiResmodel({
-//      this.vocId,
-//      this.vocNo,
-//      this.vocDate,
-//      this.vocType,
-//      this.projectId,
-//      this.accTypeId,
-//      this.accNameId,
-//      this.projectName,
-//      this.accTypeName,
-//      this.accNameName,
-//      this.payFor,
-//      this.payForName,
-//      this.payMode,
-//      this.payModeName,
-//      this.payType,
-//      this.vocAmt,
-//      this.companyId,
-//      this.bankId,
-//      this.bankName,
-//      this.chqNo,
-//      this.chqDate,
-//      this.nameThrough,
-//      this.remarks,
-//      this.preparedby,
-//      this.preparedbyName,
-//      this.userId,
-//      this.entryMode,
-//      this.vocDet,
-//   });
-//
-//   factory AdvReqEditApiResmodel.fromJson(Map<String, dynamic> json) => AdvReqEditApiResmodel(
-//     vocId: json["VocId"],
-//     vocNo: json["VocNo"],
-//     vocDate: json["VocDate"],
-//     vocType: json["VocType"],
-//     projectId: json["ProjectId"],
-//     accTypeId: json["AccTypeId"],
-//     accNameId: json["AccNameId"],
-//     projectName: json["ProjectName"],
-//     accTypeName: json["AccTypeName"],
-//     accNameName: json["AccNameName"],
-//     payFor: json["PayFor"],
-//     payForName: json["PayForName"],
-//     payMode: json["PayMode"],
-//     payModeName: json["PayModeName"],
-//     payType: json["PayType"],
-//     vocAmt: json["VocAmt"],
-//     companyId: json["CompanyId"],
-//     bankId: json["BankId"],
-//     bankName: json["BankName"],
-//     chqNo: json["ChqNo"],
-//     chqDate: json["ChqDate"],
-//     nameThrough: json["NameThrough"],
-//     remarks: json["Remarks"],
-//     preparedby: json["Preparedby"],
-//     preparedbyName: json["PreparedbyName"],
-//     userId: json["UserId"],
-//     entryMode: json["EntryMode"],
-//     vocDet: List<VocDet>.from(json["VocDet"].map((x) => VocDet.fromJson(x))),
-//   );
-//
-//   Map<String, dynamic> toJson() => {
-//     "VocId": vocId,
-//     "VocNo": vocNo,
-//     "VocDate": vocDate,
-//     "VocType": vocType,
-//     "ProjectId": projectId,
-//     "AccTypeId": accTypeId,
-//     "AccNameId": accNameId,
-//     "ProjectName": projectName,
-//     "AccTypeName": accTypeName,
-//     "AccNameName": accNameName,
-//     "PayFor": payFor,
-//     "PayForName": payForName,
-//     "PayMode": payMode,
-//     "PayModeName": payModeName,
-//     "PayType": payType,
-//     "VocAmt": vocAmt,
-//     "CompanyId": companyId,
-//     "BankId": bankId,
-//     "BankName": bankName,
-//     "ChqNo": chqNo,
-//     "ChqDate": chqDate,
-//     "NameThrough": nameThrough,
-//     "Remarks": remarks,
-//     "Preparedby": preparedby,
-//     "PreparedbyName": preparedbyName,
-//     "UserId": userId,
-//     "EntryMode": entryMode,
-//     "VocDet": List<dynamic>.from(vocDet!.map((x) => x.toJson())),
-//   };
-// }
-//
-// class VocDet {
-//   int? purOrdMasId;
-//   int? workOrderId;
-//   int? siteId;
-//   String? payType;
-//   String? payTypeName;
-//   String? siteName;
-//   double? amt;
-//   double? tdsPer;
-//   double? tdsAmt;
-//   double? netAmt;
-//   String? orderNo;
-//   int? projectid;
-//   String? project;
-//   double? amount;
-//   double? bAmount;
-//   double? advanceAmt;
-//
-//   VocDet({
-//     this.purOrdMasId,
-//     this.workOrderId,
-//     this.siteId,
-//     this.payType,
-//     this.payTypeName,
-//     this.siteName,
-//     this.amt,
-//     this.tdsPer,
-//     this.tdsAmt,
-//     this.netAmt,
-//     this.orderNo,
-//     this.projectid,
-//     this.project,
-//     this.amount,
-//     this.bAmount,
-//     this.advanceAmt,
-//   });
-//
-//   factory VocDet.fromJson(Map<String, dynamic> json) => VocDet(
-//     purOrdMasId: json["PurOrdMasId"],
-//     workOrderId: json["WorkOrderId"],
-//     siteId: json["SiteId"],
-//     payType: json["PayType"] ?? "",
-//     payTypeName: json["PayTypeName"] ?? "",
-//     siteName: json["SiteName"],
-//     amt: json["Amt"],
-//     tdsPer: json["TdsPer"],
-//     tdsAmt: json["TdsAmt"],
-//     netAmt: json["NetAmt"],
-//     orderNo: json["PoNo"],
-//     projectid: json["Projectid"],
-//     project: json["Project"],
-//     amount: json["Amount"],
-//     bAmount: json["BAmount"],
-//     advanceAmt: json["AdvanceAmt"],
-//   );
-//
-//   Map<String, dynamic> toJson() => {
-//     "PurOrdMasId": purOrdMasId,
-//     "WorkOrderId": workOrderId,
-//     "SiteId": siteId,
-//     "PayType": payType,
-//     "PayTypeName": payTypeName,
-//     "SiteName": siteName,
-//     "Amt": amt,
-//     "TdsPer": tdsPer,
-//     "TdsAmt": tdsAmt,
-//     "NetAmt": netAmt,
-//     "PoNo": orderNo,
-//     "Projectid": projectid,
-//     "Project": project,
-//     "Amount": amount,
-//     "BAmount": bAmount,
-//     "AdvanceAmt": advanceAmt,
-//   };
-// }

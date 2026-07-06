@@ -106,22 +106,22 @@ class  RequisitionSlipControllerNew extends GetxController{
     }
   }
 
-  Future getLeaveInfo_List(int empId) async {
-    staffLeaveInfolist.value.clear();
-    await RequisitionslipProvider.getStaffLeaveInfo_Provider(empId).then((value) async {
-      if (value != null && value.length > 0) {
-        staffLeaveInfolist.value = value;
-        await leaveInfo();
-        update();
-        print("yearofLeavedays :: ${yearofLeavedays.value}");
-        print("yearofPerHrs :: ${yearofPerHrs.value}");
-        return staffLeaveInfolist.value;
-      }
-      else {
-        BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
-      }
-    });
-  }
+  // Future getLeaveInfo_List(int empId) async {
+  //   staffLeaveInfolist.value.clear();
+  //   await RequisitionslipProvider.getStaffLeaveInfo_Provider(empId).then((value) async {
+  //     if (value != null && value.length > 0) {
+  //       staffLeaveInfolist.value = value;
+  //       await leaveInfo();
+  //       update();
+  //       print("yearofLeavedays :: ${yearofLeavedays.value}");
+  //       print("yearofPerHrs :: ${yearofPerHrs.value}");
+  //       return staffLeaveInfolist.value;
+  //     }
+  //     else {
+  //       BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+  //     }
+  //   });
+  // }
 
 
   Future<void> leaveInfo() async {
@@ -222,7 +222,7 @@ class  RequisitionSlipControllerNew extends GetxController{
       if(list["success"] == true){
         BaseUtitiles.showToast(list["message"]);
         await pendingListController.getPendingList();
-        BaseUtitiles.popMultiple(context, count: 2);
+        BaseUtitiles.popMultiple(context, count: 3);
       }
       else {
         BaseUtitiles.showToast(list["message"] ?? 'Something went wrong..');
@@ -235,7 +235,7 @@ class  RequisitionSlipControllerNew extends GetxController{
     }
   }
 
-  Future Requisitionslip_EditApi(int reqId, BuildContext context, status) async {
+  Future Requisitionslip_EditApi(int reqId,String MenuName, BuildContext context, status) async {
     ReqSlipEditList.value=[];
     var response = await RequisitionslipProvider.Requisitionslip_editAPI(reqId,status);
     if (response != null) {
@@ -245,7 +245,7 @@ class  RequisitionSlipControllerNew extends GetxController{
           saveButton.value=RequestConstant.RESUBMIT;
           Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => RequisitionSlip_Entry())
+              MaterialPageRoute(builder: (context) => RequisitionSlip_Entry(heading: MenuName,))
           );
         } else {
           BaseUtitiles.showToast("No Data Found");

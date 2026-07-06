@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart';
+
 import '../../../../app_theme/app_colors.dart';
 import '../../../../constants/ui_constant/icons_const.dart';
 import '../../../../controller/attendancecontroller.dart';
@@ -12,7 +14,8 @@ import '../../../../utilities/baseutitiles.dart';
 import '../../../../utilities/requestconstant.dart';
 
 class Case_Book_Staff extends StatefulWidget {
-  const Case_Book_Staff({Key? key}) : super(key: key);
+  final String heading;
+  const Case_Book_Staff({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<Case_Book_Staff> createState() => _Case_Book_StaffState();
@@ -377,6 +380,11 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
                         textAlign: TextAlign.center,
                         controller: cashBookStaffController.totalDebit,
                         keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'^\d+\.?\d{0,2}'),
+                          ),
+                        ],
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                           focusedBorder: OutlineInputBorder(
@@ -402,6 +410,11 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
                         textAlign: TextAlign.center,
                         controller: cashBookStaffController.totalCredit,
                         keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'^\d+\.?\d{0,2}'),
+                          ),
+                        ],
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                           focusedBorder: OutlineInputBorder(
@@ -439,6 +452,11 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
                         textAlign: TextAlign.center,
                         controller: cashBookStaffController.closingDebit,
                         keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'^\d+\.?\d{0,2}'),
+                          ),
+                        ],
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                           focusedBorder: OutlineInputBorder(
@@ -464,6 +482,11 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
                         textAlign: TextAlign.center,
                         controller: cashBookStaffController.closingCredit,
                         keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'^\d+\.?\d{0,2}'),
+                          ),
+                        ],
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                           focusedBorder: OutlineInputBorder(

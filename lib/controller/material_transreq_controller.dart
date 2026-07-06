@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -166,6 +168,7 @@ class MaterialTransferReqController extends GetxController {
         ItemListTableModel.scale = element.scale.toString();
         ItemListTableModel.stockQty = element.stockQty;
         ItemListTableModel.Qty = 0.0;
+        ItemListTableModel.trQty = 0.0;
         ItemListTableModel.detRemarks = "-";
         ItemGetTableListdata.forEach((element) {
           if (element.materialId == ItemListTableModel.materialId) {
@@ -238,12 +241,9 @@ class MaterialTransferReqController extends GetxController {
       ItemListTableModel.materialName = element.materialName.toString();
       ItemListTableModel.scale = element.scale;
       ItemListTableModel.stockQty = element.stockQty;
-      ItemListTableModel.Qty =
-          double.parse(Show_Itemlist_TransQtyController[i].text);
-      ItemListTableModel.trQty =
-          element.trQty;
-      ItemListTableModel.detRemarks =
-          Show_Itemlist_DetRemarksController[i].text;
+      ItemListTableModel.Qty = double.parse(Show_Itemlist_TransQtyController[i].text);
+      ItemListTableModel.trQty = element.trQty==0.0? double.parse(Show_Itemlist_TransQtyController[i].text) : element.trQty;
+      ItemListTableModel.detRemarks = Show_Itemlist_DetRemarksController[i].text;
       itemListUpdateModelList.add(ItemListTableModel);
       i++;
     });
@@ -302,6 +302,14 @@ class MaterialTransferReqController extends GetxController {
           ? getDetDetails(id)
           : getTransfferbetDetList.value,
     ));
+
+    final decodedJson = jsonDecode(body);
+
+    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+    final prettyJson = encoder.convert(decodedJson);
+
+    debugPrint(prettyJson, wrapWidth: 1024);
+
     final list = await MaterialTransReqProvider.matTransReqSaveApi(
         body, saveButton.value, context);
 
@@ -341,7 +349,7 @@ class MaterialTransferReqController extends GetxController {
     return getTransfferbetDetList.value;
   }
 
-  Future matTransReqEdit(int transId, BuildContext context) async {
+  Future matTransReqEdit(int transId,String MenuName, BuildContext context) async {
     final value = await MaterialTransReqProvider.matTransReqeditAPI(transId);
     if (value != null) {
       if (value.success == true) {
@@ -351,7 +359,7 @@ class MaterialTransferReqController extends GetxController {
           matTransReqeditSaveDetTable();
           getItemlistTablesDatas();
           return Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => MaterialTransReqEntry()));
+              MaterialPageRoute(builder: (context) => MaterialTransReqEntry(heading: MenuName,)));
         } else {
           BaseUtitiles.showToast("No Data Found");
         }

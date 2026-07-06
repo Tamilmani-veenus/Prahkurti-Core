@@ -1,6 +1,7 @@
 import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,9 +14,11 @@ import '../../../../controller/auto_yrwise_no_controller.dart';
 import '../../../../controller/bottomsheet_Controllers.dart';
 import '../../../../controller/companycontroller.dart';
 import '../../../../controller/dailyentries_controller.dart';
+import '../../../../controller/logincontroller.dart';
 import '../../../../controller/projectcontroller.dart';
 import '../../../../controller/sitecontroller.dart';
 import '../../../../controller/subcontcontroller.dart';
+import '../../../../utilities/apiconstant.dart';
 import '../../../../utilities/baseutitiles.dart';
 import '../../../../utilities/image_view.dart';
 import '../../../../utilities/requestconstant.dart';
@@ -26,7 +29,8 @@ import '../../../punch_in_out/Image_galleryScreen.dart';
 import '../../../punch_in_out/camera_screen.dart';
 
 class SubattendanceSiteEntry extends StatefulWidget {
-  const SubattendanceSiteEntry({Key? key}) : super(key: key);
+  final String heading;
+  const SubattendanceSiteEntry({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<SubattendanceSiteEntry> createState() => _SubAttendanceSiteEntryState();
@@ -44,6 +48,8 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
       Get.put(AutoYearWiseNoController());
   BottomsheetControllers bottomsheetControllers =
       Get.put(BottomsheetControllers());
+  LoginController loginController = Get.put(LoginController());
+
 
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
@@ -84,7 +90,7 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
           subcontractorController.selectedSubcontId.value = element.subcontractorId;
           siteController.Sitename.text = element.siteName;
           siteController.selectedsiteId.value = element.siteId;
-          dailyEntriesController.WorkTypeTextController.text = element.workType! == "N" ? "NMR" : element.workType! == "R" ? "Rate" : "";
+          dailyEntriesController.WorkTypeTextController.text = element.workType! == "N" ? "NMR" : element.workType! == "R" ? "RATE" : "".toUpperCase();
           dailyEntriesController.Nmr_Rate.value = element.workType!;
           dailyEntriesController.RemarksController.text = element.remarks==null?"-":element.remarks;
         });
@@ -124,13 +130,15 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              "SubContractor Attendance",
-                              style: TextStyle(
-                                fontSize: RequestConstant.Heading_Font_SIZE,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                             Expanded(
+                               child: Text(
+                                widget.heading,
+                                style: TextStyle(
+                                  fontSize: dailyEntriesController.saveButton.value == RequestConstant.APPROVAL ? 16 : RequestConstant.Heading_Font_SIZE,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                               ),
+                             ),
                             TextButton(
                                 onPressed: () async {
                                   await subcontractorController
@@ -228,6 +236,8 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                       return null;
                                     },
                                     onTap: () async {
+                                      if(loginController.user.value.userType == "S"){}
+                                      else{
                                         var Entrydate = await showDatePicker(
                                             context: context,
                                             initialDate: DateTime.now(),
@@ -264,7 +274,7 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                                 .AttendDateController.text =
                                             BaseUtitiles.selectDateFormat(
                                                 Entrydate!);
-                                      }
+                                      }}
                                   ),
                                 ),
                               ),
@@ -287,7 +297,7 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
                               autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                                  AutovalidateMode.always,
                               readOnly: true,
                               controller: projectController.projectname,
                               cursorColor: Colors.black,
@@ -341,7 +351,7 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
                               autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                                  AutovalidateMode.always,
                               readOnly: true,
                               controller: siteController.Sitename,
                               cursorColor: Colors.black,
@@ -395,7 +405,7 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
                               autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                                  AutovalidateMode.always,
                               readOnly: true,
                               controller:
                                   subcontractorController.Subcontractorname,
@@ -451,7 +461,7 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                             child: TextFormField(
                               readOnly: true,
                               autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                                  AutovalidateMode.always,
                               controller:
                                   dailyEntriesController.WorkTypeTextController,
                               cursorColor: Colors.black,
@@ -479,13 +489,13 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                 return null;
                               },
                               onTap: () {
-                                if (dailyEntriesController.saveButton.value == RequestConstant.SUBMIT ){
+                                // if (dailyEntriesController.saveButton.value == RequestConstant.SUBMIT ){
                                   showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
                                         return const WorkTypeAlert();
                                       });
-                                }
+                                // }
                               },
                             ),
                           ),
@@ -506,7 +516,7 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
                               autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                                  AutovalidateMode.always,
                               readOnly: false,
                               controller:
                                   dailyEntriesController.RemarksController,
@@ -526,12 +536,12 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                         vertical: 8, horizontal: 8),
                                     child: ConstIcons.remarks),
                               ),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return '\u26A0 ${RequestConstant.VALIDATE}';
-                                }
-                                return null;
-                              },
+                              // validator: (value) {
+                              //   if (value!.isEmpty) {
+                              //     return '\u26A0 ${RequestConstant.VALIDATE}';
+                              //   }
+                              //   return null;
+                              // },
                             ),
                           ),
                         ),
@@ -777,8 +787,9 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                         child: Column(
                                           children: [
                                             const SizedBox(height: 10),
-                                            ListDetails(
-                                                context, scrollController),
+                                            !AppClient.isRKCPL
+                                                ? ListDetails(context, scrollController)
+                                                : RKCPLListDetails(context, scrollController),
                                           ],
                                         ),
                                       )),
@@ -871,15 +882,15 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                             ),
                           )),
                       onTap: () {
-                       if (_formkey.currentState!.validate()) {
+                        if (_formkey.currentState!.validate()) {
                           _formkey.currentState!.save();
                           if (dailyEntriesController.readListdata.isEmpty) {
                             Fluttertoast.showToast(msg: "Please add labour details");
                           } else {
                             bool hasInvalid = false;
+                            bool isWageNotSet = false;
 
                             for (int i = 0; i < dailyEntriesController.readListdata.length; i++) {
-
                               final nosText = dailyEntriesController
                                   .EntrySCreenNosControllers[i]
                                   .text
@@ -895,15 +906,21 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                   .text
                                   .trim();
 
+                              final amtText = dailyEntriesController
+                                  .NetAmtController[i]
+                                  .text
+                                  .trim();
+
                               final double nosValue = double.tryParse(nosText) ?? 0;
                               final double morOtValue = double.tryParse(morOtText) ?? 0;
                               final double eveOtValue = double.tryParse(eveOtText) ?? 0;
+                              final double amtValue = double.tryParse(amtText) ?? 0;
 
+                              if (amtValue <= 0) {
+                                isWageNotSet = true;
+                              }
 
-                              if (nosValue <= 0 &&
-                                  morOtValue <= 0 &&
-                                  eveOtValue <= 0) {
-
+                              if (nosValue <= 0 && morOtValue <= 0 && eveOtValue <= 0) {
                                 hasInvalid = true;
                                 break;
                               }
@@ -912,6 +929,10 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                             if (hasInvalid) {
                               BaseUtitiles.showToast(
                                 "Please enter either Nos, MOR OT Hrs, or EVE OT Hrs.",
+                              );
+                            } else if (isWageNotSet) {
+                              BaseUtitiles.showToast(
+                                "Please set the wages for the subcontractor category.",
                               );
                             } else {
                               SubmitAlert(context);
@@ -1189,6 +1210,11 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                           .EntrySCreenNosControllers[index],
                                       cursorColor: Colors.black,
                                       keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d+\.?\d{0,2}'),
+                                        ),
+                                      ],
                                       textAlign: TextAlign.center,
                                       decoration: InputDecoration(
                                         contentPadding:
@@ -1279,6 +1305,11 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                           .ExtrasControllers[index],
                                       cursorColor: Colors.black,
                                       keyboardType: TextInputType.number,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d+\.?\d{0,2}'),
+                                        ),
+                                      ],
                                       textAlign: TextAlign.center,
                                       decoration: InputDecoration(
                                         contentPadding:
@@ -1378,6 +1409,11 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                           .MrngOtHrsControllers[index],
                                       cursorColor: Colors.black,
                                       keyboardType: TextInputType.number,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d+\.?\d{0,2}'),
+                                        ),
+                                      ],
                                       textAlign: TextAlign.center,
                                       decoration: InputDecoration(
                                         contentPadding:
@@ -1447,6 +1483,11 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                           .MrngOtAmtControllers[index],
                                       cursorColor: Colors.black,
                                       keyboardType: TextInputType.number,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d+\.?\d{0,2}'),
+                                        ),
+                                      ],
                                       textAlign: TextAlign.center,
                                       decoration: InputDecoration(
                                         contentPadding:
@@ -1545,6 +1586,11 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                           const TextStyle(color: Colors.black),
                                       cursorColor: Colors.black,
                                       keyboardType: TextInputType.number,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d+\.?\d{0,2}'),
+                                        ),
+                                      ],
                                       textAlign: TextAlign.center,
                                       decoration: InputDecoration(
                                         contentPadding:
@@ -1612,6 +1658,11 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                     style: const TextStyle(color: Colors.black),
                                     cursorColor: Colors.black,
                                     keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                        RegExp(r'^\d+\.?\d{0,2}'),
+                                      ),
+                                    ],
                                     textAlign: TextAlign.center,
                                     decoration: InputDecoration(
                                       contentPadding: const EdgeInsets.fromLTRB(
@@ -1706,6 +1757,11 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                           const TextStyle(color: Colors.black),
                                       cursorColor: Colors.black,
                                       keyboardType: TextInputType.number,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d+\.?\d{0,2}'),
+                                        ),
+                                      ],
                                       textAlign: TextAlign.center,
                                       decoration: InputDecoration(
                                         contentPadding:
@@ -1774,6 +1830,11 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                     style: const TextStyle(color: Colors.black),
                                     cursorColor: Colors.black,
                                     keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                        RegExp(r'^\d+\.?\d{0,2}'),
+                                      ),
+                                    ],
                                     textAlign: TextAlign.center,
                                     decoration: InputDecoration(
                                       contentPadding: const EdgeInsets.fromLTRB(
@@ -1796,6 +1857,803 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                           ],
                         ),
                       ),
+                      Container(
+                        margin: const EdgeInsets.only(
+                            top: 10, left: 5, right: 3, bottom: 8),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              flex: 2,
+                              child: RichText(
+                                text: const TextSpan(
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "Remarks",
+                                      ),
+                                      TextSpan(
+                                        text: "",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+
+                              // Text(
+                              //   "Remarks",
+                              //   style: TextStyle(color: Colors.black),
+                              // ),
+                            ),
+                            Expanded(
+                                flex: 10,
+                                child: Container(
+                                  margin: const EdgeInsets.only(left: 0),
+                                  height: BaseUtitiles.getheightofPercentage(
+                                      context, 4),
+                                  child: TextFormField(
+                                    onTap: () {
+                                      dailyEntriesController
+                                          .RemarksControllers[index].text = "";
+                                    },
+                                    textAlign: TextAlign.center,
+                                    controller: dailyEntriesController
+                                        .RemarksControllers[index],
+                                    style: const TextStyle(color: Colors.black),
+                                    cursorColor: Colors.black,
+                                    keyboardType: TextInputType.name,
+                                    decoration: InputDecoration(
+                                      contentPadding: const EdgeInsets.fromLTRB(
+                                          8.0, 0.0, 8.0, 0.0),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10))),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10))),
+                                    ),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        dailyEntriesController
+                                            .updateSubcontDetValue();
+                                      });
+                                    },
+                                  ),
+                                )),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        SizedBox(height: BaseUtitiles.getheightofPercentage(context, 4)),
+      ],
+    );
+  }
+
+  Widget RKCPLListDetails(BuildContext context, ScrollController scrollController) {
+    return Column(
+      children: [
+        SizedBox(height: MediaQuery.of(context).size.height * 5 / 100),
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 75 / 100,
+          child: ListView.builder(
+            shrinkWrap: true,
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.zero,
+            itemCount: dailyEntriesController.readListdata.value.length,
+            itemBuilder: (BuildContext context, int index) {
+              dailyEntriesController.textControllersInitiate();
+              return SingleChildScrollView(
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  elevation: 5,
+                  color: Colors.white,
+                  // margin: EdgeInsets.only(left: 10, right: 10,bottom: 10),
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            flex: 6,
+                            child: Container(
+                              margin: const EdgeInsets.only(
+                                  top: 5, left: 10, right: 25),
+                              child: Text(
+                                '${dailyEntriesController.readListdata.value[index].siteName}',
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text(
+                                      RequestConstant.DO_YOU_WANT_DELETE,
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    actions: <Widget>[
+                                      Container(
+                                        margin: const EdgeInsets.only(
+                                            left: 20, right: 20),
+                                        child: IntrinsicHeight(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text("Cancel",
+                                                        style: TextStyle(
+                                                            color: Colors.grey,
+                                                            fontWeight:
+                                                            FontWeight.bold,
+                                                            fontSize:
+                                                            RequestConstant
+                                                                .Lable_Font_SIZE))),
+                                              ),
+                                              VerticalDivider(
+                                                color: Colors.grey.shade400,
+                                                width: 5,
+                                                thickness: 2,
+                                                indent: 15,
+                                                endIndent:
+                                                15, //Spacing at the bottom of divider.
+                                              ),
+                                              Expanded(
+                                                child: TextButton(
+                                                    onPressed: () {
+                                                      dailyEntriesController
+                                                          .deleteParticularList(
+                                                          dailyEntriesController
+                                                              .readListdata[
+                                                          index]);
+                                                      dailyEntriesController
+                                                          .getDetTablesDatas();
+                                                      dailyEntriesController
+                                                          .readListdata
+                                                          .remove(dailyEntriesController
+                                                          .readListdata[
+                                                      index]);
+                                                      Navigator.pop(
+                                                          context,
+                                                          dailyEntriesController
+                                                              .readListdata);
+                                                    },
+                                                    child: const Text("Delete",
+                                                        style: TextStyle(
+                                                            color: Colors.red,
+                                                            fontWeight:
+                                                            FontWeight.bold,
+                                                            fontSize:
+                                                            RequestConstant
+                                                                .Lable_Font_SIZE))),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                  margin:
+                                  const EdgeInsets.only(right: 5, top: 5),
+                                  child: ConstIcons.cancle))
+                        ],
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 10, left: 5),
+                        child: Row(
+                          children: <Widget>[
+                            RichText(
+                              text: TextSpan(
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: RequestConstant.Lable_Font_SIZE),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: dailyEntriesController
+                                        .readListdata.value[index].catName +
+                                        "  ",
+                                    style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                    "( ${RequestConstant.CURRENCY_SYMBOL}${dailyEntriesController.readListdata.value[index].wages} )",
+                                    style: const TextStyle(
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin:
+                        const EdgeInsets.only(top: 10, left: 5, right: 3),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              flex: 2,
+                              child: RichText(
+                                text: TextSpan(
+                                    style: const TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black,
+                                    ),
+                                    children: <TextSpan>[
+                                      const TextSpan(
+                                        text: "Nos",
+                                      ),
+                                      TextSpan(
+                                        text: dailyEntriesController
+                                            .EntrySCreenNosControllers[
+                                        index]
+                                            .text !=
+                                            "" &&
+                                            dailyEntriesController
+                                                .EntrySCreenNosControllers[
+                                            index]
+                                                .text !=
+                                                "0" &&
+                                            dailyEntriesController
+                                                .EntrySCreenNosControllers[
+                                            index]
+                                                .text !=
+                                                "0.0"
+                                            ? ""
+                                            : "",
+                                        style: TextStyle(
+                                          color: dailyEntriesController
+                                              .EntrySCreenNosControllers[
+                                          index]
+                                              .text !=
+                                              "" &&
+                                              dailyEntriesController
+                                                  .EntrySCreenNosControllers[
+                                              index]
+                                                  .text !=
+                                                  "0" &&
+                                              dailyEntriesController
+                                                  .EntrySCreenNosControllers[
+                                              index]
+                                                  .text !=
+                                                  "0.0"
+                                              ? Colors.white
+                                              : Colors.red,
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+
+                              // Text(
+                              //   RequestConstant.NOS,
+                              //   style: TextStyle(color: Colors.black),
+                              // ),
+                            ),
+                            Expanded(
+                                flex: 4,
+                                child: Container(
+                                  margin: const EdgeInsets.only(right: 11),
+                                  height: BaseUtitiles.getheightofPercentage(
+                                      context, 4),
+                                  child: TextFormField(
+                                      onTap: () {
+                                        if (dailyEntriesController
+                                            .EntrySCreenNosControllers[
+                                        index]
+                                            .text !=
+                                            "" &&
+                                            dailyEntriesController
+                                                .EntrySCreenNosControllers[
+                                            index]
+                                                .text !=
+                                                "0" &&
+                                            dailyEntriesController
+                                                .EntrySCreenNosControllers[
+                                            index]
+                                                .text !=
+                                                "0.0") {
+                                          return;
+                                        } else {
+                                          setState(() {
+                                            dailyEntriesController
+                                                .EntrySCreenNosControllers[
+                                            index]
+                                                .text = "";
+                                            dailyEntriesController.clickEdit();
+                                          });
+                                        }
+                                      },
+                                      style:
+                                      const TextStyle(color: Colors.black),
+                                      controller: dailyEntriesController
+                                          .EntrySCreenNosControllers[index],
+                                      cursorColor: Colors.black,
+                                      keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d+\.?\d{0,2}'),
+                                        ),
+                                      ],
+                                      textAlign: TextAlign.center,
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                        const EdgeInsets.fromLTRB(
+                                            8.0, 0.0, 8.0, 0.0),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                            const BorderRadius.all(
+                                                Radius.circular(10))),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                            const BorderRadius.all(
+                                                Radius.circular(10))),
+                                      ),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          dailyEntriesController.clickEdit();
+                                        });
+                                      }),
+                                )),
+                            Expanded(
+                              flex: 2,
+                              child: RichText(
+                                text: const TextSpan(
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "Morning OT Hrs",
+                                      ),
+                                      TextSpan(
+                                        text: "",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+
+                              // Text(
+                              //   "Mrng OT Nos",
+                              //   style: TextStyle(color: Colors.black),
+                              // ),
+                            ),
+                            Expanded(
+                                flex: 4,
+                                child: Container(
+                                  margin: const EdgeInsets.only(right: 11),
+                                  height: BaseUtitiles.getheightofPercentage(
+                                      context, 4),
+                                  child: TextFormField(
+                                      onTap: () {
+                                        if (dailyEntriesController
+                                            .MrngOtHrsControllers[index]
+                                            .text !=
+                                            "" &&
+                                            dailyEntriesController
+                                                .MrngOtHrsControllers[index]
+                                                .text !=
+                                                "0" &&
+                                            dailyEntriesController
+                                                .MrngOtHrsControllers[index]
+                                                .text !=
+                                                "0.0") {
+                                          return;
+                                        } else {
+                                          setState(() {
+                                            dailyEntriesController
+                                                .MrngOtHrsControllers[index]
+                                                .text = "";
+                                            dailyEntriesController.clickEdit();
+                                          });
+                                        }
+                                      },
+                                      style:
+                                      const TextStyle(color: Colors.black),
+                                      controller: dailyEntriesController
+                                          .MrngOtHrsControllers[index],
+                                      cursorColor: Colors.black,
+                                      keyboardType: TextInputType.number,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d+\.?\d{0,2}'),
+                                        ),
+                                      ],
+                                      textAlign: TextAlign.center,
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                        const EdgeInsets.fromLTRB(
+                                            8.0, 0.0, 8.0, 0.0),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                            const BorderRadius.all(
+                                                Radius.circular(10))),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                            const BorderRadius.all(
+                                                Radius.circular(10))),
+                                      ),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          dailyEntriesController.clickEdit();
+                                        });
+                                      }),
+                                )),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin:
+                        const EdgeInsets.only(top: 10, left: 5, right: 3),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              flex: 2,
+                              child: RichText(
+                                text: const TextSpan(
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "Evening OT Hrs",
+                                      ),
+                                      TextSpan(
+                                        text: "",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+                              // Text(
+                              //   "Evg OT Hrs",
+                              //   style: TextStyle(color: Colors.black),
+                              // ),
+                            ),
+                            Expanded(
+                                flex: 4,
+                                child: Container(
+                                  margin: const EdgeInsets.only(right: 11),
+                                  height: BaseUtitiles.getheightofPercentage(
+                                      context, 4),
+                                  child: TextFormField(
+                                      onTap: () {
+                                        if (dailyEntriesController
+                                            .EvgOtHrsControllers[index]
+                                            .text !=
+                                            "" &&
+                                            dailyEntriesController
+                                                .EvgOtHrsControllers[index]
+                                                .text !=
+                                                "0" &&
+                                            dailyEntriesController
+                                                .EvgOtHrsControllers[index]
+                                                .text !=
+                                                "0.0") {
+                                          return;
+                                        } else {
+                                          setState(() {
+                                            dailyEntriesController
+                                                .EvgOtHrsControllers[index]
+                                                .text = "";
+                                            dailyEntriesController.clickEdit();
+                                          });
+                                        }
+                                      },
+                                      controller: dailyEntriesController
+                                          .EvgOtHrsControllers[index],
+                                      style:
+                                      const TextStyle(color: Colors.black),
+                                      cursorColor: Colors.black,
+                                      keyboardType: TextInputType.number,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d+\.?\d{0,2}'),
+                                        ),
+                                      ],
+                                      textAlign: TextAlign.center,
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                        const EdgeInsets.fromLTRB(
+                                            8.0, 0.0, 8.0, 0.0),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                            const BorderRadius.all(
+                                                Radius.circular(10))),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                            const BorderRadius.all(
+                                                Radius.circular(10))),
+                                      ),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          dailyEntriesController.clickEdit();
+                                        });
+                                      }),
+                                )),
+                            Expanded(
+                              flex: 2,
+                              child: RichText(
+                                text: const TextSpan(
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "Morning OT Amt",
+                                      ),
+                                      TextSpan(
+                                        text: "",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+
+                              // Text(
+                              //   "Mrg OT Amt",
+                              //   style: TextStyle(color: Colors.black),
+                              // ),
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: Container(
+                                  margin: const EdgeInsets.only(right: 11),
+                                  height: BaseUtitiles.getheightofPercentage(
+                                      context, 4),
+                                  child: TextField(
+                                      readOnly: true,
+                                      style:
+                                      const TextStyle(color: Colors.black),
+                                      controller: dailyEntriesController
+                                          .MrngOtAmtControllers[index],
+                                      cursorColor: Colors.black,
+                                      keyboardType: TextInputType.number,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d+\.?\d{0,2}'),
+                                        ),
+                                      ],
+                                      textAlign: TextAlign.center,
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                        const EdgeInsets.fromLTRB(
+                                            8.0, 0.0, 8.0, 0.0),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                            const BorderRadius.all(
+                                                Radius.circular(10))),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                            const BorderRadius.all(
+                                                Radius.circular(10))),
+                                      ),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          dailyEntriesController.clickEdit();
+                                        });
+                                      })),
+                            )
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin:
+                        const EdgeInsets.only(top: 10, left: 5, right: 3),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              flex: 2,
+                              child: RichText(
+                                text: const TextSpan(
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "Evening OT Amt",
+                                      ),
+                                      TextSpan(
+                                        text: "",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+                              // Text(
+                              //   "Evg OT Amt",
+                              //   style: TextStyle(color: Colors.black),
+                              // ),
+                            ),
+                            Expanded(
+                                flex: 4,
+                                child: Container(
+                                  margin: const EdgeInsets.only(right: 11),
+                                  height: BaseUtitiles.getheightofPercentage(
+                                      context, 4),
+                                  child: TextField(
+                                    readOnly: true,
+                                    controller: dailyEntriesController
+                                        .EvgOtAmtControllers[index],
+                                    style: const TextStyle(color: Colors.black),
+                                    cursorColor: Colors.black,
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                        RegExp(r'^\d+\.?\d{0,2}'),
+                                      ),
+                                    ],
+                                    textAlign: TextAlign.center,
+                                    decoration: InputDecoration(
+                                      contentPadding: const EdgeInsets.fromLTRB(
+                                          8.0, 0.0, 8.0, 0.0),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10))),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10))),
+                                    ),
+                                  ),
+                                )),
+                            Expanded(
+                              flex: 2,
+                              child: RichText(
+                                text: const TextSpan(
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "Net Amt",
+                                      ),
+                                      TextSpan(
+                                        text: "",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+
+                              // Text(
+                              //   "Net Amt",
+                              //   style: TextStyle(color: Colors.black),
+                              // ),
+                            ),
+                            Expanded(
+                                flex: 4,
+                                child: Container(
+                                  margin: const EdgeInsets.only(right: 11),
+                                  height: BaseUtitiles.getheightofPercentage(
+                                      context, 4),
+                                  child: TextField(
+                                    readOnly: true,
+                                    controller: dailyEntriesController
+                                        .NetAmtController[index],
+                                    style: const TextStyle(color: Colors.black),
+                                    cursorColor: Colors.black,
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                        RegExp(r'^\d+\.?\d{0,2}'),
+                                      ),
+                                    ],
+                                    textAlign: TextAlign.center,
+                                    decoration: InputDecoration(
+                                      contentPadding: const EdgeInsets.fromLTRB(
+                                          8.0, 0.0, 8.0, 0.0),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10))),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10))),
+                                    ),
+                                  ),
+                                )),
+
+                          ],
+                        ),
+                      ),
+
                       Container(
                         margin: const EdgeInsets.only(
                             top: 10, left: 5, right: 3, bottom: 8),

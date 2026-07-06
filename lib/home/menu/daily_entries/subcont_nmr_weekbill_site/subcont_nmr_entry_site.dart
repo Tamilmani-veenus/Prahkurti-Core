@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:prahkurticore/home/menu/daily_entries/subcont_nmr_weekbill_site/subcont_nmr_deduction_site.dart';
 import '../../../../app_theme/app_colors.dart';
 import '../../../../constants/ui_constant/icons_const.dart';
@@ -15,7 +16,8 @@ import 'package:get/get.dart';
 
 
 class Subcont_Nmr_EntryScreen_Site extends StatefulWidget {
-  const Subcont_Nmr_EntryScreen_Site({Key? key}) : super(key: key);
+  final String heading;
+  const Subcont_Nmr_EntryScreen_Site({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<Subcont_Nmr_EntryScreen_Site> createState() => _Subcont_Nmr_EntryScreenState_Site();
@@ -104,11 +106,14 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text("NMR Weekly Bill - Generation",
-                              style: TextStyle(
-                                  fontSize: RequestConstant.Heading_Font_SIZE,
-                                  fontWeight: FontWeight.bold),
-                            ),
+                             Expanded(
+                               child: Text(
+                                 widget.heading,
+                                style: TextStyle(
+                                    fontSize: nmrWklyController.saveButton.value == RequestConstant.VERIFY || nmrWklyController.saveButton.value == RequestConstant.APPROVAL ? 16 : RequestConstant.Heading_Font_SIZE,
+                                    fontWeight: FontWeight.bold),
+                                                           ),
+                             ),
                             TextButton(
                                 onPressed: () {
                                   Navigator.pop(context);
@@ -239,7 +244,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                               readOnly: true,
                               controller: projectController.projectname,
                               cursorColor: Colors.black,
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              autovalidateMode: AutovalidateMode.always,
                               style: const TextStyle(color: Colors.black),
                               decoration: const InputDecoration(
                                 contentPadding: EdgeInsets.zero,
@@ -288,7 +293,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                               readOnly: true,
                               controller: siteController.Sitename,
                               cursorColor: Colors.black,
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              autovalidateMode: AutovalidateMode.always,
                               style: const TextStyle(color: Colors.black),
                               decoration: const InputDecoration(
                                 contentPadding: EdgeInsets.zero,
@@ -335,7 +340,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                             child: TextFormField(
                               readOnly: true,
                               controller: subcontractorController.Subcontractorname,
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              autovalidateMode: AutovalidateMode.always,
                               cursorColor: Colors.black,
                               style: const TextStyle(color: Colors.black),
                               decoration: const InputDecoration(
@@ -382,7 +387,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                             const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                             child: TextFormField(
                               controller: subcontractorController.InvoiceNo,
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              autovalidateMode: AutovalidateMode.always,
                               cursorColor: Colors.black,
                               style: const TextStyle(color: Colors.black),
                               decoration: const InputDecoration(
@@ -628,14 +633,19 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                                 borderRadius: BorderRadius.circular(30)),),
                           child: Text(RequestConstant.SUBMIT,style: TextStyle(color: Colors.white)),
                           onPressed: () async {
-                            if(nmrWklyController.saveButton.value == RequestConstant.RESUBMIT){
-                            }
-                            else{
-                              if(projectController.selectedProjectId.value!=0 && siteController.selectedsiteId.value !=0 &&  subcontractorController.selectedSubcontId.value!=0){
-                                await nmrWklyController.getNmrcheckstatusCount(projectController.selectedProjectId.value,subcontractorController.selectedSubcontId.value.toString(),siteController.selectedsiteId.value,nmrWklyController.FromdateController.text,nmrWklyController.TodateController.text);
-                                await nmrWklyController.getNmrcheckstatus(projectController.selectedProjectId.value,subcontractorController.selectedSubcontId.value.toString(),siteController.selectedsiteId.value,nmrWklyController.FromdateController.text,nmrWklyController.TodateController.text,context);
+                            if(_formkey.currentState!.validate())
+                              {
+                                _formkey.currentState!.save();
+                                if(nmrWklyController.saveButton.value == RequestConstant.RESUBMIT){
+                                }
+                                else{
+                                  if(projectController.selectedProjectId.value!=0 && siteController.selectedsiteId.value !=0 &&  subcontractorController.selectedSubcontId.value!=0){
+                                    await nmrWklyController.getNmrcheckstatusCount(projectController.selectedProjectId.value,subcontractorController.selectedSubcontId.value.toString(),siteController.selectedsiteId.value,nmrWklyController.FromdateController.text,nmrWklyController.TodateController.text);
+                                    await nmrWklyController.getNmrcheckstatus(projectController.selectedProjectId.value,subcontractorController.selectedSubcontId.value.toString(),siteController.selectedsiteId.value,nmrWklyController.FromdateController.text,nmrWklyController.TodateController.text,context);
+                                  }
+                                }
                               }
-                            }
+
 
                           },
                         ),
@@ -770,14 +780,17 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                         ),
                       ),
                       onTap: () {
-                        // if(_formkey.currentState!.validate()) {
-                        //   _formkey.currentState!.save();
-                        //   nmrWklyController.checkColor = 0;
-                        Navigator.of(context).push(MaterialPageRoute(builder: (
-                            BuildContext context) => const Subcont_NMR_Deduction_Site()));
-
-                        // SubmitAlert(context);
-                        // }},
+                        if(_formkey.currentState!.validate()) {
+                          _formkey.currentState!.save();
+                          if(nmrWklyController.NmritemList.isEmpty)
+                            {}
+                          else {
+                            nmrWklyController.tobededadv.addListener(() {
+                              nmrWklyController.updateAdvanceReadOnly();
+                            });
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => const Subcont_NMR_Deduction_Site()));
+                          }}
                       }
                   ),
                 ),
@@ -827,18 +840,22 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                   Expanded(
                     child: TextButton(
                         onPressed: () async {
-                          nmrWklyController.NmritemList.value.clear();
-                          projectController.projectname.text="--Select--";
+                        Future.delayed(Duration(seconds: 0),(){
+                          nmrWklyController.NmritemList.value=[];
+                          projectController.projectname.text="--SELECT--";
                           projectController.selectedProjectId.value=0;
-                          siteController.Sitename.text=RequestConstant.SELECT;
+                          siteController.Sitename.text="--SELECT--";
                           siteController.selectedsiteId.value=0;
-                          subcontractorController.Subcontractorname.text="--Select--";
+                          subcontractorController.Subcontractorname.text="--SELECT--";
                           subcontractorController.selectedSubcontId.value=0;
-                          nmrWklyController.RemarksController.clear();
+                          subcontractorController.InvoiceNo.text = "";
+                          nmrWklyController.RemarksController.text = "";
                           nmrWklyController.NmrentryDateController.text = BaseUtitiles.initiateCurrentDateFormat();
                           nmrWklyController.FromdateController.text=BaseUtitiles.initiateCurrentDateFormat();
                           nmrWklyController.TodateController.text=BaseUtitiles.initiateCurrentDateFormat();
                           nmrWklyController.autoYearWiseNoController.text=autoYearWiseNoController.NMR_autoYrsWise.value;
+                          });
+                        Navigator.pop(context);
                         },
                         child: Text("Reset",
                             style: TextStyle(
@@ -975,6 +992,11 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                                         readOnly: true,
                                         cursorColor: Colors.black,
                                         keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp(r'^\d+\.?\d{0,2}'),
+                                          ),
+                                        ],
                                         textAlign: TextAlign.center,
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.fromLTRB(
@@ -1059,6 +1081,11 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                                         style: TextStyle(color: Colors.black),
                                         cursorColor: Colors.black,
                                         keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp(r'^\d+\.?\d{0,2}'),
+                                          ),
+                                        ],
                                         textAlign: TextAlign.center,
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.fromLTRB(
@@ -1111,6 +1138,11 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                                         style: TextStyle(color: Colors.black),
                                         cursorColor: Colors.black,
                                         keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp(r'^\d+\.?\d{0,2}'),
+                                          ),
+                                        ],
                                         textAlign: TextAlign.center,
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.fromLTRB(

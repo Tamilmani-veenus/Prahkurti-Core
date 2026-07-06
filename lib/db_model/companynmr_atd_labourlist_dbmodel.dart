@@ -1,30 +1,28 @@
 class CompanyNMRDetTableModel{
-  // int? id;
+  int? reqDetId;
   int? labourId;
+  int? categaryId;
   String? labourName;
-  String? Labour_No;
+  String? labourNo;
   String? categaryName;
   double? wages;
-  String? shift;
   String? status;
-  double? busfare;
+  String? statusKeyText;
   double? othrs;
-  double? advance;
   String? detRemarks;
 
   CompanyNMRDetTableMap(){
     var mapping = Map<String, dynamic>();
-    // mapping['id'] = id != null ? id : null;
+    mapping['reqDetId'] = reqDetId != null ? reqDetId : null;
     mapping['labourId'] = labourId != null ? labourId : null;
+    mapping['categaryId'] = categaryId != null ? categaryId : null;
     mapping['labourName'] = labourName != null ? labourName : null;
-    mapping['Labour_No'] = Labour_No != null ? Labour_No : null;
+    mapping['labourNo'] = labourNo != null ? labourNo : null;
     mapping['categaryName'] = categaryName != null ? categaryName : null;
     mapping['wages'] = wages != null ? wages : null;
-    mapping['shift'] = shift != null ? shift : null;
     mapping['status'] = status != null ? status : null;
-    mapping['busfare'] = busfare != null ? busfare : null;
+    mapping['statusKeyText'] = statusKeyText != null ? statusKeyText : null;
     mapping['othrs'] = othrs != null ? othrs : null;
-    mapping['advance'] = advance != null ? advance : null;
     mapping['detRemarks'] = detRemarks != null ? detRemarks : null;
    return mapping;
   }

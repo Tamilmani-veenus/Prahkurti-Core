@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import '../constants/storage_constant.dart';
 import '../controller/logincontroller.dart';
 import '../controller/punch_in_controller.dart';
@@ -56,15 +55,10 @@ class _SplashState extends State<Splash> {
     super.initState();
     var duration = const Duration(seconds: 3);
     Future.delayed(duration, () async {
-      final ConnectivityResult result = await Connectivity().checkConnectivity();
-      if (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile) {
         await BaseUtitiles.getDeviceDetails();
         SessionCheck();
         DBManager dbManager = DBManager();
         dbManager.database;
-      } else {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const InternetLostConnection()));
-      }
     });
   }
 

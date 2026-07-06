@@ -9,7 +9,8 @@ import '../../../../utilities/requestconstant.dart';
 import 'mrnreq_preindent_entry.dart';
 
 class MRNRequest_PreIndent_List extends StatefulWidget {
-  const MRNRequest_PreIndent_List({Key? key}) : super(key: key);
+  final String heading;
+  const MRNRequest_PreIndent_List({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<MRNRequest_PreIndent_List> createState() => _MRNRequest_PreIndent_ListState();
@@ -52,7 +53,7 @@ class _MRNRequest_PreIndent_ListState extends State<MRNRequest_PreIndent_List> {
             child: FloatingActionButton.extended(
               onPressed: (){
                 mrnRequest_PreIndent_Controller.saveButton.value = RequestConstant.SUBMIT;
-                Navigator.push(context, MaterialPageRoute(builder: (context) => MRNRequest_PreIndent_EntryScreen()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => MRNRequest_PreIndent_EntryScreen(heading: widget.heading,)));
               },
               label: Text("Add", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,),),
               icon: Icon(Icons.add, color: Colors.white, size: RequestConstant.Heading_Font_SIZE, ),
@@ -70,12 +71,13 @@ class _MRNRequest_PreIndent_ListState extends State<MRNRequest_PreIndent_List> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "Site Request (Issue Slip)",
-                        // "MRN Request (Pre Indent)",
-                        style: TextStyle(
-                            fontSize: RequestConstant.Heading_Font_SIZE,
-                            fontWeight: FontWeight.bold),
+                      Expanded(
+                        child: Text(
+                          widget.heading,
+                          style: TextStyle(
+                              fontSize: RequestConstant.Heading_Font_SIZE,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                       TextButton(
                           onPressed: () {
@@ -238,6 +240,7 @@ class _MRNRequest_PreIndent_ListState extends State<MRNRequest_PreIndent_List> {
                                 primary: Theme.of(context).primaryColor),
                             onPressed: () async {
                               setState(() {
+                                editingController.text = "";
                                 mrnRequest_PreIndent_Controller.getMrnReq_PreIndent_EntryList();
                               });
                             },
@@ -458,7 +461,7 @@ class _MRNRequest_PreIndent_ListState extends State<MRNRequest_PreIndent_List> {
                                       Expanded(
                                           flex: 2,
                                           child: Text(
-                                            "Prepared By :",
+                                            "Prepared By ",
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.black),
@@ -547,7 +550,7 @@ class _MRNRequest_PreIndent_ListState extends State<MRNRequest_PreIndent_List> {
                                                                     await mrnRequest_PreIndent_Controller.MaterialPreIntentList_EditApi(
                                                                         mrnRequest_PreIndent_Controller.MrnReqPreIndentList[index].reqMasId,
                                                                         mrnRequest_PreIndent_Controller.MrnReqPreIndentList[index].projectid,
-                                                                        mrnRequest_PreIndent_Controller.MrnReqPreIndentList[index].siteid, context);
+                                                                        mrnRequest_PreIndent_Controller.MrnReqPreIndentList[index].siteid, widget.heading,context);
                                                                   }),
                                                             ),
                                                             Container(

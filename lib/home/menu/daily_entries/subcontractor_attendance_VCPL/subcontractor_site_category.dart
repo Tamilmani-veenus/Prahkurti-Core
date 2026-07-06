@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../../../app_theme/app_colors.dart';
 import '../../../../controller/dailyentries_controller.dart';
@@ -175,8 +176,14 @@ class _Subcontractor_Site_CategoryState extends State<Subcontractor_Site_Categor
                                                   }
                                                 });
                                               },
+
                                               controller: dailyEntriesController.NosControllers[index],
                                               cursorColor: Colors.black,
+                                              inputFormatters: [
+                                                FilteringTextInputFormatter.allow(
+                                                  RegExp(r'^\d+\.?\d{0,2}'),
+                                                ),
+                                              ],
                                               keyboardType: TextInputType.number,
                                               style: const TextStyle(color: Colors.black),
                                               decoration: InputDecoration(
@@ -236,6 +243,11 @@ class _Subcontractor_Site_CategoryState extends State<Subcontractor_Site_Categor
                                               cursorColor: Colors.black,
                                               keyboardType: TextInputType.number,
                                               style: const TextStyle(color: Colors.black),
+                                              inputFormatters: [
+                                                FilteringTextInputFormatter.allow(
+                                                  RegExp(r'^\d+\.?\d{0,2}'),
+                                                ),
+                                              ],
                                               decoration: InputDecoration(
                                                 contentPadding: EdgeInsets.zero,
                                                 border: InputBorder.none,

@@ -9,6 +9,8 @@ import '../provider/common_provider.dart';
 import '../provider/reports_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:prahkurticore/models/mrnreq_tracker_reportmodel.dart';
+import '../models/sitedropdownresponse_model.dart';
 
 import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
@@ -39,6 +41,7 @@ class SiteController extends GetxController {
   final FromdateController = TextEditingController();
   final TodateController = TextEditingController();
   RxList mrnListValue = [].obs;
+  RxList<ReqTrackResult> mrnReqTrackerListValue = <ReqTrackResult>[].obs;
   List<PdfListModel> getMNRList_Pdf = <PdfListModel>[];
   RxList selctListDatas = [].obs;
   int checkColor = 0;
@@ -47,123 +50,145 @@ class SiteController extends GetxController {
       {String? type}) async {
     getSiteDropdownvalue.value.clear();
     final value = await CommonProvider.getSiteDropdown(
-        type=="transb/wproj&site"?fromprojectController.selectedProjectId.value:
-        type=="transAck"?transferAcknowController.frProjectID.value:
-        type=="StoreTransfer"?projectController.selectedProjectId.value:
-        type=="InwardReport" || type=="StockReport"?reportsController.selectedProjectId.value:
-        projectController.selectedProjectId.value,
+        type == "transb/wproj&site"
+            ? fromprojectController.selectedProjectId.value
+            : type == "transAck"
+                ? transferAcknowController.frProjectID.value
+                : type == "StoreTransfer"
+                    ? projectController.selectedProjectId.value
+                    : type == "Report"
+                        ? reportsController.selectedProjectId.value
+                        : projectController.selectedProjectId.value,
         0,
-        type == "StoreTransfer" ? "StoreTransfer" : "Fromsite",toSiteId:selectedsiteId.value);
+        type == "StoreTransfer" ? "StoreTransfer" : "Fromsite",
+        toSiteId: selectedsiteId.value);
     if (value != null) {
-      if(value.success == true) {
-      if(value.result!.isNotEmpty) {
-      getSiteDropdownvalue.value = value.result!;
+      if (value.success == true) {
+        if (value.result!.isNotEmpty) {
+          getSiteDropdownvalue.value = value.result!;
+          if(type == "Report")
+            {
+              getSiteDropdownvalue.value.insert(
+                0,
+                Result(siteId: 0, siteName: "--ALL--"),
+              );
+            }
+
+        } else {
+          BaseUtitiles.showToast(value.message ?? "No Data Found");
         }
-      else {
-        BaseUtitiles.showToast(value.message ?? "No Data Found");
-      }
-      }
-      else {
+      } else {
         BaseUtitiles.showToast(value.message ?? "Something went wrong..");
       }
-    }
-    else{
+    } else {
       BaseUtitiles.showToast("Something went wrong..");
     }
   }
-
-
 
   Future toSiteDropdowntList() async {
     getToSiteDropdownvalue.value.clear();
-    final value = await CommonProvider.getSiteDropdown(projectController.selectedProjectId.value,fromsiteController.selectedsiteId.value,"Tosite");
+    final value = await CommonProvider.getSiteDropdown(
+        projectController.selectedProjectId.value,
+        fromsiteController.selectedsiteId.value,
+        "Tosite");
     if (value != null) {
-      if(value.success == true){
-        if(value.result!.isNotEmpty) {
-      getToSiteDropdownvalue.value = value.result!;
-        }
-        else {
+      if (value.success == true) {
+        if (value.result!.isNotEmpty) {
+          getToSiteDropdownvalue.value = value.result!;
+        } else {
           BaseUtitiles.showToast(value.message ?? "No Data Found");
         }
-    }
-    else{
-      BaseUtitiles.showToast(value.message ??"Something went wrong..");
-    }
-    }else
-      {
-        BaseUtitiles.showToast("Something went wrong..");
+      } else {
+        BaseUtitiles.showToast(value.message ?? "Something went wrong..");
       }
-  }
-
-  Future headNameList(type) async {
-    getHeadNameDropdownvalue.value=[];
-    final value = await CommonProvider.dprNewHeadNameDropdown(selectedsiteId.value,type);
-    if (value != null) {
-      if(value.success == true){
-        if(value.result!.isNotEmpty) {
-          getHeadNameDropdownvalue.value = value.result!;
-        }
-        else {
-          BaseUtitiles.showToast(value.message ?? "No Data Found");
-        }
-      }
-      else{
-        BaseUtitiles.showToast(value.message ??"Something went wrong..");
-      }
-    }else
-    {
+    } else {
       BaseUtitiles.showToast("Something went wrong..");
     }
   }
 
+  Future headNameList(type) async {
+    getHeadNameDropdownvalue.value = [];
+    final value =
+        await CommonProvider.dprNewHeadNameDropdown(selectedsiteId.value, type);
+    if (value != null) {
+      if (value.success == true) {
+        if (value.result!.isNotEmpty) {
+          getHeadNameDropdownvalue.value = value.result!;
+        } else {
+          BaseUtitiles.showToast(value.message ?? "No Data Found");
+        }
+      } else {
+        BaseUtitiles.showToast(value.message ?? "Something went wrong..");
+      }
+    } else {
+      BaseUtitiles.showToast("Something went wrong..");
+    }
+  }
 
   Future getMrnReporttList() async {
     mrnListValue.value.clear();
     final value = await ReportsProvider.getMrn_Report_List(
-            reportsController.selectedProjectId.value,
-            reportsController.selectedsiteId.value,
-            FromdateController.text,
-            TodateController.text);
+        reportsController.selectedProjectId.value,
+        reportsController.selectedsiteId.value,
+        FromdateController.text,
+        TodateController.text,reportsController.materialDropdowntId.value);
     if (value != null) {
-      if(value.success == true){
-        if(value.result!.isNotEmpty) {
+      if (value.success == true) {
+        if (value.result!.isNotEmpty) {
           mrnListValue.value = value.result!;
-        }
-        else {
+        } else {
           BaseUtitiles.showToast(value.message ?? "No Data Found");
         }
+      } else {
+        BaseUtitiles.showToast(value.message ?? "Something went wrong..");
       }
-      else{
-        BaseUtitiles.showToast(value.message ??"Something went wrong..");
-      }
-    }else
-    {
+    } else {
       BaseUtitiles.showToast("Something went wrong..");
     }
   }
 
+  Future getMrnReqTrackerList() async {
+    mrnReqTrackerListValue.value=[];
+    final value = await ReportsProvider.getMrnReqTrackerRptList(
+        reportsController.selectedProjectId.value,
+        reportsController.selectedsiteId.value,
+        reportsController.materialDropdowntId.value,
+        FromdateController.text,
+        TodateController.text);
+    if (value != null) {
+      if (value.success == true) {
+        if (value.result!.isNotEmpty) {
+          mrnReqTrackerListValue.value = value.result!;
+        } else {
+          BaseUtitiles.showToast(value.message ?? "No Data Found");
+        }
+      } else {
+        BaseUtitiles.showToast(value.message ?? "Something went wrong..");
+      }
+    } else {
+      BaseUtitiles.showToast("Something went wrong..");
+    }
+  }
 
-  Future OnItemsSelected(int slectid, String MrnReqNo, BuildContext context) async {
+  Future OnItemsSelected(
+      int slectid, String MrnReqNo, BuildContext context) async {
     final value = await ReportsProvider.onItemSelctMrnList(slectid);
     if (value != null) {
-      if(value.success == true){
-        if(value.result!.isNotEmpty) {
+      if (value.success == true) {
+        if (value.result!.isNotEmpty) {
           selctListDatas.value = value.result!;
           return showDialog(
               context: context,
               builder: (BuildContext context) {
                 return mrnPopup(list: selctListDatas.value, MrnReqNo: MrnReqNo);
               });
-        }
-        else {
+        } else {
           BaseUtitiles.showToast(value.message ?? "No Data Found");
         }
+      } else {
+        BaseUtitiles.showToast(value.message ?? "Something went wrong..");
       }
-      else{
-        BaseUtitiles.showToast(value.message ??"Something went wrong..");
-      }
-    }else
-    {
+    } else {
       BaseUtitiles.showToast("Something went wrong..");
     }
   }

@@ -38,6 +38,7 @@ class PunchInController extends GetxController with StateMixin<HomeState> {
   String? currentTime = "";
   String? currentDate = "";
   String? networkTime = "";
+  String? dayName = "";
   List<Result>? todayPunchInList = [];
   List<EmployeeTiming>? punchFilterList = [];
   RxList punchFilterRxList = [].obs;
@@ -87,8 +88,10 @@ class PunchInController extends GetxController with StateMixin<HomeState> {
     currentTime = DateFormat('hh:mm:ss a').format(now);
     currentDate = DateFormat('yyyy-MM-dd').format(now);
     networkTime = DateFormat('dd-MM-yyyy hh:mm a').format(now);
+    dayName = DateFormat('EEEE').format(now);
     print("Current time (via NTP): $currentTime");
     print("Current date (via NTP): $currentDate");
+    print("Current date (via NTP): $dayName");
   }
 
   getProjectPunchInSts() async {
@@ -163,7 +166,7 @@ class PunchInController extends GetxController with StateMixin<HomeState> {
           OnPinOutAddress: punchAddress.value,
           OnPinOutLatitude: punchLat.value,
           OnPinOutLongitude: punchLon.value,
-            OnDutyRemarks: allotedStatus == "OD" ? punchOutRemarks.text : "-"
+          OnDutyRemarks: allotedStatus == "OD" ? punchOutRemarks.text : "-"
     ),
         File(punchOutImageFile.value!.path),
         context);
@@ -179,9 +182,11 @@ class PunchInController extends GetxController with StateMixin<HomeState> {
         punchLat.value = "";
         imageFile.value = null;
       } else {
+        Get.to(() => DashboardScreen_OtherUser());
         BaseUtitiles.showToast(data["message"] ?? "Something went wrong...");
       }
     } else {
+      Get.to(() => DashboardScreen_OtherUser());
       BaseUtitiles.showToast("Something went wrong...");
     }
   }
@@ -200,11 +205,19 @@ class PunchInController extends GetxController with StateMixin<HomeState> {
     if (response != null) {
       if (response.success == true) {
         if (response.result!.isNotEmpty) {
+          final validData = response.result!
+              .where((e) => e.punchDetails != null && e.punchDetails!.isNotEmpty)
+              .toList();
+          if (validData.isEmpty) {
+            BaseUtitiles.showToast("No Data Found");
+            return;
+          }
+
           if (Url == "Old Reports") {
-            punchFilterRxList?.assignAll(response.result!);
+            punchFilterRxList.assignAll(validData);
           } else {
-            originalList?.assignAll(response.result!);
-            filteredList.value = List.from(originalList!);
+            originalList.assignAll(validData);
+            filteredList.assignAll(validData);
           }
         } else {
           BaseUtitiles.showToast("No Data Found");

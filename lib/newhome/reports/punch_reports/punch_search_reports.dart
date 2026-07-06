@@ -272,7 +272,7 @@ class PunchSearchReports extends GetView<PunchInController> {
                             decoration: const InputDecoration(
                               contentPadding: EdgeInsets.zero,
                               border: InputBorder.none,
-                              labelText: "Staff Name *",
+                              labelText: "Staff Name",
                               labelStyle: TextStyle(
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
@@ -300,7 +300,7 @@ class PunchSearchReports extends GetView<PunchInController> {
                             },
                             validator: (value) {
                               if (value!.isEmpty || value == "--SELECT--") {
-                                return '\u26A0 Please select staff name';
+                                return '\u26A0 ${RequestConstant.VALIDATE}';
                               }
                               return null;
                             },

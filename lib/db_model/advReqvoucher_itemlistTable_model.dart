@@ -1,5 +1,6 @@
 class AdvReqVoucherItemListTableModel{
   int? id;
+  int? reqDetId;
   int? siteId;
   String? siteName;
   String? paymentType;
@@ -11,6 +12,7 @@ class AdvReqVoucherItemListTableModel{
    AdvReqVoucherItemListTableMap() {
     var mapping = Map<String, dynamic>();
     mapping['id'] = id != null ? id : null;
+    mapping['reqDetId'] = reqDetId != null ? reqDetId : null;
     mapping['siteId'] = siteId != null ? siteId : null;
     mapping['siteName'] = siteName != null ? siteName : null;
     mapping['paymentType'] = paymentType != null ? paymentType : null;

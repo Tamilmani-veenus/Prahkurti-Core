@@ -36,6 +36,17 @@ class PendingListProvider {
     }
   }
 
+  static Future getReqNoList(reqId) async {
+    try {
+      final response = await ApiManager.getAPICall(ApiConstant.REQNOLISTAPI + "?Id=$reqId&mode=PO");
+
+      return jsonDecode(response);
+    } catch (error) {
+      print("Error == $error");
+      return null;
+    }
+  }
+
   static Future<MrnPreApprovalResponse?> getMRNPreApprovalPendingList() async {
     try {
       final response = await ApiManager.getAPICall(
@@ -125,13 +136,12 @@ class PendingListProvider {
         response = await ApiManager.getAPICall(
             ApiConstant.GET_POVERIFICATION_PENDINGLIST);
       } else if (formName == "PO APPROVAL") {
-        response =
-            await ApiManager.getAPICall(ApiConstant.GET_POAPPROVAL_PENDINGLIST);
+        response = await ApiManager.getAPICall(ApiConstant.GET_POAPPROVAL_PENDINGLIST);
       } else if (formName == "INWARD PENDING") {
-        print("API: ${ApiConstant.GET_INWARD_PENDINGLIST}");
-        response =
-            await ApiManager.getAPICall(ApiConstant.GET_INWARD_PENDINGLIST);
-      } else if (formName == "TRANSFER PENDING") {
+        response = await ApiManager.getAPICall(ApiConstant.GET_INWARD_PENDINGLIST);
+      } else if (formName == "INWARD PENDING - WO") {
+        response = await ApiManager.getAPICall(ApiConstant.GET_INWARDWO_PENDINGLIST);
+      }else if (formName == "TRANSFER PENDING") {
         response =
             await ApiManager.getAPICall(ApiConstant.GET_TRANSFER_PENDINGLIST);
       } else if (formName == "TRANSFER REQUEST PENDING VIEW") {
@@ -195,6 +205,32 @@ class PendingListProvider {
       else if (formName == "SITE VOUCHER APPROVAL") {
         response = await ApiManager.getAPICall(ApiConstant.GETSITEVOUCHERAPPROLIST);
       }
+      else if (formName == "ADV REQ APPROVAL PENDING") {
+        response = await ApiManager.getAPICall(ApiConstant.GETADVREQAPPROLIST);
+      }
+      else if (formName == "COMPANY LABOUR ATTENDANCE APPROVAL PENDING") {
+        response = await ApiManager.getAPICall(ApiConstant.GETCOMPANYNMRAPPROLIST);
+      }
+      else if (formName == "STAFF ONDUTY PUNCH IN & OUT VERIFICATION") {
+        response = await ApiManager.getAPICall(ApiConstant.GET_ONDUTY_PUNCHINOUT_VERIFILIST);
+      }
+      else if (formName == "STAFF ONDUTY PUNCH IN & OUT APPROVAL") {
+        response = await ApiManager.getAPICall(ApiConstant.GET_ONDUTY_PUNCHINOUT_APPRLIST);
+      }
+      else if (formName == "STAFF NON-ALLOTED PUNCH IN & OUT VERIFICATION") {
+        response = await ApiManager.getAPICall(ApiConstant.GET_NONALLOT_PUNCHINOUT_VERIFILIST);
+      }
+      else if (formName == "STAFF NON-ALLOTED PUNCH IN & OUT APPROVAL") {
+        response = await ApiManager.getAPICall(ApiConstant.GET_NONALLOT_PUNCHINOUT_APPRLIST);
+      }
+      else if (formName == "PENDING PO [AGENCY]" || formName == "PENDING PO [TRADER]" || formName == "PENDING PO [SUPPLIER]") {
+        String supplierCategory = formName == "PENDING PO [SUPPLIER]"
+            ? "S"
+            : formName == "PENDING PO [TRADER]"
+            ? "T"
+            : "A";
+        response = await ApiManager.getAPICall("${ApiConstant.GETPO_SUPTRADERSAGEN_PENDLIST}?supplierCategory=$supplierCategory");
+      }
       return onclickPendingListResponseFromJson(response);
     } catch (error, stackTrace) {
       print("ERROR...${error}");
@@ -226,7 +262,7 @@ class PendingListProvider {
       int transId) async {
     var data = null;
     await ApiManager.getAPICall(
-            ApiConstant.GET_TRANSFERACKPENDING_LIST + "?Transfer_id=$transId")
+            "ApiConstant.GET_TRANSFERACKPENDING_LIST" + "?Transfer_id=$transId")
         .then((value) {
       final res = transferAckMatListFromJson(value);
       if (res.length > 0 && res != null) {
@@ -245,20 +281,20 @@ class PendingListProvider {
 
   static Future subcontNMR_BillAprovalAPI(body, context) async {
     var ratingRes = null;
-    await ApiManager.putUpdateAPIButton(
-            ApiConstant.PUT_SUBCONTNMRBILL_APPROVAL_API, body)
-        .then((value) {
-      var response ;
-      // = dprItemscreenSaveResponseFromJson(value);
-      if (response.RetString != null) {
-        ratingRes = response.RetString;
-        BaseUtitiles.showToast(ratingRes);
-        return Navigator.pop(context);
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
-    });
+    // await ApiManager.putUpdateAPIButton(
+    //         ApiConstant.PUT_SUBCONTNMRBILL_APPROVAL_API, body)
+    //     .then((value) {
+    //   var response ;
+    //   // = dprItemscreenSaveResponseFromJson(value);
+    //   if (response.RetString != null) {
+    //     ratingRes = response.RetString;
+    //     BaseUtitiles.showToast(ratingRes);
+    //     return Navigator.pop(context);
+    //   }
+    // }, onError: (error) {
+    //   print(error);
+    //   BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
+    // });
   }
 
   // static Future<void> PoAprovalAPI(body, context) async {
@@ -377,7 +413,7 @@ class PendingListProvider {
   static Future BillGenAprovalAPI(body, context) async {
     var ratingRes = null;
     await ApiManager.putUpdateAPIButton(
-            ApiConstant.PUT_BILLGEN_APPROVAL_API, body)
+            "ApiConstant.PUT_BILLGEN_APPROVAL_API", body)
         .then((value) {
       var response ;
       // = dprItemscreenSaveResponseFromJson(value);
@@ -440,7 +476,7 @@ class PendingListProvider {
   static Future<List<TransferAckEntryListApi>> gettransferACk_Entry_List(
       int? Userid, String UserType, String frdate, String todate) async {
     var data = null;
-    await ApiManager.getAPICall(ApiConstant.GET_TRAACK_ENTYLIST_API +
+    await ApiManager.getAPICall("ApiConstant.GET_TRAACK_ENTYLIST_API" +
             "?UserId=$Userid&UserType=$UserType&Frdate=$frdate&Todate=$todate")
         .then((value) {
       print("TransferprojectEntryList:" + value);
@@ -458,28 +494,10 @@ class PendingListProvider {
   static Future<List<TransferAckEditApiRes>> entryList_editAPI(
       int AckId, int TransferId) async {
     var data = null;
-    await ApiManager.getAPICall(ApiConstant.EDIT_TRANSFER_ACKNOW_API +
+    await ApiManager.getAPICall("ApiConstant.EDIT_TRANSFER_ACKNOW_API" +
             "?AckId=$AckId&TransferId=$TransferId")
         .then((value) {
       final res = transferAckEditApiResFromJson(value);
-      if (res != null) {
-        data = res;
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG + error);
-    });
-    return data;
-  }
-
-  static Future entryList_deleteAPI(int TransferId, String ackNo,
-      String TransferNo, String UserId, String DeviceName) async {
-    var data = null;
-    await ApiManager.deleteAPICall(ApiConstant.DELETE_TRANSACKENTRYLIST_API +
-            "?TransferId=$TransferId&AckNo=$ackNo&TransferNo=$TransferNo&UserId=$UserId&DeviceName=$DeviceName")
-        .then((value) {
-      final res = json.decode(value);
       if (res != null) {
         data = res;
         return data;
@@ -514,6 +532,9 @@ class PendingListProvider {
       } else if (Url == "INWARD PENDING") {
         response = await ApiManager.getAPICall(
             "${ApiConstant.INWARD_MOREDETAILS}?PoId=$Rid");
+      }else if (Url == "INWARD PENDING - WO") {
+        response = await ApiManager.getAPICall(
+            "${ApiConstant.INWARDWO_MOREDETAILS}?woId=$Rid");
       } else if (Url == "TRANSFER PENDING") {
         response = await ApiManager.getAPICall(
             "${ApiConstant.TRANSFERPENDING_MOREDETAILS}?reqMasId=$Rid");
@@ -542,6 +563,15 @@ class PendingListProvider {
         response = await ApiManager.getAPICall(
             "${ApiConstant.GET_STORETRANFER_MORE_API}?ReqOrdMasId=$Rid");
       }
+      else if (Url == "PENDING PO [AGENCY]" || Url == "PENDING PO [TRADER]" || Url == "PENDING PO [SUPPLIER]") {
+        String supplierCategory = Url == "PENDING PO [SUPPLIER]"
+            ? "S"
+            : Url == "PENDING PO [TRADER]"
+            ? "T"
+            : "A";
+        response = await ApiManager.getAPICall(
+            "${ApiConstant.GET_POSUPTRADAGEN_MORE_API}?reqMasId=$Rid&supplierCategory=$supplierCategory");
+      }
       return onclickPendingDetFromJson(response);
     } catch (error, e) {
       print("Error == $error");
@@ -551,15 +581,15 @@ class PendingListProvider {
   }
 
   static Future quoteVerifyApprovalApi(
-      int reqmasId, type, verifyRemarks,revertRemarks, quoteMasId) async {
+      int reqmasId, type, verifyRemarks,revertRemarks, quoteMasId, purchaseOrderNo, companyId) async {
     try {
       final response = await ApiManager.putAPICall(type == "Submit"
           ? "${ApiConstant.PUT_PENDING_QUOTE_API}?reqmasId=$reqmasId"
           : type == "Verify"
-              ? "${ApiConstant.PUT_QUOTE_VERIFY_APPROVAL_API}?reqmasId=$reqmasId&isApprove=false&Remarks=$verifyRemarks&quoteMasId=0"
-              : type == "Approve"
-                  ? "${ApiConstant.PUT_QUOTE_VERIFY_APPROVAL_API}?reqmasId=$reqmasId&isApprove=true&Remarks=&quoteMasId=$quoteMasId"
-                  : "${ApiConstant.PUT_QUOTE_REVERT_API}?reqmasId=$reqmasId&remarks=$revertRemarks");
+          ? "${ApiConstant.PUT_QUOTE_VERIFY_APPROVAL_API}?reqmasId=$reqmasId&isApprove=false&Remarks=$verifyRemarks&quoteMasId=0&PurchaseOrderNo=0"
+          : type == "Approve"
+          ? "${ApiConstant.PUT_QUOTE_VERIFY_APPROVAL_API}?reqmasId=$reqmasId&isApprove=true&Remarks=&quoteMasId=$quoteMasId&companyId=$companyId&PurchaseOrderNo=$purchaseOrderNo"
+          : "${ApiConstant.PUT_QUOTE_REVERT_API}?reqmasId=$reqmasId&remarks=$revertRemarks");
 
       return jsonDecode(response);
     } catch (error) {
@@ -568,20 +598,25 @@ class PendingListProvider {
     }
   }
 
-  static Future PunchInAprovalAPI(body, context) async {
-    var ratingRes = null;
-    await ApiManager.putUpdateAPIButton(ApiConstant.PUT_POAPPROVAL_API, body)
-        .then((value) {
-      var response ;
-      // = dprItemscreenSaveResponseFromJson(value);
-      if (response.RetString != null) {
-        ratingRes = response.RetString;
-        BaseUtitiles.showToast(ratingRes);
-        return Navigator.pop(context);
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
-    });
+  static Future getPurchaseOrderNo(id,entryDate,type) async {
+    try {
+      final response = await ApiManager.getAPICall(type == "companywise"?
+          ApiConstant.GET_PURCHASE_ORDER_NO_COMPANYWISE_API + "?CompanyId=$id&fieldName=PurchaseOrdNo&tableName=materialPurchaseordermaster&formName=MaterialPurOrdMas&EntryDate=$entryDate":
+          ApiConstant.GET_PURCHASE_ORDER_NO_API + "?projectId=$id&fieldName=PurchaseOrdNo&tableName=MaterialPurchaseOrderMaster&formName=MaterialPurOrdMas&EntryDate=$entryDate");
+      return jsonDecode(response);
+    } catch (error) {
+      print("Error == $error");
+      return null;
+    }
+  }
+
+  static Future PunchInAprovalAPI(id, status) async {
+    try {
+      final response = await ApiManager.postCall(ApiConstant.PUNCH_IN_VERIFY_APPROVE + "id=$id&IsVerification=$status");
+      return jsonDecode(response);
+    } catch (error) {
+      print("Error == $error");
+      return null;
+    }
   }
 }

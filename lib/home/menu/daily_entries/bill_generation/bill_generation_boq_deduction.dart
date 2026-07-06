@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../../../constants/ui_constant/icons_const.dart';
 import '../../../../controller/auto_yrwise_no_controller.dart';
@@ -128,7 +129,7 @@ class _Bill_Generation_Boq_deductionState
                         padding:
                         const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: billGenerationBoqController.billamount,
                           cursorColor: Colors.black,
@@ -180,9 +181,14 @@ class _Bill_Generation_Boq_deductionState
                                   top: 3, left: 10, bottom: 5),
                               child: TextFormField(
                                 autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.always,
 
                                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
                                 controller:
                                 billGenerationBoqController.materialDebitamt,
                                 cursorColor: Colors.black,
@@ -261,12 +267,6 @@ class _Bill_Generation_Boq_deductionState
                                     billGenerationBoqController.materialDebitamt.text="";
                                   }
                                 },
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '\u26A0 ${RequestConstant.VALIDATE}';
-                                  }
-                                  return null;
-                                },
 
                               ),
                             ),
@@ -334,7 +334,7 @@ class _Bill_Generation_Boq_deductionState
                                   top: 3, left: 10, bottom: 5),
                               child: TextFormField(
                                 autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.always,
                                 onTap: () {
                                   if (billGenerationBoqController
                                       .Creditamt.text !=
@@ -356,6 +356,11 @@ class _Bill_Generation_Boq_deductionState
                                   }
                                 },
                                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
                                 controller:
                                 billGenerationBoqController.Creditamt,
                                 cursorColor: Colors.black,
@@ -429,12 +434,7 @@ class _Bill_Generation_Boq_deductionState
                                         value;
                                   }
                                 },
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '\u26A0 ${RequestConstant.VALIDATE}';
-                                  }
-                                  return null;
-                                },
+
                               ),
                             ),
                           ),
@@ -501,7 +501,7 @@ class _Bill_Generation_Boq_deductionState
                                   top: 3, left: 10, bottom: 5),
                               child: TextFormField(
                                 autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.always,
                                 onTap: () {
                                   if (billGenerationBoqController
                                       .Debitamt.text !=
@@ -523,6 +523,11 @@ class _Bill_Generation_Boq_deductionState
                                   }
                                 },
                                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
                                 controller:
                                 billGenerationBoqController.Debitamt,
                                 cursorColor: Colors.black,
@@ -595,12 +600,7 @@ class _Bill_Generation_Boq_deductionState
                                         value;
                                   }
                                 },
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '\u26A0 ${RequestConstant.VALIDATE}';
-                                  }
-                                  return null;
-                                },
+
                               ),
                             ),
                           ),
@@ -707,41 +707,76 @@ class _Bill_Generation_Boq_deductionState
                             child: Padding(
                               padding: const EdgeInsets.only(
                                   top: 3, left: 10, bottom: 5),
-                              child: TextFormField(
-                                keyboardType: TextInputType.number,
-                                readOnly: billGenerationBoqController.advance(
-                                    billGenerationBoqController.tobededadv.text),
-                                controller: billGenerationBoqController.Advded,
-                                cursorColor: Colors.black,
-                                style: const TextStyle(color: Colors.black),
-                                decoration: const InputDecoration(
-                                  contentPadding: EdgeInsets.zero,
-                                  border: InputBorder.none,
-                                  labelText: "Advance Deduction Amt",
-                                  labelStyle: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: RequestConstant.Lable_Font_SIZE,
+                              child: Obx(()=>
+                                TextFormField(
+                                  readOnly: billGenerationBoqController.isAdvanceReadOnly.value,
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                      RegExp(r'^\d+\.?\d{0,2}'),
+                                    ),
+                                  ],
+                                  controller: billGenerationBoqController.Advded,
+                                  cursorColor: Colors.black,
+                                  style: const TextStyle(color: Colors.black),
+                                  decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.zero,
+                                    border: InputBorder.none,
+                                    labelText: "Advance Deduction Amt",
+                                    labelStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: RequestConstant.Lable_Font_SIZE,
+                                    ),
+                                    prefixIconConstraints:
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
+                                    prefixIcon: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 8, horizontal: 8),
+                                      child: ConstIcons.advancededuction,
+                                    ),
                                   ),
-                                  prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
-                                  prefixIcon: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 8),
-                                    child: ConstIcons.advancededuction,
-                                  ),
+                                  onChanged: (value) async {
+                                    double advDed = double.tryParse(value) ?? 0;
+                                    double advLimit =
+                                        double.tryParse(billGenerationBoqController.tobededadv.text) ?? 0;
+
+                                    if (advDed > advLimit) {
+                                      BaseUtitiles.showToast(
+                                          "Advance deduction should not exceed advance limit.");
+
+                                      billGenerationBoqController.Advded.text = "0.0";
+                                      billGenerationBoqController.Advded.selection = TextSelection.fromPosition(
+                                        TextPosition(offset: billGenerationBoqController.Advded.text.length),
+                                      );
+
+                                      await billGenerationBoqController.deductionPaymentCalculation();
+                                      return;
+                                    }
+
+                                    bool success =
+                                    await billGenerationBoqController.deductionPaymentCalculation();
+
+                                    if (!success) {
+                                      BaseUtitiles.showToast(
+                                          "Advance deduction should not exceed net payable amount.");
+
+                                      billGenerationBoqController.Advded.text = "0.0";
+                                      billGenerationBoqController.Advded.selection = TextSelection.fromPosition(
+                                        TextPosition(offset: billGenerationBoqController.Advded.text.length),
+                                      );
+
+                                      await billGenerationBoqController.deductionPaymentCalculation();
+                                    }
+                                  },
+                                  onTap: (){
+                                    if(billGenerationBoqController.isAdvanceReadOnly.value==false) {
+                                      if (billGenerationBoqController.Advded.text == "0.0" ||
+                                          billGenerationBoqController.Advded.text == "0") {
+                                        billGenerationBoqController.Advded.text = "";
+                                      }
+                                    }
+                                  },
                                 ),
-                                onChanged: (value) {
-                                  setState(() {
-                                    billGenerationBoqController
-                                        .deductionPaymentCalculation();
-                                  });
-                                },
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '\u26A0 Enter advance deduction amount';
-                                  }
-                                  return null;
-                                },
                               ),
                             ),
                           ),
@@ -768,7 +803,7 @@ class _Bill_Generation_Boq_deductionState
                                   top: 3, left: 10, bottom: 5),
                               child: TextFormField(
                                 autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.always,
                                 onTap: () {
                                   if (billGenerationBoqController
                                       .Roundoff.text !=
@@ -790,6 +825,11 @@ class _Bill_Generation_Boq_deductionState
                                   }
                                 },
                                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
                                 controller:
                                 billGenerationBoqController.Roundoff,
                                 cursorColor: Colors.black,
@@ -863,12 +903,7 @@ class _Bill_Generation_Boq_deductionState
                                         value;
                                   }
                                 },
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '\u26A0 ${RequestConstant.VALIDATE}';
-                                  }
-                                  return null;
-                                },
+
                               ),
                             ),
                           ),
@@ -891,8 +926,13 @@ class _Bill_Generation_Boq_deductionState
                                   top: 3, left: 10, bottom: 5),
                               child: TextFormField(
                                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
                                 autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.always,
                                 readOnly: true,
                                 controller:
                                 billGenerationBoqController.netpayamt,
@@ -912,12 +952,6 @@ class _Bill_Generation_Boq_deductionState
                                           vertical: 8, horizontal: 8),
                                       child: ConstIcons.netAmt),
                                 ),
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '\u26A0 ${RequestConstant.VALIDATE}';
-                                  }
-                                  return null;
-                                },
                               ),
                             ),
                           ),
@@ -1012,6 +1046,11 @@ class _Bill_Generation_Boq_deductionState
                                   child: TextFormField(
                                     controller: billGenerationBoqController.percentControllers[index],
                                     keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                        RegExp(r'^\d+\.?\d{0,2}'),
+                                      ),
+                                    ],
                                     cursorColor: Colors.black,
                                     textAlign: TextAlign.center,
                                     decoration: InputDecoration(

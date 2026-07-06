@@ -136,7 +136,7 @@ class TransferBW_project_Controller extends GetxController {
   }
 
   ///----Transfer Pending---------
-  Future getTransferProject_Alldatas(int reqId, BuildContext context) async {
+  Future getTransferProject_Alldatas(int reqId,String MenuName, BuildContext context) async {
     transferAllDatasList.value = [];
     transferItemListdatas.value = [];
     final value =
@@ -150,7 +150,7 @@ class TransferBW_project_Controller extends GetxController {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => TrasferBetweenProjects_Entry()));
+                  builder: (context) => TrasferBetweenProjects_Entry(heading: MenuName,)));
         } else {
           BaseUtitiles.showToast("No Data Found");
         }
@@ -163,7 +163,7 @@ class TransferBW_project_Controller extends GetxController {
   }
 
   ///--------Transfer Request Pending-----------
-  Future getTransPendingView(trId, BuildContext context) async {
+  Future getTransPendingView(trId,String MenuName, BuildContext context) async {
     transferAllDatasList.value = [];
     transferItemListdatas.value = [];
     final value =
@@ -179,7 +179,7 @@ class TransferBW_project_Controller extends GetxController {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => TrasferBetweenProjects_Entry()));
+                  builder: (context) => TrasferBetweenProjects_Entry(heading: MenuName,)));
         } else {
           BaseUtitiles.showToast("No Data Found");
         }
@@ -578,7 +578,7 @@ class TransferBW_project_Controller extends GetxController {
     return getTransfferbetDetList.value;
   }
 
-  Future EntryList_EditApi(int workid, BuildContext context) async {
+  Future EntryList_EditApi(int workid,String MenuName,BuildContext context) async {
     final value =
         await TransferBetweenProject_provider.entryList_editAPI(workid);
     if (value != null) {
@@ -595,7 +595,7 @@ class TransferBW_project_Controller extends GetxController {
         return Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => TrasferBetweenProjects_Entry()));
+                builder: (context) => TrasferBetweenProjects_Entry(heading: MenuName)));
       } else {
         BaseUtitiles.showToast(value.message ?? "Something went wrong..");
       }

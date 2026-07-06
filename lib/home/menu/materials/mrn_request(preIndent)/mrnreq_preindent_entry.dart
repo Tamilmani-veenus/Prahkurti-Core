@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../../../app_theme/app_colors.dart';
 import '../../../../commonpopup/requesttype_alert.dart';
@@ -14,7 +15,8 @@ import '../../../../utilities/baseutitiles.dart';
 import '../../../../utilities/requestconstant.dart';
 
 class MRNRequest_PreIndent_EntryScreen extends StatefulWidget {
-  const MRNRequest_PreIndent_EntryScreen({Key? key}) : super(key: key);
+  final String heading;
+  const MRNRequest_PreIndent_EntryScreen({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<MRNRequest_PreIndent_EntryScreen> createState() => _MRNRequest_PreIndent_EntryScreenState();
@@ -126,12 +128,14 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              "Site Request (Issue Slip)",
-                              style: TextStyle(
-                                  fontSize: RequestConstant.Heading_Font_SIZE,
-                                  fontWeight: FontWeight.bold),
-                            ),
+                             Expanded(
+                               child: Text(
+                               widget.heading,
+                                style: TextStyle(
+                                    fontSize: RequestConstant.Heading_Font_SIZE,
+                                    fontWeight: FontWeight.bold),
+                                                           ),
+                             ),
                             TextButton(
                                 onPressed: () {
                                   Navigator.pop(context);
@@ -303,7 +307,7 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
                               autovalidateMode:
-                              AutovalidateMode.onUserInteraction,
+                              AutovalidateMode.always,
                               readOnly: true,
                               controller:
                               mrnRequest_PreIndent_Controller.ReqTypeController,
@@ -362,7 +366,7 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
                             child: TextFormField(
                               readOnly: true,
                               controller: projectController.projectname,
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              autovalidateMode: AutovalidateMode.always,
                               cursorColor: Colors.black,
                               style: TextStyle(color: Colors.black),
                               decoration: InputDecoration(
@@ -414,7 +418,7 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
                             child: TextFormField(
                               readOnly: true,
                               controller: siteController.Sitename,
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              autovalidateMode: AutovalidateMode.always,
                               cursorColor: Colors.black,
                               style: TextStyle(color: Colors.black),
                               decoration: InputDecoration(
@@ -953,6 +957,11 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
                                         textAlign: TextAlign.center,
                                         controller: mrnRequest_PreIndent_Controller.Addwork_qtyControllers[index],
                                         keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp(r'^\d+\.?\d{0,2}'),
+                                          ),
+                                        ],
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                                           focusedBorder: OutlineInputBorder(

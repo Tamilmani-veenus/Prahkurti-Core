@@ -47,6 +47,7 @@ class NMRWklyController extends GetxController {
   final EntrylistFrDate = TextEditingController();
   final EntrylistToDate = TextEditingController();
   RxList billDet_Calculation = [].obs;
+  RxBool isAdvanceReadOnly = true.obs;
 
   List<TextEditingController> SitenameController = [];
   List<TextEditingController> CategorynameController = [];
@@ -116,20 +117,22 @@ class NMRWklyController extends GetxController {
       BaseUtitiles.showToast("Something Went Wrong...");
     }
   }
-
-
-  Future getNmrAdvance() async {
-    to_be_dection_advance="0.0";
-    await NMRWklyprovider.NMR_adv_balance(projectController.selectedProjectId.value,
-      subcontractorController.selectedSubcontId.value,
-      // siteController.selectedsiteId.value
-    ).then((value){
-      if (value != null) {
-        to_be_dection_advance = value;
-        return to_be_dection_advance;
-      }
-    });
-  }
+  // void validateAdvanceAmount(String value) {
+  //   final double enteredAmt = double.tryParse(value) ?? 0.0;
+  //   final double maxAmt = double.tryParse(tobededadv.text) ?? 0.0;
+  //
+  //   if (enteredAmt > maxAmt) {
+  //     BaseUtitiles.showToast(
+  //         "Advance deduction cannot exceed the advance amount.");
+  //
+  //     Advded.text = "0.0";
+  //
+  //     // Move cursor to end
+  //     Advded.selection = TextSelection.fromPosition(
+  //       TextPosition(offset: Advded.text.length),
+  //     );
+  //   }
+  // }
 
 
   Future submit_getNmrItemList_Site() async {
@@ -336,7 +339,7 @@ class NMRWklyController extends GetxController {
         double.tryParse(Advded.text) ?? 0;
 
     if (advLimit < advDed) {
-
+      advDed=0;
       BaseUtitiles.showToast(
           "Please change the adv deduction amount");
 
@@ -439,14 +442,10 @@ class NMRWklyController extends GetxController {
   }
 
 
-  bool advance(String textAmount) {
-    double amt = double.tryParse(textAmount) ?? 0.0;
 
-    if (amt > 0.0) {
-      return false;
-    } else {
-      return true;
-    }
+  void updateAdvanceReadOnly() {
+    final amt = double.tryParse(tobededadv.text) ?? 0.0;
+    isAdvanceReadOnly.value = amt <= 0;
   }
 
   Future DirectBill_CalculationList() async {
@@ -731,7 +730,7 @@ class NMRWklyController extends GetxController {
     updateNetPay();
   }
 
-  Future NmrEntryList_EditApi(int workid, BuildContext context,from, bool checkSts) async {
+  Future NmrEntryList_EditApi(int workid,String MenuName, BuildContext context,from, bool checkSts) async {
     EditListSaveDatas.value=[];
     NmritemList.value=[];
     var response = await NMRWklyprovider.nmr_entryList_editAPI(workid,checkSts);
@@ -752,7 +751,7 @@ class NMRWklyController extends GetxController {
             return Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => Subcont_Nmr_EntryScreen_Site()),
+                  builder: (context) => Subcont_Nmr_EntryScreen_Site(heading: MenuName,)),
             );
           }
         else {

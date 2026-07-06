@@ -11,7 +11,7 @@ String subcontractorDropdownListToJson(SubcontractorDropdownList data) => json.e
 class SubcontractorDropdownList {
   bool? success;
   String? message;
-  List<Result>? result;
+  List<SubcontResult>? result;
 
   SubcontractorDropdownList({
     this.success,
@@ -22,30 +22,32 @@ class SubcontractorDropdownList {
   factory SubcontractorDropdownList.fromJson(Map<String, dynamic> json) => SubcontractorDropdownList(
     success: json["success"],
     message: json["message"],
-    result: List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
+    result: json["result"]==null?[]:List<SubcontResult>.from(json["result"].map((x) => SubcontResult.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "success": success,
     "message": message,
-    "result": List<dynamic>.from(result!.map((x) => x.toJson())),
+    "result": result==null?[]:List<dynamic>.from(result!.map((x) => x.toJson())),
   };
 }
 
-class Result {
+
+
+class SubcontResult {
   int? subContId;
   String? subContName;
   String? subcontNameRpt;
 
-  Result({
+  SubcontResult({
     this.subContId,
     this.subContName,
     this.subcontNameRpt,
   });
 
-  factory Result.fromJson(Map<String, dynamic> json) => Result(
+  factory SubcontResult.fromJson(Map<String, dynamic> json) => SubcontResult(
     subContId: json["id"],
-    subContName: json["subcontractorName"],
+    subContName: json["subcontractorName"] ?? json["subContractorName"],
     subcontNameRpt: json["subcontractName"],
   );
 

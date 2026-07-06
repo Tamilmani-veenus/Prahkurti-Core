@@ -12,7 +12,8 @@ import '../../../controller/staffcontroller.dart';
 import '../../../utilities/baseutitiles.dart';
 
 class PunchInOutReports extends StatefulWidget {
-  const PunchInOutReports({Key? key}) : super(key: key);
+  final String heading;
+  const PunchInOutReports({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<PunchInOutReports> createState() => _PunchInOutReportsState();
@@ -53,9 +54,11 @@ class _PunchInOutReportsState extends State<PunchInOutReports> with SingleTicker
         appBar: AppBar(
           iconTheme: const IconThemeData(color: Colors.black),
           backgroundColor: Setmybackground,
-          title: const Text(
-            'Punch reports',
-            style: TextStyle(color: Colors.black),
+          title: Expanded(
+            child: Text(
+              widget.heading,
+              style: TextStyle(color: Colors.black),
+            ),
           ),
           bottom: TabBar(
             labelColor: Colors.black,

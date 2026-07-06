@@ -93,70 +93,55 @@ class _ImageGalleryPopup_AlertState extends State<ImageGalleryPopup_Alert> {
 
                             ),
                           ),
-                          // onTap: () => pickImageFromCamera(),
                           onTap: ()
                           {
                             if(widget.imageUrl == "SITE VOUCHER")
                             {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => CameraCapturePage(
-                                      fromScreen: "Site Voucher",
-                                    )),
-                              );
+                              Get.back();
+
+                              Get.to(() => CameraCapturePage(
+                                fromScreen: "Site Voucher",
+                              ));
                             }
                             else if(widget.imageUrl == "DLR")
                               {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => CameraCapturePage(
-                                        fromScreen:
-                                        "Subcontractor Attendance",
-                                      )),
-                                );
+                                Get.back();
+
+                                Get.to(() => CameraCapturePage(
+                                  fromScreen: "Subcontractor Attendance",
+                                ));
                               }
                             else if(widget.imageUrl == "DPR")
                               {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => CameraCapturePage(
-                                        fromScreen:
-                                        "DPR",
-                                      )),
-                                );
+                                Get.back();
+
+                                Get.to(() => CameraCapturePage(
+                                  fromScreen: "DPR",
+                                ));
                               }
                             else if(widget.imageUrl == "DPR NEW")
                               {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => CameraCapturePage(
-                                        fromScreen:
-                                        "DPR-NEW",
-                                      )),
-                                );
+                                Get.back(); // close dialog
+
+                                Get.to(() => CameraCapturePage(
+                                  fromScreen: "DPR-NEW",
+                                ));
                               }
                             else if(widget.imageUrl == "Inward")
                               {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => CameraCapturePage(
-                                        fromScreen: "Inward",
-                                      )),
-                                );
+                                Get.back();
+
+                                Get.to(() => CameraCapturePage(
+                                  fromScreen: "Inward",
+                                ));
                               }
                             else if(widget.imageUrl == "InwardButton")
                               {
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => CameraCapturePage(
-                                          fromScreen: "InwardAddButton",
-                                        )));
+                                Get.back();
+
+                                Get.to(() => CameraCapturePage(
+                                  fromScreen: "InwardAddButton",
+                                ));
                               }
                           },
 
@@ -190,8 +175,9 @@ class _ImageGalleryPopup_AlertState extends State<ImageGalleryPopup_Alert> {
                             ),
                           ),
                           onTap: () async {
-                            await pickImageFromGallery();
                             Navigator.pop(context);
+                            await pickImageFromGallery();
+
                           },
 
                         ),
@@ -238,7 +224,6 @@ class _ImageGalleryPopup_AlertState extends State<ImageGalleryPopup_Alert> {
         }
       }
 
-      setState(() {
         if(widget.imageUrl == "SITE VOUCHER")
         {
           siteVoucher_Controller.imageFiles.addAll(compressedImages);
@@ -272,7 +257,6 @@ class _ImageGalleryPopup_AlertState extends State<ImageGalleryPopup_Alert> {
             print(img.path);
           }
         }
-      });
     } else {
       debugPrint('No images selected.');
     }

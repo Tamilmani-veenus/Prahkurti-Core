@@ -33,46 +33,64 @@ import 'material_transreq_controller.dart';
 import 'nmrweeklybill_controller.dart';
 
 class BottomsheetControllers {
-
   ProjectController projectcontroller = Get.put(ProjectController());
   ReportsController reportsController = Get.put(ReportsController());
-  SiteController siteController =Get.put(SiteController());
-  FromProjectController fromProjectController = Get.put(FromProjectController());
-  FromSiteController fromsiteController=Get.put(FromSiteController());
-  MaterialTransferReqController materialTransferReqController = Get.put(MaterialTransferReqController());
-  TransferBt_Site_Controller transferBt_Site_Controller=Get.put(TransferBt_Site_Controller());
+  SiteController siteController = Get.put(SiteController());
+  FromProjectController fromProjectController =
+      Get.put(FromProjectController());
+  FromSiteController fromsiteController = Get.put(FromSiteController());
+  MaterialTransferReqController materialTransferReqController =
+      Get.put(MaterialTransferReqController());
+  TransferBt_Site_Controller transferBt_Site_Controller =
+      Get.put(TransferBt_Site_Controller());
   SiteController sitecontroller = Get.put(SiteController());
-  SubcontractorController subcontractorController = Get.put(SubcontractorController());
+  SubcontractorController subcontractorController =
+      Get.put(SubcontractorController());
   SupplierController supplierController = Get.put(SupplierController());
-  CommonVoucherController commonVoucherController = Get.put(CommonVoucherController());
+  CommonVoucherController commonVoucherController =
+      Get.put(CommonVoucherController());
   StaffController staffController = Get.put(StaffController());
-  DailyWrkDone_DPR_Controller dailyWrkDone_DPR_Controller = Get.put(DailyWrkDone_DPR_Controller());
-  DailyWrkDone_DPRNEW_Controller dailyWrkDone_DPRNEW_Controller=Get.put(DailyWrkDone_DPRNEW_Controller());
-  NMRWklyController nmrWklyController=Get.put(NMRWklyController());
-  BillGenerationDirectController billGenerationDirectController=Get.put(BillGenerationDirectController());
-  DailyEntriesController dailyEntriesController = Get.put(DailyEntriesController());
-  RequisitionSlipControllerNew requisitionSlipController = Get.put(RequisitionSlipControllerNew());
-  Consumption_Controller consumption_controller=Get.put(Consumption_Controller());
-  Boq_Revised_Controller boq_revised_controller=Get.put(Boq_Revised_Controller());
-  StockSiteController stockSiteController=Get.put(StockSiteController());
+  DailyWrkDone_DPR_Controller dailyWrkDone_DPR_Controller =
+      Get.put(DailyWrkDone_DPR_Controller());
+  DailyWrkDone_DPRNEW_Controller dailyWrkDone_DPRNEW_Controller =
+      Get.put(DailyWrkDone_DPRNEW_Controller());
+  NMRWklyController nmrWklyController = Get.put(NMRWklyController());
+  BillGenerationDirectController billGenerationDirectController =
+      Get.put(BillGenerationDirectController());
+  DailyEntriesController dailyEntriesController =
+      Get.put(DailyEntriesController());
+  RequisitionSlipControllerNew requisitionSlipController =
+      Get.put(RequisitionSlipControllerNew());
+  Consumption_Controller consumption_controller =
+      Get.put(Consumption_Controller());
+  Boq_Revised_Controller boq_revised_controller =
+      Get.put(Boq_Revised_Controller());
+  StockSiteController stockSiteController = Get.put(StockSiteController());
   AdvanceReqVoucherController_new advanceReqVoucherController_new =
-  Get.put(AdvanceReqVoucherController_new());
-  BillGenerationBoqController billGenerationBoqController=Get.put(BillGenerationBoqController());
-  final CompanyController companyController = Get.put(CompanyController());
-  CashBookStaffController cashBookStaffController = Get.put(CashBookStaffController());
-  TransferBW_project_Controller transferBW_project_Controller=Get.put(TransferBW_project_Controller());
-  StaffVoucher_Controller staffVoucher_Controller = Get.put(StaffVoucher_Controller());
+      Get.put(AdvanceReqVoucherController_new());
+  BillGenerationBoqController billGenerationBoqController =
+      Get.put(BillGenerationBoqController());
+  CashBookStaffController cashBookStaffController =
+      Get.put(CashBookStaffController());
+  TransferBW_project_Controller transferBW_project_Controller =
+      Get.put(TransferBW_project_Controller());
+  StaffVoucher_Controller staffVoucher_Controller =
+      Get.put(StaffVoucher_Controller());
   ExpensesController expensesController = Get.put(ExpensesController());
-  CompanyController companycontroller=Get.put(CompanyController());
-  FromProjectController fromprojectController = Get.put(FromProjectController());
+  CompanyController companycontroller = Get.put(CompanyController());
+  FromProjectController fromprojectController =
+      Get.put(FromProjectController());
 
   final searchcontroller = TextEditingController();
   var list;
 
-  ProjectName(context, list){
-    showModalBottomSheet(context: context,
+  ProjectName(context, list, {type}) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -90,7 +108,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -103,8 +122,9 @@ class BottomsheetControllers {
                       // if (onSearch != null) onSearch!(searchcontroller.text);
                     },
                     textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list=BaseUtitiles.projectPopupAlert(value, projectcontroller.getdropDownvalue.value);
+                    onChanged: (value) {
+                      list = BaseUtitiles.projectPopupAlert(
+                          value, projectcontroller.getdropDownvalue.value);
                     },
                   ),
                 ),
@@ -113,22 +133,29 @@ class BottomsheetControllers {
                   width: BaseUtitiles.getWidthtofPercentage(context, 25),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(3),
-                    child: Text("Projects", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "Projects",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: const EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             const Divider(),
@@ -144,43 +171,68 @@ class BottomsheetControllers {
                         child: Container(
                           margin: const EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].project.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            list[index].project.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         onTap: () async {
-                          projectcontroller.projectname.text = list[index].project.toString();
-                         projectcontroller.selectedProjectId.value = list[index].projectId;
-                          await siteController.subcontEntry_siteDropdowntList(context, 0);
-                          searchcontroller.text = "";
-                          fromsiteController.selectedsiteId.value=0;
-                          fromsiteController.FromSitename.text = "--SELECT--";
-                          siteController.Sitename.text = "--SELECT--";
-                          siteController.selectedsiteId.value=0;
-                          subcontractorController.Subcontractorname.text = "--SELECT--";
-                          subcontractorController.selectedSubcontId.value=0;
-                          dailyWrkDone_DPR_Controller.TypeSubcontractorname.text = "--SELECT--";
-                          consumption_controller.expenseTypeController.text = "--SELECT--";
-                          consumption_controller.expenseType = "0";
-                          siteController.headNameController.text = "--SELECT--";
-                          siteController.selectedHeadId.value=0;
-                          consumption_controller.Consum_itemview_GetDbList.value=[];
-                          await subcontractorController.getSubcontList(context, projectcontroller.selectedProjectId.value, siteController.selectedsiteId.value, subcontractorController.checkScreen);
+                          projectcontroller.projectname.text =
+                              list[index].project.toString();
+                          projectcontroller.selectedProjectId.value =
+                              list[index].projectId;
+                          if (type != "AdvReq") {
+                            await siteController.subcontEntry_siteDropdowntList(
+                                context, 0);
+                            searchcontroller.text = "";
+                            fromsiteController.selectedsiteId.value = 0;
+                            fromsiteController.FromSitename.text = "--SELECT--";
+                            siteController.Sitename.text = "--SELECT--";
+                            siteController.selectedsiteId.value = 0;
+                            subcontractorController.Subcontractorname.text =
+                                "--SELECT--";
+                            subcontractorController.selectedSubcontId.value = 0;
+                            dailyWrkDone_DPR_Controller
+                                .TypeSubcontractorname.text = "--SELECT--";
+                            consumption_controller.expenseTypeController.text =
+                                "--SELECT--";
+                            consumption_controller.expenseType = "0";
+                            siteController.headNameController.text =
+                                "--SELECT--";
+                            siteController.selectedHeadId.value = 0;
+                            consumption_controller
+                                .Consum_itemview_GetDbList.value = [];
+                            await subcontractorController.getSubcontList(
+                                context,
+                                projectcontroller.selectedProjectId.value,
+                                siteController.selectedsiteId.value,
+                                subcontractorController.checkScreen);
+                          }
                           Navigator.pop(context);
                         },
                       ),
                       Divider(),
                     ],
                   );
-                }, ),
+                },
+              ),
             )
           ],
         );
-      },);
+      },
+    );
   }
 
   projectnameAll(context, list) {
-    showModalBottomSheet(context: context,
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -199,108 +251,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
-                        color: Colors.black,
-                      ),
-                      hintText: "search..",
-                      hintStyle: TextStyle(color: Colors.black),
-                      isDense: true,
-                      fillColor: Setmybackground,
-                    ),
-                    onEditingComplete: () {
-                      FocusScope.of(context).unfocus();
-                      // if (onSearch != null) onSearch!(searchcontroller.text);
-                    },
-                    textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list=BaseUtitiles.projectPopupAlert(value, projectcontroller.getdropDownvalueAll.value);
-                    },
-                  ),
-                ),
-                SizedBox(width: 20),
-                Container(
-                  width: BaseUtitiles.getWidthtofPercentage(context, 25),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(3),
-                    child: Text("To Projects", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
-                  ),
-                ),
-                InkWell(
-                    onTap: (){
-                      Navigator.pop(context);
-                      searchcontroller.text = "";
-                    },
-                    child: Container(
-                        margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
-              ],
-            ),
-            Divider(),
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.zero,
-                physics: BouncingScrollPhysics(),
-                itemCount: list.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Column(
-                    children: [
-                      InkWell(
-                        child: Container(
-                          margin: EdgeInsets.only(left: 10),
-                          alignment: Alignment.center,
-                          child: Text(list[index].project.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
-                        ),
-                        onTap: () async {
-                          projectcontroller.projectnameAll.text = list[index].project.toString();
-                            projectcontroller.selectedProjectIdAll.value = list[index].projectId;
-                            if(fromprojectController.selectedProjectId.value ==  projectcontroller.selectedProjectIdAll.value){
-                              projectcontroller.projectnameAll.text = "";
-                              projectcontroller.selectedProjectIdAll.value = 0;
-                              Fluttertoast.showToast(msg: "Same project name can't be accept");
-                            }
-                            // await fromsiteController.getsiteDropdowntList(context,0);
-                            // await subcontractorController.getSubcontList(context, projectcontroller.selectedProjectId.value,siteController.selectedsiteId.value, subcontractorController.checkScreen);
-                          searchcontroller.text = "";
-                          Navigator.pop(context);
-                        },
-                      ),
-                      Divider(),
-                    ],
-                  );
-                }, ),
-            )
-          ],
-        );
-      },);
-  }
-
-  WorkOrderName(context, list,{String? type,String? todate}){
-    showModalBottomSheet(context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
-      builder: (BuildContext context) {
-        return Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: BaseUtitiles.getWidthtofPercentage(context, 50),
-                  margin: EdgeInsets.only(top: 10, left: 15),
-                  child: TextField(
-                    controller: searchcontroller,
-                    decoration: InputDecoration(
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -314,32 +266,39 @@ class BottomsheetControllers {
                     },
                     textInputAction: TextInputAction.search,
                     onChanged: (value) {
-                      list=BaseUtitiles.subcontPopupAlert(value, subcontractorController.getdpDnWrkOrderValue.value);
+                      list = BaseUtitiles.projectPopupAlert(
+                          value, projectcontroller.getdropDownvalueAll.value);
                     },
-
                   ),
                 ),
                 SizedBox(width: 20),
                 Container(
-                  width: BaseUtitiles.getWidthtofPercentage(context, 30),
+                  width: BaseUtitiles.getWidthtofPercentage(context, 25),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("Work Order No", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "To Projects",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             Divider(),
@@ -355,38 +314,182 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(type == "BILL BOQ" ? list[index].workOrderNoBoq.toString() : list[index].workOrderNo.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            list[index].project.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        onTap: ()  async {
-                          subcontractorController.WorkOrderNo.text = type == "BILL BOQ" ? list[index].workOrderNoBoq.toString() : list[index].workOrderNo.toString();
-                          subcontractorController.selectedWorkOrderId.value = list[index].workOrderId;
+                        onTap: () async {
+                          projectcontroller.projectnameAll.text =
+                              list[index].project.toString();
+                          projectcontroller.selectedProjectIdAll.value =
+                              list[index].projectId;
+                          if (fromprojectController.selectedProjectId.value ==
+                              projectcontroller.selectedProjectIdAll.value) {
+                            projectcontroller.projectnameAll.text = "";
+                            projectcontroller.selectedProjectIdAll.value = 0;
+                            Fluttertoast.showToast(
+                                msg: "Same project name can't be accept");
+                          }
+                          // await fromsiteController.getsiteDropdowntList(context,0);
+                          // await subcontractorController.getSubcontList(context, projectcontroller.selectedProjectId.value,siteController.selectedsiteId.value, subcontractorController.checkScreen);
                           searchcontroller.text = "";
-                          if(type == "BILL DIRECT"){
-                            await billGenerationDirectController.getWorkOrderList("ItemListDet",type,todate);
-                          }
-                          else if(type == "BILL BOQ"){
-                            await billGenerationBoqController.getWorkOrderList("ItemListDet",todate);
-                          }
-                          await billGenerationDirectController.getNmrAdvance();
                           Navigator.pop(context);
                         },
                       ),
                       Divider(),
                     ],
                   );
-                }, ),
+                },
+              ),
             )
           ],
         );
-      });
+      },
+    );
+  }
+
+  WorkOrderName(context, list, {String? type, String? todate}) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+        ),
+        builder: (BuildContext context) {
+          return Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: BaseUtitiles.getWidthtofPercentage(context, 50),
+                    margin: EdgeInsets.only(top: 10, left: 15),
+                    child: TextField(
+                      controller: searchcontroller,
+                      decoration: InputDecoration(
+                        filled: true,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: Colors.black,
+                        ),
+                        hintText: "search..",
+                        hintStyle: TextStyle(color: Colors.black),
+                        isDense: true,
+                        fillColor: Setmybackground,
+                      ),
+                      onEditingComplete: () {
+                        FocusScope.of(context).unfocus();
+                        // if (onSearch != null) onSearch!(searchcontroller.text);
+                      },
+                      textInputAction: TextInputAction.search,
+                      onChanged: (value) {
+                        list = BaseUtitiles.subcontPopupAlert(value,
+                            subcontractorController.getdpDnWrkOrderValue.value);
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 20),
+                  Container(
+                    width: BaseUtitiles.getWidthtofPercentage(context, 30),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          width: 2, color: Theme.of(context).primaryColor),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(3),
+                      child: Text(
+                        "Work Order No",
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                        searchcontroller.text = "";
+                      },
+                      child: Container(
+                          margin: EdgeInsets.only(right: 10),
+                          child: Icon(Icons.expand_circle_down,
+                              color: Theme.of(context).primaryColor))),
+                ],
+              ),
+              Divider(),
+              Expanded(
+                child: ListView.builder(
+                  padding: EdgeInsets.zero,
+                  physics: BouncingScrollPhysics(),
+                  itemCount: list.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Column(
+                      children: [
+                        InkWell(
+                          child: Container(
+                            margin: EdgeInsets.only(left: 10),
+                            alignment: Alignment.center,
+                            child: Text(
+                              type == "BILL BOQ"
+                                  ? list[index].workOrderNoBoq.toString()
+                                  : list[index].workOrderNo.toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: RequestConstant.ALERT_Font_SIZE,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          onTap: () async {
+                            subcontractorController.WorkOrderNo.text =
+                                type == "BILL BOQ"
+                                    ? list[index].workOrderNoBoq.toString()
+                                    : list[index].workOrderNo.toString();
+                            subcontractorController.selectedWorkOrderId.value =
+                                list[index].workOrderId;
+                            searchcontroller.text = "";
+                            if (type == "BILL DIRECT") {
+                              await billGenerationDirectController
+                                  .getWorkOrderList(
+                                      "ItemListDet", type, todate);
+                            } else if (type == "BILL BOQ") {
+                              await billGenerationBoqController
+                                  .getWorkOrderList("ItemListDet", todate);
+                              await billGenerationBoqController
+                                  .getNmrAdvance();
+                            }
+                            Navigator.pop(context);
+                          },
+                        ),
+                        Divider(),
+                      ],
+                    );
+                  },
+                ),
+              )
+            ],
+          );
+        });
   }
 
   //------Project Name Company Wise list----------
 
   projectname_CompanyWise(context, list) {
-    showModalBottomSheet(context: context,
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -405,7 +508,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -418,8 +522,9 @@ class BottomsheetControllers {
                       // if (onSearch != null) onSearch!(searchcontroller.text);
                     },
                     textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list=BaseUtitiles.projectPopupAlert(value, companycontroller.getdropDownvalue_Companywise.value);
+                    onChanged: (value) {
+                      list = BaseUtitiles.projectPopupAlert(value,
+                          companycontroller.getdropDownvalue_Companywise.value);
                     },
                   ),
                 ),
@@ -428,22 +533,29 @@ class BottomsheetControllers {
                   width: BaseUtitiles.getWidthtofPercentage(context, 25),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("Projects", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "Projects",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             Divider(),
@@ -459,11 +571,19 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].project.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            list[index].project.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         onTap: () async {
-                          companycontroller.projectname_CompanyWise.text = list[index].project.toString();
-                          companycontroller.selectedProjectId_CompanyWise.value = list[index].projectId;
+                          companycontroller.projectname_CompanyWise.text =
+                              list[index].project.toString();
+                          companycontroller.selectedProjectId_CompanyWise
+                              .value = list[index].projectId;
                           searchcontroller.text = "";
                           Navigator.pop(context);
                         },
@@ -471,17 +591,22 @@ class BottomsheetControllers {
                       Divider(),
                     ],
                   );
-                }, ),
+                },
+              ),
             )
           ],
         );
-      },);
+      },
+    );
   }
 
-  SiteName(context, list ){
-    showModalBottomSheet(context: context,
+  SiteName(context, list) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -499,7 +624,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -511,8 +637,9 @@ class BottomsheetControllers {
                       FocusScope.of(context).unfocus();
                     },
                     textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list = BaseUtitiles.sitePopupAlert(value, siteController.getSiteDropdownvalue.value);
+                    onChanged: (value) {
+                      list = BaseUtitiles.sitePopupAlert(
+                          value, siteController.getSiteDropdownvalue.value);
                     },
                   ),
                 ),
@@ -521,26 +648,32 @@ class BottomsheetControllers {
                   width: BaseUtitiles.getWidthtofPercentage(context, 25),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("Sites", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "Sites",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             Divider(),
-
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.zero,
@@ -553,19 +686,31 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].siteName.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            list[index].siteName.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         onTap: () async {
                           dailyEntriesController.deleteSubcontDetTableDatas();
-                          dailyEntriesController.readListdata.value=[];
-                          siteController.Sitename.text = list[index].siteName.toString();
-                          siteController.selectedsiteId.value = list[index].siteId;
-                          dailyWrkDone_DPR_Controller.TypeSubcontractorname.text = "--SELECT--";
-                          dailyWrkDone_DPR_Controller.TypeSubcontId.value=0;
+                          dailyEntriesController.readListdata.value = [];
+                          siteController.Sitename.text =
+                              list[index].siteName.toString();
+                          siteController.selectedsiteId.value =
+                              list[index].siteId;
+                          dailyWrkDone_DPR_Controller
+                              .TypeSubcontractorname.text = "--SELECT--";
+                          dailyWrkDone_DPR_Controller.TypeSubcontId.value = 0;
                           siteController.headNameController.text = "--SELECT--";
-                          siteController.selectedHeadId.value=0;
-                          dailyWrkDone_DPRNEW_Controller.dprNew_DetTable_Delete();
-                          dailyWrkDone_DPRNEW_Controller.dprNew_EntryDetReadList.value.clear();
+                          siteController.selectedHeadId.value = 0;
+                          dailyWrkDone_DPRNEW_Controller
+                              .dprNew_DetTable_Delete();
+                          dailyWrkDone_DPRNEW_Controller
+                              .dprNew_EntryDetReadList.value
+                              .clear();
                           dailyWrkDone_DPRNEW_Controller.getDetTablesDatas();
                           searchcontroller.text = "";
                           Navigator.pop(context);
@@ -574,19 +719,22 @@ class BottomsheetControllers {
                       Divider(),
                     ],
                   );
-
-                }, ),
+                },
+              ),
             )
-
           ],
         );
-      },);
+      },
+    );
   }
 
-  FromProjectName(context, list){
-    showModalBottomSheet(context: context,
+  FromProjectName(context, list) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -604,7 +752,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -617,8 +766,9 @@ class BottomsheetControllers {
                       // if (onSearch != null) onSearch!(searchcontroller.text);
                     },
                     textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list = BaseUtitiles.projectPopupAlert(value, fromProjectController.getdropDownvalue.value );
+                    onChanged: (value) {
+                      list = BaseUtitiles.projectPopupAlert(
+                          value, fromProjectController.getdropDownvalue.value);
                     },
                   ),
                 ),
@@ -627,22 +777,29 @@ class BottomsheetControllers {
                   width: BaseUtitiles.getWidthtofPercentage(context, 25),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("From Projects", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "From Projects",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             Divider(),
@@ -658,22 +815,34 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].project.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            list[index].project.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.ALERT_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         onTap: () async {
-                          fromProjectController.fromprojectname.text    = list[index].project.toString();
-                          fromProjectController.selectedProjectId.value = list[index].projectId;
-                          if(fromprojectController.selectedProjectId.value ==  projectcontroller.selectedProjectIdAll.value){
+                          fromProjectController.fromprojectname.text =
+                              list[index].project.toString();
+                          fromProjectController.selectedProjectId.value =
+                              list[index].projectId;
+                          if (fromprojectController.selectedProjectId.value ==
+                              projectcontroller.selectedProjectIdAll.value) {
                             fromProjectController.fromprojectname.text = "";
-                            fromProjectController.selectedProjectId.value= 0;
-                            Fluttertoast.showToast(msg: "Same project name can't be accept");
+                            fromProjectController.selectedProjectId.value = 0;
+                            Fluttertoast.showToast(
+                                msg: "Same project name can't be accept");
                           }
-                          fromsiteController.FromSitename.text="--SELECT--";
-                          fromsiteController.selectedsiteId.value=0;
+                          fromsiteController.FromSitename.text = "--SELECT--";
+                          fromsiteController.selectedsiteId.value = 0;
                           transferBW_project_Controller.itemlistTable_Delete();
-                          transferBW_project_Controller.ItemGetTableListdata.value=[];
+                          transferBW_project_Controller
+                              .ItemGetTableListdata.value = [];
                           materialTransferReqController.itemlistTable_Delete();
-                          materialTransferReqController.ItemGetTableListdata.clear();
+                          materialTransferReqController.ItemGetTableListdata
+                              .clear();
                           Navigator.pop(context);
                           searchcontroller.text = "";
                         },
@@ -681,17 +850,22 @@ class BottomsheetControllers {
                       Divider(),
                     ],
                   );
-                }, ),
+                },
+              ),
             )
           ],
         );
-      },);
+      },
+    );
   }
 
-  FromSiteName(context, screencheck, list){
-    showModalBottomSheet(context: context,
+  FromSiteName(context, screencheck, list,{String? MenuName}) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -709,7 +883,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -723,7 +898,8 @@ class BottomsheetControllers {
                     },
                     textInputAction: TextInputAction.search,
                     onChanged: (value) {
-                      list=BaseUtitiles.sitePopupAlert(value, fromsiteController.getSiteDropdownvalue.value);
+                      list = BaseUtitiles.sitePopupAlert(
+                          value, fromsiteController.getSiteDropdownvalue.value);
                     },
                   ),
                 ),
@@ -732,22 +908,29 @@ class BottomsheetControllers {
                   width: BaseUtitiles.getWidthtofPercentage(context, 25),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("From Sites", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "From Sites",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             Divider(),
@@ -763,54 +946,86 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].siteName
-                              .toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            list[index].siteName.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.ALERT_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         onTap: () async {
-                          if(transferBW_project_Controller.type.value=="Direct" || screencheck=="Transfer Between Sites" || screencheck=="Material transfer request" || screencheck=="Transfer ack pending"){
-                            transferBW_project_Controller.ItemGetTableListdata.value=[];
-                            transferBt_Site_Controller.ItemGetTableListdata.value=[];
-                            fromsiteController.FromSitename.text = list[index].siteName.toString();
-                            fromsiteController.selectedsiteId.value = list[index].siteId;
-                            siteController.Sitename.text="--SELECT--";
-                            siteController.selectedsiteId.value=0;
-                          }
-                          else if(screencheck=="STORE TRANSFER"){
-                            if(fromsiteController.selectedsiteId.value ==  siteController.selectedsiteId.value)
-                            {
-                            transferBW_project_Controller.itemlistTable_Delete();
-                            transferBt_Site_Controller.ItemGetTableListdata.value=[];
+                          if (transferBW_project_Controller.type.value ==
+                                  "Direct" ||
+                              screencheck == "Transfer Between Sites" ||
+                              screencheck == "Material transfer request" ||
+                              screencheck == "Transfer ack pending") {
+                            transferBW_project_Controller
+                                .ItemGetTableListdata.value = [];
+                            transferBt_Site_Controller
+                                .ItemGetTableListdata.value = [];
+                            fromsiteController.FromSitename.text =
+                                list[index].siteName.toString();
+                            fromsiteController.selectedsiteId.value =
+                                list[index].siteId;
+                            siteController.Sitename.text = "--SELECT--";
+                            siteController.selectedsiteId.value = 0;
+                          } else if (screencheck == "STORE TRANSFER") {
+                            if (fromsiteController.selectedsiteId.value ==
+                                siteController.selectedsiteId.value) {
+                              transferBW_project_Controller
+                                  .itemlistTable_Delete();
+                              transferBt_Site_Controller
+                                  .ItemGetTableListdata.value = [];
                             }
-                            fromsiteController.FromSitename.text = list[index].siteName.toString();
-                            fromsiteController.selectedsiteId.value = list[index].siteId;
+                            fromsiteController.FromSitename.text =
+                                list[index].siteName.toString();
+                            fromsiteController.selectedsiteId.value =
+                                list[index].siteId;
                             transferBt_Site_Controller.itemlistTable_Delete();
-                            transferBt_Site_Controller.ItemGetTableListdata.value=[];
-                            await transferBt_Site_Controller.getStoreTransPendingView(
-                                transferBt_Site_Controller.transferAllDatasList[0].reqMasid,
-                                fromsiteController.selectedsiteId.value, context);
-                            await transferBt_Site_Controller.itemlistPopup_saveLabTableDatas(context);
-                            await transferBt_Site_Controller.getItemlistTablesDatas();
+                            transferBt_Site_Controller
+                                .ItemGetTableListdata.value = [];
+                            await transferBt_Site_Controller
+                                .getStoreTransPendingView(
+                                    transferBt_Site_Controller
+                                        .transferAllDatasList[0].reqMasid,
+                                    fromsiteController.selectedsiteId.value,MenuName!,
+                                    context);
+                            await transferBt_Site_Controller
+                                .itemlistPopup_saveLabTableDatas(context);
+                            await transferBt_Site_Controller
+                                .getItemlistTablesDatas();
 
-                            if(fromsiteController.selectedsiteId.value ==  siteController.selectedsiteId.value)
-                            {
-                              siteController.Sitename.text="--SELECT--";
-                              siteController.selectedsiteId.value=0;
+                            if (fromsiteController.selectedsiteId.value ==
+                                siteController.selectedsiteId.value) {
+                              siteController.Sitename.text = "--SELECT--";
+                              siteController.selectedsiteId.value = 0;
                             }
-                          }
-                          else{
-                            fromsiteController.FromSitename.text = list[index].siteName.toString();
-                            fromsiteController.selectedsiteId.value = list[index].siteId;
-                              transferBW_project_Controller.itemlistTable_Delete();
-                              transferBW_project_Controller.ItemGetTableListdata.value=[];
-                            await transferBW_project_Controller.getTransproject_ItemList(
-                                fromProjectController.selectedProjectId.value,
-                                fromsiteController.selectedsiteId.value,
-                                transferBW_project_Controller.transferAllDatasList[0].reqMasid,
-                                context);
-                              await transferBW_project_Controller.itemlist_SaveTable();
-                              await transferBW_project_Controller.getItemlistTablesDatas();
-                              materialTransferReqController.itemlistTable_Delete();
-                              materialTransferReqController.ItemGetTableListdata.value=[];
+                          } else {
+                            fromsiteController.FromSitename.text =
+                                list[index].siteName.toString();
+                            fromsiteController.selectedsiteId.value =
+                                list[index].siteId;
+                            transferBW_project_Controller
+                                .itemlistTable_Delete();
+                            transferBW_project_Controller
+                                .ItemGetTableListdata.value = [];
+                            await transferBW_project_Controller
+                                .getTransproject_ItemList(
+                                    fromProjectController
+                                        .selectedProjectId.value,
+                                    fromsiteController.selectedsiteId.value,
+                                    transferBW_project_Controller
+                                        .transferAllDatasList[0].reqMasid,
+                                    context);
+                            await transferBW_project_Controller
+                                .itemlist_SaveTable();
+                            await transferBW_project_Controller
+                                .getItemlistTablesDatas();
+                            materialTransferReqController
+                                .itemlistTable_Delete();
+                            materialTransferReqController
+                                .ItemGetTableListdata.value = [];
                           }
                           searchcontroller.text = "";
                           Navigator.pop(context);
@@ -819,17 +1034,22 @@ class BottomsheetControllers {
                       Divider(),
                     ],
                   );
-                }, ),
+                },
+              ),
             )
           ],
         );
-      },);
+      },
+    );
   }
 
-  ToSiteName(context, list){
-    showModalBottomSheet(context: context,
+  ToSiteName(context, list) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -847,7 +1067,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -861,7 +1082,9 @@ class BottomsheetControllers {
                     },
                     textInputAction: TextInputAction.search,
                     onChanged: (value) {
-                      siteController.mainlist.value=BaseUtitiles.sitePopupAlert(value, siteController.getSiteDropdownvalue.value );
+                      siteController.mainlist.value =
+                          BaseUtitiles.sitePopupAlert(
+                              value, siteController.getSiteDropdownvalue.value);
                     },
                   ),
                 ),
@@ -870,22 +1093,29 @@ class BottomsheetControllers {
                   width: BaseUtitiles.getWidthtofPercentage(context, 25),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("To Sites", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "To Sites",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             Divider(),
@@ -901,37 +1131,48 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].siteName
-                              .toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            list[index].siteName.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.ALERT_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        onTap: ()  {
+                        onTap: () {
+                          sitecontroller.Sitename.text =
+                              list[index].siteName.toString();
+                          sitecontroller.selectedsiteId.value =
+                              list[index].siteId;
 
-                          sitecontroller.Sitename.text = list[index].siteName.toString();
-                          sitecontroller.selectedsiteId.value = list[index].siteId;
-
-                          if(fromsiteController.selectedsiteId.value == sitecontroller.selectedsiteId.value ){
+                          if (fromsiteController.selectedsiteId.value ==
+                              sitecontroller.selectedsiteId.value) {
                             BaseUtitiles.showToast("Same site can't allowed");
                             sitecontroller.Sitename.text = "";
                           }
                           searchcontroller.text = "";
                           Navigator.pop(context);
-
-                          },
+                        },
                       ),
                       Divider(),
                     ],
                   );
-                }, ),
+                },
+              ),
             )
           ],
         );
-      },);
+      },
+    );
   }
 
-  dprNewHeadName(context, list, type){
-    showModalBottomSheet(context: context,
+  dprNewHeadName(context, list, type) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -949,7 +1190,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -961,8 +1203,9 @@ class BottomsheetControllers {
                       FocusScope.of(context).unfocus();
                     },
                     textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list = BaseUtitiles.sitePopupAlert(value, siteController.getSiteDropdownvalue.value);
+                    onChanged: (value) {
+                      list = BaseUtitiles.sitePopupAlert(
+                          value, siteController.getSiteDropdownvalue.value);
                     },
                   ),
                 ),
@@ -971,26 +1214,32 @@ class BottomsheetControllers {
                   width: BaseUtitiles.getWidthtofPercentage(context, 25),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("Head Name", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "Head Name",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             Divider(),
-
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.zero,
@@ -1003,31 +1252,47 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(type=="DPRNEW"?list[index].headItemName:list[index].headName, textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            type == "DPRNEW"
+                                ? list[index].headItemName
+                                : list[index].headName,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         onTap: () async {
-                          siteController.headNameController.text = type=="DPRNEW"?list[index].headItemName:list[index].headName;
+                          siteController.headNameController.text =
+                              type == "DPRNEW"
+                                  ? list[index].headItemName
+                                  : list[index].headName;
                           siteController.selectedHeadId.value = list[index].id;
                           searchcontroller.text = "";
+                          dailyWrkDone_DPRNEW_Controller.dprNew_DetTable_Delete();
+                          dailyWrkDone_DPRNEW_Controller.dprNew_EntryDetReadList.value=[];
                           Navigator.pop(context);
                         },
                       ),
                       Divider(),
                     ],
                   );
-
-                }, ),
+                },
+              ),
             )
-
           ],
         );
-      },);
+      },
+    );
   }
 
-  SubcontractorName(context, list){
-    showModalBottomSheet(context: context,
+  SubcontractorName(context, list) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -1045,7 +1310,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -1059,9 +1325,9 @@ class BottomsheetControllers {
                     },
                     textInputAction: TextInputAction.search,
                     onChanged: (value) {
-                      list=BaseUtitiles.subcontPopupAlert(value, subcontractorController.getdropDownvalue.value);
+                      list = BaseUtitiles.subcontPopupAlert(value,
+                          subcontractorController.getdropDownvalue.value);
                     },
-
                   ),
                 ),
                 SizedBox(width: 20),
@@ -1069,22 +1335,29 @@ class BottomsheetControllers {
                   width: BaseUtitiles.getWidthtofPercentage(context, 30),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("Subcontractors", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "Subcontractors",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             Divider(),
@@ -1100,13 +1373,23 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].subContName.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            list[index].subContName.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.ALERT_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        onTap: ()  async {
-                          subcontractorController.Subcontractorname.text = list[index].subContName.toString();
-                          subcontractorController.selectedSubcontId.value = list[index].subContId;
+                        onTap: () async {
+                          subcontractorController.Subcontractorname.text =
+                              list[index].subContName.toString();
+                          subcontractorController.selectedSubcontId.value =
+                              list[index].subContId;
                           searchcontroller.text = "";
-                          await subcontractorController.getInvoiceNoList(projectcontroller.selectedProjectId.value,subcontractorController.selectedSubcontId.value);
+                          await subcontractorController.getInvoiceNoList(
+                              projectcontroller.selectedProjectId.value,
+                              subcontractorController.selectedSubcontId.value);
                           await billGenerationDirectController.getNmrAdvance();
                           Navigator.pop(context);
                         },
@@ -1114,17 +1397,22 @@ class BottomsheetControllers {
                       Divider(),
                     ],
                   );
-                }, ),
+                },
+              ),
             )
           ],
         );
-      },);
+      },
+    );
   }
 
-  SupplierName(context, list ){
-    showModalBottomSheet(context: context,
+  SupplierName(context, list) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -1142,7 +1430,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -1154,8 +1443,9 @@ class BottomsheetControllers {
                       FocusScope.of(context).unfocus();
                     },
                     textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list = BaseUtitiles.supplierNamePopupAlert(value, supplierController.supplierListDropdown.value);
+                    onChanged: (value) {
+                      list = BaseUtitiles.supplierNamePopupAlert(
+                          value, supplierController.supplierListDropdown.value);
                     },
                   ),
                 ),
@@ -1164,26 +1454,32 @@ class BottomsheetControllers {
                   width: BaseUtitiles.getWidthtofPercentage(context, 25),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("Supplier", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "Supplier",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             Divider(),
-
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.zero,
@@ -1196,11 +1492,19 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].supplierName.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            list[index].supplierName.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        onTap: (){
-                          supplierController.Suppliername.text = list[index].supplierName.toString();
-                          supplierController.selectedsuppliertId.value = list[index].supplierId;
+                        onTap: () {
+                          supplierController.Suppliername.text =
+                              list[index].supplierName.toString();
+                          supplierController.selectedsuppliertId.value =
+                              list[index].supplierId;
                           searchcontroller.text = "";
                           Navigator.pop(context);
                         },
@@ -1208,19 +1512,22 @@ class BottomsheetControllers {
                       Divider(),
                     ],
                   );
-
-                }, ),
+                },
+              ),
             )
-
           ],
         );
-      },);
+      },
+    );
   }
 
-  LabourName(context, list ){
-    showModalBottomSheet(context: context,
+  LabourName(context, list) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -1238,7 +1545,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -1250,8 +1558,9 @@ class BottomsheetControllers {
                       FocusScope.of(context).unfocus();
                     },
                     textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list = BaseUtitiles.sitePopupAlert(value, supplierController.supplierListDropdown.value);
+                    onChanged: (value) {
+                      list = BaseUtitiles.sitePopupAlert(
+                          value, supplierController.supplierListDropdown.value);
                     },
                   ),
                 ),
@@ -1260,26 +1569,32 @@ class BottomsheetControllers {
                   width: BaseUtitiles.getWidthtofPercentage(context, 25),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("Labour", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "Labour",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             Divider(),
-
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.zero,
@@ -1292,11 +1607,19 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].siteName.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            list[index].siteName.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        onTap: (){
-                          subcontractorController.labourId.value = list[index].labourId;
-                          subcontractorController.LabournameText.text = list[index].labourName.toString();
+                        onTap: () {
+                          subcontractorController.labourId.value =
+                              list[index].labourId;
+                          subcontractorController.LabournameText.text =
+                              list[index].labourName.toString();
                           // supplierController.Suppliername.text = list[index].supplierName.toString();
                           // supplierController.selectedsuppliertId.value = list[index].supplierId;
                           searchcontroller.text = "";
@@ -1306,21 +1629,24 @@ class BottomsheetControllers {
                       Divider(),
                     ],
                   );
-
-                }, ),
+                },
+              ),
             )
-
           ],
         );
-      },);
+      },
+    );
   }
 
   // -------AccountType---------
 
-  AccountType(context, list ){
-    showModalBottomSheet(context: context,
+  AccountType(context, list) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -1338,7 +1664,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -1350,8 +1677,9 @@ class BottomsheetControllers {
                       FocusScope.of(context).unfocus();
                     },
                     textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list =BaseUtitiles.accTypePopupAlert(value,commonVoucherController.getdropDownvalue.value);
+                    onChanged: (value) {
+                      list = BaseUtitiles.accTypePopupAlert(value,
+                          commonVoucherController.getdropDownvalue.value);
                       // list = BaseUtitiles.sitePopupAlert(value, supplierController.supplierListDropdown.value);
                     },
                   ),
@@ -1361,26 +1689,32 @@ class BottomsheetControllers {
                   width: BaseUtitiles.getWidthtofPercentage(context, 25),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("Account Type", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "Account Type",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             Divider(),
-
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.zero,
@@ -1393,23 +1727,35 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].accType.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            list[index].accType.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         onTap: () async {
-                          commonVoucherController.selectedAccTypeId.value = list[index].accTypeid;
-                          commonVoucherController.AccountTypename.text = list[index].accType.toString();
-                          advanceReqVoucherController_new.listButton.value = commonVoucherController.selectedAccTypeId.value == 4 ? "List" : "Sitewise List";
+                          commonVoucherController.selectedAccTypeId.value =
+                              list[index].accTypeid;
+                          commonVoucherController.AccountTypename.text =
+                              list[index].accType.toString();
+                          advanceReqVoucherController_new.listButton.value = "List";
                           searchcontroller.text = "";
                           commonVoucherController.selectedAccnameId.value = 0;
-                          commonVoucherController.Accountname.text = "--SELECT--";
-                          commonVoucherController.namethrough.text = "--SELECT--";
-                          if(commonVoucherController.selectedAccTypeId.value==4){
-                            commonVoucherController.payforController.text = "Advance";
+                          commonVoucherController.Accountname.text =
+                              "--SELECT--";
+                          commonVoucherController.namethrough.text =
+                              "--SELECT--";
+                          if (commonVoucherController.selectedAccTypeId.value ==
+                              4) {
+                            commonVoucherController.payforController.text =
+                                "Advance";
                             commonVoucherController.payfor.value = "A";
-                          }
-                          else{
-                            commonVoucherController.payforController.text = "Advance - Direct";
-                            commonVoucherController.payfor.value = "AD";
+                          } else {
+                            commonVoucherController.payforController.text =
+                                "--SELECT--";
+                            commonVoucherController.payfor.value = "0";
                           }
 
                           Navigator.pop(context);
@@ -1418,19 +1764,22 @@ class BottomsheetControllers {
                       Divider(),
                     ],
                   );
-
-                }, ),
+                },
+              ),
             )
-
           ],
         );
-      },);
+      },
+    );
   }
 
-  AccountName(context, list ){
-    showModalBottomSheet(context: context,
+  AccountName(context, list) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -1448,7 +1797,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -1460,8 +1810,9 @@ class BottomsheetControllers {
                       FocusScope.of(context).unfocus();
                     },
                     textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list =BaseUtitiles.accNamePopupAlert(value,commonVoucherController.getaccdropDownvalue.value);
+                    onChanged: (value) {
+                      list = BaseUtitiles.accNamePopupAlert(value,
+                          commonVoucherController.getaccdropDownvalue.value);
                     },
                   ),
                 ),
@@ -1470,26 +1821,32 @@ class BottomsheetControllers {
                   width: BaseUtitiles.getWidthtofPercentage(context, 28),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("Account Name", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "Account Name",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             Divider(),
-
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.zero,
@@ -1502,12 +1859,21 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].accName.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            list[index].accName.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         onTap: () async {
-                          commonVoucherController.selectedAccnameId.value = list[index].accNameid;
-                          commonVoucherController.Accountname.text = list[index].accName.toString();
-                          commonVoucherController.namethrough.text = list[index].accName.toString();
+                          commonVoucherController.selectedAccnameId.value =
+                              list[index].accNameid;
+                          commonVoucherController.Accountname.text =
+                              list[index].accName.toString();
+                          commonVoucherController.namethrough.text =
+                              list[index].accName.toString();
                           searchcontroller.text = "";
                           Navigator.pop(context);
                         },
@@ -1515,19 +1881,22 @@ class BottomsheetControllers {
                       Divider(),
                     ],
                   );
-
-                }, ),
+                },
+              ),
             )
-
           ],
         );
-      },);
+      },
+    );
   }
 
-  Payfor(context, list ){
-    showModalBottomSheet(context: context,
+  Payfor(context, list) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -1545,7 +1914,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -1557,8 +1927,9 @@ class BottomsheetControllers {
                       FocusScope.of(context).unfocus();
                     },
                     textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list=BaseUtitiles.acPayForNamePopupAlert(value,commonVoucherController.getPayfordropDownvalue.value);
+                    onChanged: (value) {
+                      list = BaseUtitiles.acPayForNamePopupAlert(value,
+                          commonVoucherController.getPayfordropDownvalue.value);
                     },
                   ),
                 ),
@@ -1567,26 +1938,32 @@ class BottomsheetControllers {
                   width: BaseUtitiles.getWidthtofPercentage(context, 25),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("Payfor", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "Payfor",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             Divider(),
-
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.zero,
@@ -1599,11 +1976,19 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].acPayForName.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            list[index].acPayForName.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        onTap: (){
-                          commonVoucherController.selectedAccPayId.value = list[index].acPayForId.toString();
-                          commonVoucherController.AccPayforname.text = list[index].acPayForName.toString();
+                        onTap: () {
+                          commonVoucherController.selectedAccPayId.value =
+                              list[index].acPayForId.toString();
+                          commonVoucherController.AccPayforname.text =
+                              list[index].acPayForName.toString();
                           searchcontroller.text = "";
                           Navigator.pop(context);
                         },
@@ -1611,19 +1996,22 @@ class BottomsheetControllers {
                       Divider(),
                     ],
                   );
-
-                }, ),
+                },
+              ),
             )
-
           ],
         );
-      },);
+      },
+    );
   }
 
-  ModeofPay(context, list ){
-    showModalBottomSheet(context: context,
+  ModeofPay(context, list) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -1641,7 +2029,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -1653,8 +2042,11 @@ class BottomsheetControllers {
                       FocusScope.of(context).unfocus();
                     },
                     textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list=BaseUtitiles.paymodePopupAlert(value,commonVoucherController.getpaymodedropDownvalue.value);
+                    onChanged: (value) {
+                      list = BaseUtitiles.paymodePopupAlert(
+                          value,
+                          commonVoucherController
+                              .getpaymodedropDownvalue.value);
                     },
                   ),
                 ),
@@ -1663,26 +2055,32 @@ class BottomsheetControllers {
                   width: BaseUtitiles.getWidthtofPercentage(context, 25),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("Mode Of Pay", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "Mode Of Pay",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             Divider(),
-
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.zero,
@@ -1695,15 +2093,26 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].paymode.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            list[index].paymode.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        onTap: (){
-                          commonVoucherController.selectedPaymodeId.value = list[index].paymodeid;
-                          commonVoucherController.Paymodename.text = list[index].paymode.toString();
-                          if(commonVoucherController.selectedPaymodeId.value!=2){
+                        onTap: () {
+                          commonVoucherController.selectedPaymodeId.value =
+                              list[index].paymodeid;
+                          commonVoucherController.Paymodename.text =
+                              list[index].paymode.toString();
+                          if (commonVoucherController.selectedPaymodeId.value !=
+                              2) {
                             staffVoucher_Controller.ChequeNo.text = "";
-                            staffVoucher_Controller.ChequeDate.text = BaseUtitiles.initiateCurrentDateFormat();
-                            staffVoucher_Controller.BankName.text = "--SELECT--";
+                            staffVoucher_Controller.ChequeDate.text =
+                                BaseUtitiles.initiateCurrentDateFormat();
+                            staffVoucher_Controller.BankName.text =
+                                "--SELECT--";
                             staffVoucher_Controller.payeeType.value = false;
                           }
                           searchcontroller.text = "";
@@ -1713,19 +2122,22 @@ class BottomsheetControllers {
                       Divider(),
                     ],
                   );
-
-                }, ),
+                },
+              ),
             )
-
           ],
         );
-      },);
+      },
+    );
   }
 
-  PaymentType(context, list ){
-    showModalBottomSheet(context: context,
+  PaymentType(context, list) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -1743,7 +2155,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -1755,8 +2168,9 @@ class BottomsheetControllers {
                       FocusScope.of(context).unfocus();
                     },
                     textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list=BaseUtitiles.paymodePopupAlert(value,commonVoucherController.paymentTypeList.value);
+                    onChanged: (value) {
+                      list = BaseUtitiles.paymodePopupAlert(
+                          value, commonVoucherController.paymentTypeList.value);
                     },
                   ),
                 ),
@@ -1765,26 +2179,32 @@ class BottomsheetControllers {
                   width: BaseUtitiles.getWidthtofPercentage(context, 30),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("Payment Type", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "Payment Type",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             Divider(),
-
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.zero,
@@ -1797,11 +2217,19 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].paymentTypeName.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            list[index].paymentTypeName.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        onTap: (){
-                          commonVoucherController.detVoucherTypeController.text = list[index].paymentTypeName;
-                          commonVoucherController.detVocType = list[index].paymentTypeValue.toString();
+                        onTap: () {
+                          commonVoucherController.detVoucherTypeController
+                              .text = list[index].paymentTypeName;
+                          commonVoucherController.detVocType =
+                              list[index].paymentTypeValue.toString();
                           searchcontroller.text = "";
                           Navigator.pop(context);
                         },
@@ -1809,15 +2237,14 @@ class BottomsheetControllers {
                       Divider(),
                     ],
                   );
-
-                }, ),
+                },
+              ),
             )
-
           ],
         );
-      },);
+      },
+    );
   }
-
 
   //-------voucher------------
   // StaffName(context, list, {String? type}) {
@@ -1982,111 +2409,137 @@ class BottomsheetControllers {
   //   );
   // }
 
-  StaffName(context, list,{String? type} ){
-    showModalBottomSheet(context: context,
+  StaffName(context, list, {String? type}) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
-          return Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: BaseUtitiles.getWidthtofPercentage(context, 50),
-                    margin: EdgeInsets.only(top: 10, left: 15),
-                    child: TextField(
-                      controller: searchcontroller,
-                      decoration: InputDecoration(
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none,
-                        ),
-                        prefixIcon: const Icon(Icons.search,
-                          color: Colors.black,
-                        ),
-                        hintText: "search..",
-                        hintStyle: TextStyle(color: Colors.black),
-                        isDense: true,
-                        fillColor: Setmybackground,
-                      ),
-                      onEditingComplete: () {
-                        FocusScope.of(context).unfocus();
-                      },
-                      textInputAction: TextInputAction.search,
-                      onChanged: (value)  {
-
-                        list = BaseUtitiles.empNameamePopupAlert(value, staffController.getStaffDropdownvalue.value);
-                      },
-                    ),
-                  ),
-                  SizedBox(width: 20),
-                  Container(
-                    width: BaseUtitiles.getWidthtofPercentage(context, 25),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 2, color: Theme.of(context).primaryColor),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.all(3),
-                      child: Text("Staff Name", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
-                    ),
-                  ),
-                  InkWell(
-                      onTap: (){
-                        Navigator.pop(context);
-                        searchcontroller.text = "";
-                      },
-                      child: Container(
-                          margin: EdgeInsets.only(right: 10),
-                          child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
-                ],
-              ),
-              Divider(),
-
-              Expanded(
-                child: ListView.builder(
-                  padding: EdgeInsets.zero,
-                  physics: BouncingScrollPhysics(),
-                  itemCount: list.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Column(
-                      children: [
-                        InkWell(
-                          child: Container(
-                            margin: EdgeInsets.only(left: 10),
-                            alignment: Alignment.center,
-                            child: Text(type == "staffVoucher" || type == "punchReport" ? list[index].employeeName : list[index].staffName,
-                              textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+            return Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: BaseUtitiles.getWidthtofPercentage(context, 50),
+                      margin: EdgeInsets.only(top: 10, left: 15),
+                      child: TextField(
+                        controller: searchcontroller,
+                        decoration: InputDecoration(
+                          filled: true,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
                           ),
-                          onTap: (){
-                            staffController.selectedstaffId.value = list[index].id;
-                            staffController.Staffname.text = type == "staffVoucher" || type == "punchReport" ? list[index].employeeName.toString() : list[index].staffName.toString();
-                            searchcontroller.text = "";
-                            Navigator.pop(context);
-                          },
+                          prefixIcon: const Icon(
+                            Icons.search,
+                            color: Colors.black,
+                          ),
+                          hintText: "search..",
+                          hintStyle: TextStyle(color: Colors.black),
+                          isDense: true,
+                          fillColor: Setmybackground,
                         ),
-                        Divider(),
-                      ],
-                    );
-
-                  }, ),
-              )
-
-            ],
-          );},
+                        onEditingComplete: () {
+                          FocusScope.of(context).unfocus();
+                        },
+                        textInputAction: TextInputAction.search,
+                        onChanged: (value) {
+                          list = BaseUtitiles.empNameamePopupAlert(value,
+                              staffController.getStaffDropdownvalue.value,type);
+                        },
+                      ),
+                    ),
+                    SizedBox(width: 20),
+                    Container(
+                      width: BaseUtitiles.getWidthtofPercentage(context, 25),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            width: 2, color: Theme.of(context).primaryColor),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(3),
+                        child: Text(
+                          "Staff Name",
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                          searchcontroller.text = "";
+                        },
+                        child: Container(
+                            margin: EdgeInsets.only(right: 10),
+                            child: Icon(Icons.expand_circle_down,
+                                color: Theme.of(context).primaryColor))),
+                  ],
+                ),
+                Divider(),
+                Expanded(
+                  child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    physics: BouncingScrollPhysics(),
+                    itemCount: list.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Column(
+                        children: [
+                          InkWell(
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10),
+                              alignment: Alignment.center,
+                              child: Text(
+                                type == "staffVoucher"
+                                    ? list[index].employeeName
+                                    : list[index].staffName,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: RequestConstant.Lable_Font_SIZE,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            onTap: () {
+                              staffController.selectedstaffId.value =
+                                  list[index].id;
+                              staffController.Staffname.text =
+                              type == "staffVoucher"
+                                  ? list[index].employeeName.toString()
+                                  : list[index].staffName.toString();
+                              searchcontroller.text = "";
+                              Navigator.pop(context);
+                            },
+                          ),
+                          Divider(),
+                        ],
+                      );
+                    },
+                  ),
+                )
+              ],
+            );
+          },
         );
-      },);
+      },
+    );
   }
 
-  BankName(context, list ){
-    showModalBottomSheet(context: context,
+
+  BankName(context, list) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -2104,7 +2557,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -2116,8 +2570,9 @@ class BottomsheetControllers {
                       FocusScope.of(context).unfocus();
                     },
                     textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list = BaseUtitiles.bankNamePopupAlert(value, staffVoucher_Controller. getbankNameList.value);
+                    onChanged: (value) {
+                      list = BaseUtitiles.bankNamePopupAlert(
+                          value, staffVoucher_Controller.getbankNameList.value);
                     },
                   ),
                 ),
@@ -2126,26 +2581,32 @@ class BottomsheetControllers {
                   width: BaseUtitiles.getWidthtofPercentage(context, 25),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("Bank Name", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "Bank Name",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             Divider(),
-
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.zero,
@@ -2158,11 +2619,19 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].bankName.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            list[index].bankName.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        onTap: (){
-                          staffVoucher_Controller.selectedbankId.value = list[index].id;
-                          staffVoucher_Controller.BankName.text = list[index].bankName.toString();
+                        onTap: () {
+                          staffVoucher_Controller.selectedbankId.value =
+                              list[index].id;
+                          staffVoucher_Controller.BankName.text =
+                              list[index].bankName.toString();
                           searchcontroller.text = "";
                           Navigator.pop(context);
                         },
@@ -2170,19 +2639,23 @@ class BottomsheetControllers {
                       Divider(),
                     ],
                   );
-
-                }, ),
+                },
+              ),
             )
-
           ],
         );
-      },);
+      },
+    );
   }
+  //-------DPR-------------
 
-  WorkOrderNoList(context, list){
-    showModalBottomSheet(context: context,
+  MaterialName(context, list) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -2200,7 +2673,638 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: Colors.black,
+                      ),
+                      hintText: "search..",
+                      hintStyle: TextStyle(color: Colors.black),
+                      isDense: true,
+                      fillColor: Setmybackground,
+                    ),
+                    onEditingComplete: () {
+                      FocusScope.of(context).unfocus();
+                    },
+                    textInputAction: TextInputAction.search,
+                    onChanged: (value) {
+                      dailyWrkDone_DPRNEW_Controller.mainlist.value =
+                          BaseUtitiles.materialName_DPRNew(
+                              value,
+                              dailyWrkDone_DPRNEW_Controller
+                                  .MaterialApiList.value);
+
+                      // dailyWrkDone_DPRNEW_Controller.MaterialApiLIst.value = BaseUtitiles.materialNamePopupAlert(value,dailyWrkDone_DPRNEW_Controller.mainlist.value);
+                    },
+                  ),
+                ),
+                SizedBox(width: 20),
+                Container(
+                  width: BaseUtitiles.getWidthtofPercentage(context, 30),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(3),
+                    child: Text(
+                      "Material Name",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                      searchcontroller.text = "";
+                    },
+                    child: Container(
+                        margin: EdgeInsets.only(right: 10),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
+              ],
+            ),
+            Divider(),
+            Container(
+              margin: const EdgeInsets.only(top: 5),
+              width: BaseUtitiles.getWidthtofPercentage(context, 100),
+              height: BaseUtitiles.getheightofPercentage(context, 45),
+              child: ListView.builder(
+                  itemCount: list.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return InkWell(
+                      onTap: () {
+                        dailyWrkDone_DPRNEW_Controller
+                            .dpr_new_Mat_NameController
+                            .text = list[index]["materialName"];
+                        dailyWrkDone_DPRNEW_Controller.selectedMatId.value =
+                            list[index]["materialId"];
+                        dailyWrkDone_DPRNEW_Controller
+                            .dpr_new_Mat_ScaleController
+                            .text = list[index]["scaleName"];
+                        dailyWrkDone_DPRNEW_Controller.matScaleId.value =
+                            list[index]["scaleId"];
+                        searchcontroller.text = "";
+                        Navigator.pop(context);
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                  width: BaseUtitiles.getWidthtofPercentage(
+                                      context, 60),
+                                  child: Text(
+                                    list[index]["materialName"],
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize:
+                                            RequestConstant.ALERT_Font_SIZE,
+                                        fontWeight: FontWeight.bold),
+                                  )),
+                              Divider(
+                                  color: Theme.of(context).primaryColorLight)
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  //---------Stack at Site--------------
+
+  MaterialSubItem(context, mhid, list) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+      builder: (BuildContext context) {
+        return Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: BaseUtitiles.getWidthtofPercentage(context, 50),
+                  margin: const EdgeInsets.only(top: 10, left: 15),
+                  child: TextField(
+                    controller: searchcontroller,
+                    decoration: InputDecoration(
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: Colors.black,
+                      ),
+                      hintText: "search..",
+                      hintStyle: const TextStyle(color: Colors.black),
+                      isDense: true,
+                      fillColor: Setmybackground,
+                    ),
+                    onEditingComplete: () {
+                      FocusScope.of(context).unfocus();
+                    },
+                    textInputAction: TextInputAction.search,
+                    onChanged: (value) {
+                      list = BaseUtitiles.materialSubItemPopupAlert(
+                          value,
+                          stockSiteController
+                              .getmaterialSubdropDownvalue.value);
+                    },
+                  ),
+                ),
+                const SizedBox(width: 20),
+                Container(
+                  width: BaseUtitiles.getWidthtofPercentage(context, 25),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(3),
+                    child: Text(
+                      "Sub Items",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                      searchcontroller.text = "";
+                    },
+                    child: Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
+              ],
+            ),
+            const Divider(),
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.zero,
+                physics: const BouncingScrollPhysics(),
+                itemCount: list.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
+                    children: [
+                      InkWell(
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 10),
+                          alignment: Alignment.center,
+                          child: Text(
+                            list[index].materialSubName.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        onTap: () async {
+                          stockSiteController.Materialsubname.text =
+                              list[index].materialSubName.toString();
+                          stockSiteController.matDropdowntId.value =
+                              list[index].id;
+                          reportsController.Subheadername.text = "--ALL--";
+                          searchcontroller.text = "";
+                          Navigator.pop(context);
+                        },
+                      ),
+                      const Divider(),
+                    ],
+                  );
+                },
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  materialHeadItem(context, list) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+      builder: (BuildContext context) {
+        return Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: BaseUtitiles.getWidthtofPercentage(context, 50),
+                  margin: const EdgeInsets.only(top: 10, left: 15),
+                  child: TextField(
+                    controller: searchcontroller,
+                    decoration: InputDecoration(
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: Colors.black,
+                      ),
+                      hintText: "search..",
+                      hintStyle: const TextStyle(color: Colors.black),
+                      isDense: true,
+                      fillColor: Setmybackground,
+                    ),
+                    onEditingComplete: () {
+                      FocusScope.of(context).unfocus();
+                    },
+                    textInputAction: TextInputAction.search,
+                    onChanged: (value) {
+                      list = BaseUtitiles.materialHeadItemPopupAlert(
+                          value,
+                          stockSiteController
+                              .getmaterialHeadDropDownvalue.value);
+                    },
+                  ),
+                ),
+                const SizedBox(width: 20),
+                Container(
+                  width: BaseUtitiles.getWidthtofPercentage(context, 25),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(3),
+                    child: Text(
+                      "Head Items",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                      searchcontroller.text = "";
+                    },
+                    child: Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
+              ],
+            ),
+            const Divider(),
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.zero,
+                physics: const BouncingScrollPhysics(),
+                itemCount: list.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
+                    children: [
+                      InkWell(
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 10),
+                          alignment: Alignment.center,
+                          child: Text(
+                            list[index].materialHeadName.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        onTap: () async {
+                          Future.delayed(const Duration(seconds: 0), () async {
+                            stockSiteController.materialHeadName.text =
+                                list[index].materialHeadName.toString();
+                            stockSiteController.matHeadDropdowntId.value =
+                                list[index].id;
+                            stockSiteController.Materialsubname.text =
+                                "--ALL--";
+                            reportsController.materialDropdowntId.value = 0;
+                            reportsController.Subheadername.text = "--ALL--";
+                            stockSiteController.materialSubDropdowntId.value =
+                                0;
+                            stockSiteController.materialWiseShowList.value = [];
+                          });
+                          searchcontroller.text = "";
+                          Navigator.pop(context);
+                        },
+                      ),
+                      const Divider(),
+                    ],
+                  );
+                },
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  MRNMaterialName(context, list) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+      builder: (BuildContext context) {
+        return Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: BaseUtitiles.getWidthtofPercentage(context, 50),
+                  margin: const EdgeInsets.only(top: 10, left: 15),
+                  child: TextField(
+                    controller: searchcontroller,
+                    decoration: InputDecoration(
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: Colors.black,
+                      ),
+                      hintText: "search..",
+                      hintStyle: const TextStyle(color: Colors.black),
+                      isDense: true,
+                      fillColor: Setmybackground,
+                    ),
+                    onEditingComplete: () {
+                      FocusScope.of(context).unfocus();
+                    },
+                    textInputAction: TextInputAction.search,
+                    onChanged: (value) {
+                      list = BaseUtitiles.materialName_StockAtSitePopupAlert(
+                          value,
+                          reportsController.getMaterialdropDownvalue.value);
+                    },
+                  ),
+                ),
+                const SizedBox(width: 20),
+                Container(
+                  width: BaseUtitiles.getWidthtofPercentage(context, 30),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(3),
+                    child: Text(
+                      "Materials",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                      searchcontroller.text = "";
+                    },
+                    child: Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
+              ],
+            ),
+            const Divider(),
+            Container(
+              margin: const EdgeInsets.only(top: 5),
+              width: BaseUtitiles.getWidthtofPercentage(context, 100),
+              height: BaseUtitiles.getheightofPercentage(context, 45),
+              child: ListView.builder(
+                  itemCount: list.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return InkWell(
+                      onTap: () {
+                        //MRN Material Name
+                        reportsController.Subheadername.text =
+                            list[index].materialName.toString();
+                        reportsController.materialDropdowntId.value =
+                            list[index].id;
+                        searchcontroller.text = "";
+                        Navigator.pop(context);
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                  width: BaseUtitiles.getWidthtofPercentage(
+                                      context, 60),
+                                  child: Text(
+                                    list[index].materialName.toString(),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize:
+                                            RequestConstant.ALERT_Font_SIZE,
+                                        fontWeight: FontWeight.bold),
+                                  )),
+                              Divider()
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  MaterialName_stockatSite(context, list) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+      builder: (BuildContext context) {
+        return Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: BaseUtitiles.getWidthtofPercentage(context, 50),
+                  margin: const EdgeInsets.only(top: 10, left: 15),
+                  child: TextField(
+                    controller: searchcontroller,
+                    decoration: InputDecoration(
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: Colors.black,
+                      ),
+                      hintText: "search..",
+                      hintStyle: const TextStyle(color: Colors.black),
+                      isDense: true,
+                      fillColor: Setmybackground,
+                    ),
+                    onEditingComplete: () {
+                      FocusScope.of(context).unfocus();
+                    },
+                    textInputAction: TextInputAction.search,
+                    onChanged: (value) {
+                      list = BaseUtitiles.materialName_StockAtSitePopupAlert(
+                          value,
+                          stockSiteController.getMaterialdropDownvalue.value);
+                    },
+                  ),
+                ),
+                const SizedBox(width: 20),
+                Container(
+                  width: BaseUtitiles.getWidthtofPercentage(context, 30),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(3),
+                    child: Text(
+                      "Sub Items",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                      searchcontroller.text = "";
+                    },
+                    child: Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
+              ],
+            ),
+            const Divider(),
+            Container(
+              margin: const EdgeInsets.only(top: 5),
+              width: BaseUtitiles.getWidthtofPercentage(context, 100),
+              height: BaseUtitiles.getheightofPercentage(context, 45),
+              child: ListView.builder(
+                  itemCount: list.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return InkWell(
+                      onTap: () {
+                        //Inward Report Material Based List
+                        stockSiteController.Subheadername.text =
+                            list[index].materialName.toString();
+                        stockSiteController.materialSubDropdowntId.value =
+                            list[index].id;
+                        stockSiteController.getmaterialDropdowntList(
+                            stockSiteController.matDropdowntId.value);
+                        searchcontroller.text = "";
+                        Navigator.pop(context);
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                  width: BaseUtitiles.getWidthtofPercentage(
+                                      context, 60),
+                                  child: Text(
+                                    list[index].materialName.toString(),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize:
+                                            RequestConstant.ALERT_Font_SIZE,
+                                        fontWeight: FontWeight.bold),
+                                  )),
+                              Divider(
+                                  color: Theme.of(context).primaryColorLight)
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  //-----Company Name ---------------
+
+  CompanyName(context, list, {type}) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+      builder: (BuildContext context) {
+        return Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: BaseUtitiles.getWidthtofPercentage(context, 50),
+                  margin: EdgeInsets.only(top: 10, left: 15),
+                  child: TextField(
+                    controller: searchcontroller,
+                    decoration: InputDecoration(
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -2214,32 +3318,39 @@ class BottomsheetControllers {
                     },
                     textInputAction: TextInputAction.search,
                     onChanged: (value) {
-                      list=BaseUtitiles.subcontPopupAlert(value, subcontractorController.getdropDownvalue.value);
+                      list = BaseUtitiles.companyPopupAlert(value,
+                          companycontroller.getdropDownvalue_Companywise.value);
                     },
-
                   ),
                 ),
                 SizedBox(width: 20),
                 Container(
-                  width: BaseUtitiles.getWidthtofPercentage(context, 30),
+                  width: BaseUtitiles.getWidthtofPercentage(context, 25),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("Work Order No", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "Company",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             Divider(),
@@ -2255,655 +3366,66 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].subContName.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold),),
-                        ),
-                        onTap: ()  async {
-                          subcontractorController.Subcontractorname.text = list[index].subContName.toString();
-                          subcontractorController.selectedSubcontId.value = list[index].subContId;
-                          searchcontroller.text = "";
-                          await nmrWklyController.getNmrAdvance();
-                          await billGenerationDirectController.getNmrAdvance();
-
-                          await dailyEntriesController.deleteSubcontDetTableDatas();
-                          dailyEntriesController.readListdata.clear();
-
-                          // await subcontractorController.getSubcontList(context, projectcontroller.selectedProjectId.value);
-
-                          //--Subcontractor attendence-----------
-                          // await dailyEntriesController.deleteSubcontDetTableDatas();
-                          // dailyEntriesController.readListdata.value.clear();
-                          // await dailyEntriesController.getDetTablesDatas();
-                          Navigator.pop(context);
-                        },
-                      ),
-                      Divider(),
-                    ],
-                  );
-                }, ),
-            )
-          ],
-        );
-      },);
-  }
-  //-------DPR-------------
-
-  MaterialName(context, list ){
-    showModalBottomSheet(context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
-      builder: (BuildContext context) {
-        return Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: BaseUtitiles.getWidthtofPercentage(context, 50),
-                  margin: EdgeInsets.only(top: 10, left: 15),
-                  child: TextField(
-                    controller: searchcontroller,
-                    decoration: InputDecoration(
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      prefixIcon: const Icon(Icons.search,
-                        color: Colors.black,
-                      ),
-                      hintText: "search..",
-                      hintStyle: TextStyle(color: Colors.black),
-                      isDense: true,
-                      fillColor: Setmybackground,
-                    ),
-                    onEditingComplete: () {
-                      FocusScope.of(context).unfocus();
-                    },
-                    textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      dailyWrkDone_DPRNEW_Controller.mainlist.value = BaseUtitiles.materialName_DPRNew(value,dailyWrkDone_DPRNEW_Controller.MaterialApiList.value);
-
-                      // dailyWrkDone_DPRNEW_Controller.MaterialApiLIst.value = BaseUtitiles.materialNamePopupAlert(value,dailyWrkDone_DPRNEW_Controller.mainlist.value);
-                    },
-                  ),
-                ),
-                SizedBox(width: 20),
-                Container(
-                  width: BaseUtitiles.getWidthtofPercentage(context, 30),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(3),
-                    child: Text("Material Name", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
-                  ),
-                ),
-                InkWell(
-                    onTap: (){
-                      Navigator.pop(context);
-                      searchcontroller.text = "";
-                    },
-                    child: Container(
-                        margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
-              ],
-            ),
-            Divider(),
-
-            Container(
-              margin: const EdgeInsets.only(top: 5),
-              width: BaseUtitiles.getWidthtofPercentage(context, 100),
-              height: BaseUtitiles.getheightofPercentage(context, 45),
-              child:ListView.builder(
-                  itemCount: list.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return InkWell(
-                      onTap: (){
-                        dailyWrkDone_DPRNEW_Controller.dpr_new_Mat_NameController.text=list[index]["materialName"];
-                        dailyWrkDone_DPRNEW_Controller.selectedMatId.value=list[index]["materialId"];
-                        dailyWrkDone_DPRNEW_Controller.dpr_new_Mat_ScaleController.text=list[index]["scaleName"];
-                        dailyWrkDone_DPRNEW_Controller.matScaleId.value=list[index]["scaleId"];
-                        searchcontroller.text = "";
-                        Navigator.pop(context);
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Column(
-                            mainAxisAlignment:
-                            MainAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
-                                  width: BaseUtitiles.getWidthtofPercentage(context, 60),
-                                  child: Text(list[index]["materialName"],
-                                    textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold),)),
-                              Divider(color: Theme.of(context).primaryColorLight)
-                            ],
+                          child: Text(
+                  type=="mrnReqTracker"?list[index]["companyName"].toString():list[index].company.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                fontWeight: FontWeight.bold),
                           ),
-                        ],
-                      ),
-                    );
-                  }),
-              )
-
-          ],
-        );
-      },);
-  }
-
-  //---------Stack at Site--------------
-
-  MaterialSubItem(context,mhid,list){
-    showModalBottomSheet(context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
-      builder: (BuildContext context) {
-        return Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: BaseUtitiles.getWidthtofPercentage(context, 50),
-                  margin: const EdgeInsets.only(top: 10, left: 15),
-                  child: TextField(
-                    controller: searchcontroller,
-                    decoration: InputDecoration(
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      prefixIcon: const Icon(Icons.search,
-                        color: Colors.black,
-                      ),
-                      hintText: "search..",
-                      hintStyle: const TextStyle(color: Colors.black),
-                      isDense: true,
-                      fillColor: Setmybackground,
-                    ),
-                    onEditingComplete: () {
-                      FocusScope.of(context).unfocus();
-                    },
-                    textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list = BaseUtitiles.materialSubItemPopupAlert(value, stockSiteController.getmaterialSubdropDownvalue.value);
-                    },
-                  ),
-                ),
-                const SizedBox(width: 20),
-                Container(
-                  width: BaseUtitiles.getWidthtofPercentage(context, 25),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(3),
-                    child: Text("Sub Items", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
-                  ),
-                ),
-                InkWell(
-                    onTap: (){
-                      Navigator.pop(context);
-                      searchcontroller.text = "";
-                    },
-                    child: Container(
-                        margin: const EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
-              ],
-            ),
-            const Divider(),
-
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.zero,
-                physics: const BouncingScrollPhysics(),
-                itemCount: list.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Column(
-                    children: [
-                      InkWell(
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 10),
-                          alignment: Alignment.center,
-                          child: Text(list[index].materialSubName.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
                         ),
                         onTap: () async {
-                          stockSiteController.Materialsubname.text = list[index].materialSubName.toString();
-                          stockSiteController.matDropdowntId.value = list[index].id;
-                          // await stockSiteController.getmaterialDropdowntList(stockSiteController.matDropdowntId.value);
-                          searchcontroller.text = "";
-                          Navigator.pop(context);
-                        },
-                      ),
-                      const Divider(),
-                    ],
-                  );
-
-                }, ),
-            )
-
-          ],
-        );
-      },);
-  }
-
-  materialHeadItem(context, list ){
-    showModalBottomSheet(context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
-      builder: (BuildContext context) {
-        return Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: BaseUtitiles.getWidthtofPercentage(context, 50),
-                  margin: const EdgeInsets.only(top: 10, left: 15),
-                  child: TextField(
-                    controller: searchcontroller,
-                    decoration: InputDecoration(
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      prefixIcon: const Icon(Icons.search,
-                        color: Colors.black,
-                      ),
-                      hintText: "search..",
-                      hintStyle: const TextStyle(color: Colors.black),
-                      isDense: true,
-                      fillColor: Setmybackground,
-                    ),
-                    onEditingComplete: () {
-                      FocusScope.of(context).unfocus();
-                    },
-                    textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list = BaseUtitiles.materialHeadItemPopupAlert(value, stockSiteController.getmaterialHeadDropDownvalue.value);
-                    },
-                  ),
-                ),
-                const SizedBox(width: 20),
-                Container(
-                  width: BaseUtitiles.getWidthtofPercentage(context, 25),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(3),
-                    child: Text("Head Items", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
-                  ),
-                ),
-                InkWell(
-                    onTap: (){
-                      Navigator.pop(context);
-                      searchcontroller.text = "";
-                    },
-                    child: Container(
-                        margin: const EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
-              ],
-            ),
-            const Divider(),
-
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.zero,
-                physics: const BouncingScrollPhysics(),
-                itemCount: list.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Column(
-                    children: [
-                      InkWell(
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 10),
-                          alignment: Alignment.center,
-                          child: Text(list[index].materialHeadName.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
-                        ),
-                        onTap: () async {
-                          Future.delayed(const Duration(seconds: 0), () async {
-                            stockSiteController.materialHeadName.text    = list[index].materialHeadName.toString();
-                            stockSiteController.matHeadDropdowntId.value = list[index].id;
-                            stockSiteController.Materialsubname.text = "--All--";
+                          if(type=="mrnReqTracker"){
+                            reportsController.companyName.text=list[index]["companyName"].toString();
+                            reportsController.selectedCompanyId.value=list[index]["id"];
+                            reportsController.projectname.text = "--ALL--";
+                            reportsController.selectedProjectId.value = 0;
+                            reportsController.sitename.text = "--ALL--";
+                            reportsController.selectedsiteId.value = 0;
+                            reportsController.Subheadername.text = "--ALL--";
                             reportsController.materialDropdowntId.value = 0;
-                            reportsController.Subheadername.text = "--All--";
-                            stockSiteController.materialSubDropdowntId.value = 0;
-                            stockSiteController.materialWiseShowList.value=[];
-                          });
+                            siteController.mrnReqTrackerListValue.value=[];
+                          }
+                          else {
+                            companycontroller.CompanyName.text =
+                                list[index].company.toString();
+                            companycontroller.selectedCompanyId.value =
+                                list[index].companyid;
+                            await companycontroller.getProjectList_CompanyWise(
+                                context, 0);
+                            // await expensesController.getSupplierOS_ExpensesList();
+                            // await expensesController.totalAmt();
+                            // await expensesController.getSubcontractor_ExpensesList();
+                            expensesController.update();
+                          }
                           searchcontroller.text = "";
-                          Navigator.pop(context);
-                        },
-                      ),
-                      const Divider(),
-                    ],
-                  );
-
-                }, ),
-            )
-
-          ],
-        );
-      },);
-  }
-
-  MRNMaterialName(context, list){
-    showModalBottomSheet(context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
-      builder: (BuildContext context) {
-        return Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: BaseUtitiles.getWidthtofPercentage(context, 50),
-                  margin: const EdgeInsets.only(top: 10, left: 15),
-                  child: TextField(
-                    controller: searchcontroller,
-                    decoration: InputDecoration(
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      prefixIcon: const Icon(Icons.search,
-                        color: Colors.black,
-                      ),
-                      hintText: "search..",
-                      hintStyle: const TextStyle(color: Colors.black),
-                      isDense: true,
-                      fillColor: Setmybackground,
-                    ),
-                    onEditingComplete: () {
-                      FocusScope.of(context).unfocus();
-                    },
-                    textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list = BaseUtitiles.materialName_StockAtSitePopupAlert(value,reportsController.getMaterialdropDownvalue.value);
-                    },
-                  ),
-                ),
-                const SizedBox(width: 20),
-                Container(
-                  width: BaseUtitiles.getWidthtofPercentage(context, 30),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(3),
-                    child: Text("Sub Items", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
-                  ),
-                ),
-                InkWell(
-                    onTap: (){
-                      Navigator.pop(context);
-                      searchcontroller.text = "";
-                    },
-                    child: Container(
-                        margin: const EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
-              ],
-            ),
-            const Divider(),
-            Container(
-              margin: const EdgeInsets.only(top: 5),
-              width: BaseUtitiles.getWidthtofPercentage(context, 100),
-              height: BaseUtitiles.getheightofPercentage(context, 45),
-              child: ListView.builder(
-                  itemCount: list.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return InkWell(
-                      onTap: (){
-                        //MRN Material Name
-                        reportsController.Subheadername.text = list[index].materialName.toString();
-                        reportsController.materialDropdowntId.value = list[index].id;
-                        searchcontroller.text = "";
-                        Navigator.pop(context);
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Column(
-                            mainAxisAlignment:
-                            MainAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
-                                  width: BaseUtitiles.getWidthtofPercentage(context, 60),
-                                  child: Text(list[index].materialName.toString(),
-                                    textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold),)),
-                              Divider(color: Theme.of(context).primaryColorLight)
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  }),)
-          ],
-        );
-      },);
-  }
-
-  MaterialName_stockatSite(context, list ){
-    showModalBottomSheet(context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
-      builder: (BuildContext context) {
-        return Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: BaseUtitiles.getWidthtofPercentage(context, 50),
-                  margin: const EdgeInsets.only(top: 10, left: 15),
-                  child: TextField(
-                    controller: searchcontroller,
-                    decoration: InputDecoration(
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      prefixIcon: const Icon(Icons.search,
-                        color: Colors.black,
-                      ),
-                      hintText: "search..",
-                      hintStyle: const TextStyle(color: Colors.black),
-                      isDense: true,
-                      fillColor: Setmybackground,
-                    ),
-                    onEditingComplete: () {
-                      FocusScope.of(context).unfocus();
-                    },
-                    textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list = BaseUtitiles.materialName_StockAtSitePopupAlert(value,stockSiteController.getMaterialdropDownvalue.value);
-                    },
-                  ),
-                ),
-                const SizedBox(width: 20),
-                Container(
-                  width: BaseUtitiles.getWidthtofPercentage(context, 30),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(3),
-                    child: Text("Sub Items", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
-                  ),
-                ),
-                InkWell(
-                    onTap: (){
-                      Navigator.pop(context);
-                      searchcontroller.text = "";
-                    },
-                    child: Container(
-                        margin: const EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
-              ],
-            ),
-            const Divider(),
-            Container(
-              margin: const EdgeInsets.only(top: 5),
-              width: BaseUtitiles.getWidthtofPercentage(context, 100),
-              height: BaseUtitiles.getheightofPercentage(context, 45),
-              child: ListView.builder(
-                  itemCount: list.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return InkWell(
-                      onTap: (){
-                        //Inward Report Material Based List
-                        stockSiteController.Subheadername.text = list[index].materialName.toString();
-                        stockSiteController.materialSubDropdowntId.value = list[index].id;
-                        stockSiteController.getmaterialDropdowntList(stockSiteController.matDropdowntId.value);
-                        searchcontroller.text = "";
-                        Navigator.pop(context);
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Column(
-                            mainAxisAlignment:
-                            MainAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
-                                  width: BaseUtitiles.getWidthtofPercentage(context, 60),
-                                  child: Text(list[index].materialName.toString(),
-                                    textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold),)),
-                              Divider(color: Theme.of(context).primaryColorLight)
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  }),)
-          ],
-        );
-      },);
-  }
-
-  //-----Company Name ---------------
-
-  CompanyName(context, list){
-    showModalBottomSheet(context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
-      builder: (BuildContext context) {
-        return Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: BaseUtitiles.getWidthtofPercentage(context, 50),
-                  margin: EdgeInsets.only(top: 10, left: 15),
-                  child: TextField(
-                    controller: searchcontroller,
-                    decoration: InputDecoration(
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      prefixIcon: const Icon(Icons.search,
-                        color: Colors.black,
-                      ),
-                      hintText: "search..",
-                      hintStyle: TextStyle(color: Colors.black),
-                      isDense: true,
-                      fillColor: Setmybackground,
-                    ),
-                    onEditingComplete: () {
-                      FocusScope.of(context).unfocus();
-                      // if (onSearch != null) onSearch!(searchcontroller.text);
-                    },
-                    textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list=BaseUtitiles.companyPopupAlert(value, companycontroller.getdropDownvalue_Companywise.value);
-                    },
-                  ),
-                ),
-                SizedBox(width: 20),
-                Container(
-                  width: BaseUtitiles.getWidthtofPercentage(context, 25),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(3),
-                    child: Text("Company", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
-                  ),
-                ),
-                InkWell(
-                    onTap: (){
-                      Navigator.pop(context);
-                      searchcontroller.text = "";
-                    },
-                    child: Container(
-                        margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
-              ],
-            ),
-            Divider(),
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.zero,
-                physics: BouncingScrollPhysics(),
-                itemCount: list.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Column(
-                    children: [
-                      InkWell(
-                        child: Container(
-                          margin: EdgeInsets.only(left: 10),
-                          alignment: Alignment.center,
-                          child: Text(list[index].company.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
-                        ),
-                        onTap: () async {
-                          companycontroller.CompanyName.text = list[index].company.toString();
-                          companycontroller.selectedCompanyId.value = list[index].companyid;
-                          await companycontroller.getProjectList_CompanyWise(context, 0);
-                          // await expensesController.getSupplierOS_ExpensesList();
-                          // await expensesController.totalAmt();
-                          // await expensesController.getSubcontractor_ExpensesList();
-                          expensesController.update();
-                          searchcontroller.text = "";
-
                           Navigator.pop(context);
                         },
                       ),
                       Divider(),
                     ],
                   );
-                }, ),
+                },
+              ),
             )
           ],
         );
-      },);
+      },
+    );
   }
 
   //----------------REPORTS DROPDOWNS---------------------
 
-  projectNameReport(context, list, ){
-    showModalBottomSheet(context: context,
+  projectNameReport(
+    context,
+    list,
+  ) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -2921,7 +3443,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -2934,8 +3457,9 @@ class BottomsheetControllers {
                       // if (onSearch != null) onSearch!(searchcontroller.text);
                     },
                     textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list=BaseUtitiles.projectPopupAlert(value, reportsController.getProjectdropDownvalue.value);
+                    onChanged: (value) {
+                      list = BaseUtitiles.projectPopupAlert(value,
+                          reportsController.getProjectdropDownvalue.value);
                     },
                   ),
                 ),
@@ -2944,22 +3468,29 @@ class BottomsheetControllers {
                   width: BaseUtitiles.getWidthtofPercentage(context, 25),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("Projects", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "Projects",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             const Divider(),
@@ -2975,31 +3506,44 @@ class BottomsheetControllers {
                         child: Container(
                           margin: const EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].project.toString(), textAlign: TextAlign.center,style: const TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            list[index].project.toString(),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         onTap: () async {
-                            reportsController.projectname.text = list[index].project.toString();
-                            reportsController.selectedProjectId.value = list[index].projectId;
-                            reportsController.selectedsiteId.value=0;
-                            reportsController.sitename.text = "--ALL--";
+                          reportsController.projectname.text =
+                              list[index].project.toString();
+                          reportsController.selectedProjectId.value =
+                              list[index].projectId;
+                          reportsController.selectedsiteId.value = 0;
+                          reportsController.sitename.text = "--ALL--";
                           searchcontroller.text = "";
                           Navigator.pop(context);
-                          },
+                        },
                       ),
                       const Divider(),
                     ],
                   );
-                }, ),
+                },
+              ),
             )
           ],
         );
-      },);
+      },
+    );
   }
 
-  siteNameReport(context, list ){
-    showModalBottomSheet(context: context,
+  siteNameReport(context, list) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -3017,7 +3561,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -3029,8 +3574,9 @@ class BottomsheetControllers {
                       FocusScope.of(context).unfocus();
                     },
                     textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list = BaseUtitiles.sitePopupAlert(value, reportsController.getSiteDropdownvalue.value);
+                    onChanged: (value) {
+                      list = BaseUtitiles.sitePopupAlert(
+                          value, reportsController.getSiteDropdownvalue.value);
                     },
                   ),
                 ),
@@ -3039,26 +3585,32 @@ class BottomsheetControllers {
                   width: BaseUtitiles.getWidthtofPercentage(context, 25),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("Sites", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "Sites",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             Divider(),
-
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.zero,
@@ -3071,13 +3623,21 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].siteName.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            list[index].siteName.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         onTap: () async {
-                          reportsController.sitename.text = list[index].siteName.toString();
-                          reportsController.selectedsiteId.value = list[index].siteId;
-                          siteController.Sitename.text="--SELECT--";
-                          siteController.selectedsiteId.value=0;
+                          reportsController.sitename.text =
+                              list[index].siteName.toString();
+                          reportsController.selectedsiteId.value =
+                              list[index].siteId;
+                          siteController.Sitename.text = "--SELECT--";
+                          siteController.selectedsiteId.value = 0;
                           // await supplierController.getSupplierList(context);
                           // dailyWrkDone_DPR_Controller.TypeSubcontractorname.text = "--Select--";
                           // dailyWrkDone_DPRNEW_Controller.dprNew_DetTable_Delete();
@@ -3090,19 +3650,22 @@ class BottomsheetControllers {
                       const Divider(),
                     ],
                   );
-
-                }, ),
+                },
+              ),
             )
-
           ],
         );
-      },);
+      },
+    );
   }
 
-  supplierNameReport(context, list ){
-    showModalBottomSheet(context: context,
+  supplierNameReport(context, list) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -3120,7 +3683,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -3132,8 +3696,9 @@ class BottomsheetControllers {
                       FocusScope.of(context).unfocus();
                     },
                     textInputAction: TextInputAction.search,
-                    onChanged: (value)  {
-                      list = BaseUtitiles.supplierNamePopupAlert(value, reportsController.supplierListDropdown.value);
+                    onChanged: (value) {
+                      list = BaseUtitiles.supplierNamePopupAlert(
+                          value, reportsController.supplierListDropdown.value);
                     },
                   ),
                 ),
@@ -3142,26 +3707,32 @@ class BottomsheetControllers {
                   width: BaseUtitiles.getWidthtofPercentage(context, 25),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("Supplier", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "Supplier",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             Divider(),
-
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.zero,
@@ -3174,11 +3745,19 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].supplierName.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.Lable_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            list[index].supplierName.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        onTap: (){
-                          reportsController.suppliername.text = list[index].supplierName.toString();
-                          reportsController.selectedsuppliertId.value = list[index].id;
+                        onTap: () {
+                          reportsController.suppliername.text =
+                              list[index].supplierName.toString();
+                          reportsController.selectedsuppliertId.value =
+                              list[index].id;
                           searchcontroller.text = "";
                           Navigator.pop(context);
                         },
@@ -3186,19 +3765,22 @@ class BottomsheetControllers {
                       Divider(),
                     ],
                   );
-
-                }, ),
+                },
+              ),
             )
-
           ],
         );
-      },);
+      },
+    );
   }
 
-  subcontractorNameReport(context, list){
-    showModalBottomSheet(context: context,
+  subcontractorNameReport(context, list) {
+    searchcontroller.text = "";
+    showModalBottomSheet(
+      context: context,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Column(
           children: [
@@ -3216,7 +3798,8 @@ class BottomsheetControllers {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.search,
+                      prefixIcon: const Icon(
+                        Icons.search,
                         color: Colors.black,
                       ),
                       hintText: "search..",
@@ -3230,9 +3813,9 @@ class BottomsheetControllers {
                     },
                     textInputAction: TextInputAction.search,
                     onChanged: (value) {
-                      list=BaseUtitiles.subcontPopupAlert(value, reportsController.getdropDownvalue.value);
+                      list = BaseUtitiles.subcontPopupAlert(
+                          value, reportsController.getdropDownvalue.value);
                     },
-
                   ),
                 ),
                 SizedBox(width: 20),
@@ -3240,22 +3823,29 @@ class BottomsheetControllers {
                   width: BaseUtitiles.getWidthtofPercentage(context, 30),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                    border: Border.all(
+                        width: 2, color: Theme.of(context).primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(3),
-                    child: Text("Subcontractors", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
+                    child: Text(
+                      "Subcontractors",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                       searchcontroller.text = "";
                     },
                     child: Container(
                         margin: EdgeInsets.only(right: 10),
-                        child: Icon(Icons.expand_circle_down, color: Theme.of(context).primaryColor))),
+                        child: Icon(Icons.expand_circle_down,
+                            color: Theme.of(context).primaryColor))),
               ],
             ),
             Divider(),
@@ -3271,11 +3861,19 @@ class BottomsheetControllers {
                         child: Container(
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
-                          child: Text(list[index].subcontNameRpt.toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold),),
+                          child: Text(
+                            list[index].subContName.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: RequestConstant.ALERT_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        onTap: ()  async {
-                          reportsController.subcontractorname.text = list[index].subcontNameRpt.toString();
-                          reportsController.selectedSubcontId.value = list[index].subContId;
+                        onTap: () async {
+                          reportsController.subcontractorname.text =
+                              list[index].subContName.toString();
+                          reportsController.selectedSubcontId.value =
+                              list[index].subContId;
                           searchcontroller.text = "";
                           Navigator.pop(context);
                         },
@@ -3283,11 +3881,12 @@ class BottomsheetControllers {
                       Divider(),
                     ],
                   );
-                }, ),
+                },
+              ),
             )
           ],
         );
-      },);
+      },
+    );
   }
-
 }

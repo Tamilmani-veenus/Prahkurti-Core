@@ -39,7 +39,7 @@ String materialWiseHeadSubResponseToJson(MaterialWiseHeadSubResponse data) => js
 class MaterialWiseHeadSubResponse {
   bool? success;
   String? message;
-  List<Result>? result;
+  List<MatSubItemResult>? result;
 
   MaterialWiseHeadSubResponse({
     this.success,
@@ -50,7 +50,7 @@ class MaterialWiseHeadSubResponse {
   factory MaterialWiseHeadSubResponse.fromJson(Map<String, dynamic> json) => MaterialWiseHeadSubResponse(
     success: json["success"],
     message: json["message"],
-    result: List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
+    result: List<MatSubItemResult>.from(json["result"].map((x) => MatSubItemResult.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -60,7 +60,7 @@ class MaterialWiseHeadSubResponse {
   };
 }
 
-class Result {
+class MatSubItemResult {
   int? id;
   String? materialSubName;
   int? createdBy;
@@ -69,7 +69,7 @@ class Result {
   dynamic? materialHeadMasName;
   DateTime? createdDt;
 
-  Result({
+  MatSubItemResult({
     this.id,
     this.materialSubName,
     this.createdBy,
@@ -79,7 +79,7 @@ class Result {
     this.createdDt,
   });
 
-  factory Result.fromJson(Map<String, dynamic> json) => Result(
+  factory MatSubItemResult.fromJson(Map<String, dynamic> json) => MatSubItemResult(
     id: json["id"],
     materialSubName: json["materialSubName"],
     createdBy: json["createdBy"],

@@ -18,7 +18,8 @@ import 'bill_generation_itemlist.dart';
 
 
 class Bill_Generation_EntryScreen extends StatefulWidget {
-  const Bill_Generation_EntryScreen({Key? key}) : super(key: key);
+  final String heading;
+  const Bill_Generation_EntryScreen({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<Bill_Generation_EntryScreen> createState() =>
@@ -147,11 +148,13 @@ class _Subcont_Nmr_EntryScreenState_Site
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "Direct - Bill",
-                          style: TextStyle(
-                              fontSize: RequestConstant.Heading_Font_SIZE,
-                              fontWeight: FontWeight.bold),
+                        Expanded(
+                          child: Text(
+                            widget.heading,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Heading_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         TextButton(
                             onPressed: () {
@@ -274,7 +277,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                       child: Padding(
                         padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: projectController.projectname,
                           cursorColor: Colors.black,
@@ -294,11 +297,15 @@ class _Subcont_Nmr_EntryScreenState_Site
                                 child: ConstIcons.projectName),
                           ),
                           onTap: () async {
-                            await projectController.getProjectList();
+                            if(billGenerationDirectController.saveButton.value == RequestConstant.RESUBMIT || billGenerationDirectController.saveButton.value == RequestConstant.VERIFY || billGenerationDirectController.saveButton.value == RequestConstant.APPROVAL)
+                            {}
+                            else{
+                              await projectController.getProjectList();
                             if(mounted) {
                               bottomsheetControllers.ProjectName(context,
                                   projectController.getdropDownvalue.value);
-                            }},
+                            }}
+                            },
                           validator: (value) {
                             if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
                               return '\u26A0 ${RequestConstant.VALIDATE}';
@@ -320,7 +327,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                       child: Padding(
                         padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: siteController.Sitename,
                           cursorColor: Colors.black,
@@ -340,10 +347,13 @@ class _Subcont_Nmr_EntryScreenState_Site
                                 child: ConstIcons.siteName),
                           ),
                           onTap: () {
+                            if(billGenerationDirectController.saveButton.value == RequestConstant.RESUBMIT || billGenerationDirectController.saveButton.value == RequestConstant.VERIFY || billGenerationDirectController.saveButton.value == RequestConstant.APPROVAL)
+                            {}
+                            else{
                             setState(() {
                               bottomsheetControllers.SiteName(context,
                                   siteController.getSiteDropdownvalue.value);
-                            });
+                            });}
                           },
                           validator: (value) {
                             if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
@@ -366,7 +376,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                       child: Padding(
                         padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: subcontractorController.Subcontractorname,
                           cursorColor: Colors.black,
@@ -386,12 +396,15 @@ class _Subcont_Nmr_EntryScreenState_Site
                                 child: ConstIcons.subcontractorName),
                           ),
                           onTap: () async {
-                            await subcontractorController.getSubcontList(context,
-                                projectController.selectedProjectId.value,
-                                siteController.selectedsiteId.value,"billdirect");
-                            bottomsheetControllers.SubcontractorName(context,
-                                subcontractorController.getdropDownvalue.value);
-                          },
+                            if(billGenerationDirectController.saveButton.value == RequestConstant.RESUBMIT || billGenerationDirectController.saveButton.value == RequestConstant.VERIFY || billGenerationDirectController.saveButton.value == RequestConstant.APPROVAL)
+                            {}
+                            else{
+                              await subcontractorController.getSubcontList(context,
+                              projectController.selectedProjectId.value,
+                              siteController.selectedsiteId.value,"billdirect");
+                              bottomsheetControllers.SubcontractorName(context,
+                              subcontractorController.getdropDownvalue.value);
+                          } },
                           validator: (value) {
                             if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
                               return '\u26A0 ${RequestConstant.VALIDATE}';
@@ -414,7 +427,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                         padding:
                         const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: billGenerationDirectController.DirectBillTypeText,
                           cursorColor: Colors.black,
@@ -442,11 +455,14 @@ class _Subcont_Nmr_EntryScreenState_Site
                             return null;
                           },
                           onTap: () async {
+                            if(billGenerationDirectController.saveButton.value == RequestConstant.RESUBMIT || billGenerationDirectController.saveButton.value == RequestConstant.VERIFY || billGenerationDirectController.saveButton.value == RequestConstant.APPROVAL)
+                            {}
+                            else{
                             showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
                                   return BillType_Alert();
-                                });
+                                });}
 
                           },
                         ),
@@ -464,7 +480,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                       child: Padding(
                         padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: subcontractorController.WorkOrderNo,
                           cursorColor: Colors.black,
@@ -484,13 +500,16 @@ class _Subcont_Nmr_EntryScreenState_Site
                                 child: ConstIcons.dcNo),
                           ),
                           onTap: ()  async {
+                            if(billGenerationDirectController.saveButton.value == RequestConstant.RESUBMIT || billGenerationDirectController.saveButton.value == RequestConstant.VERIFY || billGenerationDirectController.saveButton.value == RequestConstant.APPROVAL)
+                            {}
+                            else{
                             await subcontractorController.getWorkOrderNoList("BILL DIRECT",
                                 projectController.selectedProjectId.value,
                                 siteController.selectedsiteId.value,
                                 subcontractorController.selectedSubcontId.value);
                             bottomsheetControllers.WorkOrderName(context,
                                 subcontractorController.getdpDnWrkOrderValue.value,type: "BILL DIRECT");
-                          },
+                          }},
 
                         ),
                       ),
@@ -639,7 +658,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                       child: Padding(
                         padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: subcontractorController.InvoiceNo,
                           cursorColor: Colors.black,
@@ -682,7 +701,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                       child: Padding(
                         padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           controller: billGenerationDirectController.RemarksController,
                           cursorColor: Colors.black,
                           style: const TextStyle(color: Colors.black),
@@ -696,12 +715,12 @@ class _Subcont_Nmr_EntryScreenState_Site
                             prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
                             prefixIcon: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8), child: ConstIcons.remarks),
                           ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return '\u26A0 ${RequestConstant.VALIDATE}';
-                            }
-                            return null;
-                          },
+                          // validator: (value) {
+                          //   if (value!.isEmpty) {
+                          //     return '\u26A0 ${RequestConstant.VALIDATE}';
+                          //   }
+                          //   return null;
+                          // },
                         ),
                       ),
                     ),
@@ -741,6 +760,9 @@ class _Subcont_Nmr_EntryScreenState_Site
                       setState(() {
                         if(_formKey.currentState!.validate()){
                           _formKey.currentState!.save();
+                          billGenerationDirectController.tobededadv.addListener(() {
+                            billGenerationDirectController.updateAdvanceReadOnly();
+                          });
                           Navigator.push(
                               context,
                               MaterialPageRoute(

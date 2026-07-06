@@ -58,20 +58,6 @@ class MaterialController extends GetxController {
     MaterialHeadname.text=selectedMaterialHeadName.value;
   }
 
-  MaterialAdded(BuildContext context,String mtName,String scale,int headId,int subId,String date) async {
-    await CommonProvider.MaterialPost(mtName,scale,headId,subId,date)
-        .then((value) async {
-      if (value != null) {
-        if(value=="Duplication Occurred... Please Check again..."){
-          BaseUtitiles.showToast(value);
-        }
-        else{
-          BaseUtitiles.showToast(value);
-          Navigator.of(context).pop();
-        }
-      }
-    });
-  }
 
 
 

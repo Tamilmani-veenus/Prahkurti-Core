@@ -15,7 +15,8 @@ import 'entry_requisitionslip.dart';
 ///----------Requisition Slip Entry List-------------
 
 class Requisitionslip_EntryList extends StatefulWidget {
-  const Requisitionslip_EntryList({super.key});
+  final String heading;
+  const Requisitionslip_EntryList({super.key,required this.heading});
 
   @override
   State<Requisitionslip_EntryList> createState() => _Requisitionslip_EntryListState();
@@ -60,7 +61,7 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
             child: FloatingActionButton.extended(
               onPressed: (){
                 requisitionSlipController.saveButton.value=RequestConstant.SUBMIT;
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const RequisitionSlip_Entry()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => RequisitionSlip_Entry(heading: widget.heading,)));
               },
               label: Text("Add", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,),),
               icon: Icon(Icons.add, color: Colors.white, size: RequestConstant.Heading_Font_SIZE, ),
@@ -77,11 +78,13 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "Staff L & P Slip",
-                        style: TextStyle(
-                            fontSize: RequestConstant.Heading_Font_SIZE,
-                            fontWeight: FontWeight.bold),
+                      Expanded(
+                        child: Text(
+                          widget.heading,
+                          style: TextStyle(
+                              fontSize: RequestConstant.Heading_Font_SIZE,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                       TextButton(
                           onPressed: () {
@@ -235,6 +238,7 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                             style: ElevatedButton.styleFrom(primary: Theme.of(context).primaryColor),
                             onPressed: () async {
                               setState(() {
+                                editingController.text = "";
                                 requisitionSlipController.getRequisitionslip_EntryList();
                               });
                             },
@@ -289,7 +293,6 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                             onChanged: (value) {
                               setState(() {
                                 requisitionSlipController.ReqSlipEtyList.value = BaseUtitiles.filterSearchResultsemployee(value,requisitionSlipController.mainentrylist);
-                                // mrn_request_controller.MrnReqEtyList.value = BaseUtitiles.filterSearchResults_MRNRequestIndent(value,mrn_request_controller.mainEtyList);
                               });
                             },
                           ),
@@ -448,6 +451,73 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                                           )),
                                     ],
                                   ),
+                                  requisitionSlipController.ReqSlipEtyList.value[index].requisitionType=="P" || requisitionSlipController.ReqSlipEtyList.value[index].requisitionType=="O" ?
+                                  Column(
+                                    children: [
+                                      SizedBox(height: 5,),
+                                      Row(
+                                        children: <Widget>[
+                                          Container(
+                                            margin: EdgeInsets.only(top: 5, left: 10),
+                                            child: Text(""),
+                                          ),
+                                          Expanded(
+                                              flex: 3,
+                                              child: Text(
+                                                requisitionSlipController.ReqSlipEtyList.value[index].requisitionType=="P" ? "Permission Time" : "OnDuty\nTime",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,),
+                                              )),
+                                          Expanded(
+                                              flex: 9,
+                                              child: Text(
+
+                                                "${requisitionSlipController.ReqSlipEtyList.value[index].permissionFromTime} - ${requisitionSlipController.ReqSlipEtyList.value[index].permissionToTime}" ,
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                ),
+                                              )),
+                                        ],
+                                      ),
+                                    ],
+                                  ):SizedBox(),
+                                  SizedBox(height: 5,),
+
+                                  Column(
+                                    children: [
+                                      SizedBox(height: 5,),
+                                      Row(
+                                        children: <Widget>[
+                                          Container(
+                                            margin: EdgeInsets.only(top: 5, left: 10),
+                                            child: Text(""),
+                                          ),
+                                          Expanded(
+                                              flex: 3,
+                                              child: Text(
+                                                requisitionSlipController.ReqSlipEtyList.value[index].requisitionType=="P" ? "Permission Date" :
+                                                requisitionSlipController.ReqSlipEtyList.value[index].requisitionType=="O" ? "OnDuty\nDate" :
+                                                requisitionSlipController.ReqSlipEtyList.value[index].requisitionType=="L" ? "Leave Date" : "Compansate Date",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,),
+                                              )),
+                                          Expanded(
+                                              flex: 9,
+                                              child: Text(
+                                                requisitionSlipController.ReqSlipEtyList.value[index].requisitionType=="P" || requisitionSlipController.ReqSlipEtyList.value[index].requisitionType=="O"?
+                                                "${requisitionSlipController.ReqSlipEtyList.value[index].permissionFromDate}" :
+                                                "${requisitionSlipController.ReqSlipEtyList.value[index].leaveFromDate} - ${requisitionSlipController.ReqSlipEtyList.value[index].leaveToDate}",
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                ),
+                                              )),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+
                                   SizedBox(height: 5,),
                                   Row(
                                     children: <Widget>[
@@ -458,7 +528,7 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                                       Expanded(
                                           flex: 3,
                                           child: Text(
-                                            "Status",
+                                            "Prepared By",
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.black),
@@ -466,8 +536,7 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                                       Expanded(
                                           flex: 9,
                                           child: Text(
-                                            requisitionSlipController.ReqSlipEtyList.value[index].status.toString(),
-                                            style: TextStyle(color:requisitionSlipController.ReqSlipEtyList.value[index].status.toString() == "Approved"?Colors.green:requisitionSlipController.ReqSlipEtyList.value[index].status.toString() == "Rejected"? Colors.red:Colors.black),
+                                            requisitionSlipController.ReqSlipEtyList.value[index].createdName.toString(),
                                           )),
                                     ],
                                   ),
@@ -481,16 +550,18 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                                       Expanded(
                                           flex: 3,
                                           child: Text(
-                                            "Prepared By",
+                                            "Status",
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.black),
                                           )),
                                       Expanded(
                                           flex: 7,
-                                          child: Text(
-                                            requisitionSlipController.ReqSlipEtyList.value[index].createdName.toString(),
-                                          )),
+                                          child:Text(
+                                            requisitionSlipController.ReqSlipEtyList.value[index].status.toString(),
+                                            style: TextStyle(color:requisitionSlipController.ReqSlipEtyList.value[index].status.toString() == "Approved"?Colors.green:requisitionSlipController.ReqSlipEtyList.value[index].status.toString() == "Rejected"? Colors.red:Colors.black),
+                                          )
+                                          ),
                                       Expanded(
                                           flex: 2,
                                           child: IconButton(
@@ -502,105 +573,111 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                                                         borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
                                                       ),
                                                       builder: (context) {
-                                                        return Container(
-                                                          margin: EdgeInsets.only(left: 15),
-                                                          height: BaseUtitiles.getheightofPercentage(context, 25),
-                                                          child: Column(
-                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                            children: [
-                                                              Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                children: [
-                                                                  Expanded(
-                                                                    child: Container(
-                                                                      margin: EdgeInsets.only(right: 10),
-                                                                      child: Text(
-                                                                        requisitionSlipController.ReqSlipEtyList.value[index].requisitionNo.toString(),
-                                                                        style: TextStyle(
-                                                                            fontWeight: FontWeight.bold,
-                                                                            color: Theme.of(context).primaryColor),
+                                                        return SafeArea(
+                                                          top: false,
+                                                          child: Container(
+                                                            margin: EdgeInsets.only(left: 15),
+                                                            height: BaseUtitiles.getheightofPercentage(context, 25),
+                                                            child: Column(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: Container(
+                                                                        margin: EdgeInsets.only(right: 10),
+                                                                        child: Text(
+                                                                          requisitionSlipController.ReqSlipEtyList.value[index].requisitionNo.toString(),
+                                                                          style: TextStyle(
+                                                                              fontWeight: FontWeight.bold,
+                                                                              color: Theme.of(context).primaryColor),
+                                                                        ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                  IconButton(
-                                                                    onPressed: () {
-                                                                      Navigator.pop(context);
-                                                                    },
-                                                                    icon:  ConstIcons.cancle,)
-                                                                ],
-                                                              ),
-                                                              Visibility(
-                                                                visible: commanController.editMode.value == 1 ? true : false,
-                                                                child: InkWell(
-                                                                    child: Row(
-                                                                      children: [
-                                                                        Card(
-                                                                          color: Colors
-                                                                              .lightGreen,
-                                                                          child: Padding(
-                                                                            padding:
-                                                                            const EdgeInsets
-                                                                                .all(8),
-                                                                            child: Icon(
-                                                                              Icons.edit,
-                                                                              color: Colors
-                                                                                  .white,
+                                                                    IconButton(
+                                                                      onPressed: () {
+                                                                        Navigator.pop(context);
+                                                                      },
+                                                                      icon:  ConstIcons.cancle,)
+                                                                  ],
+                                                                ),
+                                                                Visibility(
+                                                                  visible: commanController.editMode.value == 1 ? true : false,
+                                                                  child: InkWell(
+                                                                      child: Row(
+                                                                        children: [
+                                                                          Card(
+                                                                            color: Colors
+                                                                                .lightGreen,
+                                                                            child: Padding(
+                                                                              padding:
+                                                                              const EdgeInsets
+                                                                                  .all(8),
+                                                                              child: Icon(
+                                                                                Icons.edit,
+                                                                                color: Colors
+                                                                                    .white,
+                                                                              ),
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                        SizedBox(width: 5),
-                                                                        Text(
-                                                                          "Edit",
-                                                                          style: TextStyle(
-                                                                              color:
-                                                                              Colors.grey,
-                                                                              fontSize: 15),
-                                                                        )
-                                                                      ],
-                                                                    ),
-                                                                    onTap: () async {
-                                                                        await requisitionSlipController.Requisitionslip_EditApi(requisitionSlipController.ReqSlipEtyList[index].id, context, true);
-                                                                        }),
-                                                              ),
-                                                              Container(
-                                                                  margin: EdgeInsets.only(right: 20),
-                                                                  child: Divider(thickness: 1)),
-                                                              Visibility(
-                                                                visible: commanController.deleteMode.value == 1 ? true : false,
-                                                                child: InkWell(
-                                                                    child: Row(
-                                                                      children: [
-                                                                        Card(
-                                                                          color: Colors.red,
-                                                                          child: Padding(
-                                                                            padding:
-                                                                            const EdgeInsets
-                                                                                .all(8),
-                                                                            child: Icon(
-                                                                              Icons
-                                                                                  .delete_forever,
-                                                                              color: Colors
-                                                                                  .white,
+                                                                          SizedBox(width: 5),
+                                                                          Text(
+                                                                            "Edit",
+                                                                            style: TextStyle(
+                                                                                color:
+                                                                                Colors.grey,
+                                                                                fontSize: 15),
+                                                                          )
+                                                                        ],
+                                                                      ),
+                                                                      onTap: () async {
+                                                                          await requisitionSlipController.Requisitionslip_EditApi(
+                                                                              requisitionSlipController.ReqSlipEtyList[index].id,
+                                                                              widget.heading,
+                                                                              context, true);
+                                                                          }),
+                                                                ),
+                                                                Container(
+                                                                    margin: EdgeInsets.only(right: 20),
+                                                                    child: Divider(thickness: 1)),
+                                                                Visibility(
+                                                                  visible: commanController.deleteMode.value == 1 ? true : false,
+                                                                  child: InkWell(
+                                                                      child: Row(
+                                                                        children: [
+                                                                          Card(
+                                                                            color: Colors.red,
+                                                                            child: Padding(
+                                                                              padding:
+                                                                              const EdgeInsets
+                                                                                  .all(8),
+                                                                              child: Icon(
+                                                                                Icons
+                                                                                    .delete_forever,
+                                                                                color: Colors
+                                                                                    .white,
+                                                                              ),
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                        SizedBox(width: 5),
-                                                                        Text(
-                                                                          "Delete",
-                                                                          style: TextStyle(
-                                                                              color:
-                                                                              Colors.grey,
-                                                                              fontSize: 15),
-                                                                        )
-                                                                      ],
-                                                                    ),
-                                                                    onTap: () async {
-                                                                      Navigator.pop(context);
-                                                                        requisitionSlipController.DeleteAlert(context, index, true);
-                                                                    }),
-                                                              ),
-                                                              SizedBox(height: 20)
-                                                            ],
+                                                                          SizedBox(width: 5),
+                                                                          Text(
+                                                                            "Delete",
+                                                                            style: TextStyle(
+                                                                                color:
+                                                                                Colors.grey,
+                                                                                fontSize: 15),
+                                                                          )
+                                                                        ],
+                                                                      ),
+                                                                      onTap: () async {
+                                                                        Navigator.pop(context);
+                                                                          requisitionSlipController.DeleteAlert(context, index, true);
+                                                                      }),
+                                                                ),
+                                                                SizedBox(height: 20)
+                                                              ],
+                                                            ),
                                                           ),
                                                         );
                                                       });

@@ -69,9 +69,9 @@ class BillGenerateBoqProvider {
       var response;
 
       if (id != 0) {
-        response = await ApiManager.putUpdateAPIButton("${ApiConstant.PUT_DIRECTBILL_UPDATE_API}?id=$id", body);
+        response = await ApiManager.putUpdateAPIButton("${ApiConstant.PUT_DIRECTBOQ_UPDATE_API}?id=$id", body);
       } else {
-        response = await ApiManager.postAPICall(ApiConstant.DIRECTBILL_SAVE_API, body);
+        response = await ApiManager.postAPICall(ApiConstant.BOQBILL_SAVE_API, body);
       }
       return jsonDecode(response);
 
@@ -81,9 +81,9 @@ class BillGenerateBoqProvider {
     }
   }
 
-  static Future<DirectbillEditApiResModel?> directBill_entryList_editAPI(int workId) async {
+  static Future<DirectbillEditApiResModel?> directBill_entryList_editAPI(int workId,status) async {
     try{
-      final value = await ApiManager.getAPICall("${ApiConstant.EDIT_BILLBOQ_API}?id=$workId");
+      final value = await ApiManager.getAPICall("${ApiConstant.EDIT_BILLBOQ_API}?id=$workId&isEdit=$status");
       print("AdvEntryList:" + value);
       return directbillEditApiResModelFromJson(value);
     }
@@ -93,10 +93,6 @@ class BillGenerateBoqProvider {
       return null;
     }
   }
-
-
-
-
 
   static Future<bool> entryList_deleteAPI(int WorkId,status) async {
     try {

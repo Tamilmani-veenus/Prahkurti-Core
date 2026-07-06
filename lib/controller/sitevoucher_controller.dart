@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:prahkurticore/controller/pendinglistcontroller.dart';
 import '../controller/commonvoucher_controller.dart';
 import '../controller/projectcontroller.dart';
 import '../controller/sitecontroller.dart';
@@ -42,8 +41,6 @@ class SiteVoucher_Controller extends GetxController {
   SiteController siteController = Get.put(SiteController());
   CommonVoucherController commonVoucherController =
   Get.put(CommonVoucherController());
-  PendingListController pendingListController =
-  Get.put(PendingListController());
 
   var sitevoucherItemListTableModel = SitevoucherDetlist();
   late List<SitevoucherDetlist> sitevoucherTableList = <SitevoucherDetlist>[];
@@ -93,21 +90,21 @@ class SiteVoucher_Controller extends GetxController {
     SiteVocEtyList.value.clear();
     main_entryList.value.clear();
     final value = await Sitevoucher_provider.getSiteVouc_Entry_List(SiteVocEntrylistFrDate.text, SiteVocEntrylistToDate.text);
-    if (value != null) {
-      if(value.success==true){
-        if(value.result!.isNotEmpty){
-          SiteVocEtyList.value = value.result!;
-          main_entryList.value = value.result!;
+      if (value != null) {
+        if(value.success==true){
+          if(value.result!.isNotEmpty){
+            SiteVocEtyList.value = value.result!;
+            main_entryList.value = value.result!;
+          }
+          else {
+            BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+          }
+        }else {
+          BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
         }
-        else {
-          BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
-        }
-      }else {
-        BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
+      } else {
+        BaseUtitiles.showToast("Something Went Wrong...");
       }
-    } else {
-      BaseUtitiles.showToast("Something Went Wrong...");
-    }
   }
 
   ///--Calculation
@@ -240,19 +237,10 @@ class SiteVoucher_Controller extends GetxController {
 
     if (list != null) {
       if (list["success"] == true) {
-        if (SaveButton.value == RequestConstant.SUBMIT ||
-            SaveButton.value == RequestConstant.RESUBMIT) {
-          BaseUtitiles.showToast(list["message"]);
-          await getSiteVoc_EntryList();
-          clearDatas();
-          BaseUtitiles.popMultiple(context, count: 3);
-        }
-
-      else if (SaveButton.value == RequestConstant.APPROVAL) {
         BaseUtitiles.showToast(list["message"]);
-        await pendingListController.getPendingList();
+        await getSiteVoc_EntryList();
+        clearDatas();
         BaseUtitiles.popMultiple(context, count: 3);
-      }
       }
       else {
         BaseUtitiles.popMultiple(context, count: 2);
@@ -322,7 +310,7 @@ class SiteVoucher_Controller extends GetxController {
     return savedatas;
   }
 
-  Future SiteVoucher_List_EditApi(int VocId, BuildContext context,Url) async {
+  Future SiteVoucher_List_EditApi(int VocId,String MenuName, BuildContext context,Url) async {
     Sitevoucher_EditListApiValue.value = [];
     await Sitevoucher_provider.Sitevoucher_entryList_editAPI(VocId)
         .then((value) async {
@@ -333,15 +321,15 @@ class SiteVoucher_Controller extends GetxController {
             SaveButton.value = RequestConstant.RESUBMIT;
           }
           else
-          {
-            SaveButton.value = RequestConstant.APPROVAL;
-          }
+            {
+              SaveButton.value = RequestConstant.APPROVAL;
+            }
           delete_Sitevoucher_itemlist_Table();
           Sitevoucher_itemview_GetDbList.clear();
           await Sitevoucher_entrylist_editSaveDetTable();
           await getsitevoucherTablesDatas();
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => SiteVoucher_EntryScreen()));
+              context, MaterialPageRoute(builder: (context) => SiteVoucher_EntryScreen(heading: MenuName,)));
         } else {
           BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
         }
@@ -350,7 +338,7 @@ class SiteVoucher_Controller extends GetxController {
       }
     });
   }
-
+  
   Future DeleteAlert(BuildContext context, int index) async {
     return await showDialog(
       context: context,

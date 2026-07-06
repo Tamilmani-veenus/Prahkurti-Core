@@ -133,7 +133,7 @@ class _SubcontractorState extends State<Subcontractoroutstanding> {
                   ),
                   onTap: ()  {
                     setState(() {
-                      expensesController.getSubcontractor_ExpensesList();
+                      // expensesController.getSubcontractor_ExpensesList();
                       expensesController.totalSubAmt();
                     });
                     var duration = Duration(seconds: 1);

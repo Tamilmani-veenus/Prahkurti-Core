@@ -104,7 +104,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
 
 
 
-  Future getPendingList_Alldatas(int reqId, context, Url) async {
+  Future getPendingList_Alldatas(int reqId,String MenuName, context, Url) async {
     pendingAllDatasList.value = [];
     final value =
      await MRNRequest_PreIndent_Provider.Material_PreIntentList_editAPI(reqId);
@@ -126,7 +126,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const MRNRequest_PreIndent_EntryScreen()));
+                  builder: (context) => MRNRequest_PreIndent_EntryScreen(heading: MenuName,)));
         } else {
           BaseUtitiles.showToast("No Data Found");
         }
@@ -558,7 +558,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
   }
 
   Future MaterialPreIntentList_EditApi(
-      int reqId, int pId, int sId, BuildContext context) async {
+      int reqId, int pId, int sId, String MenuName,BuildContext context) async {
     final value =
     await MRNRequest_PreIndent_Provider.Material_PreIntentList_editAPI(reqId);
     if (value != null) {
@@ -572,7 +572,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
           return Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => const MRNRequest_PreIndent_EntryScreen()));
+                  builder: (context) => MRNRequest_PreIndent_EntryScreen(heading: MenuName,)));
         } else {
           BaseUtitiles.showToast("No Data Found");
         }

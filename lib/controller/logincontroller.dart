@@ -26,6 +26,11 @@ class LoginController extends GetxController {
   final username_controller = TextEditingController();
   final password_controller = TextEditingController();
 
+  final userName = TextEditingController();
+  final password = TextEditingController();
+  final conformPassword = TextEditingController();
+
+
   String deviceTokenToSendPushNotification = "";
   bool? punchInStatus = false;
   bool? punchOutStatus = false;
@@ -55,6 +60,38 @@ class LoginController extends GetxController {
   String EmpName() => user.value.empName.toString();
 
   String EmpId() => user.value.empId.toString();
+
+
+  Future<void> registerDetails(BuildContext context) async {
+    Map<String, dynamic> body = {
+      "id": 0,
+      "userName": userName.text.trim(),
+      "userPassword": password.text.trim(),
+      "userType": "A",
+      "employeeID": 1,
+      "userGroupID": 18,
+      "menuTypeID": 4,
+      "companyID": [1],
+      "projectID": [],
+      "mobileActive": "Y",
+      "active": "Y",
+      "createdBy": 1,
+      "createdDt": BaseUtitiles.initiateCurrentDateFormat(),
+    };
+
+    final response =
+    await AuthendicationProvider.getRegistration(body, context);
+
+    if (response != null && response.success == true) {
+      username_controller.text = userName.text;
+      password_controller.text = password.text;
+      await getLoginDetails(context);
+    } else {
+      BaseUtitiles.showToast(
+        response?.message?.trim() ?? "Registration failed",
+      );
+    }
+  }
 
   getLoginDetails(BuildContext context) async {
 
@@ -124,33 +161,33 @@ class LoginController extends GetxController {
   List logincheck = [];
 
 
-  Future getAppVersion() async {
-    await AuthendicationProvider.getVersion().then((value) {
-      if (value.isNotEmpty) {
-        if (Platform.isAndroid) {
-          version = value[0].appVersion;
-          if (kDebugMode) {
-            print("GetAndroidVersion :::: $version");
-          }
-          return version;
-        } else if (Platform.isIOS) {
-          version = value[0].iosVersion;
-          if (kDebugMode) {
-            print("GetIosVersion :::: $version");
-          }
-          return version;
-        }
-      }
-      return version;
-    });
-  }
+  // Future getAppVersion() async {
+  //   await AuthendicationProvider.getVersion().then((value) {
+  //     if (value.isNotEmpty) {
+  //       if (Platform.isAndroid) {
+  //         version = value[0].appVersion;
+  //         if (kDebugMode) {
+  //           print("GetAndroidVersion :::: $version");
+  //         }
+  //         return version;
+  //       } else if (Platform.isIOS) {
+  //         version = value[0].iosVersion;
+  //         if (kDebugMode) {
+  //           print("GetIosVersion :::: $version");
+  //         }
+  //         return version;
+  //       }
+  //     }
+  //     return version;
+  //   });
+  // }
 
   Future<void> getDeviceTokenToSendNotification() async {
     FirebaseMessaging.instance.requestPermission();
     final FirebaseMessaging _fcm = FirebaseMessaging.instance;
     final token = await _fcm.getToken();
     deviceTokenToSendPushNotification = token.toString();
-    print("Token " + deviceTokenToSendPushNotification);
+    print("PushNotToken--- " + deviceTokenToSendPushNotification);
   }
 
   Future Savetoken(BuildContext context) async {
@@ -180,14 +217,14 @@ class LoginController extends GetxController {
   }
 
   ///---- Device Model Data-----------
-  Future deviceModelData(BuildContext context) async {
-    String body = deviceIDmodelToJson(DeviceIDmodel(
-      deviceId: BaseUtitiles.deviceName.toString(),
-    ));
-    final response =  await AuthendicationProvider.deviceModelCheck(body);
-    print('DeviceModelRes :: $response}');
-    return response;
-  }
+  // Future deviceModelData(BuildContext context) async {
+  //   String body = deviceIDmodelToJson(DeviceIDmodel(
+  //     deviceId: BaseUtitiles.deviceName.toString(),
+  //   ));
+  //   final response =  await AuthendicationProvider.deviceModelCheck(body);
+  //   print('DeviceModelRes :: $response}');
+  //   return response;
+  // }
 
   /// Get punch in status .....
   Future getPunchInStatus() async {
@@ -251,5 +288,9 @@ class LoginController extends GetxController {
 
   Future<void> deleteLoginDetails() async {
     await ServiceLocalDatabaseService.deleteLoginDetails("login");
+  }
+
+  Future<bool> Register_acc_DeleteApi() async {
+    return CommonProvider.Registration_account_deleteAPI(int.parse(UserId()));
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import '../../../../app_theme/app_colors.dart';
@@ -20,7 +21,8 @@ import '../../../../utilities/requestconstant.dart';
 import 'consumption_additems.dart';
 
 class Consumption_Entry extends StatefulWidget {
-  const Consumption_Entry({Key? key}) : super(key: key);
+  final String heading;
+  const Consumption_Entry({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<Consumption_Entry> createState() => _Consumption_EntryState();
@@ -118,12 +120,14 @@ class _Consumption_EntryState extends State<Consumption_Entry> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
-                                "Consumption",
-                                style: TextStyle(
-                                    fontSize: RequestConstant.Heading_Font_SIZE,
-                                    fontWeight: FontWeight.bold),
-                              ),
+                               Expanded(
+                                 child: Text(
+                                 widget.heading,
+                                  style: TextStyle(
+                                      fontSize: RequestConstant.Heading_Font_SIZE,
+                                      fontWeight: FontWeight.bold),
+                                                               ),
+                               ),
                               TextButton(
                                   onPressed: () {
                                     Navigator.pop(context);
@@ -248,7 +252,7 @@ class _Consumption_EntryState extends State<Consumption_Entry> {
                               padding:
                               const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                               child: TextFormField(
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                autovalidateMode: AutovalidateMode.always,
                                 readOnly: true,
                                 controller: projectController.projectname,
                                 cursorColor: Colors.black,
@@ -300,7 +304,7 @@ class _Consumption_EntryState extends State<Consumption_Entry> {
                               padding:
                               const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                               child: TextFormField(
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                autovalidateMode: AutovalidateMode.always,
                                 readOnly: true,
                                 controller: siteController.Sitename,
                                 cursorColor: Colors.black,
@@ -354,7 +358,7 @@ class _Consumption_EntryState extends State<Consumption_Entry> {
                               padding:
                               const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                               child: TextFormField(
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                autovalidateMode: AutovalidateMode.always,
                                 readOnly: true,
                                 controller: subcontractorController.Subcontractorname,
                                 cursorColor: Colors.black,
@@ -397,7 +401,7 @@ class _Consumption_EntryState extends State<Consumption_Entry> {
                               padding:
                               const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                               child: TextFormField(
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                autovalidateMode: AutovalidateMode.always,
                                 readOnly: true,
                                 controller: consumption_controller.expenseTypeController,
                                 cursorColor: Colors.black,
@@ -485,7 +489,7 @@ class _Consumption_EntryState extends State<Consumption_Entry> {
                             child: Padding(
                               padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                               child: TextFormField(
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                autovalidateMode: AutovalidateMode.always,
                                 controller: consumption_controller.Consum_RemarksController,
                                 cursorColor: Colors.black,
                                 style: const TextStyle(color: Colors.black),
@@ -501,12 +505,12 @@ class _Consumption_EntryState extends State<Consumption_Entry> {
                                   prefixIcon: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                                       child: ConstIcons.remarks),
                                 ),
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '\u26A0 ${RequestConstant.VALIDATE}';
-                                  }
-                                  return null;
-                                },
+                                // validator: (value) {
+                                //   if (value!.isEmpty) {
+                                //     return '\u26A0 ${RequestConstant.VALIDATE}';
+                                //   }
+                                //   return null;
+                                // },
                               ),
                             ),
                           ),
@@ -851,6 +855,11 @@ class _Consumption_EntryState extends State<Consumption_Entry> {
                                 textAlign: TextAlign.center,
                                    controller: consumption_controller.Itemlist_stockqtyControllers[index],
                                    keyboardType: TextInputType.number,
+                                   inputFormatters: [
+                                     FilteringTextInputFormatter.allow(
+                                       RegExp(r'^\d+\.?\d{0,2}'),
+                                     ),
+                                   ],
                                    decoration: InputDecoration(
                                      labelText: 'Stock Quantity',
                                      labelStyle: const TextStyle(color: Colors.black),
@@ -898,6 +907,11 @@ class _Consumption_EntryState extends State<Consumption_Entry> {
                                    textAlign: TextAlign.center,
                                    controller: consumption_controller.Itemlist_UsageqtyControllers[index],
                                    keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                   inputFormatters: [
+                                     FilteringTextInputFormatter.allow(
+                                       RegExp(r'^\d+\.?\d{0,2}'),
+                                     ),
+                                   ],
                                    decoration: InputDecoration(
                                      labelText: 'Usage Quantity',
                                      labelStyle: const TextStyle(color: Colors.black),

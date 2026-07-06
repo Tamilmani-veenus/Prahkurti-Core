@@ -15,7 +15,7 @@ class StatusAlert extends StatefulWidget {
 
 class _StatusAlertState extends State<StatusAlert> {
   var companyNMRTableModel =new CompanyNMRDetTableModel();
-  final list=["Present","Absent","Half-Day","Just"];
+  // final list=["Present","Absent","Half-Day","Just"];
   CompanyNmrAttendanceController companyNmrAttendanceController = Get.put(CompanyNmrAttendanceController());
 
   @override
@@ -30,30 +30,24 @@ class _StatusAlertState extends State<StatusAlert> {
           child: Column(
             children: <Widget>[
               Container(
+                height: BaseUtitiles.getheightofPercentage(context, 4),
+                color: Theme.of(context).primaryColor,
+                child: Center(child: Text("Status",style: TextStyle(color: Colors.white),)),
+              ),
+              Container(
                 margin: const EdgeInsets.only(top: 10),
                 width: BaseUtitiles.getWidthtofPercentage(context, 80),
                 height: BaseUtitiles.getheightofPercentage(context,15),
                 child: ListView.builder(
-                    itemCount: list.length,
+                    itemCount: companyNmrAttendanceController.labourStatusList.length,
                     itemBuilder: (BuildContext context, int index) {
-                      companyNmrAttendanceController.textControllersInitiate();
                       return InkWell(
                         onTap: ()  async {
                           int i=0;
                           companyNmrAttendanceController.cmpNmr_getDbDetList.forEach((element) {
-                            companyNmrAttendanceController.textControllersInitiate();
                             if(widget.value==element.labourId){
-                              if(index==0){
-                                companyNmrAttendanceController.statusText[i].text="Present";
-                              }
-                              else if(index==1){
-                                companyNmrAttendanceController.statusText[i].text="Absent";
-                              }else if(index==2){
-                                companyNmrAttendanceController.statusText[i].text="Half-Day";
-                              }
-                              else if(index==3){
-                                companyNmrAttendanceController.statusText[i].text="Just";
-                              }
+                                companyNmrAttendanceController.statusText[i].text=companyNmrAttendanceController.labourStatusList[index]["name"];
+                                companyNmrAttendanceController.statusKeyText[i].text= companyNmrAttendanceController.labourStatusList[index]["type"];
                             }
                             i++;
                           });
@@ -71,7 +65,7 @@ class _StatusAlertState extends State<StatusAlert> {
                                     width:
                                     BaseUtitiles.getWidthtofPercentage(
                                         context, 60),
-                                    child: Text(list[index]
+                                    child: Text(companyNmrAttendanceController.labourStatusList[index]["name"]
                                         .toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold),)),
                                 Divider(
                                   color: Theme.of(context).primaryColorLight,

@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:prahkurticore/controller/subcontcontroller.dart';
 import '../controller/pendinglistcontroller.dart';
 import '../controller/projectcontroller.dart';
 import '../controller/sitecontroller.dart';
@@ -7,13 +10,17 @@ import '../controller/sitecontroller.dart';
 import '../db_model/cmpnmr_savereq_model.dart';
 import '../db_model/companynmr_atd_labourlist_dbmodel.dart';
 import '../db_services/companynmr_services.dart';
+import '../home/menu/daily_entries/company_nmr_attendance/company_nmr_entrylist.dart';
+import '../home/menu/daily_entries/company_nmr_attendance/company_nmr_entryscreen.dart';
 import '../home/menu/daily_entries/company_nmr_attendance/company_nmr_main.dart';
 import '../home/menu/daily_entries/company_nmr_attendance/listpopup_alert.dart';
 import '../home/pending_list/pending_list.dart';
+import '../models/cmpnmr_edit_resmodel.dart';
 import '../provider/companynmr_atdprovider.dart';
 import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
 import 'companycontroller.dart';
+import 'dailyentries_controller.dart';
 import 'logincontroller.dart';
 
 class CompanyNmrAttendanceController extends GetxController{
@@ -23,31 +30,31 @@ class CompanyNmrAttendanceController extends GetxController{
   SiteController siteController=Get.put(SiteController());
   CompanyController companyController=Get.put(CompanyController());
   PendingListController pendingListController=Get.put(PendingListController());
+  SubcontractorController subcontractorController = Get.put(SubcontractorController());
+  DailyEntriesController dailyEntriesController = Get.put(DailyEntriesController());
+
   final Company_EntryNo = TextEditingController();
   final Company_EntryDate = TextEditingController();
   final Company_EntryRemarks = TextEditingController();
-  final Company_EntryPreparedby = TextEditingController();
   final Company_EntrylistFrdate = TextEditingController();
   final Company_EntrylistTodate = TextEditingController();
 
   RxList AlldataList = [].obs;
   RxList list=[].obs;
   RxList CompanyEntrylist=[].obs;
+  RxList labourStatusList=[].obs;
   RxList EditListApiValue=[].obs;
   RxString saveButton=RequestConstant.SUBMIT.obs;
   RxList Entrylist=[].obs;
   RxList pendingAllDatasList = [].obs;
+
   late List<bool> isChecked;
 
-  int entrycheck=0;
-  int edicheck=0;
-  RxString screencheck="".obs;
-  int atId=0;
-
+  int attendId=0;
   late List<CompanyNMRDetTableModel> cmpnmrTableList = <CompanyNMRDetTableModel>[];
   late List<CompanyNMRDetTableModel> updateListDatas = <CompanyNMRDetTableModel>[];
   late List<CompanyNMRDetTableModel> deleteModelList = <CompanyNMRDetTableModel>[];
-  RxList<AttendanceDet> getsaveDetList = <AttendanceDet>[].obs;
+  RxList<NmrLbrattendDetLink> getsaveDetList = <NmrLbrattendDetLink>[].obs;
 
   var companyNMRTableModel = CompanyNMRDetTableModel();
   var companyNMR_DetService = CompanyNMR_DetService();
@@ -58,54 +65,79 @@ class CompanyNmrAttendanceController extends GetxController{
   List<TextEditingController> advanceText = [];
   List<TextEditingController> statusText = [];
   List<TextEditingController> remarksText = [];
+  List<TextEditingController> statusKeyText = [];
 
 
  textControllersInitiate() {
    oThrsText.add(new TextEditingController());
-   busfareText.add(new TextEditingController());
-   advanceText.add(new TextEditingController());
+   // busfareText.add(new TextEditingController());
+   // advanceText.add(new TextEditingController());
    statusText.add(new TextEditingController());
+   statusKeyText.add(new TextEditingController());
    remarksText.add(new TextEditingController());
   }
 
-
-  getCompanyEntryList(String Frdate, String Todate){
-    CompanyEntrylist.value.clear();
-    Entrylist.value.clear();
-    CompanyNmrAttendance_Provider.Company_NmrEntryListAPI(
-        loginController.user.value.userId!,
-        loginController.user.value.userType!,
-        Company_EntrylistFrdate.text,
-        Company_EntrylistTodate.text
-    ).then((value){
-      if(value!=null){
-        CompanyEntrylist.value = value;
-        Entrylist.value = CompanyEntrylist.value;
+  Future getCompanyEntryList() async {
+    CompanyEntrylist.value=[];
+    Entrylist.value=[];
+    var response = await CompanyNmrAttendance_Provider.Company_NmrEntryListAPI(
+        Company_EntrylistFrdate.text, Company_EntrylistTodate.text);
+    if (response != null) {
+      if (response.success == true) {
+        if (response.result!.isNotEmpty) {
+          CompanyEntrylist.assignAll(response.result!);
+          Entrylist.assignAll(response.result!);
+        } else {
+          BaseUtitiles.showToast("No Data Found");
+        }
+      } else {
+        BaseUtitiles.showToast(response.message ?? "Something went wrong..");
       }
-    });
+    } else {
+      BaseUtitiles.showToast("Something went wrong..");
+    }
   }
 
-
-
-  getCompanyaddList(int cId,BuildContext context) async {
-    await CompanyNmrAttendance_Provider.Material_IntentList_editAPI(cId).then((value) {
-      if(value!=null){
-        AlldataList.value = value;
-        AlldataList.value;
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return CompanyNmr_ListAlert();
-            });
+  Future getLabourList(BuildContext context, SubcontId) async {
+    AlldataList.value=[];
+    final value = await CompanyNmrAttendance_Provider.getLabourListAPI(SubcontId);
+    if (value != null) {
+      if (value.success == true) {
+        if (value.result!.isNotEmpty) {
+          AlldataList.value=value.result!;
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return CompanyNmr_ListAlert(list: AlldataList.value);
+              });
+        } else {
+          BaseUtitiles.showToast('No Data Found');
+        }
+      } else {
+        BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
       }
-      else{
-        AlldataList.value.clear();
-        BaseUtitiles.showToast("No Labour Record!");
-      }
-
-    });
+    } else {
+      BaseUtitiles.showToast('Something went wrong..');
+    }
   }
 
+  Future getLabourStatusList() async {
+    labourStatusList.value.clear();
+    var response = await CompanyNmrAttendance_Provider.getLabourStatusListAPI();
+    if (response != null) {
+      if (response["success"] == true) {
+        if (response["result"].isNotEmpty) {
+          labourStatusList.value=response["result"]!;
+        } else {
+          BaseUtitiles.showToast("No Data Found");
+        }
+      } else {
+        BaseUtitiles.showToast(response["message"] ?? "Something went wrong..");
+      }
+    } else {
+      BaseUtitiles.showToast("Something went wrong..");
+    }
+  }
 
   Future deleteParticularList(CompanyNMRDetTableModel data) async {
     deleteModelList.clear();
@@ -125,17 +157,17 @@ class CompanyNmrAttendanceController extends GetxController{
     AlldataList.forEach((element) {
       if(element.ischeck==true){
         companyNMRTableModel =new CompanyNMRDetTableModel();
+        companyNMRTableModel.reqDetId = 0;
         companyNMRTableModel.labourId = element.labourId!;
+        companyNMRTableModel.categaryId = element.categoryId!;
         companyNMRTableModel.labourName = element.labourName!;
-        companyNMRTableModel.Labour_No = element.Labour_No!;
-        companyNMRTableModel.categaryName = element.categaryName!;
+        companyNMRTableModel.labourNo = element.labourNo!;
+        companyNMRTableModel.categaryName = element.categoryName!;
         companyNMRTableModel.wages = double.parse(element.wages!.toString());
-        companyNMRTableModel.shift = "Day";
         companyNMRTableModel.status = "Present";
-        companyNMRTableModel.busfare = 0.0;
+        companyNMRTableModel.statusKeyText = "P";
         companyNMRTableModel.othrs = 0.0;
-        companyNMRTableModel.advance = 0.0;
-        companyNMRTableModel.detRemarks="-";
+        companyNMRTableModel.detRemarks= "";
           cmpNmr_getDbDetList.forEach((element) {
             if (element.labourId == companyNMRTableModel.labourId) {
               i = 1;
@@ -154,23 +186,21 @@ class CompanyNmrAttendanceController extends GetxController{
     return Navigator.pop(context, savedatas);
   }
 
-
-
   Future getcmpNMRTablesDatas() async {
     cmpNmr_getDbDetList.clear();
     var Matlist = await companyNMR_DetService.CompanyNMR_DetTable_readAll();
     Matlist.forEach((user) {
       companyNMRTableModel =new CompanyNMRDetTableModel();
+      companyNMRTableModel.reqDetId = user['reqDetId'];
       companyNMRTableModel.labourId = user['labourId'];
+      companyNMRTableModel.categaryId = user['categaryId'];
       companyNMRTableModel.labourName = user['labourName'];
-      companyNMRTableModel.Labour_No = user['Labour_No'];
+      companyNMRTableModel.labourNo = user['labourNo'];
       companyNMRTableModel.categaryName = user['categaryName'];
       companyNMRTableModel.wages = user['wages'];
-      companyNMRTableModel.shift = user['shift'];
       companyNMRTableModel.status = user['status'];
-      companyNMRTableModel.busfare = user['busfare'];
+      companyNMRTableModel.statusKeyText = user['statusKeyText'];
       companyNMRTableModel.othrs = user['othrs'];
-      companyNMRTableModel.advance = user['advance'];
       companyNMRTableModel.detRemarks=user['detRemarks'];
       cmpNmr_getDbDetList.add(companyNMRTableModel);
     });
@@ -181,9 +211,8 @@ class CompanyNmrAttendanceController extends GetxController{
     for (var index = 0; index < cmpNmr_getDbDetList.length; index++) {
       textControllersInitiate();
       statusText[index].text = cmpNmr_getDbDetList.value[index].status.toString();
-      busfareText[index].text=cmpNmr_getDbDetList.value[index].busfare.toString();
+      statusKeyText[index].text = cmpNmr_getDbDetList.value[index].statusKeyText.toString();
       oThrsText[index].text=cmpNmr_getDbDetList.value[index].othrs.toString();
-      advanceText[index].text=cmpNmr_getDbDetList.value[index].advance.toString();
       remarksText[index].text=cmpNmr_getDbDetList.value[index].detRemarks.toString();
     }
   }
@@ -194,16 +223,16 @@ class CompanyNmrAttendanceController extends GetxController{
     cmpNmr_getDbDetList.forEach((element) {
       textControllersInitiate();
       companyNMRTableModel =new CompanyNMRDetTableModel();
+      companyNMRTableModel.reqDetId = element.reqDetId!;
       companyNMRTableModel.labourId = element.labourId!;
       companyNMRTableModel.labourName = element.labourName!;
-      companyNMRTableModel.Labour_No = element.Labour_No!;
+      companyNMRTableModel.labourNo = element.labourNo!;
       companyNMRTableModel.categaryName = element.categaryName!;
+      companyNMRTableModel.categaryId = element.categaryId!;
       companyNMRTableModel.wages = element.wages!;
-      companyNMRTableModel.shift = "Day";
       companyNMRTableModel.status = statusText[i].text.toString();
-      companyNMRTableModel.busfare = double.parse(busfareText[i].text.toString());
+      companyNMRTableModel.statusKeyText = statusKeyText[i].text.toString();
       companyNMRTableModel.othrs = double.parse(oThrsText[i].text.toString());
-      companyNMRTableModel.advance = double.parse(advanceText[i].text.toString());
       companyNMRTableModel.detRemarks=remarksText[i].text.toString();
       updateListDatas.add(companyNMRTableModel);
       i++;
@@ -211,7 +240,6 @@ class CompanyNmrAttendanceController extends GetxController{
     await companyNMR_DetService.CompanyNMR_DetTable_Update(updateListDatas);
 
   }
-
 
   setCheck(int id,bool value){
     AlldataList.forEach((element) {
@@ -229,23 +257,49 @@ class CompanyNmrAttendanceController extends GetxController{
     });
   }
 
+  Future entryList_EditApi(int reqId,status,type,String MenuName, BuildContext context) async {
+    EditListApiValue.value=[];
+    var response = await CompanyNmrAttendance_Provider.Company_NmrList_EditAPI(reqId,status);
+    if (response != null) {
+      if (response.success == true) {
+        EditListApiValue.value=[response.result];
+        if (EditListApiValue.isNotEmpty) {
+          saveButton.value = type=="Edit"?RequestConstant.RESUBMIT : RequestConstant.APPROVAL;
+          delete_cmpNmrdetTable();
+          editSaveDetTable();
+          getcmpNMRTablesDatas();
+          return Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Company_nmr_entryscreen(heading: MenuName,)),
+          );
+        } else {
+          BaseUtitiles.showToast("No Data Found");
+        }
+      } else {
+        BaseUtitiles.showToast(response.message ?? "Something went wrong..");
+      }
+    } else {
+      BaseUtitiles.showToast("Something went wrong..");
+    }
+  }
 
   Future editSaveDetTable() async {
     cmpnmrTableList.clear();
     EditListApiValue.forEach((element) {
-      element.attendanceDet.forEach((val) {
+      element.nmrLbrattendDetLink.forEach((val) {
         companyNMRTableModel =new CompanyNMRDetTableModel();
-        companyNMRTableModel.labourId = val.nmrLbrId!;
+        companyNMRTableModel.reqDetId = val.id!;
+        companyNMRTableModel.labourId = val.nmrLabourInfoId!;
         companyNMRTableModel.labourName = val.labourName!;
-        companyNMRTableModel.Labour_No = element.attenNo!;
-        companyNMRTableModel.categaryName = val.categoryName!;
+        companyNMRTableModel.labourNo = "-";
+        companyNMRTableModel.categaryName = val.labourCategoryName;
+        companyNMRTableModel.categaryId = val.nmrLabourCategoryId;
         companyNMRTableModel.wages = val.wages!;
-        companyNMRTableModel.shift = val.shiftName!;
-        companyNMRTableModel.status = val.statusName!;
-        companyNMRTableModel.busfare = val.busfare!;
+        companyNMRTableModel.status =val.statusDesc;
+        companyNMRTableModel.statusKeyText = val.status!;
         companyNMRTableModel.othrs =val.otHrs!;
-        companyNMRTableModel.advance = val.Advance!;
-        companyNMRTableModel.detRemarks=val.detRemarks!;
+        companyNMRTableModel.detRemarks=val.remarks!;
         cmpnmrTableList.add(companyNMRTableModel);
       });
     });
@@ -253,104 +307,56 @@ class CompanyNmrAttendanceController extends GetxController{
     return  savedatas;
   }
 
-  Future entryList_EditApi(int reqId, BuildContext context) async {
-    await CompanyNmrAttendance_Provider.Company_NmrList_EditAPI(reqId).then((value) async {
-      if (value != null && value.length > 0) {
-        delete_cmpNmrdetTable();
-        edicheck = 1;
-        screencheck.value="";
-        EditListApiValue.value = value;
-        editSaveDetTable();
-        getcmpNMRTablesDatas();
-        return Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => CompanyNmrMain(0)),
-        );
-      }
-    });
-  }
-
-
   //----- SAVE AND UPDATE Button----
   Future SaveAPI(BuildContext context, int id) async {
     await Future.delayed(const Duration(seconds:0));
     String body = cmpNmrSaveReqModelToJson(CmpNmrSaveReqModel(
-      attenId: id != 0 ? id.toString() : "0",
-      attenNo: Company_EntryNo.text,
-      attenDate: Company_EntryDate.text,
-      projectId: projectController.selectedProjectId.value.toString(),
-      siteId: siteController.selectedsiteId.value.toString(),
+      id: id,
+      nmrLabourAttendanceNo: Company_EntryNo.text,
+      nmrLabourAttendanceDate: Company_EntryDate.text,
+      projectId: projectController.selectedProjectId.value,
+      siteId: siteController.selectedsiteId.value,
+      subContractorId: subcontractorController.selectedSubcontId.value,
+      billStatus: "N",
+      workType: dailyEntriesController.Nmr_Rate.value,
       remarks: Company_EntryRemarks.text,
-      preparedby: loginController.EmpId(),
-      approvedby: loginController.EmpId(),
-      userId: loginController.UserId(),
-      deviceName: BaseUtitiles.deviceName,
-      entryMode:saveButton.value=="Save"?"ADD":saveButton.value=="Update"?"UPDATE":saveButton.value=="Approval"?"APPROVE":saveButton.value=="Approve"?"APPROVE":"",
-      attendanceDet: attendanceListDet(),
+      createdBy: int.tryParse(loginController.EmpId()),
+      createdDt: BaseUtitiles().convertToUtcIso(Company_EntryDate.text),
+      approveStatus: saveButton.value == RequestConstant.APPROVAL ?"Y":"N",
+      approvedBy: int.tryParse(loginController.EmpId()),
+      approveDt: BaseUtitiles().convertToUtcIso(Company_EntryDate.text),
+      nmrLbrattendDetLink: attendanceListDet(id),
     ));
-    final list = await CompanyNmrAttendance_Provider.SaveEntryscreenAPI(body, id,screencheck.value,context);
-    if (list != null && id != 0) {
-      print(list);
-      if(screencheck.value=="Aproval"){
-        BaseUtitiles.showToast(list);
-        print(list);
-        if(list=="Record Approved Successfully..."){
-          Navigator.pop(context);
-          Navigator.pop(context);
-          // Navigator.pushReplacement(
-          //     context,
-          //     new MaterialPageRoute(
-          //         builder: (BuildContext context) =>
-          //         new PendingList()));
-          await pendingListController.getPendingList();
-          return  Navigator.pop(context);
-        }
-        Navigator.pop(context);
 
+    final decodedJson = jsonDecode(body);
+
+    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+    final prettyJson = encoder.convert(decodedJson);
+
+    debugPrint(prettyJson, wrapWidth: 1024);
+
+    final list = await CompanyNmrAttendance_Provider.SaveEntryScreenAPI(body, id,context);
+    if (list != null ) {
+      if(list["success"] == true){
+        BaseUtitiles.showToast(list["message"]);
+        clearDatas();
+        await getCompanyEntryList();
+        BaseUtitiles.popMultiple(context, count: 3);
       }
-      else{
-        BaseUtitiles.showToast(list);
-        if(list=="Record Updated Successfully..."){
-          cleasrDatas();
-          Navigator.pop(context);
-          return Navigator.pushReplacement(
-              context,
-              new MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                  new CompanyNmrMain(1)));
-        }
-        Navigator.pop(context);
-        }
+      else {
+        BaseUtitiles.showToast(list["message"] ?? 'Something went wrong..');
+        BaseUtitiles.popMultiple(context, count: 2);
+      }
     }
     else {
-      if (list == RequestConstant.DUPLICATE_OCCURED) {
-        BaseUtitiles.showToast(list!);
-        Navigator.pop(context);
-        return Navigator.pop(context);
-      } else {
-        BaseUtitiles.showToast(list!);
-        print(list);
-        if(list=="Record Saved Successfully..."){
-          cleasrDatas();
-          Navigator.pop(context);
-          return Navigator.pushReplacement(
-              context,
-              new MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                  new CompanyNmrMain(1)));
-        }
-        Navigator.pop(context);
-      }
+      BaseUtitiles.showToast("Something went wrong..");
+      BaseUtitiles.popMultiple(context, count: 2);
     }
   }
 
 
-  cleasrDatas(){
-    entrycheck=0;
-    edicheck=0;
-    atId=0;
-    screencheck.value="";
+  clearDatas(){
+    attendId=0;
     delete_cmpNmrdetTable();
     cmpNmr_getDbDetList.clear();
     EditListApiValue.value.clear();
@@ -359,25 +365,30 @@ class CompanyNmrAttendanceController extends GetxController{
     projectController.projectname.text="";
     siteController.selectedsiteId.value=0;
     siteController.Sitename.text="";
-    companyController.selectedCompanyId.value=0;
-    companyController.CompanyName.text="";
+    subcontractorController.Subcontractorname.text = "--SELECT--";
+    subcontractorController.selectedSubcontId.value = 0;
+    dailyEntriesController.WorkTypeTextController.text = "NMR";
+    dailyEntriesController.Nmr_Rate.value = RequestConstant.N;
     Company_EntryRemarks.text="";
-    Company_EntryPreparedby.text=loginController.EmpName();
   }
 
-  List<AttendanceDet>? attendanceListDet() {
-    getsaveDetList.value.clear();
-    cmpNmr_getDbDetList.value.forEach((element) {
-      var list = new AttendanceDet(
-        nmrLbrId: element.labourId.toString(),
-        nmrLbrName: element.labourName.toString(),
+  List<NmrLbrattendDetLink>? attendanceListDet(id) {
+    getsaveDetList.value=[];
+    cmpNmr_getDbDetList.forEach((element) {
+      var list = NmrLbrattendDetLink(
+        id: saveButton.value == RequestConstant.RESUBMIT?element.reqDetId : 0,
+        nmrLabourAttendanceMasId: saveButton.value == RequestConstant.RESUBMIT ? id : 0,
+        nmrLabourInfoId: element.labourId,
+        siteId: siteController.selectedsiteId.value,
+        status: element.statusKeyText,
+        wages: element.wages,
+        otHrs: element.othrs,
+        advance: 0,
+        remarks: element.detRemarks,
+        busFare: 0,
         shift: 'D',
-        status: element.status.toString()=="Present"?"P":element.status.toString()=="Absent"?"A":element.status.toString()=="Half-Day"?"H":"J",
-        wages: element.wages.toString(),
-        otHrs: element.othrs.toString(),
-        busfare: element.busfare.toString(),
-        Advance: element.advance.toString(),
-        detRemarks: element.detRemarks.toString(),
+        otAmount: 0,
+        nmrLabourCategoryId: element.categaryId,
       );
       getsaveDetList.value.add(list);
     });
@@ -385,59 +396,84 @@ class CompanyNmrAttendanceController extends GetxController{
   }
 
 
-  Future EntryList_DeleteApi(int atId, String atNo) async {
-    await CompanyNmrAttendance_Provider.entryList_deleteAPI(atId,atNo, loginController.UserId(), BaseUtitiles.deviceName)
-        .then((value) async {
-      if (value != null && value.length > 0) {
-        return value;
-      }
-    });
+  Future<bool> EntryList_DeleteApi(int reqId) async {
+    return CompanyNmrAttendance_Provider.entryList_deleteAPI(reqId);
   }
-  Future DeleteAlert(BuildContext context,int index) async {
+
+  Future DeleteAlert(BuildContext context, int index) async {
     return await showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: Text('Alert!'),
-            content: Text('Do you want to delete?'),
-            actions: [
-              ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('No'),
+      builder: (context) => AlertDialog(
+        title: const Text('Alert!'),
+        content: const Text('Do you want to Delete?'),
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(left: 20, right: 20),
+            child: IntrinsicHeight(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Cancel",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                                fontSize: RequestConstant.Lable_Font_SIZE))),
+                  ),
+                  VerticalDivider(
+                    color: Colors.grey.shade400, //color of divider
+                    width: 5, //width space of divider
+                    thickness: 2, //thickness of divier line
+                    indent: 15, //Spacing at the top of divider.
+                    endIndent: 15, //Spacing at the bottom of divider.
+                  ),
+                  Expanded(
+                    child: TextButton(
+                        onPressed: () async {
+                          bool result = await EntryList_DeleteApi(CompanyEntrylist.value[index].id);
+                          if (result) {
+                            CompanyEntrylist.removeAt(index);
+                            Navigator.of(context).pop();
+                          }
+                          else{
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        child: const Text("Delete",
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                                fontSize: RequestConstant.Lable_Font_SIZE))),
+                  )
+                ],
               ),
-              ElevatedButton(
-                onPressed: () {
-                  entrycheck = 0;
-                  edicheck = 0;
-                  EntryList_DeleteApi(Entrylist.value[index].nmrLbrAttnId, Entrylist.value[index].nmrLbrAttnNo);
-                  Entrylist.removeAt(index);
-                  Navigator.of(context).pop();
-                },
-                child: Text('Yes'),
-              ),
-            ],
+            ),
           ),
+        ],
+      ),
     );
   }
 
-  Future getPendingList_Alldatas(int reqId,BuildContext context) async {
-    pendingAllDatasList.clear();
-    await CompanyNmrAttendance_Provider.Company_NmrList_EditAPI(reqId).then((value) async {
-      if (value != null && value.length > 0) {
-        pendingAllDatasList.value = value;
-         edicheck=0;
-         entrycheck=1;
-        screencheck.value="Aproval";
-        pendingIntentAlldatas_SaveDetTable();
-        getcmpNMRTablesDatas();
-        FocusScope.of(context).unfocus();
-        Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyNmrMain(0)));
-      }
-      else {
-        BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
-      }
-    });
-  }
+
+  // Future getPendingList_Alldatas(int reqId,BuildContext context) async {
+  //   pendingAllDatasList.clear();
+  //   await CompanyNmrAttendance_Provider.Company_NmrList_EditAPI(reqId).then((value) async {
+  //     if (value != null && value.length > 0) {
+  //       pendingAllDatasList.value = value;
+  //       pendingIntentAlldatas_SaveDetTable();
+  //       getcmpNMRTablesDatas();
+  //       FocusScope.of(context).unfocus();
+  //       Navigator.push(context, MaterialPageRoute(builder: (context) => Company_nmr_entrylist()));
+  //     }
+  //     else {
+  //       BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+  //     }
+  //   });
+  // }
 
   Future pendingIntentAlldatas_SaveDetTable() async {
     cmpnmrTableList.clear();
@@ -446,14 +482,12 @@ class CompanyNmrAttendanceController extends GetxController{
         companyNMRTableModel =new CompanyNMRDetTableModel();
         companyNMRTableModel.labourId = val.nmrLbrId!;
         companyNMRTableModel.labourName = val.labourName!;
-        companyNMRTableModel.Labour_No = element.attenNo!;
+        companyNMRTableModel.labourNo = element.attenNo!;
         companyNMRTableModel.categaryName = val.categoryName!;
         companyNMRTableModel.wages = val.wages!;
-        companyNMRTableModel.shift = val.shiftName!;
         companyNMRTableModel.status = val.statusName!;
-        companyNMRTableModel.busfare = val.busfare!;
+        companyNMRTableModel.statusKeyText = val.statusKeyText!;
         companyNMRTableModel.othrs =val.otHrs!;
-        companyNMRTableModel.advance = val.Advance!;
         companyNMRTableModel.detRemarks=val.detRemarks!;
         cmpnmrTableList.add(companyNMRTableModel);
       });

@@ -115,19 +115,5 @@ class Mrn_Req_provider{
     }
   }
 
-  static Future<List<MrnReqAddMaterialResmodel>> addmatGetQtyApi() async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GET_MRNREQ_ADD_QTY).then((value) {
-      final res = mrnReqAddMaterialResmodelFromJson(value);
-      if (res != null && res.length > 0) {
-        data = res;
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG+error);
-    });
-    return data;
-  }
 
 }

@@ -70,6 +70,7 @@ class BillGenerationDirectController extends GetxController {
   bool isRestoring = false;
   String oldRoundOffValue = "0.0";
   String oldmatDebitValue = "0.0";
+  RxBool isAdvanceReadOnly = true.obs;
 
   ProjectController projectController = Get.put(ProjectController());
   SiteController siteController = Get.put(SiteController());
@@ -129,6 +130,7 @@ class BillGenerationDirectController extends GetxController {
       if (value.success == true) {
         if (value.result!.isNotEmpty) {
           bill_entryList.value = value.result!;
+          main_entryList.value = value.result!;
         } else {
           BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
         }
@@ -397,18 +399,18 @@ class BillGenerationDirectController extends GetxController {
       toDate: BaseUtitiles.initiateCurrentDateFormat(),
       billno: subcontractorController.InvoiceNo.text,
       remarks: RemarksController.text,
-      rndOff: double.tryParse(Roundoff.text),
-      billAmt: double.tryParse(billamount.text),
-      actAdvAmt: double.tryParse(tobededadv.text),
-      advAmt: double.tryParse(Advded.text),
-      netPayAmt: double.tryParse(netpayamt.text),
-      debitAmt: double.tryParse(Debitamt.text),
-      creditAmt: double.tryParse(Creditamt.text),
+      rndOff: double.tryParse(Roundoff.text) ?? 0.0,
+      billAmt: double.tryParse(billamount.text)?? 0.0,
+      actAdvAmt: double.tryParse(tobededadv.text)?? 0.0,
+      advAmt: double.tryParse(Advded.text)?? 0.0,
+      netPayAmt: double.tryParse(netpayamt.text)?? 0.0,
+      debitAmt: double.tryParse(Debitamt.text)?? 0.0,
+      creditAmt: double.tryParse(Creditamt.text)?? 0.0,
       debitRemarks: DebitRemarksController.text,
       creditRemarks: CreditRemarksController.text,
       materialDebitRemarks: materialDebitRemarks.text,
-      materialDebitAmount: double.tryParse(materialDebitamt.text),
-      finalBillAmount: double.tryParse(netpayamt.text),
+      materialDebitAmount: double.tryParse(materialDebitamt.text)?? 0.0,
+      finalBillAmount: double.tryParse(netpayamt.text)?? 0.0,
       penaltyAmount: 0,
       paymentDate: billPaymentWkDateController.text,
       partRateStatus: 0,
@@ -507,14 +509,9 @@ class BillGenerationDirectController extends GetxController {
     return getDetAddLessList.value;
   }
 
-  bool advance(String textAmount) {
-    bool value = true;
-    double amt = double.parse(textAmount);
-    if (amt > 0.0) {
-      value = false;
-      return value;
-    } else
-      return value;
+  void updateAdvanceReadOnly() {
+    final amt = double.tryParse(tobededadv.text) ?? 0.0;
+    isAdvanceReadOnly.value = amt <= 0;
   }
 
   Future<bool> deductionPaymentCalculation() async {
@@ -666,6 +663,7 @@ class BillGenerationDirectController extends GetxController {
 
   void updateNetPay() {
     double bill = double.tryParse(billamount.text) ?? 0;
+    double matDebit = double.tryParse(materialDebitamt.text) ?? 0;
     double credit = double.tryParse(Creditamt.text) ?? 0;
     double debit = double.tryParse(Debitamt.text) ?? 0;
     double adv = double.tryParse(Advded.text) ?? 0;
@@ -673,7 +671,7 @@ class BillGenerationDirectController extends GetxController {
 
     double addLessTotal = totalAddLess;
 
-    double netAmount = bill + credit - debit - adv - round + addLessTotal;
+    double netAmount = bill + credit - debit - adv - matDebit + round + addLessTotal;
 
     netpayamt.text = netAmount.toStringAsFixed(2);
   }
@@ -798,10 +796,10 @@ class BillGenerationDirectController extends GetxController {
   }
 
   Future directBillEntryList_EditApi(
-      int workid, BuildContext context, Url) async {
+      int workid, String MenuName, BuildContext context, Url,bool checksts) async {
     bill_editListApiDatas.value = [];
     final value =
-        await DirectBillGenerateProvider.directBill_entryList_editAPI(workid);
+        await DirectBillGenerateProvider.directBill_entryList_editAPI(workid,checksts);
     if (value != null) {
       if (value.success == true) {
         bill_editListApiDatas.value = [value.result];
@@ -818,7 +816,7 @@ class BillGenerationDirectController extends GetxController {
           return Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => Bill_Generation_EntryScreen()),
+                builder: (context) => Bill_Generation_EntryScreen(heading: MenuName,)),
           );
         } else {
           BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);

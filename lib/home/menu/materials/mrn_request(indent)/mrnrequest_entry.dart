@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import '../../../../../app_theme/app_colors.dart';
@@ -20,7 +21,8 @@ import '../../../../commonpopup/requesttype_alert.dart';
 import '../../../../controller/menu_controller.dart';
 
 class MRNRequest_Indent_Entry extends StatefulWidget {
-  const MRNRequest_Indent_Entry({Key? key}) : super(key: key);
+  final String heading;
+  const MRNRequest_Indent_Entry({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<MRNRequest_Indent_Entry> createState() => _MRNRequest_Indent_EntryState();
@@ -153,7 +155,7 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                   children: <Widget>[
                     Visibility(
                       visible:
-                      mrn_request_controller.saveButton.value != RequestConstant.VERIFY
+                      mrn_request_controller.saveButton.value != RequestConstant.VERIFY || mrn_request_controller.saveButton.value != RequestConstant.RESUBMIT
                               ? true
                               : false,
                       child: Expanded(
@@ -179,7 +181,6 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                           ),
                           onTap: () {
                             setState(() {
-                              mrn_request_controller.checkColor = 1;
                               ResetAlert(context);
                             });
                           },
@@ -195,9 +196,8 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                             decoration: BoxDecoration(
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(10)),
-                              color: mrn_request_controller.checkColor == 0
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.white,
+                              color: Theme.of(context).primaryColor
+
                             ),
                             alignment: Alignment.center,
                             child: Obx(() => Text(
@@ -205,13 +205,10 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: RequestConstant.Lable_Font_SIZE,
-                                      color:
-                                          mrn_request_controller.checkColor == 0
-                                              ? Colors.white
-                                              : Theme.of(context).primaryColor),
+                                      color: Colors.white
+                                             ),
                                 ))),
                         onTap: () async {
-                          mrn_request_controller.checkColor = 0;
                           if (_formKey.currentState!.validate()) {
                             _formKey.currentState!.save();
                             if (mrn_request_controller
@@ -264,11 +261,13 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              "MRN Request (Indent)",
-                              style: TextStyle(
-                                  fontSize: RequestConstant.Heading_Font_SIZE,
-                                  fontWeight: FontWeight.bold),
+                            Expanded(
+                              child: Text(
+                                widget.heading,
+                                style: TextStyle(
+                                    fontSize: RequestConstant.Heading_Font_SIZE,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
                             TextButton(
                               onPressed: () {
@@ -462,7 +461,7 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
                               autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                                  AutovalidateMode.always,
                               readOnly: true,
                               controller:
                                   mrn_request_controller.ReqTypeController,
@@ -520,7 +519,7 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                             padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                             child: TextFormField(
                               autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                                  AutovalidateMode.always,
                               readOnly: true,
                               controller: projectController.projectname,
                               cursorColor: Colors.black,
@@ -582,7 +581,7 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
                               autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                                  AutovalidateMode.always,
                               readOnly: true,
                               controller: siteController.Sitename,
                               cursorColor: Colors.black,
@@ -680,7 +679,7 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
                               autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                                  AutovalidateMode.always,
                               readOnly: false,
                               controller:
                                   mrn_request_controller.RemarksController,
@@ -700,12 +699,12 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                                         vertical: 8, horizontal: 8),
                                     child: ConstIcons.remarks),
                               ),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return '\u26A0 ${RequestConstant.VALIDATE}';
-                                }
-                                return null;
-                              },
+                              // validator: (value) {
+                              //   if (value!.isEmpty) {
+                              //     return '\u26A0 ${RequestConstant.VALIDATE}';
+                              //   }
+                              //   return null;
+                              // },
                             ),
                           ),
                         ),
@@ -1210,7 +1209,7 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                                       width: BaseUtitiles.getWidthtofPercentage(context, 20),
                                       child:
                                       TextFormField(
-                                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                                        autovalidateMode: AutovalidateMode.always,
                                         onTap: () {
                                           if (mrn_request_controller.Addwork_qtyControllers[index].text != "" && mrn_request_controller.Addwork_qtyControllers[index].text != "0" && mrn_request_controller.Addwork_qtyControllers[index].text != "0.0") {
                                               return;
@@ -1222,6 +1221,12 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                                         textAlign: TextAlign.center,
                                         controller: mrn_request_controller.Addwork_qtyControllers[index],
                                         keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp(r'^\d+\.?\d{0,2}'),
+                                          ),
+                                        ],
+
                                         decoration: InputDecoration(contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                                           focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).primaryColor), borderRadius: const BorderRadius.all(Radius.circular(5))),
                                           enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.grey), borderRadius: BorderRadius.all(Radius.circular(5))),

@@ -13,6 +13,7 @@ import '../../home/attendance_report/attendance_report.dart';
 import '../../home/dpr_report/dpr_report.dart';
 import '../../home/inward_report/inward_report.dart';
 import '../../home/mrn_report/mrn_report.dart';
+import '../../home/mrn_req_tracker_report/mrn_req_tracker_report.dart';
 import '../../home/stock_site/stock_site.dart';
 import '../maindashboard/dashboard.dart';
 import '../maindashboard/dashboard_otheruser.dart';
@@ -64,198 +65,174 @@ class _Reports_screenState extends State<Reports_screen> {
                         crossAxisCount: 2,
                         crossAxisSpacing: 15,
                         mainAxisSpacing: 15,
-                        childAspectRatio: 1.5,
+                        childAspectRatio: 1.4,
                       ),
                       shrinkWrap: true,
                       itemCount: menuController.reportListDatas.value.length,
                       itemBuilder: (context, index) {
-                        return Container(
-                          height:
-                              BaseUtitiles.getheightofPercentage(context, 15),
-                          width:
-                              BaseUtitiles.getWidthtofPercentage(context, 45),
-                          child: Card(
-                            elevation: 5,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            child: InkWell(
-                              child: Container(
-                                  alignment: Alignment.center,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      CircleAvatar(
-                                          radius: 30,
-                                          backgroundColor:
-                                              Colors.indigo.shade50,
-                                          child: Icon(
-                                            menuController
-                                                        .reportListDatas
-                                                        .value[index]
-                                                        .mobileMenuName ==
-                                                    'MRN Report'
-                                                ? Icons.add_card
-                                                : menuController
-                                                            .reportListDatas
-                                                            .value[index]
-                                                            .mobileMenuName ==
-                                                        'Attendance Report'
-                                                    ? Icons.read_more
-                                                    : menuController
-                                                                .reportListDatas
-                                                                .value[index]
-                                                                .mobileMenuName ==
-                                                            'Stock at site'
-                                                        ? Icons
-                                                            .compare_arrows_rounded
-                                                        : menuController
-                                                                    .reportListDatas
-                                                                    .value[
-                                                                        index]
-                                                                    .mobileMenuName ==
-                                                                'Inward Report'
-                                                            ? Icons.add_chart
-                                                            : menuController
-                                                                        .reportListDatas
-                                                                        .value[
-                                                                            index]
-                                                                        .mobileMenuName ==
-                                                                    'DPR Report'
-                                                                ? Icons
-                                                                    .add_business
-                                                                : menuController
-                                                                            .reportListDatas
-                                                                            .value[index]
-                                                                            .mobileMenuName ==
-                                                                        'Punch Report'
-                                                                    ? fingerprintOutlined
-                                                                    : null,
-                                            size: 30,
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                          )),
-                                      Text(menuController
-                                                  .reportListDatas
-                                                  .value[index]
-                                                  .mobileMenuName ==
-                                              'MRN Report'
-                                          ? "MRN Report"
-                                          : menuController
+                        return Card(
+                          elevation: 5,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          child: InkWell(
+                            child: Container(
+                                alignment: Alignment.center,
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    CircleAvatar(
+                                        radius: 30,
+                                        backgroundColor:
+                                            Colors.indigo.shade50,
+                                        child: Icon(
+                                          menuController
                                                       .reportListDatas
                                                       .value[index]
                                                       .mobileMenuName ==
-                                                  'Attendance Report'
-                                              ? "Attendance Report"
+                                                  'MRN Report'
+                                              ? Icons.add_card
                                               : menuController
                                                           .reportListDatas
                                                           .value[index]
                                                           .mobileMenuName ==
-                                                      'Stock at site'
-                                                  ? "Stock at site"
+                                                      'Attendance Report'
+                                                  ? Icons.read_more
                                                   : menuController
                                                               .reportListDatas
                                                               .value[index]
                                                               .mobileMenuName ==
-                                                          'Inward Report'
-                                                      ? "Inward Report"
+                                                          'Stock at site'
+                                                      ? Icons
+                                                          .compare_arrows_rounded
                                                       : menuController
                                                                   .reportListDatas
-                                                                  .value[index]
+                                                                  .value[
+                                                                      index]
                                                                   .mobileMenuName ==
-                                                              'DPR Report'
-                                                          ? "DPR Report"
+                                                              'Inward Report'
+                                                          ? Icons.add_chart
                                                           : menuController
                                                                       .reportListDatas
                                                                       .value[
                                                                           index]
                                                                       .mobileMenuName ==
-                                                                  'Punch Report'
-                                                              ? "Punch Report"
+                                                                  'DPR Report'
+                                                              ? Icons
+                                                                  .add_business
                                                               : menuController
-                                                                  .reportListDatas
-                                                                  .value[index]
-                                                                  .mobileMenuName),
-                                    ],
-                                  )),
-                              onTap: () async {
-                                if (menuController.reportListDatas.value[index]
-                                        .mobileMenuName ==
-                                    'MRN Report') {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              MRNReport()));
-                                }
+                                                                          .reportListDatas
+                                                                          .value[
+                                                                              index]
+                                                                          .mobileMenuName ==
+                                                                      'Punch Report'
+                                                                  ? fingerprintOutlined
+                                                                  : menuController.reportListDatas.value[index].mobileMenuName ==
+                                                                          'MRN - Request Tracker'
+                                                                      ? Icons.track_changes
+                                              : null,
+                                          size: 30,
+                                          color:
+                                              Theme.of(context).primaryColor,
+                                        )),
+                                    Text( menuController.reportListDatas
+                                                                .value[index]
+                                                                .menuName,textAlign: TextAlign.center,),
+                                  ],
+                                )),
+                            onTap: () async {
 
-                                if (menuController.reportListDatas.value[index]
-                                        .mobileMenuName ==
-                                    'Attendance Report') {
-                                  attendanceController.attendanceDatas.value
-                                      .clear();
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              AttendanceReport()));
-                                }
+                              if (menuController.reportListDatas.value[index]
+                                  .mobileMenuName ==
+                                  'MRN - Request Tracker') {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            MRN_ReqTracker_Report()));
+                              }
 
-                                if (menuController.reportListDatas.value[index]
-                                        .mobileMenuName ==
-                                    'Stock at site') {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              StockSite()));
-                                }
+                              if (menuController.reportListDatas.value[index]
+                                      .mobileMenuName ==
+                                  'MRN Report') {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            MRNReport(heading: menuController.reportListDatas.value[index].menuName,)));
+                              }
 
-                                if (menuController.reportListDatas.value[index]
-                                        .mobileMenuName ==
-                                    'Inward Report') {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              const InwardReport()));
-                                }
+                              if (menuController.reportListDatas.value[index]
+                                      .mobileMenuName ==
+                                  'Attendance Report') {
+                                attendanceController.attendanceDatas.value
+                                    .clear();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            AttendanceReport(heading: menuController.reportListDatas.value[index].menuName)));
+                              }
 
-                                if (menuController.reportListDatas.value[index]
-                                        .mobileMenuName ==
-                                    'DPR Report') {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              DPRReport()));
+                              if (menuController.reportListDatas.value[index]
+                                      .mobileMenuName ==
+                                  'Stock at site') {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            StockSite(heading: menuController.reportListDatas.value[index].menuName)));
+                              }
+
+                              if (menuController.reportListDatas.value[index]
+                                      .mobileMenuName ==
+                                  'Inward Report') {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            InwardReport(heading: menuController.reportListDatas.value[index].menuName)));
+                              }
+
+                              if (menuController.reportListDatas.value[index]
+                                      .mobileMenuName ==
+                                  'DPR Report') {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            DPRReport(heading: menuController.reportListDatas.value[index].menuName)));
+                              }
+                              if (menuController.reportListDatas.value[index]
+                                      .mobileMenuName ==
+                                  'Punch Report') {
+                                punchInController.todayDate.text =
+                                    BaseUtitiles.initiateCurrentDateFormat();
+                                punchInController.fromDate.text =
+                                    BaseUtitiles.initiateCurrentDateFormat();
+                                punchInController.toDate.text =
+                                    BaseUtitiles.initiateCurrentDateFormat();
+                                punchInController.filteredList.value = [];
+                                punchInController.punchFilterRxList.value =
+                                    [];
+                                if (loginController.user.value.userType ==
+                                    "A") {
+                                  staffController.Staffname.text =
+                                      "--SELECT--";
+                                  staffController.selectedstaffId.value = 0;
+                                } else {
+                                  staffController.Staffname.text =
+                                      loginController.user.value.empName
+                                          .toString();
+                                  staffController.selectedstaffId.value =
+                                      loginController.user.value.empId!;
                                 }
-                                if (menuController.reportListDatas.value[index].mobileMenuName == 'Punch Report') {
-                                    punchInController.todayDate.text = BaseUtitiles.initiateCurrentDateFormat();
-                                    punchInController.fromDate.text =
-                                        BaseUtitiles
-                                            .initiateCurrentDateFormat();
-                                    punchInController.toDate.text = BaseUtitiles
-                                        .initiateCurrentDateFormat();
-                                    punchInController.filteredList.value =[];
-                                    punchInController.punchFilterRxList.value = [];
-                                    if (loginController.user.value.userType == "A") {
-                                      staffController.Staffname.text = "--SELECT--";
-                                      staffController.selectedstaffId.value = 0;
-                                    } else {
-                                      staffController.Staffname.text =
-                                          loginController.user.value.empName
-                                              .toString();
-                                      staffController.selectedstaffId.value =
-                                          loginController.user.value.empId!;
-                                    }
-                                    Get.to(() => const PunchInOutReports());
-                                }
-                              },
-                            ),
+                                Get.to(() => PunchInOutReports(heading: menuController.reportListDatas.value[index].menuName));
+                              }
+                            },
                           ),
                         );
                       },
