@@ -10,7 +10,8 @@ import '../../../../utilities/baseutitiles.dart';
 import 'bill_generation_boq_entry.dart';
 
 class Bill_Generation_Boq_Entrylist extends StatefulWidget {
-  const Bill_Generation_Boq_Entrylist({Key? key}) : super(key: key);
+  final String heading;
+  const Bill_Generation_Boq_Entrylist({Key? key, required this.heading}) : super(key: key);
 
   @override
   State<Bill_Generation_Boq_Entrylist> createState() =>
@@ -36,14 +37,6 @@ class _Bill_Generation_Boq_EntrylistState_Site
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        FocusScopeNode currentFocus = FocusScope.of(context);
-        if (!currentFocus.hasPrimaryFocus &&
-            currentFocus.focusedChild != null) {
-          FocusManager.instance.primaryFocus?.unfocus();
-        }
-      },
-      child: GestureDetector(
         onTap: () {
           FocusScopeNode currentFocus = FocusScope.of(context);
           if (!currentFocus.hasPrimaryFocus &&
@@ -58,7 +51,7 @@ class _Bill_Generation_Boq_EntrylistState_Site
             floatingActionButton: FloatingActionButton.extended(
               onPressed: (){
                 billGenerationBoqController.saveButton.value = RequestConstant.SUBMIT;
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Bill_Generation_Boq_EntryScreen()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Bill_Generation_Boq_EntryScreen(heading: widget.heading,)));
               },
               label: Text("Add", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,),),
               icon: Icon(Icons.add, color: Colors.white, size: RequestConstant.Heading_Font_SIZE, ),
@@ -73,11 +66,13 @@ class _Bill_Generation_Boq_EntrylistState_Site
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "Bill Generation - BOQ",
-                          style: TextStyle(
-                              fontSize: RequestConstant.Heading_Font_SIZE,
-                              fontWeight: FontWeight.bold),
+                        Expanded(
+                          child: Text(
+                            widget.heading,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Heading_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         TextButton(
                             onPressed: () {
@@ -93,133 +88,132 @@ class _Bill_Generation_Boq_EntrylistState_Site
                   Container(
                     margin: EdgeInsets.only(top: 3),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Expanded(
-                          child: Container(
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(color: Colors.white70, width: 1),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 3),
-                                child: TextFormField(
-                                  readOnly: true,
-                                  controller: billGenerationBoqController.EntrylistFrDate,
-                                  cursorColor: Colors.black,
-                                  style: TextStyle(color: Colors.black),
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.zero,
-                                    border: InputBorder.none,
-                                    labelText: "From Date",
-                                    labelStyle: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: RequestConstant.Lable_Font_SIZE),
-                                    prefixIconConstraints:
-                                    BoxConstraints(minWidth: 0, minHeight: 0),
-                                    prefixIcon: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 8, horizontal: 8),
-                                        child: ConstIcons.date),
-                                  ),
-                                  onTap: () async {
-                                    billGenerationBoqController.bill_entryList.clear();
-                                    var Frdate = await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(1900),
-                                        lastDate: DateTime(2100),builder: (context, child) {
-                                      return Theme(data: Theme.of(context).copyWith(
-                                        colorScheme: ColorScheme.light(
-                                          primary: Theme.of(context).primaryColor, // header background color
-                                          onPrimary: Colors.white, // header text color
-                                          onSurface: Colors.black, // body text color
-                                        ),
-                                        textButtonTheme: TextButtonThemeData(
-                                          style: TextButton.styleFrom(
-                                            primary: Colors.black, // button text color
-                                          ),
+                        Container(
+                          width: BaseUtitiles.getWidthtofPercentage(context, 38),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(color: Colors.white70, width: 1),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 3,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 3),
+                              child: TextFormField(
+                                readOnly: true,
+                                controller: billGenerationBoqController.EntrylistFrDate,
+                                cursorColor: Colors.black,
+                                style: TextStyle(color: Colors.black),
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.zero,
+                                  border: InputBorder.none,
+                                  labelText: "From Date",
+                                  labelStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: RequestConstant.Lable_Font_SIZE),
+                                  prefixIconConstraints:
+                                  BoxConstraints(minWidth: 0, minHeight: 0),
+                                  prefixIcon: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 8, horizontal: 8),
+                                      child: ConstIcons.date),
+                                ),
+                                onTap: () async {
+                                  billGenerationBoqController.bill_entryList.clear();
+                                  var Frdate = await showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime(1900),
+                                      lastDate: DateTime.now(), builder: (context, child) {
+                                    return Theme(data: Theme.of(context).copyWith(
+                                      colorScheme: ColorScheme.light(
+                                        primary: Theme.of(context).primaryColor, // header background color
+                                        onPrimary: Colors.white, // header text color
+                                        onSurface: Colors.black, // body text color
+                                      ),
+                                      textButtonTheme: TextButtonThemeData(
+                                        style: TextButton.styleFrom(
+                                          primary: Colors.black, // button text color
                                         ),
                                       ),
-                                        child: child!,
-                                      );
-                                    });
-                                    billGenerationBoqController.EntrylistFrDate.text = Frdate.toString().substring(0, 10);
-                                  },
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Select Date';
-                                    }
-                                    return null;
-                                  },
-                                ),
+                                    ),
+                                      child: child!,
+                                    );
+                                  });
+                                  billGenerationBoqController.EntrylistFrDate.text = Frdate.toString().substring(0, 10);
+                                },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Select Date';
+                                  }
+                                  return null;
+                                },
                               ),
                             ),
                           ),
                         ),
-                        Expanded(
-                          child: Container(
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(color: Colors.white70, width: 1),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 3),
-                                child: TextFormField(
-                                  readOnly: true,
-                                  controller: billGenerationBoqController.EntrylistToDate,
-                                  cursorColor: Colors.black,
-                                  style: TextStyle(color: Colors.black),
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.zero,
-                                    border: InputBorder.none,
-                                    labelText: "ToDate",
-                                    labelStyle: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: RequestConstant.Lable_Font_SIZE),
-                                    prefixIconConstraints:
-                                    BoxConstraints(minWidth: 0, minHeight: 0),
-                                    prefixIcon: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 8, horizontal: 8),
-                                        child: ConstIcons.date),
-                                  ),
-                                  onTap: () async {
-                                    billGenerationBoqController.bill_entryList.clear();
-                                    var Todate = await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(1900),
-                                        lastDate: DateTime(2100),
-                                        builder: (context, child) {
-                                          return Theme(data: Theme.of(context).copyWith(
-                                            colorScheme: ColorScheme.light(
-                                              primary: Theme.of(context).primaryColor, // header background color
-                                              onPrimary: Colors.white, // header text color
-                                              onSurface: Colors.black, // body text color
-                                            ),
-                                            textButtonTheme: TextButtonThemeData(
-                                              style: TextButton.styleFrom(
-                                                primary: Colors.black, // button text color
-                                              ),
+                        Container(
+                          width: BaseUtitiles.getWidthtofPercentage(context, 38),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(color: Colors.white70, width: 1),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 3,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 3),
+                              child: TextFormField(
+                                readOnly: true,
+                                controller: billGenerationBoqController.EntrylistToDate,
+                                cursorColor: Colors.black,
+                                style: TextStyle(color: Colors.black),
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.zero,
+                                  border: InputBorder.none,
+                                  labelText: "ToDate",
+                                  labelStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: RequestConstant.Lable_Font_SIZE),
+                                  prefixIconConstraints:
+                                  BoxConstraints(minWidth: 0, minHeight: 0),
+                                  prefixIcon: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 8, horizontal: 8),
+                                      child: ConstIcons.date),
+                                ),
+                                onTap: () async {
+                                  billGenerationBoqController.bill_entryList.clear();
+                                  var Todate = await showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime(1900),
+                                      lastDate: DateTime(2100),
+                                      builder: (context, child) {
+                                        return Theme(data: Theme.of(context).copyWith(
+                                          colorScheme: ColorScheme.light(
+                                            primary: Theme.of(context).primaryColor, // header background color
+                                            onPrimary: Colors.white, // header text color
+                                            onSurface: Colors.black, // body text color
+                                          ),
+                                          textButtonTheme: TextButtonThemeData(
+                                            style: TextButton.styleFrom(
+                                              primary: Colors.black, // button text color
                                             ),
                                           ),
-                                            child: child!,
-                                          );
-                                        });
-                                    billGenerationBoqController.EntrylistToDate.text =
-                                        Todate.toString().substring(0, 10);
-                                  },
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Select Date';
-                                    }
-                                    return null;
-                                  },
-                                ),
+                                        ),
+                                          child: child!,
+                                        );
+                                      });
+                                  billGenerationBoqController.EntrylistToDate.text =
+                                      Todate.toString().substring(0, 10);
+                                },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Select Date';
+                                  }
+                                  return null;
+                                },
                               ),
                             ),
                           ),
@@ -230,6 +224,7 @@ class _Bill_Generation_Boq_EntrylistState_Site
                                   primary: Theme.of(context).primaryColor),
                               onPressed: () async {
                                 setState(() {
+                                  editingController.text = "";
                                   billGenerationBoqController.DirectBill_EntryList();
                                 });
                               },
@@ -283,7 +278,7 @@ class _Bill_Generation_Boq_EntrylistState_Site
                               textInputAction: TextInputAction.search,
                               onChanged: (value) {
                                 setState(() {
-                                  BaseUtitiles.filterSearchResults_billGenerationDirect(value, billGenerationBoqController.bill_entryList.value);
+                                  billGenerationBoqController.bill_entryList.value= BaseUtitiles.filterSearchResults_billGenerationDirect(value,billGenerationBoqController.main_entryList);
                                 });
                               },
                             ),
@@ -300,7 +295,6 @@ class _Bill_Generation_Boq_EntrylistState_Site
             ),
           ),
         ),
-      ),
     );
   }
 
@@ -317,8 +311,7 @@ class _Bill_Generation_Boq_EntrylistState_Site
                     padding: EdgeInsets.only(bottom: BaseUtitiles.getheightofPercentage(context, 10)),
                     physics: BouncingScrollPhysics(),
                     itemCount: billGenerationBoqController.bill_entryList.value.length,
-
-                    itemBuilder: (context, index) {
+                        itemBuilder: (context, index) {
                       return Container(
                         margin: EdgeInsets.only(left: 10, right: 10),
                         child: Card(
@@ -337,26 +330,21 @@ class _Bill_Generation_Boq_EntrylistState_Site
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
-                                      children: [
-
-                                        Container(
-                                          width: BaseUtitiles.getWidthtofPercentage(context, 50),
-                                          child: Row(
-                                            children: [
-                                              Container(
-                                                  margin: EdgeInsets.only(left:5,right: 5),
-                                                  child: ConstIcons.list_date),
-                                              Text(
-                                                billGenerationBoqController.bill_entryList.value[index].workDate.toString(),
-                                                style: TextStyle(
-                                                    color: Theme.of(context).primaryColor,
-                                                    fontWeight: FontWeight.bold),
-                                              ),
-                                            ],
+                                    Container(
+                                      width: BaseUtitiles.getWidthtofPercentage(context, 50),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                              margin: EdgeInsets.only(left:5,right: 5),
+                                              child: ConstIcons.list_date),
+                                          Text(
+                                            billGenerationBoqController.bill_entryList.value[index].workDate.toString(),
+                                            style: TextStyle(
+                                                color: Theme.of(context).primaryColor,
+                                                fontWeight: FontWeight.bold),
                                           ),
-                                        )
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                     Expanded(
                                       flex: 1,
@@ -367,32 +355,6 @@ class _Bill_Generation_Boq_EntrylistState_Site
                                     )
                                   ],
                                 ),
-                                SizedBox(height: 5),
-                                Row(
-                                  children: <Widget>[
-                                    Container(
-                                      margin: EdgeInsets.only(top: 10, left: 10),
-                                      child: Text(""),
-                                    ),
-                                    Expanded(
-                                        flex: 4,
-                                        child: Text(
-                                          "Subcontractor",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,),
-                                        )),
-                                    Expanded(
-                                        flex: 8,
-                                        child: Text(
-                                          billGenerationBoqController.bill_entryList.value[index].subContractorName.toString(),
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                          ),
-                                        )),
-                                  ],
-                                ),
-
                                 SizedBox(height: 5),
 
                                 Row(
@@ -418,6 +380,57 @@ class _Bill_Generation_Boq_EntrylistState_Site
                                         )),
                                   ],
                                 ),
+                                SizedBox(height: 5),
+                                SizedBox(height: 5),
+
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      margin: EdgeInsets.only(top: 2, left: 10),
+                                      child: Text(""),
+                                    ),
+                                    Expanded(
+                                        flex: 4,
+                                        child: Text(
+                                          "Site",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,),
+                                        )),
+                                    Expanded(
+                                        flex: 8,
+                                        child: Text(
+                                          billGenerationBoqController.bill_entryList.value[index].siteName.toString(),
+                                          style: TextStyle(
+                                            color: Colors.black,),
+                                        )),
+                                  ],
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      margin: EdgeInsets.only(top: 10, left: 10),
+                                      child: Text(""),
+                                    ),
+                                    Expanded(
+                                        flex: 4,
+                                        child: Text(
+                                          "Subcontractor",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,),
+                                        )),
+                                    Expanded(
+                                        flex: 8,
+                                        child: Text(
+                                          billGenerationBoqController.bill_entryList.value[index].subContractorName.toString(),
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                        )),
+                                  ],
+                                ),
+
 
                                 SizedBox(height: 5),
 
@@ -472,6 +485,8 @@ class _Bill_Generation_Boq_EntrylistState_Site
                                   ],
                                 ),
 
+
+
                                 SizedBox(height: 5),
 
                                 Row(
@@ -483,17 +498,16 @@ class _Bill_Generation_Boq_EntrylistState_Site
                                     Expanded(
                                         flex: 4,
                                         child: Text(
-                                          "Site Name",
+                                          "Preparedby",
                                           style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,),
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black),
                                         )),
                                     Expanded(
                                         flex: 8,
                                         child: Text(
-                                          billGenerationBoqController.bill_entryList.value[index].siteName.toString(),
-                                          style: TextStyle(
-                                            color: Colors.black,),
+                                          billGenerationBoqController.bill_entryList.value[index].createdName.toString(),
+                                          style: TextStyle(color: Colors.black),
                                         )),
                                   ],
                                 ),
@@ -509,7 +523,7 @@ class _Bill_Generation_Boq_EntrylistState_Site
                                     Expanded(
                                         flex: 3,
                                         child: Text(
-                                          "Preparedby",
+                                          "Status",
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               color: Colors.black),
@@ -517,8 +531,8 @@ class _Bill_Generation_Boq_EntrylistState_Site
                                     Expanded(
                                         flex: 5,
                                         child: Text(
-                                          billGenerationBoqController.bill_entryList.value[index].createdName.toString(),
-                                          style: TextStyle(color: Colors.black),
+                                          billGenerationBoqController.bill_entryList.value[index].status.toString(),
+                                          style: TextStyle(color: billGenerationBoqController.bill_entryList.value[index].status=="Approved"?Colors.green:Colors.black),
                                         )),
                                     Expanded(
                                         flex: 1,
@@ -532,121 +546,125 @@ class _Bill_Generation_Boq_EntrylistState_Site
                                                         top: Radius.circular(25.0)),
                                                   ),
                                                   builder: (context) {
-                                                    return Container(
-                                                      margin: EdgeInsets.only(
-                                                        left: 15,
-                                                      ),
-                                                      height: BaseUtitiles
-                                                          .getheightofPercentage(
-                                                          context, 25),
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                        children: [
-                                                          Row(
-                                                            mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                            children: [
-                                                              Container(
-                                                                margin: EdgeInsets.only(
-                                                                    right: 10),
-                                                                child: Text(
-                                                                  billGenerationBoqController.bill_entryList.value[index].workNo.toString(),
-                                                                  style: TextStyle(
-                                                                      fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                      color: Theme.of(
-                                                                          context)
-                                                                          .primaryColor),
+                                                    return SafeArea(
+                                                      top: false,
+                                                      child: Container(
+                                                        margin: EdgeInsets.only(
+                                                          left: 15,
+                                                        ),
+                                                        height: BaseUtitiles
+                                                            .getheightofPercentage(
+                                                            context, 25),
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                          children: [
+                                                            Row(
+                                                              mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                              children: [
+                                                                Container(
+                                                                  margin: EdgeInsets.only(
+                                                                      right: 10),
+                                                                  child: Text(
+                                                                    billGenerationBoqController.bill_entryList.value[index].workNo.toString(),
+                                                                    style: TextStyle(
+                                                                        fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                        color: Theme.of(
+                                                                            context)
+                                                                            .primaryColor),
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                              IconButton(
-                                                                  onPressed: () {
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                  },
-                                                                  icon: ConstIcons.cancle)
-                                                            ],
-                                                          ),
+                                                                IconButton(
+                                                                    onPressed: () {
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                    },
+                                                                    icon: ConstIcons.cancle)
+                                                              ],
+                                                            ),
 
-                                                          InkWell(
-                                                              child: Row(
-                                                                children: [
-                                                                  Card(
-                                                                    color: Colors
-                                                                        .lightGreen,
-                                                                    child: Padding(
-                                                                      padding:
-                                                                      const EdgeInsets
-                                                                          .all(8),
-                                                                      child: Icon(
-                                                                        Icons.edit,
-                                                                        color: Colors
-                                                                            .white,
+                                                            InkWell(
+                                                                child: Row(
+                                                                  children: [
+                                                                    Card(
+                                                                      color: Colors
+                                                                          .lightGreen,
+                                                                      child: Padding(
+                                                                        padding:
+                                                                        const EdgeInsets
+                                                                            .all(8),
+                                                                        child: Icon(
+                                                                          Icons.edit,
+                                                                          color: Colors
+                                                                              .white,
+                                                                        ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                  SizedBox(width: 5),
-                                                                  Text(
-                                                                    "Edit",
-                                                                    style: TextStyle(
-                                                                        color:
-                                                                        Colors.grey,
-                                                                        fontSize: 15),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                              onTap: () async {
-                                                                billGenerationBoqController.billgen_itemlistTable_Delete();
-                                                                billGenerationBoqController.ItemGetTableListdata.clear();
-                                                                billGenerationBoqController.bill_editListApiDatas.value.clear();
-                                                                FocusScope.of(context).unfocus();
-                                                                await billGenerationBoqController.directBillEntryList_EditApi(billGenerationBoqController.bill_entryList.value[index].id,context,"ReSubmit");
+                                                                    SizedBox(width: 5),
+                                                                    Text(
+                                                                      "Edit",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                          Colors.grey,
+                                                                          fontSize: 15),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                                onTap: () async {
+                                                                  billGenerationBoqController.billgen_itemlistTable_Delete();
+                                                                  billGenerationBoqController.ItemGetTableListdata.clear();
+                                                                  billGenerationBoqController.bill_editListApiDatas.value.clear();
+                                                                  FocusScope.of(context).unfocus();
+                                                                  await billGenerationBoqController.directBillEntryList_EditApi(
+                                                                      billGenerationBoqController.bill_entryList.value[index].id,widget.heading,context,"ReSubmit",true);
 
-                                                              }),
+                                                                }),
 
-                                                          Container(
-                                                              margin: EdgeInsets.only(right: 20),
-                                                              child: Divider(thickness: 1)),
+                                                            Container(
+                                                                margin: EdgeInsets.only(right: 20),
+                                                                child: Divider(thickness: 1)),
 
-                                                          InkWell(
-                                                              child: Row(
-                                                                children: [
-                                                                  Card(
-                                                                    color: Colors.red,
-                                                                    child: Padding(
-                                                                      padding:
-                                                                      const EdgeInsets
-                                                                          .all(8),
-                                                                      child: Icon(
-                                                                        Icons
-                                                                            .delete_forever,
-                                                                        color: Colors
-                                                                            .white,
+                                                            InkWell(
+                                                                child: Row(
+                                                                  children: [
+                                                                    Card(
+                                                                      color: Colors.red,
+                                                                      child: Padding(
+                                                                        padding:
+                                                                        const EdgeInsets
+                                                                            .all(8),
+                                                                        child: Icon(
+                                                                          Icons
+                                                                              .delete_forever,
+                                                                          color: Colors
+                                                                              .white,
+                                                                        ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                  SizedBox(width: 5),
-                                                                  Text(
-                                                                    "Delete",
-                                                                    style: TextStyle(
-                                                                        color:
-                                                                        Colors.grey,
-                                                                        fontSize: 15),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                              onTap: () async {
-                                                                Navigator.pop(context);
-                                                                setState(() {
-                                                                  billGenerationBoqController.DeleteAlert(context,index,true);
-                                                                });
-                                                              }),
-                                                          SizedBox(height: 20)
-                                                        ],
+                                                                    SizedBox(width: 5),
+                                                                    Text(
+                                                                      "Delete",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                          Colors.grey,
+                                                                          fontSize: 15),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                                onTap: () async {
+                                                                  Navigator.pop(context);
+                                                                  setState(() {
+                                                                    billGenerationBoqController.DeleteAlert(context,index,true);
+                                                                  });
+                                                                }),
+                                                            SizedBox(height: 20)
+                                                          ],
+                                                        ),
                                                       ),
                                                     );
                                                   });

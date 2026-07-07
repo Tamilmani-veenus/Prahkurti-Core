@@ -112,7 +112,7 @@ class _Payfor_AlertState extends State<Payfor_Alert> {
 
   CommonVoucherController commonVoucherController = Get.put(CommonVoucherController());
   AdvanceReqVoucherController_new advanceReqVoucherController_new = Get.put(AdvanceReqVoucherController_new());
-  final list=["Advance"];
+  final list=["Advance","Advance - Direct"];
 
   @override
   Widget build(BuildContext context) {
@@ -144,15 +144,15 @@ class _Payfor_AlertState extends State<Payfor_Alert> {
                         onTap: ()  {
                           if(index==0){
                             commonVoucherController.payforController.text="Advance";
-                            commonVoucherController.payfor.value="AD";
-                            // advanceReqVoucherController_new.getAdvList();
+                            commonVoucherController.payfor.value="A";
                           }
                           else{
-                            commonVoucherController.payforController.text="NMR Advance";
-                            commonVoucherController.payfor.value="NM";
+                            commonVoucherController.payforController.text="Advance - Direct";
+                            commonVoucherController.payfor.value="AD";
                           }
-
-                          advanceReqVoucherController_new.listButton.value = commonVoucherController.payfor.value == "AD" ? RequestConstant.LIST : "SiteWise List";
+                          advanceReqVoucherController_new.listButton.value = commonVoucherController.payfor.value=="A"
+                              ? "List"
+                              : "Sitewise List";
                           Navigator.pop(context);
                         },
                         child: Column(

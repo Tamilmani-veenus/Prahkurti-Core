@@ -11,7 +11,8 @@ import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'daily_wrkdone_dpr_entry.dart';
 
 class DailyWork_done_DPR_EntryList extends StatefulWidget {
-  const DailyWork_done_DPR_EntryList({Key? key}) : super(key: key);
+  final String heading;
+  const DailyWork_done_DPR_EntryList({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<DailyWork_done_DPR_EntryList> createState() => _DailyWork_done_DPR_EntryListState();
@@ -53,7 +54,7 @@ class _DailyWork_done_DPR_EntryListState extends State<DailyWork_done_DPR_EntryL
               dailyWrkDone_DPR_Controller.delete_dpr_itemlist_Table();
               dailyWrkDone_DPR_Controller.dpr_itemview_DbList.value.clear();
               dailyWrkDone_DPR_Controller.saveButton.value=RequestConstant.SUBMIT;
-              Navigator.push(context, MaterialPageRoute(builder: (context) => DailyWork_done_DPR_Entry()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => DailyWork_done_DPR_Entry(heading: widget.heading)));
             });
             },
           label: Text("Add", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,),),
@@ -69,11 +70,13 @@ class _DailyWork_done_DPR_EntryListState extends State<DailyWork_done_DPR_EntryL
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Daily Work Done DPR",
-                      style: TextStyle(
-                          fontSize: RequestConstant.Heading_Font_SIZE,
-                          fontWeight: FontWeight.bold),
+                    Expanded(
+                      child: Text(
+                        widget.heading,
+                        style: TextStyle(
+                            fontSize: RequestConstant.Heading_Font_SIZE,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
                     TextButton(
                         onPressed: () {
@@ -232,6 +235,7 @@ class _DailyWork_done_DPR_EntryListState extends State<DailyWork_done_DPR_EntryL
                               primary: Theme.of(context).primaryColor),
                           onPressed: () async {
                             setState(() {
+                              editingController.text = "";
                               dailyWrkDone_DPR_Controller.dpr_getEntryList();
                             });
                           },
@@ -475,7 +479,7 @@ class _DailyWork_done_DPR_EntryListState extends State<DailyWork_done_DPR_EntryL
                                   const Expanded(
                                       flex: 2,
                                       child: Text(
-                                        "Prepared By :",
+                                        "Prepared By ",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black),
@@ -498,119 +502,125 @@ class _DailyWork_done_DPR_EntryListState extends State<DailyWork_done_DPR_EntryL
                                             }else{
                                               showModalBottomSheet(
                                                   context: context,
+
                                                   shape: RoundedRectangleBorder(
                                                     // <-- SEE HERE
                                                     borderRadius: BorderRadius.vertical(
                                                         top: Radius.circular(25.0)),
                                                   ),
                                                   builder: (context) {
-                                                    return Container(
-                                                      margin: EdgeInsets.only(
-                                                        left: 15,
-                                                      ),
-                                                      height: BaseUtitiles
-                                                          .getheightofPercentage(
-                                                          context, 25),
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                        children: [
-                                                          Row(
-                                                            mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                            children: [
-                                                              Container(
-                                                                margin: EdgeInsets.only(right: 10),
-                                                                child: Text(
-                                                                  dailyWrkDone_DPR_Controller.dpr_entryList.value[index].workNo.toString(),
-                                                                  style: TextStyle(
-                                                                      fontWeight:
-                                                                      FontWeight.bold,
-                                                                      color: Theme.of(context).primaryColor),
+                                                    return SafeArea(
+                                                      top: false,
+                                                      child: Container(
+                                                        margin: EdgeInsets.only(
+                                                          left: 15,
+                                                        ),
+                                                        height: BaseUtitiles
+                                                            .getheightofPercentage(
+                                                            context, 25),
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                          children: [
+                                                            Row(
+                                                              mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                              children: [
+                                                                Container(
+                                                                  margin: EdgeInsets.only(right: 10),
+                                                                  child: Text(
+                                                                    dailyWrkDone_DPR_Controller.dpr_entryList.value[index].workNo.toString(),
+                                                                    style: TextStyle(
+                                                                        fontWeight:
+                                                                        FontWeight.bold,
+                                                                        color: Theme.of(context).primaryColor),
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                              IconButton(
-                                                                  onPressed: () {
-                                                                    Navigator.pop(context);
-                                                                  },
-                                                                  icon: ConstIcons.cancle)
-                                                            ],
-                                                          ),
-                                                          InkWell(
-                                                              child: const Row(
-                                                                children: [
-                                                                  Card(
-                                                                    color: Colors.lightGreen,
-                                                                    child: Padding(
-                                                                      padding:
-                                                                      EdgeInsets
-                                                                          .all(8),
-                                                                      child: Icon(
-                                                                        Icons.edit,
-                                                                        color: Colors
-                                                                            .white,
+                                                                IconButton(
+                                                                    onPressed: () {
+                                                                      Navigator.pop(context);
+                                                                    },
+                                                                    icon: ConstIcons.cancle)
+                                                              ],
+                                                            ),
+                                                            InkWell(
+                                                                child: const Row(
+                                                                  children: [
+                                                                    Card(
+                                                                      color: Colors.lightGreen,
+                                                                      child: Padding(
+                                                                        padding:
+                                                                        EdgeInsets
+                                                                            .all(8),
+                                                                        child: Icon(
+                                                                          Icons.edit,
+                                                                          color: Colors
+                                                                              .white,
+                                                                        ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                  SizedBox(width: 5),
-                                                                  Text(
-                                                                    "Edit",
-                                                                    style: TextStyle(
-                                                                        color:
-                                                                        Colors.grey,
-                                                                        fontSize: 15),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                              onTap: () {
-                                                                dailyWrkDone_DPR_Controller.delete_dpr_itemlist_Table();
-                                                                dailyWrkDone_DPR_Controller.dpr_itemview_DbList.value.clear();
-                                                                dailyWrkDone_DPR_Controller.getDprDetList.value.clear();
-                                                                dailyWrkDone_DPR_Controller.DprEntryList_EditApi(dailyWrkDone_DPR_Controller.searchentryList.value[index].id,context,0);
-                                                                FocusScope.of(context).unfocus();
-                                                                Navigator.pop(context);
-                                                              }),
-                                                          Container(
-                                                              margin: EdgeInsets.only(right: 20),
-                                                              child: Divider(thickness: 1)),
-                                                          InkWell(
-                                                              child: const Row(
-                                                                children: [
-                                                                  Card(
-                                                                    color: Colors.red,
-                                                                    child: Padding(
-                                                                      padding:
-                                                                      EdgeInsets
-                                                                          .all(8),
-                                                                      child: Icon(
-                                                                        Icons
-                                                                            .delete_forever,
-                                                                        color: Colors
-                                                                            .white,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(width: 5),
-                                                                  Text(
-                                                                    "Delete",
-                                                                    style: TextStyle(
-                                                                        color:
-                                                                        Colors.grey,
-                                                                        fontSize: 15),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                              onTap: ()  {
-                                                                setState(() {
+                                                                    SizedBox(width: 5),
+                                                                    Text(
+                                                                      "Edit",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                          Colors.grey,
+                                                                          fontSize: 15),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                                onTap: () {
+                                                                  dailyWrkDone_DPR_Controller.delete_dpr_itemlist_Table();
+                                                                  dailyWrkDone_DPR_Controller.dpr_itemview_DbList.value.clear();
+                                                                  dailyWrkDone_DPR_Controller.getDprDetList.value.clear();
+                                                                  dailyWrkDone_DPR_Controller.DprEntryList_EditApi(
+                                                                      dailyWrkDone_DPR_Controller.searchentryList.value[index].id,
+                                                                      widget.heading,context,0);
+                                                                  FocusScope.of(context).unfocus();
                                                                   Navigator.pop(context);
-                                                                  dailyWrkDone_DPR_Controller.DeleteAlert(context, index);
+                                                                }),
+                                                            Container(
+                                                                margin: EdgeInsets.only(right: 20),
+                                                                child: Divider(thickness: 1)),
+                                                            InkWell(
+                                                                child: const Row(
+                                                                  children: [
+                                                                    Card(
+                                                                      color: Colors.red,
+                                                                      child: Padding(
+                                                                        padding:
+                                                                        EdgeInsets
+                                                                            .all(8),
+                                                                        child: Icon(
+                                                                          Icons
+                                                                              .delete_forever,
+                                                                          color: Colors
+                                                                              .white,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(width: 5),
+                                                                    Text(
+                                                                      "Delete",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                          Colors.grey,
+                                                                          fontSize: 15),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                                onTap: ()  {
+                                                                  setState(() {
+                                                                    Navigator.pop(context);
+                                                                    dailyWrkDone_DPR_Controller.DeleteAlert(context, index);
 
-                                                                });
-                                                              }),
-                                                          SizedBox(height: 20)
-                                                        ],
+                                                                  });
+                                                                }),
+                                                            SizedBox(height: 20)
+                                                          ],
+                                                        ),
                                                       ),
                                                     );
                                                   });

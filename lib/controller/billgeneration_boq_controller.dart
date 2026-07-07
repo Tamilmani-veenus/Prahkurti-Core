@@ -129,6 +129,7 @@ class BillGenerationBoqController extends GetxController {
       if(value.success==true){
         if(value.result!.isNotEmpty){
           bill_entryList.value = value.result!;
+          main_entryList.value = value.result!;
 
         }
         else {
@@ -181,7 +182,7 @@ class BillGenerationBoqController extends GetxController {
   Future<String?> getNmrAdvance() async {
     final value = await BillGenerateBoqProvider.billadv_balance(
         projectController.selectedProjectId.value,
-        subcontractorController.selectedSubcontId.value);
+        dailyWrkDone_DPR_Controller.TypeSubcontId.value);
     if (value != null) {
       if (value["success"] == true) {
         if (value["result"].isNotEmpty) {
@@ -421,7 +422,6 @@ class BillGenerationBoqController extends GetxController {
 
 
   Future SaveButton_DeductionScreen(BuildContext context, int id,int workOrderId) async {
-    getDetList.value.clear();
     await Future.delayed(const Duration(seconds: 0));
     String body = billDirectGenSaveApiReqToJson(BillDirectGenSaveApiReq(
       workId: id != 0 ? id : 0,
@@ -438,18 +438,18 @@ class BillGenerationBoqController extends GetxController {
       toDate: TodateController.text,
       billno: subcontractorController.InvoiceNo.text,
       remarks: RemarksController.text,
-      rndOff: double.tryParse(Roundoff.text),
-      billAmt: double.tryParse(billamount.text),
-      actAdvAmt: double.tryParse(tobededadv.text),
-      advAmt: double.tryParse(Advded.text),
-      netPayAmt: double.tryParse(netpayamt.text),
-      debitAmt: double.tryParse(Debitamt.text),
-      creditAmt: double.tryParse(Creditamt.text),
+      rndOff: double.tryParse(Roundoff.text) ?? 0.0,
+      billAmt: double.tryParse(billamount.text)?? 0.0,
+      actAdvAmt: double.tryParse(tobededadv.text)?? 0.0,
+      advAmt: double.tryParse(Advded.text)?? 0.0,
+      netPayAmt: double.tryParse(netpayamt.text)?? 0.0,
+      debitAmt: double.tryParse(Debitamt.text)?? 0.0,
+      creditAmt: double.tryParse(Creditamt.text)?? 0.0,
       debitRemarks: DebitRemarksController.text,
       creditRemarks: CreditRemarksController.text,
       materialDebitRemarks: materialDebitRemarks.text,
-      materialDebitAmount: double.tryParse(materialDebitamt.text),
-      finalBillAmount: double.tryParse(netpayamt.text),
+      materialDebitAmount: double.tryParse(materialDebitamt.text)?? 0.0,
+      finalBillAmount: double.tryParse(netpayamt.text)?? 0.0,
       penaltyAmount: 0,
       paymentDate: billPaymentWkDateController.text,
       partRateStatus: 0,
@@ -459,8 +459,6 @@ class BillGenerationBoqController extends GetxController {
       approveStatus: saveButton.value == RequestConstant.APPROVAL? "Y":"N",
       subContractorWorkQtyDetS: getNmrBillDet(id,entryType.value),
       subContractorBillAddLessSetupS: getNmrBillDetAddLess(id, autoYearWiseNoController.text),
-
-
 
     ));
     final decodedJson = jsonDecode(body);
@@ -476,14 +474,13 @@ class BillGenerationBoqController extends GetxController {
 
     if (list != null ) {
       if(list["success"] == true){
-        clearDatas();
         BaseUtitiles.showToast(list["message"]);
         if(saveButton.value == RequestConstant.VERIFY || saveButton.value == RequestConstant.APPROVAL){
           await pendingListController.getPendingList();
         }else{
           await DirectBill_EntryList();
-          billgen_itemlistTable_Delete();
         }
+        clearDatas();
         BaseUtitiles.popMultiple(context, count: 5);
       }
       else {
@@ -546,17 +543,11 @@ class BillGenerationBoqController extends GetxController {
       }});
     return getDetAddLessList.value;
   }
-
-  bool advance(String textAmount) {
-    bool value = true;
-    double amt = double.parse(textAmount);
-    if (amt > 0.0) {
-      value = false;
-      return value;
-    } else
-      return value;
+  RxBool isAdvanceReadOnly = true.obs;
+  void updateAdvanceReadOnly() {
+    final amt = double.tryParse(tobededadv.text) ?? 0.0;
+    isAdvanceReadOnly.value = amt <= 0;
   }
-
 
   Future<bool> deductionPaymentCalculation() async {
     await getItemlistTablesDatas();
@@ -916,9 +907,9 @@ class BillGenerationBoqController extends GetxController {
     }
   }
 
-  Future directBillEntryList_EditApi(int workid, BuildContext context,Url) async {
+  Future directBillEntryList_EditApi(int workid, String MenuName,BuildContext context,Url,status) async {
     bill_editListApiDatas.value=[];
-    final value = await BillGenerateBoqProvider.directBill_entryList_editAPI(workid);
+    final value = await BillGenerateBoqProvider.directBill_entryList_editAPI(workid,status);
     if (value != null) {
       if(value.success==true){
         bill_editListApiDatas.value = [value.result];
@@ -937,7 +928,7 @@ class BillGenerationBoqController extends GetxController {
           return Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => Bill_Generation_Boq_EntryScreen()),
+                builder: (context) => Bill_Generation_Boq_EntryScreen(heading: MenuName,)),
           );
 
         }

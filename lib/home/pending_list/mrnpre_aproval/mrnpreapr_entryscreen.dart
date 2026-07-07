@@ -305,50 +305,6 @@ class _MrnPreApprovalEntryScreenState extends State<MrnPreApprovalEntryScreen> {
                     ),
                   ],
                 ),
-
-                // Container(
-                //   margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                //   child: Card(
-                //     shape: RoundedRectangleBorder(
-                //       side: BorderSide(color: Colors.white70, width: 1),
-                //       borderRadius: BorderRadius.circular(15),
-                //     ),
-                //     elevation: 3,
-                //     child: Padding(
-                //       padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                //       child: TextFormField(
-                //         readOnly: true,
-                //         controller: mrnPreApprovalController.mrnpre_ApprovalNoText,
-                //         cursorColor: Colors.black,
-                //         style: TextStyle(color: Colors.black),
-                //         decoration: InputDecoration(
-                //           contentPadding: EdgeInsets.zero,
-                //           border: InputBorder.none,
-                //           labelText: "Approval No",
-                //           labelStyle: TextStyle(
-                //               color: Colors.grey,
-                //               fontSize: RequestConstant.Lable_Font_SIZE),
-                //           prefixIconConstraints:
-                //           BoxConstraints(minWidth: 0, minHeight: 0),
-                //           prefixIcon: Padding(
-                //               padding: EdgeInsets.symmetric(
-                //                   vertical: 8, horizontal: 8),
-                //               child: ConstIcons.projectName
-                //
-                //           ),
-                //         ),
-                //         validator: (value) {
-                //           if (value!.isEmpty || value == "--Select--") {
-                //             return '\u26A0 Please select project name.';
-                //           }
-                //           return null;
-                //         },
-                //
-                //       ),
-                //     ),
-                //   ),
-                // ),
-
                 Container(
                   margin: EdgeInsets.only(top: 5, left: 10, right: 10),
                   child: Card(
@@ -381,7 +337,7 @@ class _MrnPreApprovalEntryScreenState extends State<MrnPreApprovalEntryScreen> {
                         ),
                         validator: (value) {
                           if (value!.isEmpty || value == "--Select--") {
-                            return '\u26A0 Please select project name.';
+                            return '\u26A0 Required.';
                           }
                           return null;
                         },
@@ -423,14 +379,10 @@ class _MrnPreApprovalEntryScreenState extends State<MrnPreApprovalEntryScreen> {
                           ),
                         ),
                         onTap: () {
-                          // // await projectController.getProjectList(context, 0);
-                          // setState(() {
-                          //   bottomsheetControllers.ProjectName(context, projectController.getdropDownvalue.value );
-                          // });
                         },
                         validator: (value) {
                           if (value!.isEmpty || value == "--Select--") {
-                            return '\u26A0 Please select project name.';
+                            return '\u26A0 Required.';
                           }
                           return null;
                         },
@@ -471,14 +423,9 @@ class _MrnPreApprovalEntryScreenState extends State<MrnPreApprovalEntryScreen> {
                               child:  ConstIcons.siteName
                           ),
                         ),
-                        // onTap: () {
-                        //   setState(() {
-                        //     bottomsheetControllers.SiteName(context, siteController.getSiteDropdownvalue.value);
-                        //   });
-                        // },
                         validator: (value) {
                           if (value!.isEmpty || value == "--Select--") {
-                            return '\u26A0 Please select site name';
+                            return '\u26A0 Required';
                           }
                           return null;
                         },
@@ -534,7 +481,7 @@ class _MrnPreApprovalEntryScreenState extends State<MrnPreApprovalEntryScreen> {
                     child: Padding(padding:
                       const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                       child: TextFormField(
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        autovalidateMode: AutovalidateMode.always,
                         readOnly: false,
                         controller: mrnPreApprovalController.mrnpre_ApprovalremarksText,
                         cursorColor: Colors.black,
@@ -691,22 +638,18 @@ class _MrnPreApprovalEntryScreenState extends State<MrnPreApprovalEntryScreen> {
                     width: BaseUtitiles.getWidthtofPercentage(context, 30),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: mrnPreApprovalController.checkColor == 0
-                          ? Theme.of(context).primaryColor
-                          : Colors.white,
+                      color:Theme.of(context).primaryColor,
                     ),
                     alignment: Alignment.center,
                     child: Text( "Next",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: RequestConstant.Lable_Font_SIZE,
-                          color: mrnPreApprovalController.checkColor == 0
-                              ? Colors.white
-                              : Theme.of(context).primaryColor),
+                          color: Colors.white
+                          ),
                     ),
                   ),
                   onTap: () {
-                    mrnPreApprovalController.checkColor = 0;
                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => MrnPreapprovalItemlist()));
                   },
                 ),

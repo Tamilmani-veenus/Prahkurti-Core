@@ -16,23 +16,6 @@ import '../utilities/requestconstant.dart';
 
 class TransferBetSiteProvider{
 
-  static Future<List<TransferbetItemListApiRes>> getItemList(int? proId, int siteId, int reqId, String type) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GETTRANSITEMLIST +
-        "?ProjectId=$proId&SiteId=$siteId&ReqId=$reqId&Type=$type")
-        .then((value) {
-      print("TransferprojectEntryList:" + value);
-      data = transferbetItemListApiResFromJson(value);
-      if (data != null && data.length > 0) {
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return data;
-  }
-
   static transferbet_Site_SaveApi(String body, int id) async {
 
     try {

@@ -1,5 +1,7 @@
 import 'dart:convert';
+
 import 'package:prahkurticore/controller/pendinglistcontroller.dart';
+
 import '../controller/projectcontroller.dart';
 import '../controller/sitecontroller.dart';
 import '../home/menu/main_menu/boq_revised/boq_additems.dart';
@@ -133,27 +135,44 @@ class Boq_Revised_Controller extends GetxController {
   //---------Item List--------
 
   Future getItemList(BuildContext context) async {
-    Boq_MainItemList.value=[];
-    Boq_ItemList.value=[];
+    Boq_MainItemList.value = [];
+    Boq_ItemList.value = [];
+
     var response = await BoqRevised_Provider.getRevisedItemlist(
-        reviseId,
-        projectController.selectedProjectId.value,
-        siteController.selectedsiteId.value,
-        siteController.selectedHeadId.value);
+      reviseId,
+      projectController.selectedProjectId.value,
+      siteController.selectedsiteId.value,
+      siteController.selectedHeadId.value,
+    );
+
     if (response != null) {
       if (response.success == true) {
-        if(response.result!.isNotEmpty) {
+        if (response.result!.isNotEmpty) {
+
+          bool hasLevel3Items = response.result!.any(
+                (headItem) => headItem.subItems?.any(
+                  (subItem) => subItem.level3Items?.isNotEmpty == true,
+            ) == true,
+          );
+
+          if (!hasLevel3Items) {
+            BaseUtitiles.showToast("No Record Found");
+            return;
+          }
+
           Boq_ItemList.value = response.result!;
           Boq_MainItemList.value = response.result!;
+
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Boq_AddItems()));
-        }
-        else {
+            context,
+            MaterialPageRoute(
+              builder: (context) => Boq_AddItems(),
+            ),
+          );
+        } else {
           BaseUtitiles.showToast("No Data Found");
         }
-      }  else {
+      } else {
         BaseUtitiles.showToast(response.message ?? 'Something went wrong..');
       }
     } else {
@@ -347,6 +366,9 @@ class Boq_Revised_Controller extends GetxController {
         qty: element.qty,
         remarks: "-",
         reviseQty: element.reviseQty,
+          approveStatus: "N",
+          approvedBy: int.tryParse(loginController.EmpId()),
+          boQcode: "0"
       )
       );
     }
@@ -443,7 +465,7 @@ class Boq_Revised_Controller extends GetxController {
     return savedatas;
   }
 
-  Future BoqrevisedList_EditApi(int reviseId, BuildContext context,status) async {
+  Future BoqrevisedList_EditApi(int reviseId,String MenuName, BuildContext context,status) async {
     BoqRevised_EditListApiValue.value=[];
     var response = await BoqRevised_Provider.Boq_RevisedList_editAPI(reviseId,status);
     if (response != null) {
@@ -455,7 +477,7 @@ class Boq_Revised_Controller extends GetxController {
           getItemTablesDatas();
           return Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => Boq_Revised_EntryScreen()),
+            MaterialPageRoute(builder: (context) => Boq_Revised_EntryScreen(heading: MenuName,)),
           );
         }
         else {

@@ -65,7 +65,7 @@ class CompanyController extends GetxController{
 
   Future getProjectList_CompanyWise(BuildContext context,int check) async {
     getdropDownvalue_Companywise.value.clear();
-    getdropDownvalue_Companywise.value= await CommonProvider.getproject_Companywise(selectedCompanyId.value);
+    // getdropDownvalue_Companywise.value= await CommonProvider.getproject_Companywise(selectedCompanyId.value);
     getdropDownvalue_Companywise.value.forEach((element) {
       return ProjectDropdown_CompanyWiseName.value.add(element.project);
     });

@@ -33,7 +33,7 @@ class _CompanyNmrAtdReportState extends State<CompanyNmrAtdReport> {
   @override
   void initState() {
     projectController.getProjectList();
-    subcontractorController.getLabourList(context);
+    // subcontractorController.getLabourList(context);
 
     attendanceController.FromdateController.clear();
     attendanceController.TodateController.clear();
@@ -267,7 +267,7 @@ class _CompanyNmrAtdReportState extends State<CompanyNmrAtdReport> {
                     },
                     validator: (value) {
                       if (value!.isEmpty || value == "--Select--") {
-                        return '\u26A0 Please select project name.';
+                        return '\u26A0 Required.';
                       }
                       return null;
                     },
@@ -318,7 +318,7 @@ class _CompanyNmrAtdReportState extends State<CompanyNmrAtdReport> {
                     },
                     validator: (value) {
                       if (value!.isEmpty || value == "--Select--") {
-                        return '\u26A0 Please select project name.';
+                        return '\u26A0 Required.';
                       }
                       return null;
                     },

@@ -495,49 +495,49 @@ int workid=0;
 
 
 
-Future dprLabour_getEntryList() async {
-  main_EntryList.value.clear();
-  dprLabour_EntryList.value.clear();
-  await DPRLabourProvider.getLabour_dpr_EntryList(loginController.user.value.userId, loginController.UserType(), dprlabor_entryList_frdateController.text, dprlabor_entryList_todateController.text)
-      .then((value) async {
-    if (value != null && value.length > 0) {
-      main_EntryList.value = value;
-      dprLabour_EntryList.value = main_EntryList.value;
-      return main_EntryList.value;
-    } else {
-      BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
-    }
-  });
-}
+// Future dprLabour_getEntryList() async {
+//   main_EntryList.value.clear();
+//   dprLabour_EntryList.value.clear();
+//   await DPRLabourProvider.getLabour_dpr_EntryList(loginController.user.value.userId, loginController.UserType(), dprlabor_entryList_frdateController.text, dprlabor_entryList_todateController.text)
+//       .then((value) async {
+//     if (value != null && value.length > 0) {
+//       main_EntryList.value = value;
+//       dprLabour_EntryList.value = main_EntryList.value;
+//       return main_EntryList.value;
+//     } else {
+//       BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+//     }
+//   });
+// }
 
 Future DprLabourEntryList_EditApi(int workid, BuildContext context, int checkdata) async {
   checkdata != 0 ? aprovedButton = 1 : aprovedButton = 0;
-  await DPRLabourProvider.dprLabour_entryList_editAPI(workid).then((value) async {
-    if (value != null && value.length > 0) {
-      editCheck = 1;
-      screencheck=1;
-      dpr_EditListApiValue.value = value;
-      dprLabour_EditDetTableSave();
-      getDetTablesDatas();
-      dprLabour_EditLabTableDatas();
-      getLabourTablesDatas();
-      return Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => DailyWrk_Done_DPR_Labour(0)),
-      );
-    }
-  });
+  // await DPRLabourProvider.dprLabour_entryList_editAPI(workid).then((value) async {
+  //   if (value != null && value.length > 0) {
+  //     editCheck = 1;
+  //     screencheck=1;
+  //     dpr_EditListApiValue.value = value;
+  //     dprLabour_EditDetTableSave();
+  //     getDetTablesDatas();
+  //     dprLabour_EditLabTableDatas();
+  //     getLabourTablesDatas();
+  //     return Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(
+  //           builder: (context) => DailyWrk_Done_DPR_Labour(0)),
+  //     );
+  //   }
+  // });
 }
 
-  Future EntryList_DeleteApi(int WorkId,String WorkNo) async {
-    await DPRLabourProvider.entryList_deleteAPI(WorkId,WorkNo,loginController.UserId(), BaseUtitiles.deviceName)
-        .then((value) async {
-      if (value != null && value.length > 0) {
-        return value;
-      }
-    });
-  }
+  // Future EntryList_DeleteApi(int WorkId,String WorkNo) async {
+  //   await DPRLabourProvider.entryList_deleteAPI(WorkId,WorkNo,loginController.UserId(), BaseUtitiles.deviceName)
+  //       .then((value) async {
+  //     if (value != null && value.length > 0) {
+  //       return value;
+  //     }
+  //   });
+  // }
 
   dprLabour_EditDetTableSave() async {
     dprLabourDetModelList.clear();
@@ -597,7 +597,7 @@ Future DprLabourEntryList_EditApi(int workid, BuildContext context, int checkdat
             onPressed: () {
              editCheck=0;
              screencheck=0;
-             EntryList_DeleteApi(dprLabour_EntryList[index].workId,dprLabour_EntryList[index].workNo);
+             // EntryList_DeleteApi(dprLabour_EntryList[index].workId,dprLabour_EntryList[index].workNo);
              dprLabour_EntryList.removeAt(index);
               Navigator.of(context).pop();
             },

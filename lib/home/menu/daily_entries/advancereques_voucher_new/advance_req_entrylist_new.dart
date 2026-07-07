@@ -11,7 +11,8 @@ import '../../../../utilities/requestconstant.dart';
 import 'advance_req_entry_new.dart';
 
 class AdvReq_Voucher_EntryList_new extends StatefulWidget {
-  const AdvReq_Voucher_EntryList_new({Key? key}) : super(key: key);
+  final String heading;
+  const AdvReq_Voucher_EntryList_new({Key? key, required this.heading}) : super(key: key);
 
   @override
 
@@ -27,16 +28,11 @@ class _AdvReq_Voucher_EntryList_newState extends State<AdvReq_Voucher_EntryList_
 
   @override
   void initState() {
-    advanceReqVoucherController_new.entrycheck=0;
-    advanceReqVoucherController_new.editcheck=0;
-      advanceReqVoucherController_new.mainlist.value.clear();
-      advanceReqVoucherController_new.entryList.value.clear();
     DateTime currentDate = DateTime.now();
     DateTime lastDayOfMonth = new DateTime(currentDate.year, currentDate.month - 1, 0);
     advanceReqVoucherController_new.entrlistFdateController.text = lastDayOfMonth.toString().substring(0, 10);
     advanceReqVoucherController_new.entrlistTdateController.text = currentDate.toString().substring(0, 10);
     advanceReqVoucherController_new.getEntryList();
-    advanceReqVoucherController_new.entryList.value =advanceReqVoucherController_new.mainlist.value;
     super.initState();
   }
 
@@ -49,9 +45,8 @@ class _AdvReq_Voucher_EntryList_newState extends State<AdvReq_Voucher_EntryList_
           visible: commanController.addMode.value == 1 ? true : false,
           child: FloatingActionButton.extended(
             onPressed: (){
-              advanceReqVoucherController_new.entrycheck =0;
-              advanceReqVoucherController_new.editcheck =0;
-              Navigator.push(context, MaterialPageRoute(builder: (context) => AdvReq_voucher_New()));
+              advanceReqVoucherController_new.saveButton.value = RequestConstant.SUBMIT;
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AdvReq_voucher_New(heading: widget.heading,)));
             },
             label: Text("Add", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,),),
             icon: Icon(Icons.add, color: Colors.white, size: RequestConstant.Heading_Font_SIZE, ),
@@ -67,11 +62,13 @@ class _AdvReq_Voucher_EntryList_newState extends State<AdvReq_Voucher_EntryList_
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Advance Requisition Voucher",
-                      style: TextStyle(
-                          fontSize: RequestConstant.Heading_Font_SIZE,
-                          fontWeight: FontWeight.bold),
+                    Expanded(
+                      child: Text(
+                        widget.heading,
+                        style: TextStyle(
+                            fontSize: RequestConstant.Heading_Font_SIZE,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
                     TextButton(
                         onPressed: () {
@@ -233,6 +230,7 @@ class _AdvReq_Voucher_EntryList_newState extends State<AdvReq_Voucher_EntryList_
                               primary: Theme.of(context).primaryColor),
                           onPressed: () async {
                             setState(() {
+                              editingController.text = "";
                               advanceReqVoucherController_new.getEntryList();
                             });
                           },
@@ -284,7 +282,7 @@ class _AdvReq_Voucher_EntryList_newState extends State<AdvReq_Voucher_EntryList_
                           textInputAction: TextInputAction.search,
                           onChanged: (value) {
                             setState(() {
-                              // dailyWrkDone_DPR_Controller.searchentryList.value= BaseUtitiles.filterSearchResults_dprlist(value,dailyWrkDone_DPR_Controller.dpr_entryList);
+                              advanceReqVoucherController_new.entryList.value= BaseUtitiles.filterSearchResults_AdvReqVoclist(value,advanceReqVoucherController_new.mainlist);
                             });
                           },
                         ),
@@ -309,7 +307,7 @@ class _AdvReq_Voucher_EntryList_newState extends State<AdvReq_Voucher_EntryList_
       child: Obx(
             () => ListView.builder(
             shrinkWrap: true,
-            padding: EdgeInsets.zero,
+            padding: EdgeInsets.only(bottom: BaseUtitiles.getheightofPercentage(context, 10)),
             physics: BouncingScrollPhysics(),
             itemCount: advanceReqVoucherController_new.entryList.value.length,
             itemBuilder: (context, index) {
@@ -342,7 +340,7 @@ class _AdvReq_Voucher_EntryList_newState extends State<AdvReq_Voucher_EntryList_
                                           child: ConstIcons.list_date),
                                       Text(
                                         advanceReqVoucherController_new
-                                            .entryList.value[index].vocDate
+                                            .entryList.value[index].advanceReqVoucherDate
                                             .toString(),
                                         style: TextStyle(
                                             color: Theme.of(context).primaryColor,
@@ -356,7 +354,7 @@ class _AdvReq_Voucher_EntryList_newState extends State<AdvReq_Voucher_EntryList_
                             Container(
                               margin: EdgeInsets.only(right: 10),
                               child: Text(
-                                advanceReqVoucherController_new.entryList.value[index].vocNo.toString(),
+                                advanceReqVoucherController_new.entryList.value[index].advanceReqVoucherNo.toString(),
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                             )
@@ -381,7 +379,7 @@ class _AdvReq_Voucher_EntryList_newState extends State<AdvReq_Voucher_EntryList_
                                 flex: 8,
                                 child: Text(
                                   advanceReqVoucherController_new
-                                      .entryList.value[index].project
+                                      .entryList.value[index].projectName
                                       .toString(),
                                   style: TextStyle(
                                     color: Colors.black,
@@ -407,9 +405,7 @@ class _AdvReq_Voucher_EntryList_newState extends State<AdvReq_Voucher_EntryList_
                             Expanded(
                                 flex: 8,
                                 child: Text(
-                                  advanceReqVoucherController_new
-                                      .entryList.value[index].accName
-                                      .toString(),
+                                  advanceReqVoucherController_new.entryList.value[index].accountName==null?"-":advanceReqVoucherController_new.entryList.value[index].accountName,
                                   style: TextStyle(
 
                                     color: Colors.black,
@@ -436,7 +432,7 @@ class _AdvReq_Voucher_EntryList_newState extends State<AdvReq_Voucher_EntryList_
                                 flex: 8,
                                 child: Text(
                                   advanceReqVoucherController_new
-                                      .entryList.value[index].vocAmt
+                                      .entryList.value[index].actualVoucherAmount
                                       .toString(),
                                   style: TextStyle(
                                     color: Colors.black,
@@ -462,7 +458,7 @@ class _AdvReq_Voucher_EntryList_newState extends State<AdvReq_Voucher_EntryList_
                             Expanded(
                                 flex: 8,
                                 child: Text(
-                                  advanceReqVoucherController_new.entryList.value[index].payFor.toString(),
+                                  advanceReqVoucherController_new.entryList.value[index].accountPayForName.toString(),
                                   style: TextStyle(
                                     color: Colors.black,
                                   ),
@@ -488,16 +484,12 @@ class _AdvReq_Voucher_EntryList_newState extends State<AdvReq_Voucher_EntryList_
                                 flex: 4,
                                 child: Text(
                                   advanceReqVoucherController_new.entryList.value[index].status.toString(),
-                                  style: TextStyle(color: advanceReqVoucherController_new.entryList.value[index].status == "APPROVED"?Colors.green:Colors.black),
+                                  style: TextStyle(color: advanceReqVoucherController_new.entryList.value[index].status == "Approved"?Colors.green:Colors.black),
                                 )),
                             Expanded(
                                 flex: 1,
                                 child: IconButton(
                                     onPressed: () {
-                                      if(advanceReqVoucherController_new.entryList.value[index].status == "APPROVED"){
-                                        Fluttertoast.showToast(msg: "Approved list can't be edit and delete");
-                                      }
-                                      else{
                                         showModalBottomSheet(
                                             context: context,
                                             shape: RoundedRectangleBorder(
@@ -506,119 +498,114 @@ class _AdvReq_Voucher_EntryList_newState extends State<AdvReq_Voucher_EntryList_
                                                   top: Radius.circular(25.0)),
                                             ),
                                             builder: (context) {
-                                              return Container(
-                                                margin: EdgeInsets.only(left: 15,),
-                                                height: BaseUtitiles.getheightofPercentage(context, 25),
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        Container(
-                                                          margin: EdgeInsets.only(right: 10),
-                                                          child: Text(
-                                                            advanceReqVoucherController_new.entryList.value[index].project.toString(),
-                                                            style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
+                                              return SafeArea(
+                                                top: false,
+                                                child: Container(
+                                                  margin: EdgeInsets.only(left: 15,),
+                                                  height: BaseUtitiles.getheightofPercentage(context, 25),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Container(
+                                                            margin: EdgeInsets.only(right: 10),
+                                                            child: Text(
+                                                              advanceReqVoucherController_new.entryList.value[index].projectName.toString(),
+                                                              style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
+                                                            ),
                                                           ),
-                                                        ),
-                                                        IconButton(
-                                                          onPressed: () {
-                                                            Navigator.pop(context);
-                                                          },
-                                                          icon:  ConstIcons.cancle,)
-                                                      ],
-                                                    ),
-                                                    Visibility(
-                                                      visible: commanController.editMode.value == 1 ? true : false,
-                                                      child: InkWell(
-                                                          child: Row(
-                                                            children: [
-                                                              Card(
-                                                                color: Colors
-                                                                    .lightGreen,
-                                                                child: Padding(
-                                                                  padding:
-                                                                  const EdgeInsets
-                                                                      .all(8),
-                                                                  child: Icon(
-                                                                    Icons.edit,
-                                                                    color: Colors
-                                                                        .white,
+                                                          IconButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(context);
+                                                            },
+                                                            icon:  ConstIcons.cancle,)
+                                                        ],
+                                                      ),
+                                                      Visibility(
+                                                        visible: commanController.editMode.value == 1 ? true : false,
+                                                        child: InkWell(
+                                                            child: Row(
+                                                              children: [
+                                                                Card(
+                                                                  color: Colors
+                                                                      .lightGreen,
+                                                                  child: Padding(
+                                                                    padding:
+                                                                    const EdgeInsets
+                                                                        .all(8),
+                                                                    child: Icon(
+                                                                      Icons.edit,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
                                                                   ),
                                                                 ),
-                                                              ),
-                                                              SizedBox(width: 5),
-                                                              Text(
-                                                                "Edit",
-                                                                style: TextStyle(
-                                                                    color:
-                                                                    Colors.grey,
-                                                                    fontSize: 15),
-                                                              )
-                                                            ],
-                                                          ),
-                                                          onTap: () async {
-                                                              advanceReqVoucherController_new.editcheck=1;
-                                                              advanceReqVoucherController_new.editListApiDatas.value.clear();
-                                                              advanceReqVoucherController_new.delete_ListTable();
-                                                              advanceReqVoucherController_new.GetTableList.value.clear();
-                                                              advanceReqVoucherController_new.getDetList_Advance.clear();
-                                                              advanceReqVoucherController_new.itemlistTable_Delete();
-                                                              advanceReqVoucherController_new.ItemGetTableListdata.clear();
-                                                              advanceReqVoucherController_new.getDetList_NMR.clear();
-                                                              FocusScope.of(context).unfocus();
-                                                             await advanceReqVoucherController_new.EntryList_EditApi(
-                                                                  advanceReqVoucherController_new.entryList.value[index].vocId,
-                                                                  advanceReqVoucherController_new.entryList.value[index].acctypeid,
-                                                                  advanceReqVoucherController_new.entryList.value[index].accnameid,
-                                                                  advanceReqVoucherController_new.entryList.value[index].projectId,
-                                                                  context);
-                                                          }),
-                                                    ),
-                                                    Container(
-                                                        margin: EdgeInsets.only(right: 20),
-                                                        child: Divider(thickness: 1)),
-                                                    Visibility(
-                                                      visible: commanController.deleteMode.value == 1 ? true : false,
-                                                      child: InkWell(
-                                                          child: Row(
-                                                            children: [
-                                                              Card(
-                                                                color: Colors.red,
-                                                                child: Padding(
-                                                                  padding:
-                                                                  const EdgeInsets
-                                                                      .all(8),
-                                                                  child: Icon(
-                                                                    Icons
-                                                                        .delete_forever,
-                                                                    color: Colors
-                                                                        .white,
+                                                                SizedBox(width: 5),
+                                                                Text(
+                                                                  "Edit",
+                                                                  style: TextStyle(
+                                                                      color:
+                                                                      Colors.grey,
+                                                                      fontSize: 15),
+                                                                )
+                                                              ],
+                                                            ),
+                                                            onTap: () async {
+                                                                advanceReqVoucherController_new.delete_ListTable();
+                                                                advanceReqVoucherController_new.GetTableList.value=[];
+                                                                advanceReqVoucherController_new.itemlistTable_Delete();
+                                                                advanceReqVoucherController_new.ItemGetTableListdata.clear();
+                                                                FocusScope.of(context).unfocus();
+                                                                await advanceReqVoucherController_new.EntryList_EditApi("edit",
+                                                                    advanceReqVoucherController_new.entryList.value[index].id, true,
+                                                                    widget.heading,context);
+                                                            }),
+                                                      ),
+                                                      Container(
+                                                          margin: EdgeInsets.only(right: 20),
+                                                          child: Divider(thickness: 1)),
+                                                      Visibility(
+                                                        visible: commanController.deleteMode.value == 1 ? true : false,
+                                                        child: InkWell(
+                                                            child: Row(
+                                                              children: [
+                                                                Card(
+                                                                  color: Colors.red,
+                                                                  child: Padding(
+                                                                    padding:
+                                                                    const EdgeInsets
+                                                                        .all(8),
+                                                                    child: Icon(
+                                                                      Icons
+                                                                          .delete_forever,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
                                                                   ),
                                                                 ),
-                                                              ),
-                                                              SizedBox(width: 5),
-                                                              Text(
-                                                                "Delete",
-                                                                style: TextStyle(
-                                                                    color:
-                                                                    Colors.grey,
-                                                                    fontSize: 15),
-                                                              )
-                                                            ],
-                                                          ),
-                                                          onTap: () async {
-                                                            Navigator.pop(context);
-                                                            advanceReqVoucherController_new.DeleteAlert(context, index);
-                                                          }),
-                                                    ),
-                                                    SizedBox(height: 20,)
-                                                  ],
+                                                                SizedBox(width: 5),
+                                                                Text(
+                                                                  "Delete",
+                                                                  style: TextStyle(
+                                                                      color:
+                                                                      Colors.grey,
+                                                                      fontSize: 15),
+                                                                )
+                                                              ],
+                                                            ),
+                                                            onTap: () async {
+                                                              Navigator.pop(context);
+                                                              advanceReqVoucherController_new.DeleteAlert(context, index);
+                                                            }),
+                                                      ),
+                                                      SizedBox(height: 20,)
+                                                    ],
+                                                  ),
                                                 ),
                                               );
                                             });
-                                      }
                                     },
                                     icon: Icon(
                                       Icons.arrow_drop_down_circle_outlined,

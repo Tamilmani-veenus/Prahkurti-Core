@@ -15,7 +15,8 @@ import '../../../utilities/requestconstant.dart';
 import 'mrnfinal_itemlist.dart';
 
 class MrnfinalEntryScreen extends StatefulWidget {
-  const MrnfinalEntryScreen({Key? key}) : super(key: key);
+  final String heading;
+  const MrnfinalEntryScreen({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<MrnfinalEntryScreen> createState() => _MrnfinalEntryScreenState();
@@ -117,11 +118,13 @@ class _MrnfinalEntryScreenState extends State<MrnfinalEntryScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "MRN Final Approval",
-                            style: TextStyle(
-                                fontSize: RequestConstant.Heading_Font_SIZE,
-                                fontWeight: FontWeight.bold),
+                          Expanded(
+                            child: Text(
+                              widget.heading,
+                              style: TextStyle(
+                                  fontSize: RequestConstant.Heading_Font_SIZE,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                           TextButton(
                             onPressed: () {
@@ -355,7 +358,7 @@ class _MrnfinalEntryScreenState extends State<MrnfinalEntryScreen> {
                             ),
                             validator: (value) {
                               if (value!.isEmpty || value == "--Select--") {
-                                return '\u26A0 Please select project name.';
+                                return '\u26A0 Required.';
                               }
                               return null;
                             },
@@ -411,7 +414,7 @@ class _MrnfinalEntryScreenState extends State<MrnfinalEntryScreen> {
                             },
                             validator: (value) {
                               if (value!.isEmpty || value == "--Select--") {
-                                return '\u26A0 Please select project name.';
+                                return '\u26A0 Required.';
                               }
                               return null;
                             },
@@ -459,7 +462,7 @@ class _MrnfinalEntryScreenState extends State<MrnfinalEntryScreen> {
                             },
                             validator: (value) {
                               if (value!.isEmpty || value == "--Select--") {
-                                return '\u26A0 Please select site name';
+                                return '\u26A0 Required';
                               }
                               return null;
                             },
@@ -570,7 +573,8 @@ class _MrnfinalEntryScreenState extends State<MrnfinalEntryScreen> {
                       ),
                     ),
 
-                    if (mrn_request_controller.checkApprovalLevelData.isNotEmpty && (mrn_request_controller.checkApprovalLevelData[0]["isVerification"] ?? false)) Container(
+                    if (mrn_request_controller.checkApprovalLevelData.isNotEmpty && (mrn_request_controller.checkApprovalLevelData[0]["isVerification"] ?? false))
+                      Container(
                       margin: EdgeInsets.only(top: 5, left: 10, right: 10),
                       child: Card(
                         shape: RoundedRectangleBorder(
@@ -727,32 +731,19 @@ class _MrnfinalEntryScreenState extends State<MrnfinalEntryScreen> {
                     width: BaseUtitiles.getheightofPercentage(context, 15),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: mrnFinalApprovalController.checkColor == 0
-                          ? Theme.of(context).primaryColor
-                          : Colors.white,
+                      color: Theme.of(context).primaryColor
                     ),
                     alignment: Alignment.center,
                     child: Text( "Next",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: RequestConstant.Lable_Font_SIZE,
-                          color: mrnFinalApprovalController.checkColor == 0
-                              ? Colors.white
-                              : Theme.of(context).primaryColor),
+                          color: Colors.white
+                             ),
                     ),
                   ),
                   onTap: () {
-                    mrnFinalApprovalController.checkColor = 0;
                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => MrnfinalItemList()));
-                    // if(mrn_request_controller.Material_itemview_GetDbList.value.length < 1){
-                    //   BaseUtitiles.showToast("Plese select item list");
-                    // }
-                    // else if (_formKey.currentState!.validate()) {
-                    //   SubmitAlert(context);
-                    // }
-                    // else {
-                    //
-                    // }
                   },
                 ),
               ],
@@ -815,7 +806,6 @@ class _MrnfinalEntryScreenState extends State<MrnfinalEntryScreen> {
                             mrnFinalApprovalController.projectId[i].text="0";
                             i++;
                           });
-                          mrnFinalApprovalController.entrycheck=1;
                           Navigator.pop(context);
                         },
                         child: Text("Reset", style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE))),

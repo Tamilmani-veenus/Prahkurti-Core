@@ -30,18 +30,6 @@ class SupplierController extends GetxController {
   LoginController loginController = Get.put(LoginController());
 
 
-  Future getSupplierList(BuildContext context) async {
-    supplierListDropdown.value = await CommonProvider.getSupplierDropdown();
-    supplierListDropdown.value.forEach((element) {
-      return supplierDropdownName.value.add(element.supplierName);
-    });
-    // showDialog(
-    //     context: context,
-    //     builder: (BuildContext context) {
-    //       return SupplierShowPopup(list:supplierListDropdown.value);
-    //     });
-  }
-
   setSelectSupplierID(String value) {
     if (supplierListDropdown.value.length > 0) {
       supplierListDropdown.forEach((element) {
@@ -66,7 +54,7 @@ class SupplierController extends GetxController {
 
   Future getInwardtList() async {
     getSupplierListData.value.clear();
-    final value = await ReportsProvider.getInward_Report_List(reportsController.selectedProjectId.value,reportsController.selectedsiteId.value,reportsController.selectedsuppliertId.value,FromdateController.text,TodateController.text);
+    final value = await ReportsProvider.getInward_Report_List(reportsController.selectedProjectId.value,reportsController.selectedsiteId.value,reportsController.selectedsuppliertId.value,FromdateController.text,TodateController.text,reportsController.materialDropdowntId.value);
     if (value != null) {
       if(value.success == true){
         if(value.result!.isNotEmpty) {

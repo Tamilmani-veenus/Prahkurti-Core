@@ -1,5 +1,6 @@
 class AdvReqVoucher_SiteWisePayment_TableModel{
   int? purOrdMasId;
+  int? reqDetId;
   String? orderNo;
   String? project;
   int? projectId;
@@ -14,6 +15,7 @@ class AdvReqVoucher_SiteWisePayment_TableModel{
   AdvReqVoucher_SiteWisePayment_TableMap() {
     var mapping = Map<String, dynamic>();
     mapping['PurOrdMasId'] = purOrdMasId != null ? purOrdMasId : null;
+    mapping['reqDetId'] = reqDetId != null ? reqDetId : null;
     mapping['OrderNo'] = orderNo != null ? orderNo : null;
     mapping['Project'] = project != null ? project : null;
     mapping['ProjectId'] = projectId != null ? projectId : null;

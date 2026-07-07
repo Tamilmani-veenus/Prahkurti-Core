@@ -1,5 +1,9 @@
+import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../../../app_theme/app_colors.dart';
 import '../../../../controller/inward_pending_controller.dart';
 import '../../../../controller/projectcontroller.dart';
@@ -13,7 +17,8 @@ import '../../../punch_in_out/Image_galleryScreen.dart';
 import '../../../punch_in_out/camera_screen.dart';
 
 class Inward_Itemlist extends StatefulWidget {
-  const Inward_Itemlist({Key? key}) : super(key: key);
+  final String heading;
+  const Inward_Itemlist({Key? key, required this.heading}) : super(key: key);
 
   @override
   State<Inward_Itemlist> createState() => _Subcont_Nmr_EntryScreenState_Site();
@@ -177,6 +182,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                                     isResubmit
                                         ? inwardPendingcontroller.inwardID
                                         : 0,
+                                      widget.heading
                                   );
                                 }
                             },
@@ -217,345 +223,348 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
   }
 
   Widget listDetails() {
-    return Column(
-      children: <Widget>[
-        Container(
-          padding: EdgeInsets.only(right: 5),
-          height: BaseUtitiles.getheightofPercentage(context, 57),
-          child: Obx(
-            () => Scrollbar(
-              controller: _scrollController,
-              thumbVisibility: true,
-              trackVisibility: true,
-              thickness: 6, // reduce the thickness to make thumb smaller
-              radius: Radius.circular(5),
-              child: ListView.builder(
-                controller: _scrollController,
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                physics: const ScrollPhysics(),
-                itemCount: inwardPendingcontroller.ItemGetTableListdata.length,
-                itemBuilder: (BuildContext context, int index) {
-                  inwardPendingcontroller.itemlist_textControllersInitiate();
-                  return Container(
-                    margin:
-                        const EdgeInsets.only(left: 15, right: 15, bottom: 10),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10)),
-                          margin: const EdgeInsets.only(left: 3, right: 3),
-                          child: Column(
-                            children: <Widget>[
-                              Container(
-                                margin: const EdgeInsets.only(left: 4),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    SizedBox(
-                                      width: BaseUtitiles.getWidthtofPercentage(
-                                          context, 66),
-                                      child: Text(
-                                        "${inwardPendingcontroller.ItemGetTableListdata[index].materialName} (${inwardPendingcontroller.ItemGetTableListdata[index].unit})",
-                                        style: TextStyle(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
+    return Container(
+      padding: EdgeInsets.only(right: 5),
+      height: BaseUtitiles.getheightofPercentage(context, 52),
+      child: Obx(
+        () => Scrollbar(
+          controller: _scrollController,
+          thumbVisibility: true,
+          trackVisibility: true,
+          thickness: 6, // reduce the thickness to make thumb smaller
+          radius: Radius.circular(5),
+          child: ListView.builder(
+            controller: _scrollController,
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            physics: const ScrollPhysics(),
+            itemCount: inwardPendingcontroller.ItemGetTableListdata.length,
+            itemBuilder: (BuildContext context, int index) {
+              inwardPendingcontroller.itemlist_textControllersInitiate();
+              return Container(
+                margin:
+                    const EdgeInsets.only(left: 15, right: 15, bottom: 10),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 10),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10)),
+                      margin: const EdgeInsets.only(left: 3, right: 3),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            margin: const EdgeInsets.only(left: 4),
+                            child: Row(
+                              mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                SizedBox(
+                                  width: BaseUtitiles.getWidthtofPercentage(
+                                      context, 66),
+                                  child: Text(
+                                    "${inwardPendingcontroller.ItemGetTableListdata[index].materialName} (${inwardPendingcontroller.ItemGetTableListdata[index].unit})",
+                                    style: TextStyle(
+                                        color:
+                                            Theme.of(context).primaryColor,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
 
-                                    // Checkbox(
-                                    //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2.0),),
-                                    //     side: MaterialStateBorderSide.resolveWith(
-                                    //           (states) => BorderSide(
-                                    //         width: 1.0,
-                                    //         // color: Colors.white
-                                    //         color: Theme.of(context).primaryColor,
-                                    //       ),
-                                    //     ),
-                                    //     checkColor: Colors.white,
-                                    //     activeColor: Theme.of(context).primaryColor,
-                                    //     value: inwardPendingcontroller.ischecked![index],
-                                    //     onChanged: (val) {
-                                    //       setState(() {
-                                    //
-                                    //         if(double.parse(inwardPendingcontroller.Itemlist_Qty_PlusListController[index].text) > 0.0 ){
-                                    //
-                                    //         }else{
-                                    //           inwardPendingcontroller.ischecked![index] = val!;
-                                    //           inwardPendingcontroller.updateItemlistTable();
-                                    //         }
-                                    //
-                                    //       });
-                                    //     }),
-                                    // ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(
-                                    left: 4, right: 4, bottom: 4),
-                                child: Row(
-                                  children: <Widget>[
-                                    const Expanded(
-                                        flex: 5,
-                                        child: Text(
-                                          "PO Qty",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        )),
-                                    Expanded(
-                                        flex: 5,
-                                        child: Text(
-                                          inwardPendingcontroller
-                                              .ItemGetTableListdata[index].poQty
-                                              .toString(),
-                                        )),
-                                    const Expanded(
-                                        flex: 5,
-                                        child: Text(
-                                          "Bal Qty",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        )),
-                                    Expanded(
-                                        flex: 5,
-                                        child: Center(
-                                            child: Text(
-                                          inwardPendingcontroller
-                                              .ItemGetTableListdata[index]
-                                              .balQty
-                                              .toString(),
-                                        ))),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(
-                                    left: 4, right: 4, bottom: 5),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    const Expanded(
-                                        flex: 5,
-                                        child: Text(
-                                          "Rate",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        )),
-                                    Expanded(
-                                        flex: 5,
-                                        child: Text(
-                                          inwardPendingcontroller
-                                              .ItemGetTableListdata[index].rate
-                                              .toString(),
-                                        )),
-                                    const Expanded(
-                                        flex: 5,
-                                        child: Text(
-                                          "Inward Qty",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        )),
-                                    Expanded(
-                                        flex: 5,
-                                        child: Container(
-                                          margin:
-                                              const EdgeInsets.only(right: 11),
-                                          height: BaseUtitiles
-                                              .getheightofPercentage(
-                                                  context, 4),
-                                          child: TextFormField(
-                                            onTap: () {
-                                              if (inwardPendingcontroller
-                                                          .Itemlist_Inward_QtyListController[
-                                                              index]
-                                                          .text !=
-                                                      "" &&
-                                                  inwardPendingcontroller
-                                                          .Itemlist_Inward_QtyListController[
-                                                              index]
-                                                          .text !=
-                                                      "0" &&
-                                                  inwardPendingcontroller
-                                                          .Itemlist_Inward_QtyListController[
-                                                              index]
-                                                          .text !=
-                                                      "0.0") {
-                                                return;
-                                              } else {
-                                                inwardPendingcontroller
-                                                    .Itemlist_Inward_QtyListController[
-                                                        index]
-                                                    .text = "";
-                                              }
-                                            },
-                                            cursorColor:
-                                                Theme.of(context).primaryColor,
-                                            textAlign: TextAlign.center,
-                                            controller: inwardPendingcontroller
-                                                    .Itemlist_Inward_QtyListController[
-                                                index],
-                                            keyboardType:
-                                                TextInputType.numberWithOptions(
-                                                    decimal: true),
-                                            decoration: InputDecoration(
-                                              contentPadding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      8.0, 0.0, 8.0, 0.0),
-                                              focusedBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Theme.of(context)
-                                                          .primaryColor),
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(10))),
-                                              enabledBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Theme.of(context)
-                                                          .primaryColor),
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(10))),
-                                            ),
-                                            onChanged: (value) {
-                                              setState(() {
-                                                inwardPendingcontroller.editClick(
-                                                    inwardPendingcontroller
-                                                        .ItemGetTableListdata[
-                                                            index]
-                                                        .id);
-                                                // inwardPendingcontroller.updateItemlistTable();
-                                              });
-                                            },
-                                          ),
-                                        ))
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(
-                                    left: 4, right: 4, bottom: 10),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    const Expanded(
-                                        flex: 5,
-                                        child: Text(
-                                          "Qty ++",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        )),
-                                    Expanded(
-                                        flex: 6,
-                                        child: Container(
-                                          margin:
-                                              const EdgeInsets.only(right: 11),
-                                          height: BaseUtitiles
-                                              .getheightofPercentage(
-                                                  context, 4),
-                                          child: TextField(
-                                            readOnly: true,
-                                            cursorColor:
-                                                Theme.of(context).primaryColor,
-                                            textAlign: TextAlign.center,
-                                            controller: inwardPendingcontroller
-                                                    .Itemlist_Qty_PlusListController[
-                                                index],
-                                            keyboardType: TextInputType.number,
-                                            decoration: InputDecoration(
-                                              contentPadding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      8.0, 0.0, 8.0, 0.0),
-                                              focusedBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Theme.of(context)
-                                                          .primaryColor),
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(10))),
-                                              enabledBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Theme.of(context)
-                                                          .primaryColor),
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(10))),
-                                            ),
-                                            onChanged: (value) {},
-                                          ),
-                                        )),
-                                    const Expanded(
-                                        flex: 5,
-                                        child: Text(
-                                          "Qty --",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        )),
-                                    Expanded(
-                                        flex: 6,
-                                        child: Container(
-                                          margin: const EdgeInsets.only(
-                                              right: 11, left: 8),
-                                          height: BaseUtitiles
-                                              .getheightofPercentage(
-                                                  context, 4),
-                                          child: TextField(
-                                            readOnly: true,
-                                            cursorColor:
-                                                Theme.of(context).primaryColor,
-                                            textAlign: TextAlign.center,
-                                            controller: inwardPendingcontroller
-                                                    .Itemlist_Qty_MinusListController[
-                                                index],
-                                            keyboardType: TextInputType.number,
-                                            decoration: InputDecoration(
-                                              contentPadding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      8.0, 0.0, 8.0, 0.0),
-                                              focusedBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Theme.of(context)
-                                                          .primaryColor),
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(10))),
-                                              enabledBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Theme.of(context)
-                                                          .primaryColor),
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(10))),
-                                            ),
-                                            onChanged: (value) {},
-                                          ),
-                                        )),
-                                  ],
-                                ),
-                              ),
-                            ],
+                                // Checkbox(
+                                //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2.0),),
+                                //     side: MaterialStateBorderSide.resolveWith(
+                                //           (states) => BorderSide(
+                                //         width: 1.0,
+                                //         // color: Colors.white
+                                //         color: Theme.of(context).primaryColor,
+                                //       ),
+                                //     ),
+                                //     checkColor: Colors.white,
+                                //     activeColor: Theme.of(context).primaryColor,
+                                //     value: inwardPendingcontroller.ischecked![index],
+                                //     onChanged: (val) {
+                                //       setState(() {
+                                //
+                                //         if(double.parse(inwardPendingcontroller.Itemlist_Qty_PlusListController[index].text) > 0.0 ){
+                                //
+                                //         }else{
+                                //           inwardPendingcontroller.ischecked![index] = val!;
+                                //           inwardPendingcontroller.updateItemlistTable();
+                                //         }
+                                //
+                                //       });
+                                //     }),
+                                // ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(
+                                left: 4, right: 4, bottom: 4),
+                            child: Row(
+                              children: <Widget>[
+                                const Expanded(
+                                    flex: 5,
+                                    child: Text(
+                                      "PO Qty",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    )),
+                                Expanded(
+                                    flex: 5,
+                                    child: Text(
+                                      inwardPendingcontroller
+                                          .ItemGetTableListdata[index].poQty
+                                          .toString(),
+                                    )),
+                                const Expanded(
+                                    flex: 5,
+                                    child: Text(
+                                      "Bal Qty",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    )),
+                                Expanded(
+                                    flex: 5,
+                                    child: Center(
+                                        child: Text(
+                                      inwardPendingcontroller
+                                          .ItemGetTableListdata[index]
+                                          .balQty
+                                          .toString(),
+                                    ))),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(
+                                left: 4, right: 4, bottom: 5),
+                            child: Row(
+                              mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                const Expanded(
+                                    flex: 5,
+                                    child: Text(
+                                      "Rate",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    )),
+                                Expanded(
+                                    flex: 5,
+                                    child: Text(
+                                      inwardPendingcontroller
+                                          .ItemGetTableListdata[index].rate
+                                          .toString(),
+                                    )),
+                                const Expanded(
+                                    flex: 5,
+                                    child: Text(
+                                      "Inward Qty",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    )),
+                                Expanded(
+                                    flex: 5,
+                                    child: Container(
+                                      margin:
+                                          const EdgeInsets.only(right: 11),
+                                      height: BaseUtitiles
+                                          .getheightofPercentage(
+                                              context, 4),
+                                      child: TextFormField(
+                                        onTap: () {
+                                          if (inwardPendingcontroller
+                                                      .Itemlist_Inward_QtyListController[
+                                                          index]
+                                                      .text !=
+                                                  "" &&
+                                              inwardPendingcontroller
+                                                      .Itemlist_Inward_QtyListController[
+                                                          index]
+                                                      .text !=
+                                                  "0" &&
+                                              inwardPendingcontroller
+                                                      .Itemlist_Inward_QtyListController[
+                                                          index]
+                                                      .text !=
+                                                  "0.0") {
+                                            return;
+                                          } else {
+                                            inwardPendingcontroller
+                                                .Itemlist_Inward_QtyListController[
+                                                    index]
+                                                .text = "";
+                                          }
+                                        },
+                                        cursorColor:
+                                            Theme.of(context).primaryColor,
+                                        textAlign: TextAlign.center,
+                                        controller: inwardPendingcontroller
+                                                .Itemlist_Inward_QtyListController[
+                                            index],
+                                        keyboardType:
+                                            TextInputType.numberWithOptions(
+                                                decimal: true),
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.fromLTRB(
+                                                  8.0, 0.0, 8.0, 0.0),
+                                          focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(10))),
+                                          enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(10))),
+                                        ),
+                                        onChanged: (value) {
+                                            inwardPendingcontroller.editClick(
+                                                inwardPendingcontroller
+                                                    .ItemGetTableListdata[
+                                                        index]
+                                                    .id);
+                                        },
+                                      ),
+                                    ))
+                              ],
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(
+                                left: 4, right: 4, bottom: 10),
+                            child: Row(
+                              mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                const Expanded(
+                                    flex: 5,
+                                    child: Text(
+                                      "Qty ++",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    )),
+                                Expanded(
+                                    flex: 6,
+                                    child: Container(
+                                      margin:
+                                          const EdgeInsets.only(right: 11),
+                                      height: BaseUtitiles
+                                          .getheightofPercentage(
+                                              context, 4),
+                                      child: TextField(
+                                        readOnly: true,
+                                        cursorColor:
+                                            Theme.of(context).primaryColor,
+                                        textAlign: TextAlign.center,
+                                        controller: inwardPendingcontroller
+                                                .Itemlist_Qty_PlusListController[
+                                            index],
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp(r'^\d+\.?\d{0,2}'),
+                                          ),
+                                        ],
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.fromLTRB(
+                                                  8.0, 0.0, 8.0, 0.0),
+                                          focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(10))),
+                                          enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(10))),
+                                        ),
+                                        onChanged: (value) {},
+                                      ),
+                                    )),
+                                const Expanded(
+                                    flex: 5,
+                                    child: Text(
+                                      "Qty --",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    )),
+                                Expanded(
+                                    flex: 6,
+                                    child: Container(
+                                      margin: const EdgeInsets.only(
+                                          right: 11, left: 8),
+                                      height: BaseUtitiles
+                                          .getheightofPercentage(
+                                              context, 4),
+                                      child: TextField(
+                                        readOnly: true,
+                                        cursorColor:
+                                            Theme.of(context).primaryColor,
+                                        textAlign: TextAlign.center,
+                                        controller: inwardPendingcontroller
+                                                .Itemlist_Qty_MinusListController[
+                                            index],
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp(r'^\d+\.?\d{0,2}'),
+                                          ),
+                                        ],
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.fromLTRB(
+                                                  8.0, 0.0, 8.0, 0.0),
+                                          focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(10))),
+                                          enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(10))),
+                                        ),
+                                        onChanged: (value) {},
+                                      ),
+                                    )),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  );
-                },
-              ),
-            ),
+                  ],
+                ),
+              );
+            },
           ),
         ),
-      ],
+      ),
     );
   }
 
@@ -564,6 +573,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
       height: 200.h,
       width: ScreenUtil().screenWidth,
       child: Obx(
+
         () => ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: inwardPendingcontroller.count.value + 1,
@@ -632,7 +642,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                     ],
                   ),
                 );
-              } else if (inwardPendingcontroller.count! == 0) {
+              } else if (inwardPendingcontroller.count.value! == 0) {
                 return InkWell(
                   child: Padding(
                     padding: EdgeInsets.only(bottom: 16.r, left: 100.r),
@@ -677,7 +687,6 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                       //         builder: (_) => CameraCapturePage(
                       //               fromScreen: "InwardAddButton",
                       //             )));
-                      // await getImage(ImageSource.camera);
                     },
                     child: CircleAvatar(
                       radius: 25,
@@ -907,18 +916,17 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
       padding: EdgeInsets.only(left: 16.4, bottom: 24.r),
       child: GestureDetector(
         onTap: () async {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return const ImageGalleryPopup_Alert(imageUrl: "InwardButton");
-            });
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return const ImageGalleryPopup_Alert(imageUrl: "InwardButton");
+              });
           // Navigator.push(
           //     context,
           //     MaterialPageRoute(
           //         builder: (_) => CameraCapturePage(
           //               fromScreen: "InwardAddButton",
           //             )));
-          // await getImage(ImageSource.camera);
         },
         child: CircleAvatar(
           radius: 25,

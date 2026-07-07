@@ -29,10 +29,10 @@ import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
 
 class CommonProvider {
-  static Future<ProjectDropdownListResponse?> getproject() async {
+  static Future<ProjectDropdownListResponse?> getproject({type,companyId}) async {
     try {
       final response =
-          await ApiManager.getAPICall(ApiConstant.GETPROJECTDROPDOWNLIST);
+          await ApiManager.getAPICall(type=="mrnReqTracker"?ApiConstant.GETPROJECTREPORTLIST+"?CompanyId=$companyId":ApiConstant.GETPROJECTDROPDOWNLIST);
       print("response...${response}");
       return projectDropdownListResponseFromJson(response);
     } catch (error) {
@@ -67,39 +67,39 @@ class CommonProvider {
   }
 
 //-----Project Name Companywise list-----------
-  static Future<List> getproject_Companywise(int compId) async {
-    List responseData = [];
-    await ApiManager.getAPICall(
-            ApiConstant.GETPROJECTCOMPANYWISE_DROPDOWNLIST + "?compId=$compId")
-        .then((value) {
-      responseData = projectnameCompanywiseFromJson(value);
-      if (responseData != null && responseData.length > 0) {
-        return responseData;
-      }
-    }, onError: (error) {
-      print(error);
-      print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return responseData;
-  }
+//   static Future<List> getproject_Companywise(int compId) async {
+//     List responseData = [];
+//     await ApiManager.getAPICall(
+//             ApiConstant.GETPROJECTCOMPANYWISE_DROPDOWNLIST + "?compId=$compId")
+//         .then((value) {
+//       responseData = projectnameCompanywiseFromJson(value);
+//       if (responseData != null && responseData.length > 0) {
+//         return responseData;
+//       }
+//     }, onError: (error) {
+//       print(error);
+//       print("Error == $error");
+//       BaseUtitiles.showToast('Something went wrong..');
+//     });
+//     return responseData;
+//   }
 
-  static Future<List> getHeadName(int pId, int sId) async {
-    List responseData = [];
-    await ApiManager.getAPICall(
-            ApiConstant.GET_HEAD_DROPDOWNLIST + "?PId=$pId&SId=$sId")
-        .then((value) {
-      responseData = headNameResFromJson(value);
-      if (responseData != null && responseData.length > 0) {
-        return responseData;
-      }
-    }, onError: (error) {
-      print(error);
-      print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return responseData;
-  }
+  // static Future<List> getHeadName(int pId, int sId) async {
+  //   List responseData = [];
+  //   await ApiManager.getAPICall(
+  //           ApiConstant.GET_HEAD_DROPDOWNLIST + "?PId=$pId&SId=$sId")
+  //       .then((value) {
+  //     responseData = headNameResFromJson(value);
+  //     if (responseData != null && responseData.length > 0) {
+  //       return responseData;
+  //     }
+  //   }, onError: (error) {
+  //     print(error);
+  //     print("Error == $error");
+  //     BaseUtitiles.showToast('Something went wrong..');
+  //   });
+  //   return responseData;
+  // }
 
   static Future<SubcontractorDropdownList?> getSubcontrator(
       int pid, int sid, checkScreen) async {
@@ -142,20 +142,20 @@ class CommonProvider {
   }
 
 
-  static Future<List> getLabour() async {
-    List responseData = [];
-    await ApiManager.getAPICall(ApiConstant.GETLABOURLIST).then((value) {
-      responseData = getLabourDetailsFromJson(value);
-      if (responseData != null && responseData.length > 0) {
-        return responseData;
-      }
-    }, onError: (error) {
-      print(error);
-      print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return responseData;
-  }
+  // static Future<List> getLabour() async {
+  //   List responseData = [];
+  //   await ApiManager.getAPICall("ApiConstant.GETLABOURLIST").then((value) {
+  //     responseData = getLabourDetailsFromJson(value);
+  //     if (responseData != null && responseData.length > 0) {
+  //       return responseData;
+  //     }
+  //   }, onError: (error) {
+  //     print(error);
+  //     print("Error == $error");
+  //     BaseUtitiles.showToast('Something went wrong..');
+  //   });
+  //   return responseData;
+  // }
 
   static Future<SiteDropdownResponse?> getSiteDropdown(
       int projectId, int? fromSiteId, String type,
@@ -186,47 +186,13 @@ class CommonProvider {
     }
   }
 
-  static Future<List> getSupplierDropdown() async {
-    List responseData = [];
-    await ApiManager.getAPICall(ApiConstant.GETSUPPLIERDROPDOWNAPI).then(
-        (value) {
-      // responseData = supplierDropdownResponseFromJson(value);
-      if (responseData != null && responseData.length > 0) {
-        return responseData;
-      }
-    }, onError: (error) {
-      print(error);
-      print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return responseData;
-  }
-
-  static Future MaterialPost(String Material, String Scale, int Head_Id,
-      int MaterialSubID, String Entry_Date) async {
-    var data = null;
-    await ApiManager.postCall(ApiConstant.POSTMATERIALSAVEAPI +
-            "?Material=$Material&Scale=$Scale&Head_Id=$Head_Id&MaterialSubID=$MaterialSubID&Entry_Date=$Entry_Date")
-        .then((value) {
-      final res = saveDeduction_SaveResponseFromJson(value);
-      if (res.RetString != null) {
-        data = res.RetString;
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return data;
-  }
 
   static Future<List> getCompany(int userId, int i) async {
     List responseData = [];
 
     if (i == 0) {
       await ApiManager.getAPICall(
-              ApiConstant.GETCOMPANYDROPDOWNLIST + "?UserId=$userId")
+              "ApiConstant.GETCOMPANYDROPDOWNLIST" + "?UserId=$userId")
           .then((value) {
         responseData = companyDropdownListResponseFromJson(value);
         if (responseData != null && responseData.length > 0) {
@@ -238,7 +204,7 @@ class CommonProvider {
         BaseUtitiles.showToast('Something went wrong..');
       });
     } else {
-      await ApiManager.getAPICall(ApiConstant.GETCOMPANYALL_DROPDOWNLIST).then(
+      await ApiManager.getAPICall("ApiConstant.GETCOMPANYALL_DROPDOWNLIST").then(
           (value) {
         responseData = companyDropdownListResponseFromJson(value);
         if (responseData != null && responseData.length > 0) {
@@ -256,8 +222,8 @@ class CommonProvider {
   static Future<List> getmaterialsubDropdown(int mhId, reportScreen) async {
     List responseData = [];
     await ApiManager.getAPICall(reportScreen == 0
-            ? ApiConstant.GETMATERIALSUBDRPDOWNLIST
-            : ApiConstant.GETMATERIALSUBMAT_REPORTLIST + '?mhId=$mhId')
+            ? "ApiConstant.GETMATERIALSUBDRPDOWNLIST"
+            : "ApiConstant.GETMATERIALSUBMAT_REPORTLIST" + '?mhId=$mhId')
         .then((value) {
       // responseData = materialSubDropdownResponseFromJson(value);
       if (responseData != null && responseData.length > 0) {
@@ -342,26 +308,6 @@ class CommonProvider {
   //   return responseData;
   // }
 
-  static Future<List> getMaterialDropdown(
-      int subId, int mhId, int reportScreen) async {
-    List responseData = [];
-    await ApiManager.getAPICall(reportScreen == 0
-            ? ApiConstant.GETMATERIALWISEDROPDOWNLIST
-            : ApiConstant.GETMATERIALWISEREPORTLIST +
-                "?MatSubId=$subId&mhId=$mhId")
-        .then((value) {
-      // responseData = materialWiseMaterialDropdownResponseFromJson(value);
-      if (responseData != null && responseData.length > 0) {
-        return responseData;
-      }
-    }, onError: (error) {
-      print(error);
-      print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return responseData;
-  }
-
   static Future<DailyEntrysubcontRightsEntrylistRes?>
       getSubControllerRightsEntryList(int MenuId) async {
     try {
@@ -433,7 +379,7 @@ class CommonProvider {
             "${ApiConstant.GETAUTONO_YEAR_WISE}FieldName=Work_No&TableName=SubCont_dailyWork_Mas&FormName=DPR_New2");
       } else if (Url == "COMPANY NMR") {
         response = await ApiManager.getAPICall(
-            "${ApiConstant.GETAUTONO_YEAR_WISE}?FieldName=NMRLbrAttn_No&TableName=NMRLbr_attend_Mas&FormName=NMR_Labr_Attn");
+            "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=NMRLabourAttendanceNo&tableName=NMRLabourAttendanceMas&formName=NMRLabourAttendance");
       } else if (Url == "BILL BOQ") {
         response = await ApiManager.getAPICall(
             "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=WorkNo&tableName=SubcontractorWorkQtyMas&formName=SubcontractorWorkQtyMasBOQ");
@@ -445,7 +391,7 @@ class CommonProvider {
             "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=Workno&tableName=SubContractorNMRBillMas&formName=SubContractorNMRBillMas");
       } else if (Url == "ADVANCE REQ VOUCHER") {
         response = await ApiManager.getAPICall(
-            "${ApiConstant.GETAUTONO_YEAR_WISE}?FieldName=voc_no&TableName=Ac_advance_req_voucher&FormName=AdvanceRequisitionvoucher");
+            "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=AdvanceReqVoucherno&tableName=AccountAdvanceReqVoucher&formName=AccountAdvanceReqVoucher");
       } else if (Url == "SITE VOUCHER") {
         response = await ApiManager.getAPICall(
             "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=SiteVoucherNo&tableName=AccountSiteVoucher&formName=AccountSiteVoucher");
@@ -467,9 +413,9 @@ class CommonProvider {
     }
   }
 
-  static Future<AccountTypeReponse?> getAccountType() async {
+  static Future<AccountTypeReponse?> getAccountType(type) async {
     try {
-      final value = await ApiManager.getAPICall(ApiConstant.GETACCOUNTTYPEDROPDOWNLIST);
+      final value = await ApiManager.getAPICall(type=="AdvReq"?ApiConstant.GETACCOUNTTYPEDROPDOWNLISTADVREQ:ApiConstant.GETACCOUNTTYPEDROPDOWNLIST);
       return accountTypeReponseFromJson(value);
     } catch (e) {
       print("Error == $e");
@@ -528,6 +474,33 @@ class CommonProvider {
     }
   }
 
+  static Future<bool> Registration_account_deleteAPI(int reqId) async {
+    try {
+      final response = await ApiManager.deleteAPICall(
+          "${ApiConstant.ACCOUNTDELETION}/$reqId");
+
+      final Map<String, dynamic> decoded = jsonDecode(response);
+
+
+      bool isSuccess = decoded["success"] == true;
+
+      final message = decoded["message"] ??
+          (isSuccess
+              ? "Account deleted successfully"
+              : "Something went wrong");
+
+      BaseUtitiles.showToast(message);
+
+      print("DDDDDD...${response}");
+
+      return isSuccess;
+    } catch (error) {
+      print("Delete API Error: $error");
+      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
+      return false;
+    }
+  }
+
   static Future<AccountNameReponse?> getAccountnameDropdown(int AccTypeId) async {
     try {
       final value = await ApiManager.getAPICall(ApiConstant.ACCOUNTNAMEDROPDWONLISTAPI + "?typeId=$AccTypeId");
@@ -540,7 +513,7 @@ class CommonProvider {
 
   static Future<StaffNameResponse?> getStaffDropdown(type) async {
     try {
-      final response = await ApiManager.getAPICall(type=="staffVoucher"?ApiConstant.STAFFVOUSTAFFLISTAPI:type=="punchReport"?ApiConstant.GETPUNCHREPORTSTAFF:ApiConstant.STAFFDROPDWONLISTAPI);
+      final response = await ApiManager.getAPICall(type=="staffVoucher"?ApiConstant.STAFFVOUSTAFFLISTAPI:ApiConstant.STAFFDROPDWONLISTAPI);
       print("response...${response}");
       return staffNameResponseFromJson(response);
     } catch (error) {

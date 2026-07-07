@@ -10,7 +10,8 @@ import '../../../../controller/staffvoucher_controller.dart';
 import '../../../../utilities/baseutitiles.dart';
 
 class Staff_Voucher_EntryListScreen extends StatefulWidget {
-  const Staff_Voucher_EntryListScreen({Key? key}) : super(key: key);
+  final String heading;
+  const Staff_Voucher_EntryListScreen({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<Staff_Voucher_EntryListScreen> createState() =>
@@ -50,7 +51,7 @@ class _Staff_Voucher_EntryListScreenState
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Staff_Voucher_EntryScreen()));
+                      builder: (context) => Staff_Voucher_EntryScreen(heading: widget.heading,)));
             },
             label: Text(
               "Add",
@@ -78,11 +79,13 @@ class _Staff_Voucher_EntryListScreenState
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Staff Voucher",
-                      style: TextStyle(
-                          fontSize: RequestConstant.Heading_Font_SIZE,
-                          fontWeight: FontWeight.bold),
+                    Expanded(
+                      child: Text(
+                        widget.heading,
+                        style: TextStyle(
+                            fontSize: RequestConstant.Heading_Font_SIZE,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
                     TextButton(
                         onPressed: () {
@@ -245,6 +248,7 @@ class _Staff_Voucher_EntryListScreenState
                           style: ElevatedButton.styleFrom(
                               primary: Theme.of(context).primaryColor),
                           onPressed: () async {
+                            editingController.text = "";
                             await  staffVoucher_Controller.getStaffVoc_EntryList();
                           },
                           child: Center(
@@ -294,7 +298,10 @@ class _Staff_Voucher_EntryListScreenState
                           },
                           textInputAction: TextInputAction.search,
                           onChanged: (value) {
-                              staffVoucher_Controller.StaffVocEtyList.value = BaseUtitiles.filterSearchResultsStaffVouchers(value, staffVoucher_Controller.StaffVocEtyList);
+                            setState(() {
+                              staffVoucher_Controller.StaffVocEtyList.value = BaseUtitiles.filterSearchResultsStaffVouchers(value, staffVoucher_Controller.main_entryList);
+
+                            });
                           },
                         ),
                       ),
@@ -488,147 +495,151 @@ class _Staff_Voucher_EntryListScreenState
                                                             25.0)),
                                               ),
                                               builder: (context) {
-                                                return Container(
-                                                  margin: EdgeInsets.only(
-                                                    left: 15,
-                                                  ),
-                                                  height: BaseUtitiles
-                                                      .getheightofPercentage(
-                                                          context, 25),
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Container(
+                                                return SafeArea(
+                                                  top: false,
+                                                  child: Container(
+                                                    margin: EdgeInsets.only(
+                                                      left: 15,
+                                                    ),
+                                                    height: BaseUtitiles
+                                                        .getheightofPercentage(
+                                                            context, 25),
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Container(
+                                                              margin:
+                                                                  EdgeInsets.only(
+                                                                      right: 10),
+                                                              child: Text(
+                                                                staffVoucher_Controller
+                                                                    .StaffVocEtyList
+                                                                    .value[index]
+                                                                    .staffVocNo
+                                                                    .toString(),
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .primaryColor),
+                                                              ),
+                                                            ),
+                                                            IconButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                                icon: ConstIcons
+                                                                    .cancle)
+                                                          ],
+                                                        ),
+                                                        Visibility(
+                                                          visible: commanController.editMode.value == 1 ? true : false,
+                                                          child: InkWell(
+                                                              child: Row(
+                                                                children: [
+                                                                  Card(
+                                                                    color: Colors
+                                                                        .lightGreen,
+                                                                    child: Padding(
+                                                                      padding:
+                                                                          const EdgeInsets
+                                                                              .all(8),
+                                                                      child: Icon(
+                                                                        Icons.edit,
+                                                                        color: Colors
+                                                                            .white,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                      width: 5),
+                                                                  Text(
+                                                                    "Edit",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .grey,
+                                                                        fontSize:
+                                                                            15),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                              onTap: () async {
+                                                                staffVoucher_Controller
+                                                                    .delete_Sitevoucher_itemlist_Table();
+                                                                FocusScope.of(
+                                                                        context)
+                                                                    .unfocus();
+                                                                await staffVoucher_Controller
+                                                                    .StaffvoucherEntryList_EditApi(
+                                                                        staffVoucher_Controller
+                                                                            .StaffVocEtyList
+                                                                            .value[
+                                                                                index]
+                                                                            .id,
+                                                                        widget.heading,
+                                                                        context);
+                                                              }),
+                                                        ),
+                                                        Container(
                                                             margin:
                                                                 EdgeInsets.only(
-                                                                    right: 10),
-                                                            child: Text(
-                                                              staffVoucher_Controller
-                                                                  .StaffVocEtyList
-                                                                  .value[index]
-                                                                  .staffVocNo
-                                                                  .toString(),
-                                                              style: TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .primaryColor),
-                                                            ),
-                                                          ),
-                                                          IconButton(
-                                                              onPressed: () {
+                                                                    right: 20),
+                                                            child: Divider(
+                                                                thickness: 1)),
+                                                        Visibility(
+                                                          visible: commanController.deleteMode.value == 1 ? true : false,
+                                                          child: InkWell(
+                                                              child: Row(
+                                                                children: [
+                                                                  Card(
+                                                                    color:
+                                                                        Colors.red,
+                                                                    child: Padding(
+                                                                      padding:
+                                                                          const EdgeInsets
+                                                                              .all(8),
+                                                                      child: Icon(
+                                                                        Icons
+                                                                            .delete_forever,
+                                                                        color: Colors
+                                                                            .white,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                      width: 5),
+                                                                  Text(
+                                                                    "Delete",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .grey,
+                                                                        fontSize:
+                                                                            15),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                              onTap: () async {
                                                                 Navigator.pop(
                                                                     context);
-                                                              },
-                                                              icon: ConstIcons
-                                                                  .cancle)
-                                                        ],
-                                                      ),
-                                                      Visibility(
-                                                        visible: commanController.editMode.value == 1 ? true : false,
-                                                        child: InkWell(
-                                                            child: Row(
-                                                              children: [
-                                                                Card(
-                                                                  color: Colors
-                                                                      .lightGreen,
-                                                                  child: Padding(
-                                                                    padding:
-                                                                        const EdgeInsets
-                                                                            .all(8),
-                                                                    child: Icon(
-                                                                      Icons.edit,
-                                                                      color: Colors
-                                                                          .white,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                    width: 5),
-                                                                Text(
-                                                                  "Edit",
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .grey,
-                                                                      fontSize:
-                                                                          15),
-                                                                )
-                                                              ],
-                                                            ),
-                                                            onTap: () async {
-                                                              staffVoucher_Controller
-                                                                  .delete_Sitevoucher_itemlist_Table();
-                                                              FocusScope.of(
-                                                                      context)
-                                                                  .unfocus();
-                                                              await staffVoucher_Controller
-                                                                  .StaffvoucherEntryList_EditApi(
-                                                                      staffVoucher_Controller
-                                                                          .StaffVocEtyList
-                                                                          .value[
-                                                                              index]
-                                                                          .id,
-                                                                      context);
-                                                            }),
-                                                      ),
-                                                      Container(
-                                                          margin:
-                                                              EdgeInsets.only(
-                                                                  right: 20),
-                                                          child: Divider(
-                                                              thickness: 1)),
-                                                      Visibility(
-                                                        visible: commanController.deleteMode.value == 1 ? true : false,
-                                                        child: InkWell(
-                                                            child: Row(
-                                                              children: [
-                                                                Card(
-                                                                  color:
-                                                                      Colors.red,
-                                                                  child: Padding(
-                                                                    padding:
-                                                                        const EdgeInsets
-                                                                            .all(8),
-                                                                    child: Icon(
-                                                                      Icons
-                                                                          .delete_forever,
-                                                                      color: Colors
-                                                                          .white,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                    width: 5),
-                                                                Text(
-                                                                  "Delete",
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .grey,
-                                                                      fontSize:
-                                                                          15),
-                                                                )
-                                                              ],
-                                                            ),
-                                                            onTap: () async {
-                                                              Navigator.pop(
-                                                                  context);
-                                                              staffVoucher_Controller
-                                                                  .DeleteAlert(
-                                                                      context,
-                                                                      index);
-                                                            }),
-                                                      ),
-                                                      SizedBox(height: 20)
-                                                    ],
+                                                                staffVoucher_Controller
+                                                                    .DeleteAlert(
+                                                                        context,
+                                                                        index);
+                                                              }),
+                                                        ),
+                                                        SizedBox(height: 20)
+                                                      ],
+                                                    ),
                                                   ),
                                                 );
                                               });

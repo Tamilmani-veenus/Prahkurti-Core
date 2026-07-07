@@ -4,54 +4,102 @@
 
 import 'dart:convert';
 
-List<CompanyNmrEntryListmodel> companyNmrEntryListmodelFromJson(String str) => List<CompanyNmrEntryListmodel>.from(json.decode(str).map((x) => CompanyNmrEntryListmodel.fromJson(x)));
+CompanyNmrEntryListmodel companyNmrEntryListmodelFromJson(String str) => CompanyNmrEntryListmodel.fromJson(json.decode(str));
 
-String companyNmrEntryListmodelToJson(List<CompanyNmrEntryListmodel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String companyNmrEntryListmodelToJson(CompanyNmrEntryListmodel data) => json.encode(data.toJson());
 
 class CompanyNmrEntryListmodel {
+  bool? success;
+  String? message;
+  List<Result>? result;
+
   CompanyNmrEntryListmodel({
-    this.nmrLbrAttnId,
-    this.nmrLbrAttnNo,
-    this.labrAttnDate,
-    this.preparedByName,
-    this.attdate,
-    this.siteName,
-    this.project,
-    this.billstatus,
-    this.appstatus,
+    this.success,
+    this.message,
+    this.result,
   });
 
-  int? nmrLbrAttnId;
-  String? nmrLbrAttnNo;
-  String? labrAttnDate;
-  String? preparedByName;
-  DateTime? attdate;
-  String? siteName;
-  String? project;
-  String? billstatus;
-  String? appstatus;
-
   factory CompanyNmrEntryListmodel.fromJson(Map<String, dynamic> json) => CompanyNmrEntryListmodel(
-    nmrLbrAttnId: json["NMRLbrAttn_Id"],
-    nmrLbrAttnNo: json["NMRLbrAttn_No"],
-    labrAttnDate: json["LabrAttn_Date"],
-    preparedByName: json["PreparedByName"],
-    attdate: DateTime.parse(json["attdate"]),
-    siteName: json["SiteName"],
-    project: json["Project"],
-    billstatus: json["billstatus"],
-    appstatus: json["Appstatus"],
+    success: json["success"],
+    message: json["message"],
+    result: json["result"]==null?[]:List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "NMRLbrAttn_Id": nmrLbrAttnId,
-    "NMRLbrAttn_No": nmrLbrAttnNo,
-    "LabrAttn_Date": labrAttnDate,
-    "PreparedByName": preparedByName,
-    "attdate": attdate!.toIso8601String(),
-    "SiteName": siteName,
-    "Project": project,
-    "billstatus": billstatus,
-    "Appstatus": appstatus,
+    "success": success,
+    "message": message,
+    "result": result==null?[]:List<dynamic>.from(result!.map((x) => x.toJson())),
+  };
+}
+
+class Result {
+  int? id;
+  String? labourAttendanceNo;
+  String? labourAttendanceDate;
+  String? projectName;
+  String? siteName;
+  String? subContractorName;
+  String? workType;
+  String? workTypName;
+  int? createdBy;
+  String? employeeName;
+  int? labourCount;
+  String? approveStatus;
+  String? billStatus;
+  String? billStatusDesc;
+  String? appType;
+
+  Result({
+    this.id,
+    this.labourAttendanceNo,
+    this.labourAttendanceDate,
+    this.projectName,
+    this.siteName,
+    this.subContractorName,
+    this.workType,
+    this.workTypName,
+    this.createdBy,
+    this.employeeName,
+    this.labourCount,
+    this.approveStatus,
+    this.billStatus,
+    this.billStatusDesc,
+    this.appType,
+  });
+
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    id: json["id"],
+    labourAttendanceNo: json["labourAttendanceNo"],
+    labourAttendanceDate: json["labourAttendanceDate"],
+    projectName: json["projectName"],
+    siteName: json["siteName"],
+    subContractorName: json["subContractorName"],
+    workType: json["workType"],
+    workTypName: json["workTypName"],
+    createdBy: json["createdBy"],
+    employeeName: json["employeeName"],
+    labourCount: json["labourCount"],
+    approveStatus: json["approveStatus"],
+    billStatus: json["billStatus"],
+    billStatusDesc: json["billStatusDesc"],
+    appType: json["appType"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "labourAttendanceNo": labourAttendanceNo,
+    "labourAttendanceDate": labourAttendanceDate,
+    "projectName": projectName,
+    "siteName": siteName,
+    "subContractorName": subContractorName,
+    "workType": workType,
+    "workTypName": workTypName,
+    "createdBy": createdBy,
+    "employeeName": employeeName,
+    "labourCount": labourCount,
+    "approveStatus": approveStatus,
+    "billStatus": billStatus,
+    "billStatusDesc": billStatusDesc,
+    "appType": appType,
   };
 }

@@ -76,7 +76,7 @@ class _MaterialWiseState extends State<MaterialWise> {
                       controller: stockSiteController.materialHeadName,
                       cursorColor: Colors.black,
                       style: const TextStyle(color: Colors.black),
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         contentPadding: EdgeInsets.zero,
                         border: InputBorder.none,
                         labelText: "Material Head Item",
@@ -88,17 +88,20 @@ class _MaterialWiseState extends State<MaterialWise> {
                         prefixIcon: Padding(
                             padding: EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 8),
-                            child: ConstIcons.projectName),
+                            child: Icon(
+                              Icons.widgets,
+                              color: Theme.of(context).primaryColor,
+                            ),  ),
                       ),
                       onTap: () async {
-                        await stockSiteController.getMaterialHeadReportList();
+                        await stockSiteController.getMaterialHeadReportList(Url: "Report");
                         if (mounted) {
                           bottomsheetControllers.materialHeadItem(context, stockSiteController.getmaterialHeadDropDownvalue.value);
                         }
                       },
                       validator: (value) {
                         if (value!.isEmpty || value == "--Select--") {
-                          return '\u26A0 Please select project name.';
+                          return '\u26A0 Required.';
                         }
                         return null;
                       },
@@ -123,7 +126,7 @@ class _MaterialWiseState extends State<MaterialWise> {
                       controller: stockSiteController.Materialsubname,
                       cursorColor: Colors.black,
                       style: const TextStyle(color: Colors.black),
-                      decoration: const InputDecoration(
+                      decoration:  InputDecoration(
                         contentPadding: EdgeInsets.zero,
                         border: InputBorder.none,
                         labelText: "Material Sub Item",
@@ -135,10 +138,11 @@ class _MaterialWiseState extends State<MaterialWise> {
                         prefixIcon: Padding(
                             padding: EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 8),
-                            child: ConstIcons.projectName),
-                      ),
+                            child: Icon(Icons.format_list_bulleted,color: Theme.of(context).primaryColor),
+                        )),
+
                       onTap: () async{
-                        await stockSiteController.getProjectWiseSubmatList(stockSiteController.matHeadDropdowntId.value);
+                        await stockSiteController.getProjectWiseSubmatList(stockSiteController.matHeadDropdowntId.value,Url: "Report");
 
                         if (mounted) {
                           bottomsheetControllers.MaterialSubItem(context, stockSiteController.matHeadDropdowntId.value, stockSiteController.getmaterialSubdropDownvalue.value);
@@ -146,7 +150,7 @@ class _MaterialWiseState extends State<MaterialWise> {
                       },
                       validator: (value) {
                         if (value!.isEmpty || value == "--Select--") {
-                          return '\u26A0 Please select project name.';
+                          return '\u26A0 Required.';
                         }
                         return null;
                       },
@@ -183,15 +187,17 @@ class _MaterialWiseState extends State<MaterialWise> {
                         prefixIcon: Padding(
                             padding: EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 8),
-                            child: ConstIcons.projectName
+                            child: ConstIcons.materialName
 
                         ),
                       ),
                       onTap: () async {
-                        await reportsController.getReportMaterialList();
-                        bottomsheetControllers.MRNMaterialName(context, reportsController.getMaterialdropDownvalue.value);
-
-                      },
+                        await stockSiteController.getmaterialDropdowntList(
+                            stockSiteController.matDropdowntId.value);
+                        if(mounted) {
+                          bottomsheetControllers.MRNMaterialName(context,
+                              stockSiteController.getMaterialdropDownvalue.value);
+                        }},
                       validator: (value) {
                         if (value!.isEmpty) {
                           return '\u26A0 Please select Material Name.';
@@ -238,7 +244,7 @@ class _MaterialWiseState extends State<MaterialWise> {
 
   void textclear(){
     stockSiteController.getMaterialDropdownName.clear();
-    reportsController.Subheadername.text="--All--";
+    reportsController.Subheadername.text = "--ALL--";
   }
 
   Widget ListDetails() {
@@ -274,7 +280,7 @@ class _MaterialWiseState extends State<MaterialWise> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    height: BaseUtitiles.getheightofPercentage(context, details.length==1?15: details.length==2?25:40),
+                    height: BaseUtitiles.getheightofPercentage(context, details.length==1?10: details.length==2?20:40),
                     child: Card(
                       shape: RoundedRectangleBorder(
                         side: const BorderSide(

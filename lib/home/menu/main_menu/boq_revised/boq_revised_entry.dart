@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../../../app_theme/app_colors.dart';
 import '../../../../constants/ui_constant/icons_const.dart';
@@ -18,7 +19,8 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
 class Boq_Revised_EntryScreen extends StatefulWidget {
-  const Boq_Revised_EntryScreen({Key? key}) : super(key: key);
+  final String heading;
+  const Boq_Revised_EntryScreen({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<Boq_Revised_EntryScreen> createState() =>
@@ -101,12 +103,14 @@ class _Boq_Revised_EntryScreenState extends State<Boq_Revised_EntryScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          "BOQ - Revised",
-                          style: TextStyle(
-                              fontSize: RequestConstant.Heading_Font_SIZE,
-                              fontWeight: FontWeight.bold),
-                        ),
+                         Expanded(
+                           child: Text(
+                            widget.heading,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Heading_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                                                   ),
+                         ),
                         TextButton(
                             onPressed: () {
                               Navigator.pop(context);
@@ -220,7 +224,7 @@ class _Boq_Revised_EntryScreenState extends State<Boq_Revised_EntryScreen> {
                         padding:
                         const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: projectController.projectname,
                           cursorColor: Colors.black,
@@ -265,7 +269,7 @@ class _Boq_Revised_EntryScreenState extends State<Boq_Revised_EntryScreen> {
                         padding:
                         const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: siteController.Sitename,
                           cursorColor: Colors.black,
@@ -310,7 +314,7 @@ class _Boq_Revised_EntryScreenState extends State<Boq_Revised_EntryScreen> {
                         padding:
                         const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: siteController.headNameController,
                           cursorColor: Colors.black,
@@ -388,7 +392,7 @@ class _Boq_Revised_EntryScreenState extends State<Boq_Revised_EntryScreen> {
                       child: Padding(
                         padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: false,
                           controller: boq_revised_controller.boq_remarksController,
                           cursorColor: Colors.black,
@@ -407,12 +411,12 @@ class _Boq_Revised_EntryScreenState extends State<Boq_Revised_EntryScreen> {
                                     vertical: 8, horizontal: 8),
                                 child: ConstIcons.remarks),
                           ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return '\u26A0 ${RequestConstant.VALIDATE}';
-                            }
-                            return null;
-                          },
+                          // validator: (value) {
+                          //   if (value!.isEmpty) {
+                          //     return '\u26A0 ${RequestConstant.VALIDATE}';
+                          //   }
+                          //   return null;
+                          // },
                         ),
                       ),
                     ),
@@ -835,6 +839,11 @@ class _Boq_Revised_EntryScreenState extends State<Boq_Revised_EntryScreen> {
                                         textAlign: TextAlign.center,
                                         controller: boq_revised_controller.Addwork_qtyControllers[index],
                                         keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp(r'^\d+\.?\d{0,2}'),
+                                          ),
+                                        ],
                                         decoration: InputDecoration(
                                           contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                                           focusedBorder: OutlineInputBorder(

@@ -1,5 +1,6 @@
 
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:fluttertoast/fluttertoast.dart';
@@ -107,7 +108,6 @@ class DailyWrkDone_DPR_Controller extends GetxController {
   RxInt pickedImageCount = 0.obs;
 
 
-
   Future dpr_getItemList(int prid,int siteid,int subcontid,BuildContext context) async {
     dpr_mainitemList.value.clear();
     var response = await  DPRProvider.get_Dpr_ItemList(
@@ -172,7 +172,7 @@ class DailyWrkDone_DPR_Controller extends GetxController {
   }
 
 
-  Future DprEntryList_EditApi(int workid, BuildContext context, int checkdata) async {
+  Future DprEntryList_EditApi(int workid, String MenuName, BuildContext context, int checkdata) async {
     final value = await DPRProvider.dpr_entryList_editAPI(workid);
     if (value != null) {
       if(value.success == true) {
@@ -184,7 +184,7 @@ class DailyWrkDone_DPR_Controller extends GetxController {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => DailyWork_done_DPR_Entry()),
+                builder: (context) => DailyWork_done_DPR_Entry(heading:MenuName,)),
           );
         }
         else {
@@ -394,12 +394,55 @@ class DailyWrkDone_DPR_Controller extends GetxController {
         Itemlist_AmntControllers[index].text = amount.toStringAsFixed(2);
         netAmount += amount;
 
-        // Itemlist_AmntControllers[index].text = ((dpr_itemview_DbList.value[index].rate! * (double.parse(Itemlist_CurrentQtyControllers[index].value.text != "" ? Itemlist_CurrentQtyControllers[index].value.text : "0"))).toStringAsFixed(2));
       }
     }
     totalNetAmount.text = netAmount.toStringAsFixed(2);
     updateDprTables();
   }
+
+  void dprItemlist_clickEdits(int index) {
+    if (Itemlist_CurrentQtyControllers[index].text == "0" ||
+        Itemlist_CurrentQtyControllers[index].text == "0.0") {
+
+      Itemlist_CurrentQtyControllers[index].text =
+          dpr_itemview_DbList.value[index].qty.toString();
+
+      BaseUtitiles.showToast("Zero is not allowed please change the value");
+    }
+    else if (
+    double.parse(
+      Itemlist_CurrentQtyControllers[index].text.isNotEmpty
+          ? Itemlist_CurrentQtyControllers[index].text
+          : "0",
+    ) >
+        dpr_itemview_DbList.value[index].balQty!) {
+
+      Itemlist_CurrentQtyControllers[index].text =
+          dpr_itemview_DbList.value[index].qty.toString();
+
+      BaseUtitiles.showToast("Should not allow the excess qty");
+    }
+
+    double netAmount = 0.0;
+
+    for (var i = 0; i < dpr_itemview_DbList.value.length; i++) {
+      double amount =
+          dpr_itemview_DbList.value[i].rate! *
+              double.parse(
+                Itemlist_CurrentQtyControllers[i].text.isNotEmpty
+                    ? Itemlist_CurrentQtyControllers[i].text
+                    : "0",
+              );
+
+      Itemlist_AmntControllers[i].text = amount.toStringAsFixed(2);
+      netAmount += amount;
+    }
+
+    totalNetAmount.text = netAmount.toStringAsFixed(2);
+    updateDprTables();
+  }
+
+
 
   Future deleteParticularList(DprItemListTableModel data) async {
     deleteModelList.clear();
@@ -411,6 +454,7 @@ class DailyWrkDone_DPR_Controller extends GetxController {
     deleteModelList.add(dprItemListTableModel);
     await dprItemlistService.DprItemlist_table_deleteById(deleteModelList);
   }
+
 
 
   dpr_itemlist_Save_DB(BuildContext context) async {
@@ -467,6 +511,9 @@ class DailyWrkDone_DPR_Controller extends GetxController {
       element.subContractDailyWorkDets.forEach((val) {
         dprItemListTableModel = new DprItemListTableModel();
         dprItemListTableModel.reqDetId = val.id!;
+        print("SSSSSSSS...${dprItemListTableModel.reqDetId}");
+        print("SSSSSSSS...${val.id}");
+
         dprItemListTableModel.headItemId = val.headItemId!;
         dprItemListTableModel.subItemId = val.subItemId!;
         dprItemListTableModel.level3ItemId = val.level3ItemId!;
@@ -495,6 +542,9 @@ class DailyWrkDone_DPR_Controller extends GetxController {
     dprItem.forEach((user) {
       var dprItemListModel = DprItemListTableModel();
       dprItemListModel.reqDetId = user['reqDetId'];
+      print("EEEEEEE...${dprItemListModel.reqDetId}");
+      print("EEEEEEE...${user['reqDetId']}");
+
       dprItemListModel.headItemId = user['headItemId'];
       dprItemListModel.subItemId = user['subItemId'];
       dprItemListModel.level3ItemId = user['level3ItemId'];
@@ -520,7 +570,7 @@ class DailyWrkDone_DPR_Controller extends GetxController {
     dpr_itemview_DbList.forEach((element) {
       dpr_itemlist_textControllersInitiate();
       dprItemListTableModel = DprItemListTableModel();
-      dprItemListTableModel.reqDetId = 0;
+      dprItemListTableModel.reqDetId = element.reqDetId;
       dprItemListTableModel.headItemId = element.headItemId!;
       dprItemListTableModel.subItemId = element.subItemId!;
       dprItemListTableModel.level3ItemId = element.level3ItemId!;
@@ -572,13 +622,16 @@ class DailyWrkDone_DPR_Controller extends GetxController {
         billStatus:"N",
         refNo: dpr_referenceController.text.isEmpty ? "0" : dpr_referenceController.text,
         totalamt: totalNetAmount.text,
-        remarks: dpr_remarksController.text,
+        remarks: dpr_remarksController.text.isEmpty ? "-" : dpr_remarksController.text,
         createdBy: int.tryParse(loginController.EmpId()),
         createdDate: BaseUtitiles().convertToUtcIso(dpr_dateController.text),
         approveStatus: saveButton.value == RequestConstant.APPROVAL ? "Y" : "N",
         verifyStatus: saveButton.value == RequestConstant.APPROVAL ? "Y" : "N",
         subContractDailyWorkDets: getDprListDet(id)
     );
+    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+    final prettyJson = encoder.convert(formdata.toJson());
+    debugPrint(prettyJson, wrapWidth: 1024);
     if(checklist == 0) {
       final list = await DPRProvider.SaveIemListScreenEntryAPI(formdata,imageFiles,saveButton,id);
       if (list != null) {

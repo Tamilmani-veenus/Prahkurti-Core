@@ -43,14 +43,14 @@ class DPRLabourProvider{
       if (workId != 0) {
         // If it's an approval update
         if (aprovedButton != 0) {
-          value = await ApiManager.putUpdateAPIButton(ApiConstant.PUT_DPR_LABOUR_APROVE_API, body);
+          // value = await ApiManager.putUpdateAPIButton(ApiConstant.PUT_DPR_LABOUR_APROVE_API, body);
         } else {
           // Just update
-          value = await ApiManager.putUpdateAPIButton(ApiConstant.PUT_DPR_LABOUR_UPDATE_API, body);
+          // value = await ApiManager.putUpdateAPIButton(ApiConstant.PUT_DPR_LABOUR_UPDATE_API, body);
         }
       } else {
         // Save new record
-        value = await ApiManager.postAPICall(ApiConstant.DPR_LABOUR_SAVE_API, body);
+        // value = await ApiManager.postAPICall(ApiConstant.DPR_LABOUR_SAVE_API, body);
       }
 
       var response ;
@@ -86,52 +86,52 @@ class DPRLabourProvider{
     return ratingRes;
   }
 
-  static Future<List<DailywrkDoneDprEntrylistResmodel>> getLabour_dpr_EntryList(int? Userid, String UserType, String frdate, String todate) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GET_DPR_LABOUR_ENTRY_LIST + "?UserId=$Userid&UserType=$UserType&Frdate=$frdate&Todate=$todate")
-        .then((value) {
-      data = dailywrkDoneDprEntrylistResmodelFromJson(value);
-      if (data != null && data.length > 0) {
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast(error);
-    });
-    return data;
-  }
+  // static Future<List<DailywrkDoneDprEntrylistResmodel>> getLabour_dpr_EntryList(int? Userid, String UserType, String frdate, String todate) async {
+  //   var data = null;
+  //   await ApiManager.getAPICall(ApiConstant.GET_DPR_LABOUR_ENTRY_LIST + "?UserId=$Userid&UserType=$UserType&Frdate=$frdate&Todate=$todate")
+  //       .then((value) {
+  //     data = dailywrkDoneDprEntrylistResmodelFromJson(value);
+  //     if (data != null && data.length > 0) {
+  //       return data;
+  //     }
+  //   }, onError: (error) {
+  //     print(error);
+  //     BaseUtitiles.showToast(error);
+  //   });
+  //   return data;
+  // }
 
-  static Future<List<DailywrkdonDprLabourEditApiRes>> dprLabour_entryList_editAPI(int workId) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GET_DPR_LABOUR_EDIT_API + "?WorkId=$workId").then((value) {
-      final res = dailywrkdonDprLabourEditApiResFromJson(value);
-      if (res != null && res.length > 0) {
-        data = res;
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG+error);
-    });
-    return data;
-  }
+  // static Future<List<DailywrkdonDprLabourEditApiRes>> dprLabour_entryList_editAPI(int workId) async {
+  //   var data = null;
+  //   await ApiManager.getAPICall(ApiConstant.GET_DPR_LABOUR_EDIT_API + "?WorkId=$workId").then((value) {
+  //     final res = dailywrkdonDprLabourEditApiResFromJson(value);
+  //     if (res != null && res.length > 0) {
+  //       data = res;
+  //       return data;
+  //     }
+  //   }, onError: (error) {
+  //     print(error);
+  //     BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG+error);
+  //   });
+  //   return data;
+  // }
 
-  static Future entryList_deleteAPI(int WorkId,  String WorkNo, String UserId, String DeviceName) async {
-    var data = null;
-    await ApiManager.deleteAPICall(ApiConstant.DELETE_DPRLABOUR_ENTRYLIST_API +
-        "?WorkId=$WorkId&WorkNo=$WorkNo&UserId=$UserId&DeviceName=$DeviceName")
-        .then((value) {
-      final res = json.decode(value);
-      if (res != null) {
-        data = res;
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG+error);
-    });
-    return data;
-  }
+  // static Future entryList_deleteAPI(int WorkId,  String WorkNo, String UserId, String DeviceName) async {
+  //   var data = null;
+  //   await ApiManager.deleteAPICall(ApiConstant.DELETE_DPRLABOUR_ENTRYLIST_API +
+  //       "?WorkId=$WorkId&WorkNo=$WorkNo&UserId=$UserId&DeviceName=$DeviceName")
+  //       .then((value) {
+  //     final res = json.decode(value);
+  //     if (res != null) {
+  //       data = res;
+  //       return data;
+  //     }
+  //   }, onError: (error) {
+  //     print(error);
+  //     BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG+error);
+  //   });
+  //   return data;
+  // }
 
 
 }

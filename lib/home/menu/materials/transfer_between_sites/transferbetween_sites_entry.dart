@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'transferbetween_sites_additems.dart';
@@ -18,7 +19,8 @@ import '../../../../utilities/baseutitiles.dart';
 import '../../../../utilities/requestconstant.dart';
 
 class TransferBetweenSites_Entry extends StatefulWidget {
-  const TransferBetweenSites_Entry({Key? key}) : super(key: key);
+  final String heading;
+  const TransferBetweenSites_Entry({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<TransferBetweenSites_Entry> createState() => _TransferBetweenSites_EntryState();
@@ -138,11 +140,13 @@ class _TransferBetweenSites_EntryState extends State<TransferBetweenSites_Entry>
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  "Transfer Between Sites",
-                                  style: TextStyle(
-                                      fontSize: RequestConstant.Heading_Font_SIZE,
-                                      fontWeight: FontWeight.bold),
+                                Expanded(
+                                  child: Text(
+                                    widget.heading,
+                                    style: TextStyle(
+                                        fontSize: RequestConstant.Heading_Font_SIZE,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                                 TextButton(
                                     onPressed: () {
@@ -172,7 +176,7 @@ class _TransferBetweenSites_EntryState extends State<TransferBetweenSites_Entry>
                                       padding:
                                       const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                                       child: TextFormField(
-                                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                                        autovalidateMode: AutovalidateMode.always,
                                         readOnly: true,
                                         controller: transferBt_Site_Controller.autoyrwiseText,
                                         cursorColor: Colors.black,
@@ -284,7 +288,7 @@ class _TransferBetweenSites_EntryState extends State<TransferBetweenSites_Entry>
                                 padding:
                                 const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
-                                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                                  autovalidateMode: AutovalidateMode.always,
                                   readOnly: true,
                                   controller: projectController.projectname,
                                   cursorColor: Colors.black,
@@ -335,7 +339,7 @@ class _TransferBetweenSites_EntryState extends State<TransferBetweenSites_Entry>
                                 padding:
                                 const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
-                                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                                  autovalidateMode: AutovalidateMode.always,
                                   readOnly: true,
                                   controller: fromsiteController.FromSitename,
                                   cursorColor: Colors.black,
@@ -361,7 +365,7 @@ class _TransferBetweenSites_EntryState extends State<TransferBetweenSites_Entry>
                                       if (mounted) {
                                         bottomsheetControllers.FromSiteName(context,
                                             transferBt_Site_Controller.saveButton.value == RequestConstant.PENDINGLIST ? "STORE TRANSFER" : "Transfer Between Sites",
-                                            siteController.getSiteDropdownvalue.value);
+                                            siteController.getSiteDropdownvalue.value,MenuName: widget.heading);
                                       }},
                                   validator: (value) {
                                     if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
@@ -385,7 +389,7 @@ class _TransferBetweenSites_EntryState extends State<TransferBetweenSites_Entry>
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
-                                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                                  autovalidateMode: AutovalidateMode.always,
                                   readOnly: true,
                                   controller: siteController.Sitename,
                                   cursorColor: Colors.black,
@@ -437,7 +441,7 @@ class _TransferBetweenSites_EntryState extends State<TransferBetweenSites_Entry>
                                 child: Padding(
                                   padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                                   child: TextFormField(
-                                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                                    autovalidateMode: AutovalidateMode.always,
                                     readOnly: true,
                                     controller: transferBt_Site_Controller.ReqNoText,
                                     cursorColor: Colors.black,
@@ -481,7 +485,7 @@ class _TransferBetweenSites_EntryState extends State<TransferBetweenSites_Entry>
                                 padding:
                                 const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
-                                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                                  autovalidateMode: AutovalidateMode.always,
                                   readOnly: true,
                                   controller: subcontractorController.Subcontractorname,
                                   cursorColor: Colors.black,
@@ -527,7 +531,7 @@ class _TransferBetweenSites_EntryState extends State<TransferBetweenSites_Entry>
                                 padding:
                                 const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
-                                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                                  autovalidateMode: AutovalidateMode.always,
                                   readOnly: true,
                                   controller: transferBt_Site_Controller.prearedbyText,
                                   cursorColor: Colors.black,
@@ -572,7 +576,7 @@ class _TransferBetweenSites_EntryState extends State<TransferBetweenSites_Entry>
                                 padding:
                                 const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
-                                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                                  autovalidateMode: AutovalidateMode.always,
                                   controller: transferBt_Site_Controller.remarksText,
                                   cursorColor: Colors.black,
                                   style: const TextStyle(color: Colors.black),
@@ -590,12 +594,12 @@ class _TransferBetweenSites_EntryState extends State<TransferBetweenSites_Entry>
                                             vertical: 8, horizontal: 8),
                                         child: ConstIcons.remarks),
                                   ),
-                                  validator: (value) {
-                                    if (value=="") {
-                                      return '\u26A0 ${RequestConstant.VALIDATE}';
-                                    }
-                                    return null;
-                                  },
+                                  // validator: (value) {
+                                  //   if (value=="") {
+                                  //     return '\u26A0 ${RequestConstant.VALIDATE}';
+                                  //   }
+                                  //   return null;
+                                  // },
                                 ),
                               ),
                             ),
@@ -1006,6 +1010,11 @@ class _TransferBetweenSites_EntryState extends State<TransferBetweenSites_Entry>
                                           textAlign: TextAlign.center,
                                           controller: transferBt_Site_Controller.Itemlist_stockQty_ListController[index],
                                           keyboardType: TextInputType.number,
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter.allow(
+                                              RegExp(r'^\d+\.?\d{0,2}'),
+                                            ),
+                                          ],
                                           decoration: InputDecoration(
                                             contentPadding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0,0.0),
                                             focusedBorder: OutlineInputBorder(
@@ -1042,6 +1051,11 @@ class _TransferBetweenSites_EntryState extends State<TransferBetweenSites_Entry>
                                           textAlign: TextAlign.center,
                                           controller: transferBt_Site_Controller.Itemlist_TransQty_ListController[index],
                                           keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter.allow(
+                                              RegExp(r'^\d+\.?\d{0,2}'),
+                                            ),
+                                          ],
                                           decoration: InputDecoration(
                                             contentPadding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0,0.0),
                                             focusedBorder: OutlineInputBorder(

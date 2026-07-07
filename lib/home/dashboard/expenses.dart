@@ -112,14 +112,10 @@ class _ExpensesState extends State<Expenses> {
                             child: ConstIcons.siteName),
                       ),
                       onTap: () {
-                        setState(() {
-                          setState(() {
                             bottomsheetControllers.CompanyName(context,companyController.getdropDownvalue.value );
-                          });
                           companycontroller.projectname_CompanyWise.text = "";
                           companycontroller.selectedProjectId_CompanyWise.value = 0;
                           expensesController.reportExpensesList.value.clear();
-                        });
                       },
                     ),
                   ),

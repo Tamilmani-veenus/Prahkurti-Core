@@ -2,6 +2,7 @@ import '../constants/storage_constant.dart';
 import '../controller/logincontroller.dart';
 import '../login/animation_signinpage/welcomepage.dart';
 import '../provider/authendication_provider.dart';
+import '../provider/mrn_request_indent_provider.dart';
 import '../utilities/baseutitiles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,7 +12,6 @@ class AccountSetingController  extends GetxController {
   LoginController loginController = Get.put(LoginController());
   final repassword_controller = TextEditingController();
   final password_controller = TextEditingController();
-
 
   changePasswordDetails(BuildContext context) async {
     Map<String, String> body = {
@@ -36,4 +36,5 @@ class AccountSetingController  extends GetxController {
       BaseUtitiles.showToast("Something Went Wrong..");
     }
   }
+
 }

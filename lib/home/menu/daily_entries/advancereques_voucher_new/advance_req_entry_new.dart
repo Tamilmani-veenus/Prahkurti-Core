@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import '../../../../app_theme/app_colors.dart';
@@ -15,7 +16,8 @@ import '../../../../utilities/requestconstant.dart';
 import 'advance_sitewisepayment_new.dart';
 
 class AdvReq_voucher_New extends StatefulWidget {
-  const AdvReq_voucher_New({Key? key}) : super(key: key);
+  final String heading;
+  const AdvReq_voucher_New({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<AdvReq_voucher_New> createState() => _AdvReq_voucher_NewState();
@@ -29,96 +31,75 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
   CommonVoucherController commonVoucherController =
   Get.put(CommonVoucherController());
   ProjectController projectController = Get.put(ProjectController());
-  // CommanController commanController = Get.put(CommanController());
   BottomsheetControllers bottomsheetControllers =
   Get.put(BottomsheetControllers());
 
   @override
   void initState() {
+    super.initState();
     var duration = Duration(seconds: 0);
     Future.delayed(duration, () async {
-      await autoYearWiseNoController.AutoYearWiseNo("ADVANCE REQ VOUCHER");
-      // await advanceReqVoucherController_new.netamountCalculation();
-      advanceReqVoucherController_new.saveButton.value = RequestConstant.SUBMIT;
-      advanceReqVoucherController_new.listButton.value = "List";
-      await projectController.getProjectList();
-      advanceReqVoucherController_new.autoYearWiseNoController.text =
-          autoYearWiseNoController.AdvReqautoYrsWise.value;
-      if (advanceReqVoucherController_new.editcheck == 1) {
-        advanceReqVoucherController_new.ButtonChanges(
-            advanceReqVoucherController_new.editListApiDatas[0].vocId);
-        advanceReqVoucherController_new.radioType.value = "SiteWise Payment";
-        advanceReqVoucherController_new.editListApiDatas.value
-            .forEach((element) async {
-          advanceReqVoucherController_new.vocId = element.vocId;
-          advanceReqVoucherController_new.autoYearWiseNoController.text =
-              element.vocNo;
-          advanceReqVoucherController_new.entryDateController.text =
-              element.vocDate.toString();
-          projectController.projectname.text = element.projectName.toString();
-          projectController.selectedProjectId.value = element.projectId;
-          commonVoucherController.VoucherTypeController.text =
-          element.vocType == "P" ? "Site Petty Cash" : "Advance";
-          commonVoucherController.selectedAccTypeId.value = element.accTypeId;
-          commonVoucherController.selectedAccnameId.value = element.accNameId;
-          commonVoucherController.selectedAccPayId.value = element.payFor;
-          commonVoucherController.AccPayforname.text =
-              element.payForName.toString();
-          commonVoucherController.selectedPaymodeId.value = element.payMode;
-          commonVoucherController.AccountTypename.text =
-              element.accTypeName.toString();
-          commonVoucherController.namethrough.text =
-              element.accNameName.toString();
-          commonVoucherController.Accountname.text =
-              element.accNameName.toString();
-          // commonVoucherController.Paymodename.text = element.payForName.toString();
-          advanceReqVoucherController_new.remarksController.text =
-              element.remarks.toString();
-          advanceReqVoucherController_new.radioType.value =
-              element.payType.toString();
-          commonVoucherController.payforController.text =
-              element.payForName.toString();
-          commonVoucherController.payfor.value = element.payFor;
-          advanceReqVoucherController_new.listButton.value =
-          commonVoucherController.selectedAccTypeId.value == 4
-              ? "List"
-              : "Sitewise List";
-          advanceReqVoucherController_new.entry_amount.text =
-              element.vocAmt.toString();
-        });
-      }
-      if (advanceReqVoucherController_new.entrycheck == 0) {
+      if (advanceReqVoucherController_new.saveButton.value == RequestConstant.SUBMIT) {
+        await advanceReqVoucherController_new.delete_ListTable();
+        await advanceReqVoucherController_new.itemlistTable_Delete();
         advanceReqVoucherController_new.ItemGetTableListdata.value = [];
         advanceReqVoucherController_new.GetTableList.value = [];
-        advanceReqVoucherController_new.getDetList_Advance.value = [];
-        advanceReqVoucherController_new.getDetList_NMR.value = [];
-
         advanceReqVoucherController_new.vocId = 0;
-        advanceReqVoucherController_new.entryDateController.text =
-            BaseUtitiles.initiateCurrentDateFormat();
+        advanceReqVoucherController_new.entryDateController.text = BaseUtitiles.initiateCurrentDateFormat();
         commonVoucherController.VoucherTypeController.text = "--SELECT--";
-        commonVoucherController.VocType.value = "S";
+        commonVoucherController.VocType.value = "0";
         projectController.projectname.text = "--SELECT--";
         projectController.selectedProjectId.value = 0;
         commonVoucherController.AccountTypename.text = "--SELECT--";
         commonVoucherController.Accountname.text = "--SELECT--";
         commonVoucherController.selectedAccnameId.value = 0;
         commonVoucherController.payforController.text = RequestConstant.SELECT;
+        commonVoucherController.payfor.value = "0";
         commonVoucherController.Paymodename.text = RequestConstant.SELECT;
         commonVoucherController.namethrough.text = '--SELECT--';
         commonVoucherController.Accountname.text = '--SELECT--';
         commonVoucherController.namethrough.text = "";
         advanceReqVoucherController_new.remarksController.text = "";
-        advanceReqVoucherController_new.radioType.value = "SiteWise Payment";
         advanceReqVoucherController_new.entry_amount.text = "0.0";
-        await advanceReqVoucherController_new.delete_ListTable();
-        await advanceReqVoucherController_new.itemlistTable_Delete();
+        advanceReqVoucherController_new.listButton.value = "List";
+        await autoYearWiseNoController.AutoYearWiseNo("ADVANCE REQ VOUCHER");
+        advanceReqVoucherController_new.autoYearWiseNoController.text = autoYearWiseNoController.AdvReqautoYrsWise.value;
+
+      }
+
+      else if (advanceReqVoucherController_new.saveButton.value == RequestConstant.RESUBMIT || advanceReqVoucherController_new.saveButton.value == RequestConstant.APPROVAL) {
+        advanceReqVoucherController_new.editListApiDatas.forEach((element) async {
+          advanceReqVoucherController_new.vocId = element.id;
+          advanceReqVoucherController_new.autoYearWiseNoController.text = element.advanceReqVoucherNo;
+          advanceReqVoucherController_new.entryDateController.text = element.advanceReqVoucherDate;
+          projectController.projectname.text = element.projectName.toString();
+          projectController.selectedProjectId.value = element.projectId;
+          commonVoucherController.VocType.value =element.advanceReqVoucherType;
+          commonVoucherController.VoucherTypeController.text = element.accountVoucherType;
+          commonVoucherController.selectedAccTypeId.value = element.accountTypeId;
+          commonVoucherController.selectedAccnameId.value = element.accountNameId;
+          commonVoucherController.AccountTypename.text = element.accountTypeName.toString()=="null"?"--SELECT--":element.accountTypeName.toString();
+          commonVoucherController.namethrough.text = element.nameThrough.toString();
+          commonVoucherController.Accountname.text =
+              element.accountName.toString()=="null"?"--SELECT--":element.accountName.toString();
+          advanceReqVoucherController_new.remarksController.text =
+              element.remarks.toString();
+          commonVoucherController.payforController.text =
+              element.accountPayForName.toString();
+          commonVoucherController.payfor.value = element.payForType;
+          advanceReqVoucherController_new.listButton.value = commonVoucherController.payfor.value=="A"
+              ? "List"
+              : "Sitewise List";
+          advanceReqVoucherController_new.entry_amount.text =
+              element.advanceReqVoucherAmount.toString();
+        });
       }
     });
   }
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
@@ -137,11 +118,13 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "Advance Requisition Voucher",
-                            style: TextStyle(
-                                fontSize: RequestConstant.Heading_Font_SIZE,
-                                fontWeight: FontWeight.bold),
+                          Expanded(
+                            child: Text(
+                              widget.heading,
+                              style: TextStyle(
+                                  fontSize: advanceReqVoucherController_new.saveButton.value == RequestConstant.APPROVAL ? 16 : RequestConstant.Heading_Font_SIZE,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                           TextButton(
                             onPressed: () {
@@ -232,9 +215,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                                       child: ConstIcons.date),
                                 ),
                                 onTap: () async {
-                                  if (advanceReqVoucherController_new
-                                      .editcheck ==
-                                      1) {
+                                  if (advanceReqVoucherController_new.saveButton.value == RequestConstant.RESUBMIT|| advanceReqVoucherController_new.saveButton.value == RequestConstant.APPROVAL) {
                                   } else {
                                     var Entrydate = await showDatePicker(
                                         context: context,
@@ -290,7 +271,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             autovalidateMode:
-                            AutovalidateMode.onUserInteraction,
+                            AutovalidateMode.always,
                             readOnly: true,
                             controller:
                             commonVoucherController.VoucherTypeController,
@@ -311,8 +292,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                                   child: ConstIcons.types),
                             ),
                             onTap: () {
-                              if (advanceReqVoucherController_new.editcheck ==
-                                  1) {
+                              if (advanceReqVoucherController_new.saveButton.value == RequestConstant.RESUBMIT|| advanceReqVoucherController_new.saveButton.value == RequestConstant.APPROVAL) {
                               } else {
                                 showDialog(
                                     context: context,
@@ -347,7 +327,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             autovalidateMode:
-                            AutovalidateMode.onUserInteraction,
+                            AutovalidateMode.always,
                             readOnly: true,
                             controller: projectController.projectname,
                             cursorColor: Colors.black,
@@ -366,15 +346,13 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                                       vertical: 8, horizontal: 8),
                                   child: ConstIcons.projectName),
                             ),
-                            onTap: () {
-                              setState(() {
-                                if (advanceReqVoucherController_new.editcheck ==
-                                    1) {
+                            onTap: () async {
+                                if (advanceReqVoucherController_new.saveButton.value == RequestConstant.RESUBMIT|| advanceReqVoucherController_new.saveButton.value == RequestConstant.APPROVAL) {
                                 } else {
+                                  await projectController.getProjectList();
                                   bottomsheetControllers.ProjectName(context,
-                                      projectController.getdropDownvalue.value);
+                                      projectController.getdropDownvalue.value,type:"AdvReq");
                                 }
-                              });
                             },
                             validator: (value) {
                               if (value!.isEmpty ||
@@ -402,7 +380,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             autovalidateMode:
-                            AutovalidateMode.onUserInteraction,
+                            AutovalidateMode.always,
                             readOnly: true,
                             controller: commonVoucherController.AccountTypename,
                             cursorColor: Colors.black,
@@ -428,12 +406,10 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                                 Fluttertoast.showToast(
                                     msg:
                                     "Voc type is site petty cash so can't access");
-                              } else if (advanceReqVoucherController_new
-                                  .editcheck ==
-                                  1) {
+                              } else if (advanceReqVoucherController_new.saveButton.value == RequestConstant.RESUBMIT|| advanceReqVoucherController_new.saveButton.value == RequestConstant.APPROVAL) {
                               } else {
-                                // await commonVoucherController
-                                //     .getAccountTypeList(context, 1);
+                                await commonVoucherController
+                                    .getAccountTypeList(type: "AdvReq");
                                 bottomsheetControllers.AccountType(
                                     context,
                                     commonVoucherController
@@ -471,7 +447,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             autovalidateMode:
-                            AutovalidateMode.onUserInteraction,
+                            AutovalidateMode.always,
                             readOnly: true,
                             controller: commonVoucherController.Accountname,
                             cursorColor: Colors.black,
@@ -497,12 +473,10 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                                 Fluttertoast.showToast(
                                     msg:
                                     "Voc type is site petty cash so can't access");
-                              } else if (advanceReqVoucherController_new
-                                  .editcheck ==
-                                  1) {
+                              } else if (advanceReqVoucherController_new.saveButton.value == RequestConstant.RESUBMIT|| advanceReqVoucherController_new.saveButton.value == RequestConstant.APPROVAL) {
                               } else {
                                 await commonVoucherController
-                                    .getAccountName();
+                                    .getAccountName(type:"AdvReq");
                                 bottomsheetControllers.AccountName(
                                     context,
                                     commonVoucherController
@@ -526,192 +500,6 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                       ),
                     ),
 
-                    // Container(
-                    //   margin: EdgeInsets.only(top: 5),
-                    //   child: Row(
-                    //     children: <Widget>[
-                    //       Expanded(
-                    //         flex: 1,
-                    //         child: InkWell(
-                    //           child: Container(
-                    //             margin: EdgeInsets.only(right: 5,left: 5),
-                    //             alignment: Alignment.center,
-                    //             height: BaseUtitiles.getheightofPercentage(context, 4),
-                    //             decoration: BoxDecoration(
-                    //               borderRadius: BorderRadius.circular(0),
-                    //               color: Theme.of(context).primaryColor,
-                    //               boxShadow: [
-                    //                 BoxShadow(
-                    //                     offset: Offset(0, 10),
-                    //                     blurRadius: 50,
-                    //                     color: Color(0xffEEEEEE)
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //             child: Icon(Icons.add_circle_outline_rounded, color: Colors.white),
-                    //           ),
-                    //           onTap: (){
-                    //             if (commonVoucherController.AccountTypename.text ==
-                    //                 "OTHERS" ||
-                    //                 commonVoucherController.AccountTypename.text ==
-                    //                     "SITE-OTHERS" ||
-                    //                 commonVoucherController.AccountTypename.text ==
-                    //                     "MATERIAL") {
-                    //               if (commonVoucherController.Accountname.text ==
-                    //                   "--Select--" ||
-                    //                   commonVoucherController.Accountname.text ==
-                    //                       "--SELECT--") {
-                    //                 showDialog(
-                    //                     context: context,
-                    //                     builder: (BuildContext context) {
-                    //                       return AccountnameAddAlert();
-                    //                     });
-                    //               } else {
-                    //                 BaseUtitiles.showToast("You are Not Authorised");
-                    //               }
-                    //             } else {}
-                    //           },
-                    //         ),
-                    //       ),
-                    //       Expanded(
-                    //         flex: 1,
-                    //         child: InkWell(
-                    //           child: Container(
-                    //             margin: EdgeInsets.only(right: 5),
-                    //             alignment: Alignment.center,
-                    //             height: BaseUtitiles.getheightofPercentage(context, 4),
-                    //             decoration: BoxDecoration(
-                    //               borderRadius: BorderRadius.circular(0),
-                    //               color: Theme.of(context).primaryColor,
-                    //               boxShadow: [
-                    //                 BoxShadow(
-                    //                     offset: Offset(0, 10),
-                    //                     blurRadius: 50,
-                    //                     color: Color(0xffEEEEEE)
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //             child: Icon(Icons.edit, color: Colors.white),
-                    //           ),
-                    //           onTap: (){
-                    //             if (commonVoucherController.AccountTypename.text ==
-                    //                 "OTHERS" ||
-                    //                 commonVoucherController.AccountTypename.text ==
-                    //                     "SITE-OTHERS" ||
-                    //                 commonVoucherController.AccountTypename.text ==
-                    //                     "MATERIAL") {
-                    //               if (commonVoucherController.Accountname.text ==
-                    //                   "--Select--" ||
-                    //                   commonVoucherController.Accountname.text ==
-                    //                       "--SELECT--") {
-                    //                 BaseUtitiles.showToast("You are Not Authorised");
-                    //               } else {
-                    //                 showDialog(
-                    //                     context: context,
-                    //                     builder: (BuildContext context) {
-                    //                       return AccountnameAddAlert();
-                    //                     });
-                    //               }
-                    //             } else {
-                    //             }
-                    //           },
-                    //         ),
-                    //       ),
-                    //       Expanded(
-                    //         flex: 1,
-                    //         child: InkWell(
-                    //           child: Container(
-                    //             margin: EdgeInsets.only(right: 5),
-                    //             alignment: Alignment.center,
-                    //             height: BaseUtitiles.getheightofPercentage(context, 4),
-                    //             decoration: BoxDecoration(
-                    //               borderRadius: BorderRadius.circular(0),
-                    //               color: Theme.of(context).primaryColor,
-                    //               boxShadow: [
-                    //                 BoxShadow(
-                    //                     offset: Offset(0, 10),
-                    //                     blurRadius: 50,
-                    //                     color: Color(0xffEEEEEE)
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //             child: Icon(Icons.delete_forever, color: Colors.white),
-                    //           ),
-                    //           onTap: (){
-                    //             if(commonVoucherController.AccountTypename.text ==
-                    //                 "OTHERS" ||
-                    //                 commonVoucherController.AccountTypename.text ==
-                    //                     "SITE-OTHERS" ||
-                    //                 commonVoucherController.AccountTypename.text ==
-                    //                     "MATERIAL"){
-                    //               if(commonVoucherController.Accountname.text ==
-                    //                   "--Select--" ||
-                    //                   commonVoucherController.Accountname.text ==
-                    //                       "--SELECT--"){
-                    //
-                    //               }
-                    //               else{
-                    //                 commonVoucherController.Accountname_DeleteApi(commonVoucherController.selectedAccId.value, commonVoucherController.selectedAccnameId.value);
-                    //               }
-                    //
-                    //             }
-                    //             else{
-                    //
-                    //             }
-                    //           },
-                    //         ),
-                    //       ),
-                    //
-                    //     ],
-                    //   ),
-                    // ),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   children: [
-                    //     Container(
-                    //       margin: EdgeInsets.only(top: 15),
-                    //       alignment: Alignment.center,
-                    //       height: BaseUtitiles.getheightofPercentage(context, 3),
-                    //       decoration: BoxDecoration(
-                    //         borderRadius: BorderRadius.circular(5),
-                    //         color: Theme.of(context).primaryColor,
-                    //         boxShadow: [
-                    //           BoxShadow(
-                    //               offset: Offset(0, 10),
-                    //               blurRadius: 50,
-                    //               color: Color(0xffEEEEEE)),
-                    //         ],
-                    //       ),
-                    //       child: Padding(
-                    //         padding: const EdgeInsets.all(5),
-                    //         child: Text(
-                    //           "Payment Options",
-                    //           style: TextStyle(
-                    //               fontSize: RequestConstant.ALERT_Font_SIZE,
-                    //               color: Colors.white),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
-                    // // Container(
-                    // //   margin: EdgeInsets.only(top: 10),
-                    // //   alignment: Alignment.center,
-                    // //   height: BaseUtitiles.getheightofPercentage(context, 3),
-                    // //   decoration: BoxDecoration(
-                    // //     borderRadius: BorderRadius.circular(5),
-                    // //     color: Theme.of(context).primaryColor,
-                    // //     boxShadow: [
-                    // //       BoxShadow(
-                    // //           offset: Offset(0, 10),
-                    // //           blurRadius: 50,
-                    // //           color: Color(0xffEEEEEE)
-                    // //       ),
-                    // //     ],
-                    // //   ),
-                    // //   child: Text("Payment Options",style: TextStyle(fontSize: 10),),
-                    // // ),
-
                     Container(
                       margin: EdgeInsets.only(top: 10, left: 10, right: 10),
                       child: Card(
@@ -723,55 +511,54 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                         child: Padding(
                           padding: const EdgeInsets.only(
                               top: 3, left: 10, bottom: 5),
-                          child: TextFormField(
-                            autovalidateMode:
-                            AutovalidateMode.onUserInteraction,
-                            readOnly:
-                            advanceReqVoucherController_new.editcheck == 1
-                                ? true
-                                : commonVoucherController
-                                .VoucherTypeController.text ==
-                                "Site Petty Cash"
-                                ? true
-                                : false,
-                            controller: commonVoucherController.namethrough,
-                            cursorColor: Colors.black,
-                            style: TextStyle(color: Colors.black),
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.zero,
-                              border: InputBorder.none,
-                              labelText: "Name Through",
-                              labelStyle: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: RequestConstant.Lable_Font_SIZE),
-                              prefixIconConstraints:
-                              BoxConstraints(minWidth: 0, minHeight: 0),
-                              prefixIcon: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 8),
-                                  child: ConstIcons.namethrough),
-                            ),
-                            onTap: () {
-                              if (commonVoucherController
-                                  .VoucherTypeController.text ==
-                                  "Site Petty Cash") {
-                                Fluttertoast.showToast(
-                                    msg:
-                                    "Voc type is site petty cash so can't access");
-                              }
-                            },
-                            validator: (value) {
-                              if (commonVoucherController
-                                  .VoucherTypeController.text !=
-                                  "Site Petty Cash") {
-                                if (value!.isEmpty ||
-                                    value == "--Select--" ||
-                                    value == "--SELECT--") {
-                                  return '\u26A0 ${RequestConstant.VALIDATE}';
+                          child: Obx(()=>
+                             TextFormField(
+                              autovalidateMode:
+                              AutovalidateMode.always,
+                              readOnly: advanceReqVoucherController_new.saveButton.value == RequestConstant.RESUBMIT || advanceReqVoucherController_new.saveButton.value == RequestConstant.APPROVAL
+                                  ? true
+                                  : commonVoucherController.VocType.value=="P"
+                                  ? true
+                                  : false,
+                              controller: commonVoucherController.namethrough,
+                              cursorColor: Colors.black,
+                              style: TextStyle(color: Colors.black),
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.zero,
+                                border: InputBorder.none,
+                                labelText: "Name Through",
+                                labelStyle: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: RequestConstant.Lable_Font_SIZE),
+                                prefixIconConstraints:
+                                BoxConstraints(minWidth: 0, minHeight: 0),
+                                prefixIcon: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 8),
+                                    child: ConstIcons.namethrough),
+                              ),
+                              onTap: () {
+                                if (commonVoucherController
+                                    .VoucherTypeController.text ==
+                                    "Site Petty Cash") {
+                                  Fluttertoast.showToast(
+                                      msg:
+                                      "Voc type is site petty cash so can't access");
                                 }
-                                return null;
-                              }
-                            },
+                              },
+                              validator: (value) {
+                                if (commonVoucherController
+                                    .VoucherTypeController.text !=
+                                    "Site Petty Cash") {
+                                  if (value!.isEmpty ||
+                                      value == "--Select--" ||
+                                      value == "--SELECT--") {
+                                    return '\u26A0 ${RequestConstant.VALIDATE}';
+                                  }
+                                  return null;
+                                }
+                              },
+                            ),
                           ),
                         ),
                       ),
@@ -790,10 +577,9 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             autovalidateMode:
-                            AutovalidateMode.onUserInteraction,
+                            AutovalidateMode.always,
                             readOnly: true,
-                            controller:
-                            commonVoucherController.payforController,
+                            controller: commonVoucherController.payforController,
                             cursorColor: Colors.black,
                             style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
@@ -810,22 +596,6 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                                       vertical: 8, horizontal: 8),
                                   child: ConstIcons.payfor),
                             ),
-                            // onTap: () async {
-                            //   if(advanceReqVoucherController_new.editcheck==1){
-                            //
-                            //   }else{
-                            //     showDialog(
-                            //         context: context,
-                            //         builder: (BuildContext context) {
-                            //           return Payfor_Alert();
-                            //         });
-                            //   }
-                            //   // await commonVoucherController.getPayforList(context);
-                            //   // bottomsheetControllers.Payfor(
-                            //   //     context,
-                            //   //     commonVoucherController
-                            //   //         .getPayfordropDownvalue.value);
-                            // },
                             validator: (value) {
                               if (value!.isEmpty ||
                                   value == "--Select--" ||
@@ -834,6 +604,18 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                               }
                               return null;
                             },
+                            onTap: () async {
+                              if(advanceReqVoucherController_new.saveButton.value == RequestConstant.RESUBMIT|| advanceReqVoucherController_new.saveButton.value == RequestConstant.APPROVAL){
+
+                              }
+                              else if (commonVoucherController.selectedAccTypeId.value == 5){
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return Payfor_Alert();
+                                    });
+                              }
+                            },
                           ),
                         ),
                       ),
@@ -841,62 +623,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
 
                     Row(
                       children: <Widget>[
-                        // Expanded(
-                        //   flex: 1,
-                        //   child: Container(
-                        //     margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                        //     child: Card(
-                        //       shape: RoundedRectangleBorder(
-                        //         side: BorderSide(color: Colors.white70, width: 1),
-                        //         borderRadius: BorderRadius.circular(15),
-                        //       ),
-                        //       elevation: 3,
-                        //       child: Padding(
-                        //         padding: const EdgeInsets.only(
-                        //             top: 3, left: 10, bottom: 5),
-                        //         child: TextFormField(
-                        //           readOnly: true,
-                        //           controller: commonVoucherController.Paymodename,
-                        //           cursorColor: Colors.black,
-                        //           style: TextStyle(color: Colors.black),
-                        //           decoration: InputDecoration(
-                        //             contentPadding: EdgeInsets.zero,
-                        //             border: InputBorder.none,
-                        //             labelText: "Mode of Pay",
-                        //             labelStyle: TextStyle(
-                        //                 color: Colors.grey,
-                        //                 fontSize: RequestConstant.Lable_Font_SIZE),
-                        //             prefixIconConstraints:
-                        //                 BoxConstraints(minWidth: 0, minHeight: 0),
-                        //             prefixIcon: Padding(
-                        //                 padding: EdgeInsets.symmetric(
-                        //                     vertical: 8, horizontal: 8),
-                        //                 child: ConstIcons.modeofpay),
-                        //           ),
-                        //           onTap: () async {
-                        //             if(advanceReqVoucherController_new.editcheck==1){
-                        //
-                        //             }else{
-                        //               await commonVoucherController.getPaymodeList(context);
-                        //               setState(() {
-                        //                 bottomsheetControllers.ModeofPay(
-                        //                     context,
-                        //                     commonVoucherController
-                        //                         .getpaymodedropDownvalue.value);
-                        //               });
-                        //             }
-                        //           },
-                        //           validator: (value) {
-                        //             if (value!.isEmpty) {
-                        //               return '\u26A0 Enter user name';
-                        //             }
-                        //             return null;
-                        //           },
-                        //         ),
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
+
                         Expanded(
                           flex: 1,
                           child: Container(
@@ -912,56 +639,62 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                               child: Padding(
                                 padding: const EdgeInsets.only(
                                     top: 3, left: 10, bottom: 5),
-                                child: TextFormField(
-                                  autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                                  readOnly: commonVoucherController
-                                      .VoucherTypeController.text ==
-                                      "Site Petty Cash"
-                                      ? false
-                                      : true,
-                                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                                  controller: advanceReqVoucherController_new
-                                      .entry_amount,
-                                  cursorColor: Colors.black,
-                                  style: TextStyle(color: Colors.black),
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.zero,
-                                    border: InputBorder.none,
-                                    labelText: "Amount",
-                                    labelStyle: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize:
-                                        RequestConstant.Lable_Font_SIZE),
-                                    prefixIconConstraints: BoxConstraints(
-                                        minWidth: 0, minHeight: 0),
-                                    prefixIcon: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 8, horizontal: 8),
-                                        child: ConstIcons.amount),
+                                child: Obx(()=>
+                                  TextFormField(
+                                    autovalidateMode:
+                                    AutovalidateMode.always,
+                                    readOnly: commonVoucherController.VocType.value ==
+                                        "P"
+                                        ? false
+                                        : true,
+                                    keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                        RegExp(r'^\d+\.?\d{0,2}'),
+                                      ),
+                                    ],
+                                    controller: advanceReqVoucherController_new
+                                        .entry_amount,
+                                    cursorColor: Colors.black,
+                                    style: TextStyle(color: Colors.black),
+                                    decoration: InputDecoration(
+                                      contentPadding: EdgeInsets.zero,
+                                      border: InputBorder.none,
+                                      labelText: "Amount",
+                                      labelStyle: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize:
+                                          RequestConstant.Lable_Font_SIZE),
+                                      prefixIconConstraints: BoxConstraints(
+                                          minWidth: 0, minHeight: 0),
+                                      prefixIcon: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 8, horizontal: 8),
+                                          child: ConstIcons.amount),
+                                    ),
+                                    validator: (value) {
+                                      if ((value!.isEmpty || value == '0.0') &&
+                                          commonVoucherController
+                                              .VoucherTypeController.text ==
+                                              "Site Petty Cash") {
+                                        return '\u26A0 ${RequestConstant.VALIDATE}';
+                                      }
+                                      return null;
+                                    },
+                                    onTap: () {
+                                      if (commonVoucherController
+                                          .VoucherTypeController.text ==
+                                          "Site Petty Cash") {
+                                        advanceReqVoucherController_new
+                                            .entry_amount.text ==
+                                            "0.0"
+                                            ? advanceReqVoucherController_new
+                                            .entry_amount.text = ""
+                                            : advanceReqVoucherController_new
+                                            .entry_amount.text;
+                                      }
+                                    },
                                   ),
-                                  validator: (value) {
-                                    if ((value!.isEmpty || value == '0.0') &&
-                                        commonVoucherController
-                                            .VoucherTypeController.text ==
-                                            "Site Petty Cash") {
-                                      return '\u26A0 ${RequestConstant.VALIDATE}';
-                                    }
-                                    return null;
-                                  },
-                                  onTap: () {
-                                    if (commonVoucherController
-                                        .VoucherTypeController.text ==
-                                        "Site Petty Cash") {
-                                      advanceReqVoucherController_new
-                                          .entry_amount.text ==
-                                          "0.0"
-                                          ? advanceReqVoucherController_new
-                                          .entry_amount.text = ""
-                                          : advanceReqVoucherController_new
-                                          .entry_amount.text;
-                                    }
-                                  },
                                 ),
                               ),
                             ),
@@ -983,7 +716,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             autovalidateMode:
-                            AutovalidateMode.onUserInteraction,
+                            AutovalidateMode.always,
                             controller: advanceReqVoucherController_new
                                 .remarksController,
                             cursorColor: Colors.black,
@@ -1002,12 +735,12 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                                       vertical: 8, horizontal: 8),
                                   child: ConstIcons.remarks),
                             ),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return '\u26A0 ${RequestConstant.VALIDATE}';
-                              }
-                              return null;
-                            },
+                            // validator: (value) {
+                            //   if (value!.isEmpty) {
+                            //     return '\u26A0 ${RequestConstant.VALIDATE}';
+                            //   }
+                            //   return null;
+                            // },
                           ),
                         ),
                       ),
@@ -1022,7 +755,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                           primary: Setmybackground,
                         ),
                         onPressed: () async {
-                          if (advanceReqVoucherController_new.editcheck == 1) {
+                          if (advanceReqVoucherController_new.saveButton.value == RequestConstant.RESUBMIT|| advanceReqVoucherController_new.saveButton.value == RequestConstant.APPROVAL) {
                           }
                           else {
                             if (_formKey.currentState!.validate()) {
@@ -1039,11 +772,9 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                                 BaseUtitiles.showToast(
                                     "Please select Project Name");
                               } else {
-                                if (commonVoucherController.selectedAccTypeId.value == 4) {
+                                if (commonVoucherController.VocType.value == "A" && commonVoucherController.payfor.value=="A") {
                                   await advanceReqVoucherController_new.delete_ListTable();
                                   await advanceReqVoucherController_new.getAdvList();
-                                  await advanceReqVoucherController_new.saveListTable();
-                                  await advanceReqVoucherController_new.getTableListDatas();
                                   setState(() {
                                     for (final controller in advanceReqVoucherController_new.amount_ListControllers) {
                                       final parsed = double.tryParse(controller.text) ?? 0;
@@ -1079,7 +810,8 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                   ],
                 ),
               ),
-              Obx(() => commonVoucherController.VocType.value == "A" && commonVoucherController.selectedAccTypeId.value == 5
+
+              Obx(() => commonVoucherController.VocType.value == "A" && commonVoucherController.payfor.value=="AD"
                   ? Container(
                 child: Visibility(
                   visible: advanceReqVoucherController_new
@@ -1257,9 +989,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                       height: BaseUtitiles.getheightofPercentage(context, 4),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
-                        color: advanceReqVoucherController_new.checkColor == 0
-                            ? Colors.white
-                            : Theme.of(context).primaryColor,
+                        color:  Colors.white
                       ),
                       alignment: Alignment.center,
                       child: Text(
@@ -1268,16 +998,12 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                             fontWeight: FontWeight.bold,
                             fontSize: RequestConstant.Lable_Font_SIZE,
                             color:
-                            advanceReqVoucherController_new.checkColor == 0
-                                ? Theme.of(context).primaryColor
-                                : Colors.white),
+                            Theme.of(context).primaryColor
+                        ),
                       ),
                     ),
                     onTap: () {
-                      setState(() {
-                        advanceReqVoucherController_new.checkColor = 1;
                         ResetAlert(context);
-                      });
                     },
                   ),
                 ),
@@ -1288,9 +1014,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                         height: BaseUtitiles.getheightofPercentage(context, 4),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(10)),
-                          color: advanceReqVoucherController_new.checkColor == 0
-                              ? Theme.of(context).primaryColor
-                              : Colors.white,
+                          color:  Theme.of(context).primaryColor
                         ),
                         alignment: Alignment.center,
                         child: Obx(() => Text(
@@ -1298,22 +1022,10 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: RequestConstant.Lable_Font_SIZE,
-                              color: advanceReqVoucherController_new
-                                  .checkColor ==
-                                  0
-                                  ? Colors.white
-                                  : Theme.of(context).primaryColor),
+                              color: Colors.white
+                                  ),
                         ))),
                     onTap: () async {
-                      advanceReqVoucherController_new.checkColor = 0;
-                      // int i = 0;
-                      // advanceReqVoucherController_new.GetTableList.value.forEach((element){
-                      //   if(advanceReqVoucherController_new.amount_ListControllers[i].value.text == "0.0" || advanceReqVoucherController_new.amount_ListControllers[i].value.text == "0" || advanceReqVoucherController_new.amount_ListControllers[i].value.text == ""){
-                      //     advanceReqVoucherController_new.entry_amount.text = advanceReqVoucherController_new.amount_ListControllers[i].value.text;
-                      //   }
-                      //   i++;
-                      // });
-
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
                         if (commonVoucherController
@@ -1387,7 +1099,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                               .text = BaseUtitiles.initiateCurrentDateFormat();
                           commonVoucherController.VoucherTypeController.text =
                           "--SELECT--";
-                          commonVoucherController.VocType.value = "S";
+                          commonVoucherController.VocType.value = "0";
                           projectController.projectname.text =
                               RequestConstant.SELECT;
                           projectController.selectedProjectId.value = 0;
@@ -1396,13 +1108,12 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                           commonVoucherController.Accountname.text =
                               RequestConstant.SELECT;
                           commonVoucherController.selectedAccnameId.value = 0;
-                          // commonVoucherController.payforController.text = RequestConstant.SELECT;
-                          // commonVoucherController.Paymodename.text = RequestConstant.SELECT;
+                          commonVoucherController.payforController.text = RequestConstant.SELECT;
+                          commonVoucherController.payfor.value = "0";
+                          commonVoucherController.Paymodename.text = RequestConstant.SELECT;
                           commonVoucherController.namethrough.text = "";
                           advanceReqVoucherController_new
                               .remarksController.text = "";
-                          advanceReqVoucherController_new.radioType.value =
-                          "SiteWise Payment";
                           advanceReqVoucherController_new.entry_amount.text =
                           "0.0";
                           await advanceReqVoucherController_new
@@ -1411,8 +1122,6 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                               .itemlistTable_Delete();
                           setState(() {
                             advanceReqVoucherController_new.GetTableList.value
-                                .clear();
-                            advanceReqVoucherController_new.getDetList_Advance
                                 .clear();
                           });
                           Navigator.pop(context);
@@ -1433,14 +1142,11 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
   }
 
   Future SubmitAlert(BuildContext context) async {
-    advanceReqVoucherController_new.buttonControl = 0;
     return await showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Alert!'),
-        content: Text(advanceReqVoucherController_new.editcheck == 1
-            ? 'Are you sure to Re-Submit?'
-            : 'Are you sure to submit?'),
+        content: Text('Are you sure to ${advanceReqVoucherController_new.saveButton.value}?'),
         actions: [
           Container(
             margin: EdgeInsets.only(left: 20, right: 20),
@@ -1471,48 +1177,18 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                     endIndent: 15, //Spacing at the bottom of divider.
                   ),
 
-                  // Expanded(
-                  //   child: TextButton(
-                  //       onPressed: () async {
-                  //         // BaseUtitiles.showLoadingDialog(context, Theme.of(context).primaryColor);
-                  //         if(advanceReqVoucherController_new.buttonControl == 0){
-                  //           if(commonVoucherController.payfor.value=="A"){
-                  //             await advanceReqVoucherController_new.getTableListDatas();
-                  //
-                  //           }else{
-                  //             await advanceReqVoucherController_new.getItemlistTablesDatas();
-                  //           }
-                  //           await advanceReqVoucherController_new.SaveApi_ItemlistScreen(context, advanceReqVoucherController_new.vocId);
-                  //         }
-                  //         else if(  advanceReqVoucherController_new.buttonControl==1){
-                  //           advanceReqVoucherController_new.buttonControl==0;
-                  //           BaseUtitiles.showToast("Please wait... processing.");
-                  //         }
-                  //       },
-                  //       child:
-                  //       Text(
-                  //           advanceReqVoucherController_new.saveButton.value,
-                  //           style: TextStyle(
-                  //               color: Theme.of(context).primaryColor,
-                  //               fontWeight: FontWeight.bold,
-                  //               fontSize: RequestConstant.Lable_Font_SIZE))),
-                  // )
-
                   Expanded(
                     child: StatefulBuilder(
                       builder: (context, setState) => TextButton(
                         onPressed: () async {
-                          if (commonVoucherController.VocType.value == "A" &&
-                              commonVoucherController.selectedAccTypeId.value ==
-                                  4) {
+                          if (commonVoucherController.VocType.value == "A" && commonVoucherController.payfor.value=="A") {
                             await advanceReqVoucherController_new
                                 .getTableListDatas();
                           } else {
                             await advanceReqVoucherController_new
                                 .getItemlistTablesDatas();
                           }
-                          if (await BaseUtitiles.checkNetworkAndShowLoader(
-                              context)) {
+                          if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
                             await advanceReqVoucherController_new
                                 .SaveApi_ItemlistScreen(context,
                                 advanceReqVoucherController_new.vocId);
@@ -1521,11 +1197,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                         child: Text(
                           advanceReqVoucherController_new.saveButton.value,
                           style: TextStyle(
-                            color:
-                            advanceReqVoucherController_new.buttonControl ==
-                                0
-                                ? Theme.of(context).primaryColor
-                                : Colors.grey, // Change color when disabled
+                            color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,
                             fontSize: RequestConstant.Lable_Font_SIZE,
                           ),
@@ -1572,7 +1244,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                           child: Column(
                             children: <Widget>[
                               Container(
-                                margin: EdgeInsets.only(left: 4, top: 5),
+                                margin: EdgeInsets.only(left: 10, top: 5),
                                 child: Row(
                                   mainAxisAlignment:
                                   MainAxisAlignment.spaceBetween,
@@ -1591,6 +1263,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                                             fontSize: 15),
                                       ),
                                     ),
+                                    (advanceReqVoucherController_new.saveButton.value == RequestConstant.RESUBMIT || advanceReqVoucherController_new.saveButton.value == RequestConstant.APPROVAL)?SizedBox():
                                     Expanded(
                                       child: InkWell(
                                         child: Container(
@@ -1748,7 +1421,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
               height: MediaQuery.of(context).size.height * 0.79,
               child: Obx(() => ListView.builder(
                 shrinkWrap: true,
-                padding: EdgeInsets.zero,
+                padding: EdgeInsets.only(bottom: BaseUtitiles.getheightofPercentage(context, 10)),
                 physics: BouncingScrollPhysics(),
                 itemCount:
                 advanceReqVoucherController_new.GetTableList.length,
@@ -1767,7 +1440,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                           child: Column(
                             children: <Widget>[
                               Container(
-                                margin: EdgeInsets.only(left: 4, top: 3),
+                                margin: EdgeInsets.only(left: 10, top: 3),
                                 child: Row(
                                   mainAxisAlignment:
                                   MainAxisAlignment.spaceBetween,
@@ -1787,6 +1460,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                                             fontSize: 15),
                                       ),
                                     ),
+                                    (advanceReqVoucherController_new.saveButton.value == RequestConstant.RESUBMIT || advanceReqVoucherController_new.saveButton.value == RequestConstant.APPROVAL)?SizedBox():
                                     Expanded(
                                       child: InkWell(
                                         child: Container(
@@ -1986,6 +1660,11 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                                             .amount_ListControllers[
                                         index],
                                         keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp(r'^\d+\.?\d{0,2}'),
+                                          ),
+                                        ],
                                         decoration: InputDecoration(
                                           contentPadding:
                                           EdgeInsets.fromLTRB(
@@ -2035,28 +1714,6 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                                   ],
                                 ),
                               ),
-
-                              // Container(
-                              //   margin: EdgeInsets.only(
-                              //       left: 10, right: 10, bottom: 5, top: 5),
-                              //   child: Row(
-                              //     mainAxisAlignment:
-                              //         MainAxisAlignment.spaceAround,
-                              //     children: <Widget>[
-                              //       Expanded(
-                              //           child: Text(
-                              //         "Amt",
-                              //         style: TextStyle(color: Colors.black),
-                              //       )),
-                              //       Expanded(
-                              //           child: Text(
-                              //         advanceReqVoucherController_new.GetTableList[index].Amount.toString(),
-                              //         style: TextStyle(color: Colors.black),
-                              //       )),
-                              //       //   Text(inward_controller.inwardItemListdatas[index].inwQty.toString(),style: TextStyle(color: Colors.white),)),
-                              //     ],
-                              //   ),
-                              // ),
                             ],
                           ),
                         ),

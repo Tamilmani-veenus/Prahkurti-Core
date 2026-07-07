@@ -57,9 +57,9 @@ class CommonVoucherController extends GetxController{
   RxInt selectedPaymodeId = 0.obs;
   RxString selectedPaymodeName = "".obs;
 
-  Future getAccountTypeList() async {
+  Future getAccountTypeList({type}) async {
     getdropDownvalue.value.clear();
-    final value = await CommonProvider.getAccountType();
+    final value = await CommonProvider.getAccountType(type);
     if (value != null) {
       if(value.success == true){
         if(value.result!.isNotEmpty){
@@ -102,17 +102,19 @@ class CommonVoucherController extends GetxController{
   }
   //---Account Name--
 
-  Future getAccountName() async {
+  Future getAccountName({type}) async {
     getaccdropDownvalue.value.clear();
     final value = await CommonProvider.getAccountnameDropdown(selectedAccTypeId.value);
     if (value != null) {
       if(value.success == true){
         if(value.result!.isNotEmpty){
           getaccdropDownvalue.value = value.result!;
-          getaccdropDownvalue.value.insert(
-            0,
-            Result(accNameid: 0, accName: "--SELECT--"),
-          );
+          if(type!="AdvReq") {
+            getaccdropDownvalue.value.insert(
+              0,
+              Result(accNameid: 0, accName: "--SELECT--"),
+            );
+          }
         } else {
           BaseUtitiles.showToast("No Record Found..");
         }

@@ -17,7 +17,8 @@ import 'package:get/get.dart';
 import '../pdf_generate/pdf_model/pdfmodel.dart';
 
 class AttendanceReport extends StatefulWidget {
-  const AttendanceReport({Key? key}) : super(key: key);
+  final String heading;
+  const AttendanceReport({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<AttendanceReport> createState() => _AttendanceReportState();
@@ -42,9 +43,10 @@ class _AttendanceReportState extends State<AttendanceReport> {
       attendanceController.FromdateController.clear();
       attendanceController.TodateController.clear();
       DateTime currentDate = DateTime.now();
+      DateTime oneWeekBefore = currentDate.subtract(const Duration(days: 7));
 
       attendanceController.FromdateController.text =
-          currentDate.toString().substring(0, 10);
+          oneWeekBefore.toString().substring(0, 10);
       attendanceController.TodateController.text =
           currentDate.toString().substring(0, 10);
 
@@ -84,13 +86,15 @@ class _AttendanceReportState extends State<AttendanceReport> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        "Attendance Report",
-                        style: TextStyle(
-                          fontSize: RequestConstant.Heading_Font_SIZE,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                       Expanded(
+                         child: Text(
+                          widget.heading,
+                          style: TextStyle(
+                            fontSize: RequestConstant.Heading_Font_SIZE,
+                            fontWeight: FontWeight.bold,
+                          ),
+                                               ),
+                       ),
                       TextButton(
                         onPressed: () {
                           Navigator.pop(context);
@@ -142,11 +146,19 @@ class _AttendanceReportState extends State<AttendanceReport> {
                                 ),
                               ),
                               onTap: () async {
+
+                                DateTime today = DateTime.now();
+                                DateTime initialDate = today.subtract(const Duration(days: 7));
+
+                                if (initialDate.isBefore(DateTime(1900))) {
+                                  initialDate = DateTime(1900);
+                                }
+
                                 var Frdate = await showDatePicker(
                                     context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(2010),
-                                    lastDate: DateTime.now(),
+                                    initialDate: initialDate,
+                                    firstDate: DateTime(1900),
+                                    lastDate: today,
                                     builder: (context, child) {
                                       return Theme(
                                         data: Theme.of(context).copyWith(
@@ -218,11 +230,13 @@ class _AttendanceReportState extends State<AttendanceReport> {
                                               Theme.of(context).primaryColor)),
                                 ),
                                 onTap: () async {
+                                  DateTime today = DateTime.now();
+                                  DateTime fromDate = DateTime.parse(siteController.FromdateController.text);
                                   var Todate = await showDatePicker(
                                       context: context,
-                                      initialDate: DateTime.now(),
-                                      firstDate: DateTime(2010),
-                                      lastDate: DateTime.now(),
+                                      initialDate: today.isBefore(fromDate) ? fromDate : today,
+                                      firstDate: fromDate,
+                                      lastDate: today,
                                       builder: (context, child) {
                                         return Theme(
                                           data: Theme.of(context).copyWith(
@@ -246,9 +260,10 @@ class _AttendanceReportState extends State<AttendanceReport> {
                                           child: child!,
                                         );
                                       });
-                                  attendanceController.TodateController.text =
-                                      Todate.toString().substring(0, 10);
-                                },
+                                  if(Todate != null) {
+                                    attendanceController.TodateController.text =
+                                        Todate.toString().substring(0, 10);
+                                  } },
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Select Date';
@@ -296,7 +311,7 @@ class _AttendanceReportState extends State<AttendanceReport> {
                         ),
                         onTap: () async {
                           await reportsController.getReportProjectList(
-                              type: "attendance Rpt");
+                              type: "attendance Rpt",Url: "Report");
                           if (mounted) {
                             bottomsheetControllers.projectNameReport(
                                 context,
@@ -306,7 +321,7 @@ class _AttendanceReportState extends State<AttendanceReport> {
                         },
                         validator: (value) {
                           if (value!.isEmpty || value == "--Select--") {
-                            return '\u26A0 Please select project name.';
+                            return '\u26A0 Required.';
                           }
                           return null;
                         },
@@ -348,7 +363,7 @@ class _AttendanceReportState extends State<AttendanceReport> {
                         onTap: () async {
                           await siteController.subcontEntry_siteDropdowntList(
                               context, 0,
-                              type: "InwardReport");
+                              type: "Report");
                           if (mounted) {
                             bottomsheetControllers.siteNameReport(context,
                                 siteController.getSiteDropdownvalue.value);
@@ -356,7 +371,7 @@ class _AttendanceReportState extends State<AttendanceReport> {
                         },
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return '\u26A0 Please select site name.';
+                            return '\u26A0 Required.';
                           }
                           return null;
                         },
@@ -399,7 +414,7 @@ class _AttendanceReportState extends State<AttendanceReport> {
                           await subcontractorController.getSubcontList(context,
                               reportsController.selectedProjectId.value,
                               reportsController.selectedsiteId.value,
-                              subcontractorController.checkScreen);
+                              subcontractorController.checkScreen,Url:"Report");
                           if (mounted) {
                             bottomsheetControllers.SubcontractorName(context, subcontractorController.getdropDownvalue.value);
 
@@ -410,7 +425,7 @@ class _AttendanceReportState extends State<AttendanceReport> {
                         },
                         validator: (value) {
                           if (value!.isEmpty || value == "--Select--") {
-                            return '\u26A0 Please select Subcontractor name.';
+                            return '\u26A0 Required';
                           }
                           return null;
                         },
@@ -458,7 +473,7 @@ class _AttendanceReportState extends State<AttendanceReport> {
                         },
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return '\u26A0 Please select work type';
+                            return '\u26A0 Required';
                           }
                           return null;
                         },
@@ -595,7 +610,7 @@ class _AttendanceReportState extends State<AttendanceReport> {
 
   Widget ListDetails() {
     return Container(
-      height: BaseUtitiles.getheightofPercentage(context, 50),
+      height: BaseUtitiles.getheightofPercentage(context, 36),
       child: Column(
         children: [
           Expanded(
@@ -788,13 +803,13 @@ class _AttendanceReportState extends State<AttendanceReport> {
                                           attendanceController.attendanceDatas
                                                       .value[index].WorkType ==
                                                   'NMR'
-                                              ? 'Claimable NMR'
+                                              ? 'NMR'
                                               : attendanceController
                                                           .attendanceDatas
                                                           .value[index]
                                                           .WorkType ==
                                                       'RATE'
-                                                  ? 'Daily attendance'
+                                                  ? 'RATE'
                                                   : attendanceController
                                                       .attendanceDatas
                                                       .value[index]

@@ -25,10 +25,10 @@ import 'package:get/get.dart';
 
 import '../pdf_generate/pdf_model/pdfmodel.dart';
 import '../pdf_generate/pdf_openfilepath.dart';
-import 'dpr_reportpdf.dart';
 
 class DPRReport extends StatefulWidget {
-  const DPRReport({Key? key}) : super(key: key);
+  final String heading;
+  const DPRReport({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<DPRReport> createState() => _DPRReportState();
@@ -49,25 +49,18 @@ class _DPRReportState extends State<DPRReport> {
   void initState() {
     var duration = const Duration(seconds: 0);
     Future.delayed(duration, () async {
-      dprController.FromdateController.clear();
-      dprController.TodateController.clear();
-      siteController.siteDropdownName.clear();
-      DateTime currentDate = DateTime. now();
-      dprController.dprList.value=[];
-      dprController.FromdateController.text=currentDate.toString().substring(0,10);
-      dprController.TodateController.text=currentDate.toString().substring(0,10);
-      await reportsController.getReportProjectList();
-      await reportsController.getSiteReportList(context,0);
-      await reportsController.getSubcontactorReportList();
+      dprController.dprList.value = [];
+      dprController.FromdateController.text=BaseUtitiles.initiateCurrentDateFormat();
+      dprController.TodateController.text=BaseUtitiles.initiateCurrentDateFormat();
       reportsController.projectname.text = "--ALL--";
       reportsController.selectedProjectId.value = 0;
+      reportsController.sitename.text = "--ALL--";
+      reportsController.selectedsiteId.value = 0;
       reportsController.subcontractorname.text = "--ALL--";
       reportsController.selectedSubcontId.value = 0;
-      reportsController.selectedsiteId.value = 0;
-      reportsController.sitename.text = "--ALL--";
       dailyWrkDone_DPR_Controller.workType_DPR_Controller.text = "--SELECT--";
-      dailyWrkDone_DPR_Controller.wrktype_DPR.value ="0";
-      dailyWrkDone_DPR_Controller.reportTypeController.text="--SELECT--";
+      dailyWrkDone_DPR_Controller.wrktype_DPR.value = "0";
+      dailyWrkDone_DPR_Controller.reportTypeController.text = "--SELECT--";
       dailyWrkDone_DPR_Controller.reportType.value = 0;
     });
     super.initState();
@@ -94,11 +87,13 @@ class _DPRReportState extends State<DPRReport> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "DPR Report",
-                        style: TextStyle(
-                            fontSize: RequestConstant.Heading_Font_SIZE,
-                            fontWeight: FontWeight.bold),
+                      Expanded(
+                        child: Text(
+                          widget.heading,
+                          style: TextStyle(
+                              fontSize: RequestConstant.Heading_Font_SIZE,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                       TextButton(
                           onPressed: () {
@@ -172,12 +167,6 @@ class _DPRReportState extends State<DPRReport> {
                                       });
                                   dprController.FromdateController.text = Frdate.toString().substring(0, 10);
                                 },
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Select Date';
-                                  }
-                                  return null;
-                                },
                               ),
                             ),
                           ),
@@ -239,12 +228,6 @@ class _DPRReportState extends State<DPRReport> {
                                       });
                                   dprController.TodateController.text = Todate.toString().substring(0, 10);
                                 },
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Select Date';
-                                  }
-                                  return null;
-                                },
                               ),
                             ),
                           ),
@@ -286,20 +269,10 @@ class _DPRReportState extends State<DPRReport> {
       
                           ),
                         ),
-                        onTap: () {
-                          // await projectController.getProjectList(context, 0);
-                          setState(() {
+                        onTap: () async {
+                          await reportsController.getReportProjectList(type: "Report");
                             bottomsheetControllers.projectNameReport(context, reportsController.getProjectdropDownvalue.value);
-                          });
-      
                         },
-                        validator: (value) {
-                          if (value!.isEmpty || value == "--Select--") {
-                            return '\u26A0 Please select project name.';
-                          }
-                          return null;
-                        },
-      
                       ),
                     ),
                   ),
@@ -337,18 +310,10 @@ class _DPRReportState extends State<DPRReport> {
       
                           ),
                         ),
-                        onTap: () {
-                          setState(() {
-                            bottomsheetControllers.siteNameReport(context, reportsController.getSiteDropdownvalue.value );
-                          });
+                        onTap: () async {
+                          await siteController.subcontEntry_siteDropdowntList(context, 0,type: "Report");
+                          bottomsheetControllers.siteNameReport(context, siteController.getSiteDropdownvalue.value);
                         },
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return '\u26A0 Please select site name.';
-                          }
-                          return null;
-                        },
-      
                       ),
                     ),
                   ),
@@ -386,75 +351,14 @@ class _DPRReportState extends State<DPRReport> {
       
                           ),
                         ),
-                        onTap: () {
-                          setState(() {
-                            bottomsheetControllers.subcontractorNameReport(context, reportsController.getdropDownvalue.value);
-                          });
-      
+                        onTap: () async {
+                          await reportsController.getSubcontactorReportList();
+                          bottomsheetControllers.subcontractorNameReport(context, reportsController.getdropDownvalue.value);
                         },
-                        validator: (value) {
-                          if (value!.isEmpty || value == "--Select--") {
-                            return '\u26A0 Please select Subcontractor name.';
-                          }
-                          return null;
-                        },
-      
                       ),
                     ),
                   ),
                 ),
-      
-                // Container(
-                //   margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                //   child: Card(
-                //     shape: RoundedRectangleBorder(
-                //       side: BorderSide(color: Colors.white70, width: 1),
-                //       borderRadius: BorderRadius.circular(15),
-                //     ),
-                //     elevation: 3,
-                //     child: Padding(
-                //       padding:
-                //       const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                //       child: TextFormField(
-                //         readOnly: true,
-                //         controller: dailyWrkDone_DPR_Controller.workType_DPR_Controller,
-                //         cursorColor: Colors.black,
-                //         style: TextStyle(color: Colors.black),
-                //         decoration: InputDecoration(
-                //           contentPadding: EdgeInsets.zero,
-                //           border: InputBorder.none,
-                //           labelText: "Work Type",
-                //           labelStyle: TextStyle(
-                //               color: Colors.grey,
-                //               fontSize: RequestConstant.Lable_Font_SIZE),
-                //           prefixIconConstraints:
-                //           BoxConstraints(minWidth: 0, minHeight: 0),
-                //           prefixIcon: Padding(
-                //               padding: EdgeInsets.symmetric(
-                //                   vertical: 8, horizontal: 8),
-                //               child: ConstIcons.types
-                //
-                //           ),
-                //         ),
-                //         onTap: () {
-                //           showDialog(
-                //               context: context,
-                //               builder: (BuildContext context) {
-                //                 return  wrkTypeAlertAll();
-                //               });
-                //         },
-                //
-                //         validator: (value) {
-                //           if (value!.isEmpty) {
-                //             return '\u26A0 Please select work type';
-                //           }
-                //           return null;
-                //         },
-                //
-                //       ),
-                //     ),
-                //   ),
-                // ),
       
                 Container(
                   margin: EdgeInsets.only(top: 5, left: 10, right: 10),
@@ -469,13 +373,13 @@ class _DPRReportState extends State<DPRReport> {
                       const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                       child: TextFormField(
                         readOnly: true,
-                        controller: dailyWrkDone_DPR_Controller.reportTypeController,
+                        controller: dailyWrkDone_DPR_Controller.workType_DPR_Controller,
                         cursorColor: Colors.black,
                         style: TextStyle(color: Colors.black),
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.zero,
                           border: InputBorder.none,
-                          labelText: "Report Type",
+                          labelText: "Work Type",
                           labelStyle: TextStyle(
                               color: Colors.grey,
                               fontSize: RequestConstant.Lable_Font_SIZE),
@@ -484,23 +388,17 @@ class _DPRReportState extends State<DPRReport> {
                           prefixIcon: Padding(
                               padding: EdgeInsets.symmetric(
                                   vertical: 8, horizontal: 8),
-                              child: ConstIcons.accounttype
+                              child: ConstIcons.types
+
                           ),
                         ),
                         onTap: () {
                           showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return  ReportType_Alert();
+                                return  const wrkTypeAlertAll();
                               });
                         },
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return '\u26A0 Please select report type';
-                          }
-                          return null;
-                        },
-      
                       ),
                     ),
                   ),
@@ -538,7 +436,6 @@ class _DPRReportState extends State<DPRReport> {
                           ),
                           onTap: () async {
                             if(_formKey.currentState!.validate()){
-                              dprController.dprList.value=[];
                               await dprController.getDprReportList();
                             }
                             },
@@ -607,21 +504,6 @@ class _DPRReportState extends State<DPRReport> {
      print(ApiConstant.Web_URL + 'MobileReports/Mobile_DPR_RPT.aspx?UID=$uid&UTYPE=$uType&PID=$pId&SID=$SId&SUBID=$subId&FDT=$fdate&TDT=$todate&PNAME=$pName&SNAME=$sName&SUBNAME=$subName&WORKTYPE=$wType&REPTYPE=$repType');
   }
 
-  List<PdfListModel> getDpr_ReportList() {
-    dprController.getDprList_Pdf.clear();
-    dprController.dprList.forEach((element) async {
-      var list = PdfListModel(
-        workNo: element.workNo,
-        // workDate: element.workDate,
-        projectName: element.projectName,
-        siteName: element.siteName,
-        subContName: element.subContName,
-      );
-      dprController.getDprList_Pdf.add(list);
-    });
-    return dprController.getDprList_Pdf;
-  }
-
 
   Widget ListDetails(){
     return Container(
@@ -629,12 +511,12 @@ class _DPRReportState extends State<DPRReport> {
       child: Obx(()=>ListView.builder(
           shrinkWrap: true,
           physics: ScrollPhysics(),
-          padding: EdgeInsets.zero,
+          padding: EdgeInsets.only(bottom: BaseUtitiles.getheightofPercentage(context, 10)),
           itemCount: dprController.dprList.value.length,
           itemBuilder: (context, index) {
             return InkWell(
               onTap: (){
-                dprController.OnItemsSelected(dprController.dprList.value[index].workId,dprController.dprList.value[index].workNo, context);
+                dprController.OnItemsSelected(dprController.dprList.value[index].id,dprController.dprList.value[index].workNo, context);
               },
               child: Container(
                 margin: EdgeInsets.only(left: 3, right: 3, top: 5, bottom: 5),
@@ -706,7 +588,7 @@ class _DPRReportState extends State<DPRReport> {
                             Expanded(
                               flex: 3,
                               child: Text(
-                                dprController.dprList.value[index].subContName.toString(),style: TextStyle(color: Colors.black),
+                                dprController.dprList.value[index].subcontractName.toString(),style: TextStyle(color: Colors.black),
                               ),
                             ),
                           ],
@@ -716,7 +598,7 @@ class _DPRReportState extends State<DPRReport> {
                           children: [
                             Expanded(
                                 flex: 2,
-                                child: Text("Aproval",style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold))),
+                                child: Text("Status",style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold))),
 
                             Expanded(
                               flex: 3,
@@ -727,66 +609,6 @@ class _DPRReportState extends State<DPRReport> {
                             ),
                           ],
                         ),
-
-
-                        // Container(
-                        //   margin: EdgeInsets.only(top: 10),
-                        //   child: Row(
-                        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        //     crossAxisAlignment: CrossAxisAlignment.start,
-                        //     children: [
-                        //       Text(
-                        //         ("Project Name" ),style: TextStyle(color: Colors.white),
-                        //       ),
-                        //       Container(
-                        //         width: BaseUtitiles.getWidthtofPercentage(context, 55),
-                        //         child: Text(
-                        //           (dprController.dprList.value[index].projectName.toString()),style: TextStyle(color: Colors.white),
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
-                        // Container(
-                        //   margin: EdgeInsets.only(top: 10),
-                        //   child: Row(
-                        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        //     crossAxisAlignment: CrossAxisAlignment.start,
-                        //     children: [
-                        //       Text(
-                        //         ("Site Name " ),style: TextStyle(color: Colors. white),
-                        //       ),
-                        //       Container(
-                        //         width: BaseUtitiles.getWidthtofPercentage(context, 55),
-                        //         child: Text(
-                        //           (dprController.dprList.value[index].siteName.toString()),style: TextStyle(color: Colors.white),
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
-                        // Container(
-                        //   margin: EdgeInsets.only(top: 10),
-                        //   child: Row(
-                        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        //     crossAxisAlignment: CrossAxisAlignment.start,
-                        //     children: [
-                        //       Text(
-                        //         ("Aproval"),style: TextStyle(color: Colors. white),
-                        //       ),
-                        //       Container(
-                        //         width: BaseUtitiles.getWidthtofPercentage(context, 55),
-                        //         child: Text(
-                        //           (
-                        //               dprController.dprList.value[index].appStatus.toString()),style: TextStyle(color:Colors.white),
-                        //         ),
-                        //       ),
-                        //
-                        //     ],
-                        //   ),
-                        // ),
-
-
                       ],
                     ),
                   ),

@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:prahkurticore/controller/pendinglistcontroller.dart';
 
 import '../controller/commonvoucher_controller.dart';
 import '../controller/logincontroller.dart';
@@ -46,15 +49,12 @@ class AdvanceReqVoucherController_new extends GetxController {
   List<TextEditingController> Itemlist_amount_ListControllers = [];
   List<TextEditingController> Itemlist_netAmount_ListController = [];
 
-  RxList<VocDet> getDetList_NMR = <VocDet>[].obs;
-  RxList<VocDet> getDetList_Advance = <VocDet>[].obs;
+  RxList<AccountAdvanceReqVoucherSwPayment> getDetList_NMR = <AccountAdvanceReqVoucherSwPayment>[].obs;
+  RxList<AccountAdvanceReqVoucherSwPayment> getDetList_Advance = <AccountAdvanceReqVoucherSwPayment>[].obs;
   RxList entryList = [].obs;
   RxList mainlist = [].obs;
   RxList editListApiDatas = [].obs;
-  RxString radioType = "".obs;
   int vocId = 0;
-  int checkColor = 0;
-  int buttonControl = 0;
 
   RxString saveButton = RequestConstant.SUBMIT.obs;
   RxString listButton = "List".obs;
@@ -66,8 +66,8 @@ class AdvanceReqVoucherController_new extends GetxController {
   late List<AdvReqVoucherItemListTableModel> itemListUpdateModelList = <AdvReqVoucherItemListTableModel>[];
   RxList ItemGetTableListdata = [].obs;
   List<AdvReqVoucherItemListTableModel> deleteTableModelList = <AdvReqVoucherItemListTableModel>[];
-  int entrycheck = 0;
-  int editcheck = 0;
+  PendingListController pendingListController = Get.put(PendingListController());
+
 
   calculation(double? amt, double? tds) {
     itemlistTdsamount.text = (amt! * tds! / 100).toString();
@@ -75,23 +75,26 @@ class AdvanceReqVoucherController_new extends GetxController {
   }
 
   Future getEntryList() async {
-    mainlist.value.clear();
     entryList.value.clear();
-    await AdvanceReqVoucherProvider.getEntry_List(
-        loginController.user.value.userId,
-        loginController.UserType(),
-        entrlistFdateController.text,
-        entrlistTdateController.text)
-        .then((value) async {
-      if (value != null && value.length > 0) {
-        mainlist.value = value;
-        entryList.value = mainlist.value;
-        return mainlist.value;
-      } else {
-        BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+    final value = await AdvanceReqVoucherProvider.getEntry_List(entrlistFdateController.text,
+        entrlistTdateController.text);
+    if (value != null) {
+      if(value.success==true){
+        if(value.result!.isNotEmpty){
+          entryList.value = value.result!;
+          mainlist.value = value.result!;
+        }
+        else {
+          BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+        }
+      }else {
+        BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
       }
-    });
+    } else {
+      BaseUtitiles.showToast("Something Went Wrong...");
+    }
   }
+
 
   itemlistTable_Delete() async {
     await advreqVoucher_ItemlistService.AdvreqVoucher_ItemlistTable_delete();
@@ -99,20 +102,18 @@ class AdvanceReqVoucherController_new extends GetxController {
 
   itemlistPopup_saveLabTableDatas(BuildContext context) async {
     int j = 0;
-    int amt = 0;
-    int netAmount = 0;
-    ItemListTableModelList.clear();
+    ItemListTableModelList=[];
     if(itemlistNetAmount.text == "0.0" || itemlistNetAmount.text == "0.00" || itemlistNetAmount.text == "0") {
     } else {
       ItemListTableModel =  AdvReqVoucherItemListTableModel();
+      ItemListTableModel.reqDetId = 0;
       ItemListTableModel.siteId = siteController.selectedsiteId.value;
       ItemListTableModel.siteName = siteController.Sitename.text;
       ItemListTableModel.paymentType = commonVoucherController.detVocType;
-      ItemListTableModel.amount = double.parse(itemlistDetAmount.value.text);
-      ItemListTableModel.tds_percent =
-          double.parse(itemlistTds_Percent.value.text);
-      ItemListTableModel.tds_amount = double.parse(itemlistTdsamount.value.text);
-      ItemListTableModel.netAmount = double.parse(itemlistNetAmount.value.text);
+      ItemListTableModel.amount = double.tryParse(itemlistDetAmount.value.text) ?? 0.0;
+      ItemListTableModel.tds_percent = double.tryParse(itemlistTds_Percent.value.text)?? 0.0;
+      ItemListTableModel.tds_amount = double.tryParse(itemlistTdsamount.value.text)?? 0.0;
+      ItemListTableModel.netAmount = double.tryParse(itemlistNetAmount.value.text)?? 0.0;
       ItemGetTableListdata.value.forEach((element) {
         if (element.siteId == ItemListTableModel.siteId) {
           j = 1;
@@ -138,6 +139,7 @@ class AdvanceReqVoucherController_new extends GetxController {
     datas.forEach((value) {
       var ItemListTableModel =  AdvReqVoucherItemListTableModel();
       ItemListTableModel.id = value['id'];
+      ItemListTableModel.reqDetId = value['reqDetId'];
       ItemListTableModel.siteId = value['siteId'];
       ItemListTableModel.siteName = value['siteName'];
       ItemListTableModel.paymentType = value['paymentType'];
@@ -184,19 +186,23 @@ class AdvanceReqVoucherController_new extends GetxController {
   Future getAdvList() async {
     GetTableList.value=[];
     AdvanceList.value=[];
-    await AdvanceReqVoucherProvider.getAdvTypeList(
-        commonVoucherController.payfor.value,
-        commonVoucherController.selectedAccTypeId.value,
-        commonVoucherController.selectedAccnameId.value,
-        projectController.selectedProjectId.value)
-        .then((value) async {
-      if (value != null && value.length > 0) {
-        AdvanceList.value = value;
-        return AdvanceList.value;
-      } else {
-        BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+    final value = await AdvanceReqVoucherProvider.getAdvTypeList(commonVoucherController.payfor.value, commonVoucherController.selectedAccTypeId.value, commonVoucherController.selectedAccnameId.value, projectController.selectedProjectId.value);
+    if (value != null) {
+      if(value.success==true){
+        if(value.result!.isNotEmpty){
+          AdvanceList.value = value.result!;
+          await saveListTable();
+          await getTableListDatas();
+        }
+        else {
+          BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+        }
+      }else {
+        BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
       }
-    });
+    } else {
+      BaseUtitiles.showToast("Something Went Wrong...");
+    }
   }
 
   delete_ListTable() async {
@@ -207,16 +213,16 @@ class AdvanceReqVoucherController_new extends GetxController {
     DBTableModelList.clear();
     AdvanceList.forEach((element) {
       advreqvouModel = new AdvReqVoucher_SiteWisePayment_TableModel();
+      advreqvouModel.reqDetId = 0;
       advreqvouModel.purOrdMasId = element.purOrdMasId;
-      advreqvouModel.orderNo = element.orderNo;
-      advreqvouModel.project = element.project;
-      advreqvouModel.projectId = element.projectid;
+      advreqvouModel.orderNo = element.poNo;
+      advreqvouModel.project = element.projectName;
+      advreqvouModel.projectId = element.projectId;
       advreqvouModel.siteName = element.siteName;
-      advreqvouModel.siteId = element.siteid;
+      advreqvouModel.siteId = element.siteId;
       advreqvouModel.dprAmt = element.netamt;
       advreqvouModel.advanceAmt = element.advanceAmt;
-      advreqvouModel.bAmount = element.bAmount;
-      advreqvouModel.amount = element.amount;
+      advreqvouModel.bAmount = element.balanceAmount;
       advreqvouModel.amount = double.parse("0");
       DBTableModelList.add(advreqvouModel);
     });
@@ -229,10 +235,11 @@ class AdvanceReqVoucherController_new extends GetxController {
     var datas = await advReqVou_sitewisePayService.AdvreqVoucher_SiteWisePaymentTable_readAll();
     DBTableModel_ReadList = <AdvReqVoucher_SiteWisePayment_TableModel>[];
     DBTableModel_ReadList.clear();
-    GetTableList.value.clear();
+    GetTableList.value=[];
     datas.forEach((value) {
       advreqvouModel = new AdvReqVoucher_SiteWisePayment_TableModel();
       TableList_textControllersInitiate();
+      advreqvouModel.reqDetId = value['reqDetId'];
       advreqvouModel.purOrdMasId = value['PurOrdMasId'];
       advreqvouModel.orderNo = value['OrderNo'];
       advreqvouModel.project = value['Project'];
@@ -267,6 +274,7 @@ class AdvanceReqVoucherController_new extends GetxController {
     update_DBTableModelList.clear();
     GetTableList.forEach((element) {
       advreqvouModel = new AdvReqVoucher_SiteWisePayment_TableModel();
+      advreqvouModel.reqDetId = element.reqDetId;
       advreqvouModel.purOrdMasId = element.purOrdMasId;
       advreqvouModel.orderNo = element.orderNo;
       advreqvouModel.project = element.project;
@@ -295,122 +303,86 @@ class AdvanceReqVoucherController_new extends GetxController {
 
 
   Future SaveApi_ItemlistScreen(BuildContext context, int id) async {
-    buttonControl=1;
-    getDetList_NMR.value.clear();
-    getDetList_Advance.value.clear();
     await Future.delayed(const Duration(seconds: 0));
     String body = advanceReqvoucherSaveApiReqToJson(AdvanceReqvoucherSaveApiReq(
-        vocId: id != 0 ? id.toString() : "0",
-        vocNo: autoYearWiseNoController.text,
-        vocDate: entryDateController.text,
-        vocType: commonVoucherController.VocType.value,
-        projectId: projectController.selectedProjectId.value.toString(),
-        accTypeId: commonVoucherController.selectedAccTypeId.value.toString(),
-        accNameId: commonVoucherController.selectedAccnameId.value.toString(),
-        payFor: commonVoucherController.payfor.value.toString(),
-        // payMode: commonVoucherController.selectedPaymodeId.value.toString(),
-        payMode: "1",
-        payType: commonVoucherController.payfor.value=="SU" ? "DP" : "SP",
-        vocAmt: entry_amount.text,
-        // vocAmt: itemlistNetAmount.text,
-        companyId: "0",
-        bankId: "0",
-        chqNo: "0",
-        chqDate:  DateFormat('yyyy-MM-dd').format(DateTime.now()).toString(),
-        nameThrough: commonVoucherController.payfor.value=="SU" ?"-":commonVoucherController.Accountname.text,
-        remarks: remarksController.text,
-        preparedby: loginController.EmpId(),
-        userId: loginController.UserId(),
-        deviceName: BaseUtitiles.deviceName,
-        entryMode: saveButton.value == "Submit"
-            ? "ADD"
-            : saveButton.value == "Re-Submit"
-            ? "UPDATE"
-            : saveButton.value == "Verify"
-            ? "VERIFY"
-            : saveButton.value == "Approve"
-            ? "APPROVE"
-            : "",
-        vocDet : commonVoucherController.VocType.value == "A" && commonVoucherController.selectedAccTypeId.value==4
-            ? (getDetList_Advance.value.isEmpty
-            ? getDetPayforAdvDetails()
-            : getDetList_Advance.value):commonVoucherController.VocType.value == "A" && commonVoucherController.selectedAccTypeId.value==5
-            ? (getDetList_NMR.value.isEmpty
-            ? getDetDetails()
-            : getDetList_NMR.value): []
+      id: id,
+      advanceReqVoucherNo: autoYearWiseNoController.text,
+      advanceReqVoucherDate: entryDateController.text,
+      advanceReqVoucherType: commonVoucherController.VocType.value,
+      projectId: projectController.selectedProjectId.value,
+      companyId: 0,
+      accountTypeId: commonVoucherController.selectedAccTypeId.value,
+      accountNameId: commonVoucherController.selectedAccnameId.value,
+      payForType: commonVoucherController.payfor.value,
+      payModeId: 1,
+      paymentType: commonVoucherController.payfor.value=="SU" ? "DP" : "SP",
+      advanceReqVoucherAmount: double.tryParse(entry_amount.text),
+      paidBy: 0,
+      remarks: remarksController.text,
+      companyBankId: 0,
+      chequeNo: "0",
+      chequeDate: entryDateController.text,
+      nameThrough: commonVoucherController.payfor.value=="SU" ?"-":commonVoucherController.Accountname.text,
+      actualVoucherAmount: double.tryParse(entry_amount.text),
+      createdBy: int.tryParse(loginController.EmpId()),
+      createdDt: BaseUtitiles().convertToUtcIso(entryDateController.text),
+      verifyStatus: saveButton.value == RequestConstant.APPROVAL?"Y":"N",
+      approveStatus: saveButton.value == RequestConstant.APPROVAL?"Y":"N",
+      accountAdvanceReqVoucherSwPayments : commonVoucherController.VocType.value == "A" && commonVoucherController.payfor.value == "A"
+            ? getDetPayforAdvDetails(id)
+            : commonVoucherController.VocType.value == "A" && commonVoucherController.payfor.value == "AD"
+            ? getDetDetails(id)
+            : []
     ));
-    final list = await AdvanceReqVoucherProvider.SaveApi(body, id, buttonControl ,context);
-    if (list != null && id != 0) {
-      Navigator.pop(context);
-      Navigator.pop(context);
-      Navigator.pushReplacement(
-          context,
-          new MaterialPageRoute(
-              builder: (BuildContext context) =>
-              new AdvReq_Voucher_EntryList_new()));
-      buttonControl=0;
-      editcheck=0;
-      BaseUtitiles.showToast(list);
-      getEntryList();
-      return Navigator.pop(context);
-    }
-    else {
-      if (list == RequestConstant.DUPLICATE_OCCURED) {
-        Navigator.pop(context);
-        Navigator.pop(context);
-        buttonControl=0;
-        return BaseUtitiles.showToast(list!);
-      } else {
-        Navigator.pop(context);
-        Navigator.pop(context);
-        Navigator.pushReplacement(
-            context,
-            new MaterialPageRoute(
-                builder: (BuildContext context) =>
-                new AdvReq_Voucher_EntryList_new()));
-        buttonControl=0;
-        editcheck=0;
-        BaseUtitiles.showToast(list!);
-        getEntryList();
-        return Navigator.pop(context);
+
+    final decodedJson = jsonDecode(body);
+
+    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+    final prettyJson = encoder.convert(decodedJson);
+
+    debugPrint(prettyJson, wrapWidth: 1024);
+    final list = await AdvanceReqVoucherProvider.SaveApi(body, id ,saveButton.value);
+    if (list != null ) {
+      if(list["success"] == true){
+        BaseUtitiles.showToast(list["message"]);
+        if(saveButton.value == RequestConstant.APPROVAL){
+          await pendingListController.getPendingList();
+        }else {
+          await getEntryList();
+        }
+        BaseUtitiles.popMultiple(context, count: 3);
+      }
+      else {
+        BaseUtitiles.showToast(list["message"] ?? 'Something went wrong..');
+        BaseUtitiles.popMultiple(context, count: 2);
       }
     }
-  }
-
-
-
-  ///--------------pay for NMR---------------
-  List<VocDet>? getDetDetails() {
-    for (int index = 0; index < ItemGetTableListdata.length; index++) {
-      var list = VocDet(
-        purOrdMasId: "0",
-        workOrdId: "0",
-        siteId: ItemGetTableListdata[index].siteId.toString(),
-        payType: ItemGetTableListdata[index].paymentType.toString(),
-        amt: ItemGetTableListdata[index].amount.toString(),
-        tdsPer: ItemGetTableListdata[index].tds_percent.toString(),
-        tdsAmt: ItemGetTableListdata[index].tds_amount.toString(),
-        netAmt: ItemGetTableListdata[index].netAmount.toString(),
-      );
-      getDetList_NMR.add(list);
+    else {
+      BaseUtitiles.showToast("Something went wrong..");
+      BaseUtitiles.popMultiple(context, count: 2);
     }
-    return getDetList_NMR.value;
   }
 
-  // ///--------Pay For Advance----------
-  List<VocDet>? getDetPayforAdvDetails() {
-    for (int index = 0; index < GetTableList.length; index++) {
-      if(GetTableList[index].amount > 0.0){
-        var list = VocDet(
-            purOrdMasId: commonVoucherController.selectedAccTypeId.value == 4 ? GetTableList[index].purOrdMasId.toString() : "0",  //----(4 means SUPPLIER)
-            workOrdId: commonVoucherController.selectedAccTypeId.value == 5 ? GetTableList[index].purOrdMasId.toString() : "0", //----(5 means SUBCONTRACTOR)
-            payType: commonVoucherController.payfor.value.toString(),
-            siteId: GetTableList[index].siteId.toString(),
-            amt: amount_ListControllers[index].text,
-            netAmt: amount_ListControllers[index].text,
-            tdsAmt: "0",
-            tdsPer: "0"
 
+   ///--------Pay For Advance----------
+  List<AccountAdvanceReqVoucherSwPayment>? getDetPayforAdvDetails(masId) {
+    getDetList_Advance.value=[];
+    for (var element in GetTableList) {
+      if(element.amount > 0.0){
+        var list = AccountAdvanceReqVoucherSwPayment(
+           id: saveButton.value == RequestConstant.RESUBMIT || saveButton.value == RequestConstant.APPROVAL? element.reqDetId : 0,
+           advanceReqVoucherId: saveButton.value == RequestConstant.RESUBMIT || saveButton.value == RequestConstant.APPROVAL? masId :  0,
+            payType: commonVoucherController.payfor.value,
+            siteId: element.siteId,
+            purOrdmasId: commonVoucherController.selectedAccTypeId.value==4 ? element.purOrdMasId : 0,
+            purOrdBillmasId: 0,
+            workOrderId: commonVoucherController.selectedAccTypeId.value==4 ? 0 : element.purOrdMasId,
+            workId: 0,
+            tdsPercentage: 0,
+            tdsAmount: 0,
+            amount: element.amount,
+            netAmount: element.amount,
+            actualNetAmount: element.amount,
         );
         getDetList_Advance.add(list);
       }
@@ -418,70 +390,83 @@ class AdvanceReqVoucherController_new extends GetxController {
     return getDetList_Advance.value;
   }
 
-  // Future EntryList_DeleteApi(int InwId, String InwNo) async {
-  //   await AdvanceReqVoucherProvider.entryList_deleteAPI(InwId, InwNo, loginController.UserId(), BaseUtitiles.deviceName)
-  //       .then((value) async {
-  //     if (value != null && value.length > 0) {
-  //       BaseUtitiles.showToast("Record deleted successfully");
-  //       return value;
-  //     }
-  //   });
-  // }
-
-  Future<dynamic> EntryList_DeleteApi(List<int> InwId, List<String> InwNo) async {
-    String body = advanceReqDeleteModelToJson(
-      AdvanceReqDeleteModel(
-        vocIds: InwId,
-        vocNos: InwNo,
-        userId: loginController.UserId(),
-        deviceName: BaseUtitiles.deviceName,
-      ),
-    );
-
-    final value = await AdvanceReqVoucherProvider.entryList_deleteAPI(body);
-
-    if (value != null && value.isNotEmpty) {
-      return value;
-    } else {
-      return null;
+  ///--------------pay for NMR---------------
+  List<AccountAdvanceReqVoucherSwPayment>? getDetDetails(masId) {
+    getDetList_NMR.value=[];
+    for (var element in ItemGetTableListdata) {
+      if(element.amount > 0.0){
+        var list = AccountAdvanceReqVoucherSwPayment(
+          id: saveButton.value == RequestConstant.RESUBMIT || saveButton.value == RequestConstant.APPROVAL? element.reqDetId : 0,
+          advanceReqVoucherId: saveButton.value == RequestConstant.RESUBMIT || saveButton.value == RequestConstant.APPROVAL? masId :  0,
+          payType: element.paymentType,
+          siteId: element.siteId,
+          purOrdmasId: 0,
+          purOrdBillmasId: 0,
+          workOrderId: 0,
+          workId: 0,
+          tdsPercentage: 0,
+          tdsAmount: 0,
+          amount: element.amount,
+          netAmount: element.amount,
+          actualNetAmount: element.amount,
+        );
+        getDetList_NMR.add(list);
+      }
     }
+    return getDetList_NMR.value;
   }
 
 
-  Future EntryList_EditApi(int vocId,int acctypId,int accnameId, int prjId, BuildContext context) async {
-    await AdvanceReqVoucherProvider.entryList_editAPI(vocId, acctypId,accnameId,prjId).then((value) async {
-      if (value != null && value.length > 0) {
-        editcheck = 1;
-        entrycheck = 1;
-        editListApiDatas.value = value;
-        for (var element in editListApiDatas.value) {
-          if (element.accTypeName == "SUPPLIER") {
-            await EditAdvTable_SaveTable();
-            await getTableListDatas();
-          } else {
-            await EditTable_SaveTable();
-            await getItemlistTablesDatas();
+  Future<bool> EntryList_DeleteApi(int vocId) async {
+    return AdvanceReqVoucherProvider.entryList_deleteAPI(vocId);
+  }
+
+
+  Future EntryList_EditApi(type,vocId,status,String MenuName, context) async {
+    editListApiDatas.value=[];
+    final value = await AdvanceReqVoucherProvider.entryList_editAPI(vocId, status);
+    if (value != null) {
+      if(value.success==true){
+        editListApiDatas.value = [value.result];
+        saveButton.value = type == "edit"? RequestConstant.RESUBMIT : RequestConstant.APPROVAL;
+        if(editListApiDatas.isNotEmpty){
+          for (var element in editListApiDatas.value) {
+            if (element.payForType == "A") {
+              await EditAdvTable_SaveTable();
+              await getTableListDatas();
+            } else if (element.payForType == "AD") {
+              await EditTable_SaveTable();
+              await getItemlistTablesDatas();
+            }
           }
+          return Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AdvReq_voucher_New(heading: MenuName,)),
+          );
         }
-        return Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AdvReq_voucher_New()),
-        );
+        else {
+          BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+        }
+      }else {
+        BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
       }
-    });
+    } else {
+      BaseUtitiles.showToast("Something Went Wrong...");
+    }
   }
 
   ///-------ADVANCE-------------------
   EditTable_SaveTable() async {
     ItemListTableModelList.clear();
     editListApiDatas.value.forEach((element) {
-      element.vocEditDet.forEach((value) {
+      element.accountAdvanceReqVoucherSwPayments.forEach((value) {
         ItemListTableModel = AdvReqVoucherItemListTableModel();
+        ItemListTableModel.reqDetId = value.id;
         ItemListTableModel.siteId = value.siteId;
         ItemListTableModel.siteName = value.siteName;
         ItemListTableModel.paymentType = value.payType;
         ItemListTableModel.amount = value.amount;
-        ItemListTableModel.tds_percent = value.tdsPer;
-        ItemListTableModel.tds_amount = value.tdsAmt;
-        ItemListTableModel.netAmount = value.netAmt;
+        ItemListTableModel.tds_percent = value.tdsPercentage;
+        ItemListTableModel.tds_amount = value.tdsAmount;
+        ItemListTableModel.netAmount = value.netAmount;
         ItemListTableModelList.add(ItemListTableModel);
       });
     });
@@ -493,19 +478,27 @@ class AdvanceReqVoucherController_new extends GetxController {
   EditAdvTable_SaveTable() async {
     DBTableModelList.clear();
     editListApiDatas.value.forEach((element) {
-      element.vocEditDet.forEach((value) {
+      final details = element.payForType == "A" &&
+          element.accountTypeId == 5
+          ? element.subContractorAdvanceDetails
+          : element.supplierAdvanceDetails;
+
+      details?.forEach((value) {
         advreqvouModel = AdvReqVoucher_SiteWisePayment_TableModel();
+
+        advreqvouModel.reqDetId = value.swPayId;
         advreqvouModel.purOrdMasId = value.purOrdMasId;
         advreqvouModel.orderNo = value.poNo;
-        advreqvouModel.project = value.project;
+        advreqvouModel.project = value.projectName;
         advreqvouModel.projectId = value.projectId;
         advreqvouModel.siteName = value.siteName;
         advreqvouModel.siteId = value.siteId;
         advreqvouModel.paymentType = value.payType;
         advreqvouModel.dprAmt = value.netAmt;
-        advreqvouModel.advanceAmt = value.advancAmt;
+        advreqvouModel.advanceAmt = value.advanceAmt;
         advreqvouModel.bAmount = value.bAmount;
         advreqvouModel.amount = value.amount;
+
         DBTableModelList.add(advreqvouModel);
       });
     });
@@ -514,12 +507,6 @@ class AdvanceReqVoucherController_new extends GetxController {
     return savedatas;
   }
 
-  String ButtonChanges(int id) {
-    if (id != 0)
-      return saveButton.value = RequestConstant.RESUBMIT;
-    else
-      return saveButton.value = RequestConstant.SUBMIT;
-  }
 
   AmtItemlist_clickEdit() {
     for (var index = 0; index < GetTableList.value.length; index++) {
@@ -594,14 +581,15 @@ class AdvanceReqVoucherController_new extends GetxController {
                   ),
                   Expanded(
                     child: TextButton(
-                        onPressed: () {
-                          entrycheck = 0;
-                          editcheck = 0;
-                          List<int> IdList=[entryList[index].vocId];
-                          List<String> NoList=[ entryList[index].vocNo];
-                          EntryList_DeleteApi(IdList,NoList);
-                          entryList.removeAt(index);
-                          Navigator.of(context).pop();
+                        onPressed: () async {
+                          bool result = await EntryList_DeleteApi(entryList[index].id);
+                          if (result) {
+                            entryList.removeAt(index);
+                            Navigator.of(context).pop();
+                          }
+                          else{
+                            Navigator.of(context).pop();
+                          }
                         },
                         child: Text("Delete", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE))),
                   )

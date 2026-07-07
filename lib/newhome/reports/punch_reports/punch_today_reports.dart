@@ -371,7 +371,7 @@ class PunchTodayReports extends GetView<PunchInController> {
                                                                           120,
                                                                       child:
                                                                           Text(detail.instatus == "Alloted" || detail.instatus == "Non-Alloted" ?
-                                                                        '${detail.inLocation != "" && detail.inLocation != "null" ? detail.inLocation! : "-"}' : detail.instatus,
+                                                                        '${detail.inLocation != "" && detail.inLocation != "null" && detail.inLocation != null ? detail.inLocation! : "-"}' : detail.instatus,
                                                                         style:
                                                                             const TextStyle(
                                                                           fontSize:

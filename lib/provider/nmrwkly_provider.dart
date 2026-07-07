@@ -53,23 +53,6 @@ class NMRWklyprovider{
     }
   }
 
-
-  static Future NMR_adv_balance(int pId,int subId) async {
-    var datasave;
-    await ApiManager.getAPICall(ApiConstant.GETSUBCONT_NMR_ADVANCE_BALANCE+"?PID=$pId&SubID=$subId").then((value) {
-      var decodedJson = json.decode(value);
-      datasave=decodedJson;
-      if (datasave!=null) {
-        return datasave;
-      }
-    },onError: (error) {
-      print(error);
-      print("Error == $error");
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return datasave;
-  }
-
   static SaveSubContScreenEntryAPI(String body, int workId) async {
 
     try {
@@ -80,7 +63,6 @@ class NMRWklyprovider{
       } else {
         response = await ApiManager.postAPICall(ApiConstant.NMR_SAVE_DEDUCTION, body);
       }
-      print("eeeeeeeeee...${response}");
       return jsonDecode(response);
 
     }  catch (error) {

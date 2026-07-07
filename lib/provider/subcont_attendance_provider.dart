@@ -164,9 +164,9 @@ class SubContAttendanceProvider {
     }
   }
 
-  static Future<SubContAttendEntryListEditRes?> subcont_entryList_editAPI(int attendId) async {
+  static Future<SubContAttendEntryListEditRes?> subcont_entryList_editAPI(int attendId,status) async {
     try {
-      var value = await ApiManager.getAPICall(ApiConstant.EDIT_SUBCONT_ENTRYLIST_API + "?LabrAttdId=$attendId");
+      var value = await ApiManager.getAPICall(ApiConstant.EDIT_SUBCONT_ENTRYLIST_API + "?LabrAttdId=$attendId&CheckEdit=$status");
       return subContAttendEntryListEditResFromJson(value);
 
     } catch (error, e) {
@@ -177,50 +177,6 @@ class SubContAttendanceProvider {
 
     }
   }
-
-  /// SubContractor Image provider.....
-
-  // static Future<String> sendSingleImageProvider(SubConImagePayload data, File imageFile) async {
-  //   try {
-  //     Uri uri = Uri.parse(ApiConstant.SUBIMAGE_SAVEAPI);
-  //     var request = http.MultipartRequest("POST", uri);
-  //     dynamic bodyData = data.toJson();
-  //     request.files.add(
-  //       await http.MultipartFile.fromPath(
-  //         'File',
-  //         imageFile.path,
-  //         contentType: MediaType('image', 'jpeg'),
-  //         filename: 'image.jpeg',
-  //       ),
-  //     );
-  //     for (var field in bodyData.keys) {
-  //       var value = bodyData[field];
-  //       if (value is String) {
-  //         request.fields[field] = value;
-  //       }
-  //     }
-  //     request.headers["content-type"] = "application/json; charset=utf-8";
-  //     final response = await http.Response.fromStream(await request.send());
-  //     print("Request Data :: ${request.fields}");
-  //     print("Request Data :: ${request.files}");
-  //     print("Response Data :: ${response.body}");
-  //     if (response.statusCode == 200){
-  //       var punchInSaveRes = PunchInSaveRes(retString: response.body.toString());
-  //       String ratingRes = punchInSaveRes.toString();
-  //       await getResponse(response);
-  //       return ratingRes;
-  //     }
-  //     else {
-  //       await getResponse(response);
-  //       throw Exception('Request failed with status code ${response.statusCode}');
-  //     }
-  //   } catch (e) {
-  //     if (kDebugMode) {
-  //       print('Error sending request: $e');
-  //     }
-  //     rethrow;
-  //   }
-  // }
 
   /// Delete image provider.....
 

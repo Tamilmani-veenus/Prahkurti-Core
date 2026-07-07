@@ -20,177 +20,89 @@ class AdvanceReqVoucherProvider{
 
   AdvanceReqVoucherController_new advanceReqVoucherControllernew = AdvanceReqVoucherController_new();
 
-  static Future<List<AdvReqvoucherentrylistResapi>> getEntry_List(
-      int? Userid, String UserType, String frdate, String todate) async {
-    var data = null;
-    await ApiManager.getAPICall(ApiConstant.GET_ADVREQ_ENTRY_LIST + "?UserId=$Userid&UserType=$UserType&Frdate=$frdate&Todate=$todate")
-        .then((value) {
-      print("TransferprojectEntryList:" + value);
-      data = advReqvoucherentrylistResapiFromJson(value);
-      if (data != null && data.length > 0) {
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast('Something went wrong..');
-    });
-    return data;
+  static Future<AdvReqvoucherentrylistResapi?> getEntry_List(String frdate, String todate) async {
+    try{
+      final value = await ApiManager.getAPICall(ApiConstant.GET_ADVREQ_ENTRY_LIST + "?fromDate=$frdate&toDate=$todate");
+      print("AdvanceEntryList:" + value);
+      return advReqvoucherentrylistResapiFromJson(value);
+    }
+    catch(e,stack){
+      print("ERROR.....$e");
+      print("ERROR....${stack}");
+      return null;
+    }
   }
-
 
   //----------Advance Req Voucher New------------
-  static Future<List> getAdvTypeList(String payFor, int accType,int accNameId, int pId  ) async {
-    List responseData = [];
-      await ApiManager.getAPICall(ApiConstant.GetADVREQ_SITEWIEPAYMENTLIST + "?Type=SP&payfor=$payFor&acctype=$accType&acc_nameid=$accNameId&Prjid=$pId").then((value) {
-        responseData = sitewisePaymentListFromJson(value);
-        if (responseData!=null&& responseData.length>0) {
-          return responseData;
-        }
-      },onError: (error) {
-        print(error);
-        print("Error == $error");
-        BaseUtitiles.showToast('Something went wrong..');
-      });
-    return responseData;
+
+  static Future<SitewisePaymentList?> getAdvTypeList(String payFor, int accTypeId,int accNameId, int pId  ) async {
+    try{
+      final value = await ApiManager.getAPICall(ApiConstant.GetADVREQ_SITEWISEPAYMENTLIST + "?AccountTypeId=$accTypeId&payFor=$payFor&accNameId=$accNameId&projectId=$pId");
+      print("AdvanceEntryList:" + value);
+      return sitewisePaymentListFromJson(value);
+    }
+    catch(e,stack){
+      print("ERROR.....$e");
+      print("ERROR....${stack}");
+      return null;
+    }
   }
 
-
-
-
-  // static SaveApi(String body, int id, buttonControl) async {
-  //   var ratingRes = null;
-  //
-  //   if(id!=0){
-  //     await ApiManager.putUpdateAPIButton(ApiConstant.PUT_ADVREQ_UPDATE_API, body).then((value) {
-  //           var response = subcontEntryscreenSaveResponseFromJson(value);
-  //           if (response.RetString != null) {
-  //             ratingRes = response.RetString;
-  //             buttonControl=0;
-  //             return ratingRes;
-  //           }
-  //         }, onError: (error) {
-  //       print(error);
-  //       buttonControl=0;
-  //       BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
-  //     });
-  //   }
-  //   else{
-  //     await ApiManager.postAPICall(ApiConstant.ADVREQ_SAVE, body).then((value) {
-  //       var response = subcontEntryscreenSaveResponseFromJson(value);
-  //       if (response.RetString != null) {
-  //         ratingRes = response.RetString;
-  //         buttonControl=0;
-  //         return ratingRes;
-  //       }
-  //     }, onError: (error) {
-  //       print(error);
-  //       buttonControl=0;
-  //       BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
-  //     });
-  //   }
-  //   return ratingRes;
-  // }
-
-  static Future<String?> SaveApi(String body, int id, int buttonControl,context) async {
-    String? ratingRes;
-
+  static SaveApi(String body, int id, saveButton) async {
     try {
-      if (id != 0) {
-        // PUT request
-        final value = await ApiManager.putUpdateAPIButton(ApiConstant.PUT_ADVREQ_UPDATE_API, body);
-        // var response = subcontEntryscreenSaveResponseFromJson(value);
-        // if (response.RetString != null) {
-        //   ratingRes = response.RetString;
-        // }
-      } else {
-        // POST request
-        final value = await ApiManager.postAPICall(ApiConstant.ADVREQ_SAVE, body);
-        // var response = subcontEntryscreenSaveResponseFromJson(value);
-        // if (response.RetString != null) {
-        //   ratingRes = response.RetString;
-        // }
-      }
-    } on SocketException catch (_) {
-      BaseUtitiles.showToast(RequestConstant.NOINTERNETCONNECTION);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      return null;
-    }
-    on TimeoutException catch (_) {
-      BaseUtitiles.showToast(RequestConstant.REQUESTTIMEOUT);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      return null;
-    }
-    on FormatException catch (_) {
-      BaseUtitiles.showToast(RequestConstant.BADRESPONSE);
-      Navigator.pop(context);
-      Navigator.pop(context);
-      return null;
-    }catch (error) {
-      print('❌ Error in SaveApi: $error');
-      buttonControl = 0;
-      Navigator.pop(context);
-      Navigator.pop(context);
-      BaseUtitiles.showToast(RequestConstant.NETWORKERROR);
-      return null;
-    }
+      var response;
 
-    buttonControl = 0;
-    return ratingRes;
+      if (saveButton==RequestConstant.RESUBMIT || saveButton==RequestConstant.APPROVAL) {
+        response = await ApiManager.putUpdateAPIButton("${ApiConstant.PUT_ADVREQ_UPDATE_API}?id=$id", body);
+      } else if (saveButton==RequestConstant.SUBMIT) {
+        response = await ApiManager.postAPICall(ApiConstant.ADVREQ_SAVE, body);
+      }
+      print("response....${response}");
+      return jsonDecode(response);
+
+    }  catch (error) {
+      print("Error == $error");
+      return null;
+    }
+  }
+
+  static Future<AdvReqEditApiRes?> entryList_editAPI(vocId,status) async {
+    try{
+      final value = await ApiManager.getAPICall(ApiConstant.EDIT_ADVANCEREQ_API + "?id=$vocId&CheckEdit=$status");
+      print("AdvanceEntryList:" + value);
+      return advReqEditApiResFromJson(value);
+    }
+    catch(e,stack){
+      print("ERROR.....$e");
+      print("ERROR....${stack}");
+      return null;
+    }
   }
 
 
-  static Future<List<AdvReqEditApiResmodel>> entryList_editAPI(int VocId,int acctypId,int accnameId, int prjId) async {
-    var data = null;
-    await ApiManager.getAPICall("${ApiConstant.EDIT_ADVANCEREQ_API}?VocId=$VocId&acctypId=$acctypId&accnameId=$accnameId&prjId=$prjId").then((value) {
-      final res = advReqEditApiResmodelFromJson(value);
-      if (res != null) {
-        data = res;
-        return data;
-      }
-    }, onError: (error) {
-      print(error);
-      // BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG+error);
-    });
-    return data;
+  static Future<bool> entryList_deleteAPI(int vocId) async {
+    try {
+      final response = await ApiManager.deleteAPICall(
+          "${ApiConstant.DELETE_ADVREQVOUCHER_API}?id=$vocId");
+
+      final Map<String, dynamic> decoded = jsonDecode(response);
+
+
+      bool isSuccess = decoded["success"] == true;
+
+      final message = decoded["message"] ??
+          (isSuccess
+              ? "Deleted successfully"
+              : "Something went wrong");
+
+      BaseUtitiles.showToast(message);
+
+      return isSuccess;
+    } catch (error) {
+      print("Delete API Error: $error");
+      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
+      return false;
+    }
   }
 
-  // static Future AdvanceRequesAprovalAPI(body,context) async {
-  //   var ratingRes = null;
-  //   // await ApiManager.putUpdateAPIButton(ApiConstant.PUT_ADVANCEREQ_APPROVAL_API, body).then((value) {
-  //   await ApiManager.putUpdateAPIButton(ApiConstant.PUT_POAPPROVAL_API, body).then((value) {
-  //     var response = dprItemscreenSaveResponseFromJson(value);
-  //     if (response.RetString != null) {
-  //       ratingRes = response.RetString;
-  //       BaseUtitiles.showToast(ratingRes);
-  //       return  Navigator.pop(context);
-  //     }
-  //   }, onError: (error) {
-  //     print(error);
-  //     BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
-  //   });
-  // }
-
-  static Future entryList_deleteAPI(body) async {
-    var data = null;
-    // await ApiManager.deleteAPICall(ApiConstant.DELETE_ADVREQVOUCHER_API + "?VocId=$VocId&VocNo=$VocNo&UserId=$UserId&DeviceName=$DeviceName")
-    await ApiManager.deleteBodyAPICall(ApiConstant.DELETE_ADVREQVOUCHER_API ,body).then((value) {
-      final res = json.decode(value);
-      if (res != null) {
-        data = res;
-        BaseUtitiles.showToast('${data}');
-        print("Delete >> ${data}");
-        return data;
-      }
-      else{
-        BaseUtitiles.showToast('Delete failed');
-        return value;
-      }
-    }, onError: (error) {
-      print(error);
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG+error);
-    });
-    return data;
-  }
 }

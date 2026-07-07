@@ -389,7 +389,8 @@ class Consumption_Controller extends GetxController {
         BaseUtitiles.showToast(list["message"] ?? 'Something went wrong..');
         BaseUtitiles.popMultiple(context, count: 2);
       }
-    } else {
+    }
+    else {
       BaseUtitiles.showToast("Something went wrong..");
       BaseUtitiles.popMultiple(context, count: 2);
     }
@@ -433,7 +434,7 @@ class Consumption_Controller extends GetxController {
     return savedatas;
   }
 
-  Future ConsumEntryList_EditApi(int expenseId, BuildContext context) async {
+  Future ConsumEntryList_EditApi(int expenseId,String MenuName, BuildContext context) async {
     final value =
         await Consumption_provider.Consum_entryList_editAPI(expenseId);
     if (value != null) {
@@ -445,7 +446,7 @@ class Consumption_Controller extends GetxController {
       getConumTablesDatas();
       return Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => Consumption_Entry()),
+        MaterialPageRoute(builder: (context) => Consumption_Entry(heading: MenuName,)),
       );
     }else {
         BaseUtitiles.showToast(value.message ?? 'Something went wrong..');

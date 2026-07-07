@@ -56,7 +56,7 @@ class DprPopup extends StatelessWidget {
                           Container(
                             margin: EdgeInsets.only(top: 5,left: 5, right: 5),
                             width: BaseUtitiles.getWidthtofPercentage(context, 75),
-                            child: Text(list[index].workName.toString(),style:TextStyle(color: Theme.of(context).primaryColor),
+                            child: Text(list[index].siteName.toString(),style:TextStyle(color: Theme.of(context).primaryColor),
                             textAlign: TextAlign.justify,
                             ),
                           ),
@@ -70,7 +70,7 @@ class DprPopup extends StatelessWidget {
                                     child: Text("Boq Code ",style: TextStyle(fontWeight: FontWeight.bold))),
                                 Expanded(
                                     flex:3,
-                                    child: Text(list[index].boqCode.toString(),)),
+                                    child: Text(list[index].boqcode.toString(),)),
                                 Expanded(
                                     flex:3,
                                     child: Text("Rate",style: TextStyle(fontWeight: FontWeight.bold))),
@@ -90,7 +90,7 @@ class DprPopup extends StatelessWidget {
                                 ),
                                 Expanded(
                                   flex:3,
-                                  child: Text(list[index].unit.toString()),
+                                  child: Text(list[index].scaleName.toString()),
                                 ),
                                 Expanded(
                                   flex:3,
@@ -121,7 +121,7 @@ class DprPopup extends StatelessWidget {
                                 ),
                                 Expanded(
                                   flex:3,
-                                  child: Text(list[index].amt.toString()),
+                                  child: Text(list[index].amount.toString()),
                                 ),
                               ],
                             ),

@@ -34,6 +34,8 @@ class InwardAllDatasaRes {
 
 class getByIdResult {
   int? purOrdMasId;
+  int? workOrdId;
+  String? workOrdNo;
   int? supplierid;
   int? projectid;
   String? projectName;
@@ -43,12 +45,14 @@ class getByIdResult {
   int? siteid;
   String? purchaseOrdNo;
   int? poDetId;
+  int? workOrdDetId;
   int? materialId;
   String? materialName;
   int? scaleId;
   String? unit;
   String? remarks;
   double? poQty;
+  double? woQty;
   double? balQty;
   double? inwQty;
   double? rate;
@@ -65,6 +69,8 @@ class getByIdResult {
 
   getByIdResult({
     this.purOrdMasId,
+    this.workOrdId,
+    this.workOrdNo,
     this.supplierid,
     this.projectid,
     this.projectName,
@@ -74,12 +80,14 @@ class getByIdResult {
     this.siteid,
     this.purchaseOrdNo,
     this.poDetId,
+    this.workOrdDetId,
     this.materialId,
     this.materialName,
     this.scaleId,
     this.unit,
     this.remarks,
     this.poQty,
+    this.woQty,
     this.balQty,
     this.inwQty,
     this.rate,
@@ -97,6 +105,8 @@ class getByIdResult {
 
   factory getByIdResult.fromJson(Map<String, dynamic> json) => getByIdResult(
     purOrdMasId: json["PurOrdMasId"],
+    workOrdId:  json["WorkOrdId"],
+    workOrdNo:  json["WorkOrdNo"],
     supplierid: json["supplierid"],
     projectid: json["projectid"],
     projectName: json["ProjectName"],
@@ -106,12 +116,14 @@ class getByIdResult {
     siteid: json["siteid"],
     purchaseOrdNo: json["PurchaseOrdNo"],
     poDetId: json["PurOrdDetId"],
-    materialId: json["MaterialId"],
+    workOrdDetId: json["WorkOrdDetId"],
+    materialId: json["MaterialId"] ?? json["Materialid"],
     materialName: json["MaterialName"],
-    scaleId: json["UnitId"],
-    unit: json["UnitName"],
+    scaleId: json["UnitId"] ?? json["ScaleID"],
+    unit: json["UnitName"] ?? json["ScaleName"],
     remarks: json["Remarks"],
     poQty: json["poqty"],
+    woQty: json["WoQty"],
     balQty: json["balqty"],
     inwQty: json["GRNQty"],
     rate: json["rate"],
@@ -129,6 +141,8 @@ class getByIdResult {
 
   Map<String, dynamic> toJson() => {
     "PurOrdMasId": purOrdMasId,
+    "WorkOrdId": workOrdId,
+    "WorkOrdNo": workOrdNo,
     "supplierid": supplierid,
     "projectid": projectid,
     "ProjectName": projectName,
@@ -138,12 +152,14 @@ class getByIdResult {
     "siteid": siteid,
     "PurchaseOrdNo": purchaseOrdNo,
     "PurOrdDetId": poDetId,
+    "WorkOrdDetId": workOrdDetId,
     "MaterialId": materialId,
     "MaterialName": materialName,
     "UnitId": scaleId,
     "UnitName": unit,
     "Remarks": remarks,
     "poqty": poQty,
+    "WoQty": woQty,
     "balqty": balQty,
     "GRNQty": inwQty,
     "rate": rate,

@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart';
+
 import '../../../../home/menu/accounts/staff_voucher/staff_voucher_sitewise.dart';
 import '../../../../constants/ui_constant/icons_const.dart';
 import '../../../../controller/bottomsheet_Controllers.dart';
@@ -20,7 +22,8 @@ import '../../../../commonpopup/accountnameadd_alert.dart';
 import '../../../../commonpopup/vouchertype_alert.dart';
 
 class Staff_Voucher_EntryScreen extends StatefulWidget {
-  const Staff_Voucher_EntryScreen({Key? key}) : super(key: key);
+  final String heading;
+  const Staff_Voucher_EntryScreen({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<Staff_Voucher_EntryScreen> createState() =>
@@ -144,11 +147,13 @@ class _Subcont_Nmr_EntryScreenState_Site
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            "Staff Voucher",
-                            style: TextStyle(
-                                fontSize: RequestConstant.Heading_Font_SIZE,
-                                fontWeight: FontWeight.bold),
+                          Expanded(
+                            child: Text(
+                              widget.heading,
+                              style: TextStyle(
+                                  fontSize: RequestConstant.Heading_Font_SIZE,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                           TextButton(
                               onPressed: () {
@@ -278,7 +283,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.always,
                             readOnly: true,
                             controller:
                                 commonVoucherController.VoucherTypeController,
@@ -330,7 +335,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.always,
                             readOnly: true,
                             controller: staffController.Staffname,
                             cursorColor: Colors.black,
@@ -386,7 +391,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.always,
                             readOnly: true,
                             controller: commonVoucherController.AccountTypename,
                             cursorColor: Colors.black,
@@ -438,7 +443,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.always,
                             readOnly: true,
                             controller: commonVoucherController.Accountname,
                             cursorColor: Colors.black,
@@ -668,7 +673,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.always,
                             controller: commonVoucherController.namethrough,
                             cursorColor: Colors.black,
                             style: TextStyle(color: Colors.black),
@@ -712,7 +717,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.always,
                             readOnly: true,
                             controller: commonVoucherController.AccPayforname,
                             cursorColor: Colors.black,
@@ -769,7 +774,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                     top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
                                   autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
+                                      AutovalidateMode.always,
                                   readOnly: true,
                                   controller:
                                       commonVoucherController.Paymodename,
@@ -828,7 +833,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                     top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
                                   autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
+                                      AutovalidateMode.always,
                                   readOnly:
                                       staffVoucher_Controller.type.value ==
                                               "SiteWise Payment"
@@ -836,6 +841,11 @@ class _Subcont_Nmr_EntryScreenState_Site
                                           : false,
                                   keyboardType: TextInputType.numberWithOptions(
                                       decimal: true),
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                      RegExp(r'^\d+\.?\d{0,2}'),
+                                    ),
+                                  ],
                                   controller:
                                       staffVoucher_Controller.TotalAmount,
                                   cursorColor: Colors.black,
@@ -904,7 +914,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                           top: 3, left: 10, bottom: 5),
                                       child: TextFormField(
                                         autovalidateMode:
-                                            AutovalidateMode.onUserInteraction,
+                                            AutovalidateMode.always,
                                         controller:
                                             staffVoucher_Controller.ChequeNo,
                                         cursorColor: Colors.black,
@@ -952,6 +962,11 @@ class _Subcont_Nmr_EntryScreenState_Site
                                       child: TextFormField(
                                           readOnly: true,
                                           keyboardType: TextInputType.number,
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter.allow(
+                                              RegExp(r'^\d+\.?\d{0,2}'),
+                                            ),
+                                          ],
                                           controller: staffVoucher_Controller
                                               .ChequeDate,
                                           cursorColor: Colors.black,
@@ -1043,7 +1058,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                                 top: 3, left: 10, bottom: 5),
                                             child: TextFormField(
                                               autovalidateMode: AutovalidateMode
-                                                  .onUserInteraction,
+                                                  .always,
                                               readOnly: true,
                                               controller:
                                                   staffVoucher_Controller
@@ -1147,7 +1162,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                               top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.always,
                             controller: staffVoucher_Controller.Remarks,
                             cursorColor: Colors.black,
                             style: TextStyle(color: Colors.black),
@@ -1165,12 +1180,12 @@ class _Subcont_Nmr_EntryScreenState_Site
                                       vertical: 8, horizontal: 8),
                                   child: ConstIcons.remarks),
                             ),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return '\u26A0 ${RequestConstant.VALIDATE}';
-                              }
-                              return null;
-                            },
+                            // validator: (value) {
+                            //   if (value!.isEmpty) {
+                            //     return '\u26A0 ${RequestConstant.VALIDATE}';
+                            //   }
+                            //   return null;
+                            // },
                           ),
                         ),
                       ),

@@ -1,3 +1,5 @@
+import '../../constants/storage_constant.dart';
+import '../../login/animation_signinpage/signin_page.dart';
 import '../../utilities/requestconstant.dart';
 import '../../controller/accountsettings_controller.dart';
 import '../../controller/logincontroller.dart';
@@ -38,6 +40,7 @@ class _AccountSettingsState extends State<AccountSettings> {
   void initState() {
     accountSetingController.password_controller.clear();
     accountSetingController.repassword_controller.clear();
+    // accountSetingController.getCheckApprovalLevel();
     super.initState();
   }
 
@@ -86,7 +89,7 @@ class _AccountSettingsState extends State<AccountSettings> {
                                 homeScreen();
                               },
                             )),
-        
+
                           ],
                         ),
                       ),
@@ -157,7 +160,7 @@ class _AccountSettingsState extends State<AccountSettings> {
                                 labelStyle: const TextStyle(fontSize: 14,color: Colors.black),
                                 prefixIcon: IconButton(
                                   icon: Icon(
-                                      isObscureNewPassword ? Icons.visibility : Icons.visibility_off,color:Colors.indigo,
+                                    isObscureNewPassword ? Icons.visibility_off : Icons.visibility,color:Colors.indigo,
                                   ),
                                   onPressed: () {
                                     setState(() {
@@ -199,11 +202,11 @@ class _AccountSettingsState extends State<AccountSettings> {
                                 labelStyle: const TextStyle(fontSize: 14,color: Colors.black),
                                 prefixIcon: IconButton(
                                   icon: Icon(
-                                      isObscureConfirmPassword ? Icons.visibility : Icons.visibility_off,color:Colors.indigo,
+                                    isObscureConfirmPassword ? Icons.visibility_off : Icons.visibility,color:Colors.indigo,
                                   ),
                                   onPressed: () {
                                     setState(() {
-                                        isObscureConfirmPassword = !isObscureConfirmPassword;
+                                      isObscureConfirmPassword = !isObscureConfirmPassword;
                                     });
                                   },
                                 ),
@@ -248,6 +251,99 @@ class _AccountSettingsState extends State<AccountSettings> {
                           }
                         },
                       )),
+                      // Obx(()=> Visibility(
+                      //     visible: accountSetingController.checkApprovalLevelData.any(
+                      //           (item) =>
+                      //       item["screenName"] == "IOS Check" &&
+                      //           item["isApproval"] == true,
+                      //     ),
+                      //     child: Row(
+                      //       mainAxisAlignment: MainAxisAlignment.start,
+                      //       children: [
+                      //         Padding(
+                      //           padding: const EdgeInsets.all(8.0),
+                      //           child: FadeAnimation(1.2, const Text("Account Deletion",
+                      //               style: TextStyle(color: Colors.grey, fontSize: RequestConstant.Lable_Font_SIZE, fontWeight: FontWeight.bold,))),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
+                      //
+                      //
+                      // Obx(
+                      //   ()=> Visibility(
+                      //     visible: accountSetingController.checkApprovalLevelData.any(
+                      //           (item) =>
+                      //       item["screenName"] == "IOS Check" &&
+                      //           item["isApproval"] == true,
+                      //     ),
+                      //     child: Row(
+                      //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       children: [
+                      //         FadeAnimation(1.8, InkWell(
+                      //           child: Container(
+                      //             padding: const EdgeInsets.all(15),
+                      //             decoration: BoxDecoration(
+                      //                 borderRadius: BorderRadius.circular(50),
+                      //                 color: Colors.red.shade50
+                      //             ),
+                      //             child: const Center(child: Text("Account Delete", style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),)),
+                      //           ),
+                      //           onTap: () {
+                      //             showDialog(context: context, builder: (context) => AlertDialog(
+                      //               title: Text('Alert!'),
+                      //               content: Text("Are you sure want to delete this account?"),
+                      //               actions: [
+                      //                 Container(
+                      //                   margin: EdgeInsets.only(left: 20, right: 20),
+                      //                   child: IntrinsicHeight(
+                      //                     child: Row(
+                      //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //                       children: [
+                      //                         Expanded(
+                      //                           child: TextButton(
+                      //                               onPressed: () {
+                      //                                 return Navigator.of(context).pop();
+                      //                               },
+                      //                               child: Text("Cancel",
+                      //                                   style: TextStyle(
+                      //                                       color: Colors.grey,
+                      //                                       fontWeight: FontWeight.bold,
+                      //                                       fontSize: RequestConstant.Lable_Font_SIZE))),
+                      //                         ),
+                      //                         VerticalDivider(
+                      //                           color: Colors.grey.shade400,
+                      //                           width: 5,
+                      //                           thickness: 2,
+                      //                           indent: 15,
+                      //                           endIndent: 15, //Spacing at the bottom of divider.
+                      //                         ),
+                      //                         Expanded(
+                      //                           child: TextButton(
+                      //                               onPressed: () async {
+                      //                                 SessionStorage.removeUser();
+                      //                                 await loginController.Register_acc_DeleteApi();
+                      //                                 Get.to(()=> const SignInPage());
+                      //                               },
+                      //                               child: Text("Delete",
+                      //                                   style: TextStyle(
+                      //                                       color: Colors.red,
+                      //                                       fontWeight: FontWeight.bold,
+                      //                                       fontSize: RequestConstant.Lable_Font_SIZE))),
+                      //                         )
+                      //                       ],
+                      //                     ),
+                      //                   ),
+                      //                 ),
+                      //               ],
+                      //             ));
+                      //           },
+                      //         )),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
                       const SizedBox(height: 150),
                     ],
                   ),

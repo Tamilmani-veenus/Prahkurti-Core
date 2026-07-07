@@ -21,6 +21,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../utilities/requestconstant.dart';
+import 'package:intl/intl.dart';
 
 class PendingListController extends GetxController {
   List<OnClickListResult> onclickPendingListData = [];
@@ -34,7 +35,7 @@ class PendingListController extends GetxController {
   List<GetPendingListResponse> datas = [];
   LoginController loginController = Get.put(LoginController());
   RxList pendingList_datas = [].obs;
-  RxList<QuoteDet> getQuoteDetList = <QuoteDet>[].obs;
+  RxList reqNoList = [].obs;
   final revertRemarks = TextEditingController();
   final verifyRemarks = TextEditingController();
 
@@ -46,6 +47,7 @@ class PendingListController extends GetxController {
 
 
   RxString mrn_preapproval_autoYrsWise = "".obs;
+  RxString purchaseOrderNo = "".obs;
 
   RxList<OnClickListResult> addSubcontNmrListvalue =
       <OnClickListResult>[].obs;
@@ -94,6 +96,24 @@ class PendingListController extends GetxController {
       BaseUtitiles.showToast("Something went wrong..");
     }
   }
+
+  Future getPurcharseOrderNo(Id,{type}) async {
+    purchaseOrderNo.value="";
+    var entryDate=DateFormat('yyyy/MM/dd').format(DateTime.now());
+    var response = await PendingListProvider.getPurchaseOrderNo(Id,entryDate,type);
+    if (response != null) {
+      if(response["success"]==true) {
+        purchaseOrderNo.value = response["entryAutoNo"];
+        print("purchaseOrderNo....${purchaseOrderNo.value}");
+      }
+      else {
+        BaseUtitiles.showToast(response["message"] ?? 'Something went wrong..');
+      }
+    } else {
+      BaseUtitiles.showToast("Something went wrong..");
+    }
+  }
+
 
   Future Mrn_PreApproval_AutoYearWise() async {
     mrn_preapproval_autoYrsWise.value = "";
@@ -144,22 +164,19 @@ class PendingListController extends GetxController {
     return getPoAprovalDetList.value;
   }
 
-
-
-
-  Future punchInAproval_buttonApi(BuildContext context, String Urlname) async {
-    String body = punchInapprovalApiResmodelToJson(PunchInapprovalApiResmodel(
-      urlName: Urlname.toString(),
-      userId: loginController.EmpId(),
-      deviceName: BaseUtitiles.deviceName,
-      approvalDet: getPunchinAprovalDetList.value.length == 0
-          ? getPunchInApprovalDet()
-          : getPunchinAprovalDetList.value,
-    ));
-    if (add_PunchInAppListvalue.isNotEmpty) {
-      await PendingListProvider.PunchInAprovalAPI(body, context);
+  Future punchInVerifyApprovalApi(id,status,context) async {
+    var response = await PendingListProvider.PunchInAprovalAPI(id,status);
+    if (response != null) {
+      if (response["success"] == true) {
+        await getPendingList();
+        BaseUtitiles.popMultiple(context, count: 4);
+      } else {
+        BaseUtitiles.popMultiple(context, count: 4);
+        BaseUtitiles.showToast(response["message"] ?? 'Something went wrong..');
+      }
     } else {
-      BaseUtitiles.showToast("Please select a list");
+      BaseUtitiles.popMultiple(context, count: 4);
+      BaseUtitiles.showToast("Something went wrong..");
     }
   }
 
@@ -192,33 +209,6 @@ class PendingListController extends GetxController {
 
   Future<bool> PO_Approval_DeleteApi(int reqId) async {
     return PendingListProvider.PO_Approval_deleteAPI(reqId);
-  }
-
-  // Future PO_Approval_DeleteApi(int reqId) async {
-  //   await PendingListProvider.PO_Approval_deleteAPI(reqId)
-  //       .then((value) async {
-  //     if (value != null && value.length > 0) {
-  //       return value;
-  //     }
-  //   });
-  // }
-
-  ///---------------------------mrnfinal_approval_delete----------------------------------------
-  Future mrnfinal_approvil_delete(BuildContext context, id) async {
-    String body =
-    pendingPoapprovalApiResmodelToJson(PendingPoapprovalApiResmodel(
-      urlName: "MRN FINAL APPROVAL DELETE",
-      userId: loginController.user.value.userId.toString(),
-      deviceName: BaseUtitiles.deviceName,
-      approvalDet: getPoAprovalDetList.value.isEmpty
-          ? getmrnfinalDet(id)
-          : getPoAprovalDetList.value,
-    ));
-    if (mainlist.isNotEmpty) {
-      await MrnFinalApprovalProvider.mrnfinaldeleteApi(body);
-    } else {
-      BaseUtitiles.showToast("Please select a list");
-    }
   }
 
   List<ApprovalDet> getmrnfinalDet(int id) {
@@ -261,9 +251,6 @@ class PendingListController extends GetxController {
   }
 
   ///-------------Po Approval && Direct Transfer (Verify & Approval)
-
-
-
 
   List<ApprovalDet>? getPoApprovalDet(id) {
     // add_PoaprovalListvalue.value.forEach((element) {
@@ -406,7 +393,27 @@ class PendingListController extends GetxController {
     }
   }
 
-  List<DirectApprovalDet>? getBillDirectApprovalDet() {
+  Future getReqNoApi(reqId) async {
+    reqNoList.value=[];
+      var response = await PendingListProvider.getReqNoList(reqId);
+      if (response != null) {
+        if(response["success"]==true) {
+          if (response["result"]!.isNotEmpty) {
+            reqNoList.value=response["result"];
+          } else {
+            BaseUtitiles.showToast("No Data Found");
+          }
+        }
+        else {
+          BaseUtitiles.showToast(response["message"] ?? 'Something went wrong..');
+        }
+      } else {
+        BaseUtitiles.showToast("Something went wrong..");
+      }
+    }
+
+
+    List<DirectApprovalDet>? getBillDirectApprovalDet() {
     addBillGenDirectListvalue.value.forEach((element) {
       var list = DirectApprovalDet(
         id: element.id,
@@ -528,7 +535,7 @@ class PendingListController extends GetxController {
   }
 
   Future PendingPoDetDetails(String Url, int RID, String Reqno,
-      String Projectname, BuildContext context) async {
+      String Projectname, BuildContext context,{String? heading}) async {
     onclickPendingListDet.clear();
     var response = await PendingListProvider.getOnclickDetProvider(Url, RID);
     if (response != null ) {
@@ -554,14 +561,23 @@ class PendingListController extends GetxController {
                   list: onclickPendingListDet,
                   ReqNo: Reqno,
                   ProjectName: Projectname,
+                ))) :Url == "PENDING PO [AGENCY]" || Url == "PENDING PO [TRADER]" || Url == "PENDING PO [SUPPLIER]" ?
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PendingList_PoSupTradAgenPopup(
+                  list: onclickPendingListDet,
+                  ReqNo: Reqno,
+                  ProjectName: Projectname,
+                  heading: heading!,
                 ))) :
-        Url == "INWARD PENDING" ?
+        Url == "INWARD PENDING" || Url == "INWARD PENDING - WO"?
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => PendingList_InwardPopup(
                   list: onclickPendingListDet,
-                  ReqNo: Reqno,
+                  ReqNo: Reqno, heading: Url,
                 ))) :  Url == "STORE TRANSFER PENDING" ?
         Navigator.push(
             context,
@@ -592,11 +608,12 @@ class PendingListController extends GetxController {
       if(response.success==true){
         onclickPendingListDet = response.result?.mMatPurOrdLink ?? [];
         print(onclickPendingListDet.toString());
+        await getReqNoApi(RID);
         return Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => PendingPo_Approval_Popup(id: RID,
-                    heading: Url, list: onclickPendingListDet,
+                  heading: Url, list: onclickPendingListDet,
                   ReqNo: Reqno,
                   projectName: projectName,
                   siteName: siteName,
@@ -789,8 +806,8 @@ class PendingListController extends GetxController {
     }
   }
 
-  Future quotVerifyAprovalbuttonApi(context,int id,type,{quoteMasId}) async {
-    final response = await PendingListProvider.quoteVerifyApprovalApi(id,type,verifyRemarks.text,revertRemarks.text,quoteMasId);
+  Future quotVerifyAprovalbuttonApi(context,int id,type,{companyId,quoteMasId}) async {
+     final response = await PendingListProvider.quoteVerifyApprovalApi(id,type,verifyRemarks.text,revertRemarks.text,quoteMasId,purchaseOrderNo.value,companyId);
     print("Quote Approve :: $response");
     if(response!=null){
       if(response["success"]==true){
@@ -914,7 +931,7 @@ class PendingListController extends GetxController {
   }
 
 
-  Future getSubcontractor_ExpensesList(String name, BuildContext context, {bool? isRoute}) async {
+  Future getSubcontractor_ExpensesList(String name, BuildContext context, {String? entryTypeName,bool? isRoute}) async {
     onclickPendingListData.clear();
     mainlist.value=[];
     var response = await PendingListProvider.getOnclickPendingListProvider(name);
@@ -931,7 +948,9 @@ class PendingListController extends GetxController {
                   builder: (context) =>
                       MrnVerfication(
                           onclickPendingListData: onclickPendingListData,
-                          heading: name)),
+                          heading: entryTypeName!,
+                          checkheading: name
+                      )),
             )
                 : name == "MRN PRE APPROVAL-GM"
                 ? Navigator.push(
@@ -940,7 +959,9 @@ class PendingListController extends GetxController {
                   builder: (context) =>
                       MrnPreApproval(
                           onclickPendingListData: onclickPendingListData,
-                          heading: name)),
+                          heading: entryTypeName!,
+                          checkheading: name
+                      )),
             )
                 : name == "MRN PRE APPROVAL-AM"
                 ? Navigator.push(
@@ -949,7 +970,8 @@ class PendingListController extends GetxController {
                   builder: (context) =>
                       MrnPreApproval_AM(
                           onclickPendingListData: onclickPendingListData,
-                          heading: name)),
+                          heading: entryTypeName!,
+                          checkheading: name)),
             )
             //     : name == "MRN APPROVAL"
             //     ? Navigator.push(
@@ -968,7 +990,7 @@ class PendingListController extends GetxController {
                       MrnPreApproval(
                           onclickPendingListData:
                           onclickPendingListData,
-                          heading: name)),
+                          heading: entryTypeName!, checkheading: name)),
             )
                 : name == "PENDING PO"
                 ? Navigator.push(
@@ -978,8 +1000,21 @@ class PendingListController extends GetxController {
                       PendingPO(
                           onclickPendingListData:
                           onclickPendingListData,
-                          heading: name)),
+                          heading: entryTypeName!,
+                          checkheading: name)),
             )
+                : name == "PENDING PO [SUPPLIER]" || name == "PENDING PO [AGENCY]" || name == "PENDING PO [TRADER]"
+                ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      PendingPOSupTradAgen(
+                          onclickPendingListData:
+                          onclickPendingListData,
+                          heading: entryTypeName!,
+                          checkheading: name)),
+            )
+
                 : name == "MRN DECISION PENDING"
                 ? Navigator.push(
               context,
@@ -988,7 +1023,8 @@ class PendingListController extends GetxController {
                       OnclickPendingList(
                           onclickPendingListData:
                           onclickPendingListData,
-                          heading: name)),
+                          heading: entryTypeName!,
+                          checkheading: name)),
             )
                 : name == "WORK PRE APPROVAL PENDING"
                 ? Navigator.push(
@@ -998,7 +1034,8 @@ class PendingListController extends GetxController {
                       WorkPreApproval(
                           onclickPendingListData:
                           onclickPendingListData,
-                          heading: name)),
+                          heading: entryTypeName!,
+                          checkheading: name)),
             )
                 : name == "MRN FINAL APPROVAL"
                 ? Navigator.push(
@@ -1008,7 +1045,8 @@ class PendingListController extends GetxController {
                       MrnFinalApproval(
                           onclickPendingListData:
                           onclickPendingListData,
-                          heading: name)),
+                          heading: entryTypeName!,
+                          checkheading: name)),
             )
                 : name == "SITE REQUEST VERIFICATION"
                 ? Navigator.push(
@@ -1018,7 +1056,8 @@ class PendingListController extends GetxController {
                       SiteRequestVerification(
                           onclickPendingListData:
                           onclickPendingListData,
-                          heading: name)),
+                          heading: entryTypeName!,
+                          checkheading: name)),
             ) : name == "SITE REQUEST APPROVAL"
                 ? Navigator.push(
               context,
@@ -1027,7 +1066,8 @@ class PendingListController extends GetxController {
                       SiteRequestVerification(
                           onclickPendingListData:
                           onclickPendingListData,
-                          heading: name)),
+                          heading: entryTypeName!,
+                          checkheading: name)),
             ) : name == "STORE TRANSFER PENDING"
                 ? Navigator.push(
               context,
@@ -1036,7 +1076,7 @@ class PendingListController extends GetxController {
                       StoreTransferPending(
                           onclickPendingListData:
                           onclickPendingListData,
-                          heading: name)),
+                          heading: entryTypeName!,checkheading: name)),
             )
                 : name ==
                 "TRANSFER REQUEST VERIFICATION PENDING"
@@ -1047,7 +1087,7 @@ class PendingListController extends GetxController {
                       DirectTransferVerifyApprove(
                           onclickPendingListData:
                           onclickPendingListData,
-                          heading: name)),
+                          heading: entryTypeName!,checkheading: name)),
             )
                 : name ==
                 "TRANSFER REQUEST APPROVAL PENDING"
@@ -1059,7 +1099,7 @@ class PendingListController extends GetxController {
                           onclickPendingListData:
                           onclickPendingListData,
                           heading:
-                          name)),
+                          entryTypeName!,checkheading: name)),
             )
                 : name == "PO VERIFICATION"
                 ? Navigator.push(
@@ -1070,7 +1110,7 @@ class PendingListController extends GetxController {
                           onclickPendingListData:
                           onclickPendingListData,
                           heading:
-                          name)),
+                          entryTypeName!,checkheading: name)),
             )
                 : name ==
                 "PO PREAPPROVAL PENDING"
@@ -1082,7 +1122,7 @@ class PendingListController extends GetxController {
                             onclickPendingListData:
                             onclickPendingListData,
                             heading:
-                            name)))
+                            entryTypeName!,checkheading: name)))
                 : name ==
                 "PO APPROVAL"
                 ? Navigator
@@ -1094,7 +1134,7 @@ class PendingListController extends GetxController {
                           onclickPendingListData:
                           onclickPendingListData,
                           heading:
-                          name)),
+                          entryTypeName!,checkheading: name)),
             )
                 : name == "WORK ORDER VERIFICATION - DIRECT" ||
                 name ==
@@ -1105,7 +1145,7 @@ class PendingListController extends GetxController {
               MaterialPageRoute(
                   builder: (context) =>
                       WorkOrder(onclickPendingListData: onclickPendingListData,
-                          heading: name)),
+                          heading: entryTypeName!,checkheading: name)),
             )
                 : name ==
                 "WORK ORDER APPROVAL"
@@ -1114,15 +1154,14 @@ class PendingListController extends GetxController {
               context,
               MaterialPageRoute(builder: (context) => WorkOrder(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             )
-                : name ==
-                "INWARD PENDING"
+                : name == "INWARD PENDING" || name == "INWARD PENDING - WO"
                 ? Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => InwardPending(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             )
                 : name == "TRANSFER PENDING"
                 ? Navigator.push(
@@ -1130,7 +1169,7 @@ class PendingListController extends GetxController {
               MaterialPageRoute(builder: (context) =>
                   TransferPending(
                       onclickPendingListData: onclickPendingListData,
-                      heading: name)),
+                      heading: entryTypeName!,checkheading: name)),
             )
                 : name == "TRANSFER REQUEST PENDING VIEW"
                 ? Navigator.push(
@@ -1138,7 +1177,7 @@ class PendingListController extends GetxController {
               MaterialPageRoute(builder: (context) =>
                   TransferPending(
                       onclickPendingListData: onclickPendingListData,
-                      heading: name)),
+                      heading: entryTypeName!,checkheading: name)),
             )
                 : name == "DIRECT TRANSFER VERIFICATION PENDING"
                 ? Navigator.push(
@@ -1146,35 +1185,35 @@ class PendingListController extends GetxController {
               MaterialPageRoute(builder: (context) =>
                   TransferVerification(
                       onclickPendingListData: onclickPendingListData,
-                      heading: name)),
+                      heading: entryTypeName!,checkheading: name)),
             )
                 : name == "DIRECT TRANSFER APPROVAL PENDING"
                 ? Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => DirectTransferApprovarl(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             )
                 : name == "TRANSFER ACKNOWLEDGMENT PENDING"
                 ? Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => TransferACKPending(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             )
                 : name == "SUBCONTRACTOR ATTENDANCE APPROVAL"
                 ? Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => SubContractorAttandance(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             )
-                : name == "COMPANY LABOUR ATTENDANCE APPROVAL"
+                : name == "COMPANY LABOUR ATTENDANCE APPROVAL PENDING"
                 ? Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => CompanyLbrAtendance(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             )
                 : name == "SUBCONTRACTOR DPR APPROVAL"
                 ? Navigator.push(
@@ -1183,7 +1222,7 @@ class PendingListController extends GetxController {
                   builder: (context) =>
                       SubContDPRApproval(
                         onclickPendingListData: onclickPendingListData,
-                        heading: name,
+                        heading: entryTypeName!,checkheading: name
                       )),
             )
                 : name == "SUBCONTRACTOR NMR Bill APPROVAL"
@@ -1191,28 +1230,28 @@ class PendingListController extends GetxController {
               context,
               MaterialPageRoute(builder: (context) => SubContNMRBillApproval(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             )
                 : name == "BILL GENERATION-BOQ APPROVAL"
                 ? Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => BillGenBOQAproval(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             )
                 : name == "BILL GENERATION-DIRECT APPROVAL"
                 ? Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => BillGenDirectAproval(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             )
-                : name == "ADVANCE REQUISITION APPROVAL"
+                : name == "ADV REQ APPROVAL PENDING"
                 ? Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => AdvanceReqAproval(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             )
                 : name == "STAFF L & P APPROVAL" ||
                 name == "STAFF L & P VERIFICATION"
@@ -1220,28 +1259,28 @@ class PendingListController extends GetxController {
               context,
               MaterialPageRoute(builder: (context) => StaffRequisitionVerify(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             )
-                : name == "STAFF ONDUTY PUNCHIN APPROVAL"
+                : name == "STAFF ONDUTY PUNCH IN & OUT VERIFICATION" || name =="STAFF ONDUTY PUNCH IN & OUT APPROVAL" || name =="STAFF NON-ALLOTED PUNCH IN & OUT VERIFICATION"|| name=="STAFF NON-ALLOTED PUNCH IN & OUT APPROVAL"
                 ? Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => PunchInApproval(
+              MaterialPageRoute(builder: (context) => PunchInOutVerification(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             ) : name ==
                 "PENDING QUOTE"
                 ? Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => QuotePending(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             ) : name ==
                 "QUOTE VERIFICATION PENDING"
                 ? Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => QuoteVerifyandApproval(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             )
                 : name ==
                 "QUOTE PRE APPROVAL"
@@ -1249,50 +1288,50 @@ class PendingListController extends GetxController {
               context,
               MaterialPageRoute(builder: (context) => QuoteVerifyandApproval(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             ) : name ==
                 "QUOTE APPROVAL PENDING"
                 ? Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => QuoteVerifyandApproval(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             ) : name ==
                 "BILL VERIFICATION - NMR" || name == "BILL APPROVAL - NMR"
                 ? Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => NMRBillVerification(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             ): name == "BILL VERIFICATION - DIRECT" || name == "BILL APPROVAL - DIRECT"
                 ? Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => BillDirectVerification(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             ): name == "BILL VERIFICATION - BOQ" || name == "BILL APPROVAL - BOQ"
                 ? Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => BillBoqVerification(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             ): name == "BOQ REVISED - APPROVAL"
                 ? Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => BOQRevisedApproval(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             ): name == "SITE VOUCHER APPROVAL"
                 ? Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => SiteVoucherApproval(
                   onclickPendingListData: onclickPendingListData,
-                  heading: name)),
+                  heading: entryTypeName!,checkheading: name)),
             )
                 : Navigator.push(context, MaterialPageRoute(
                 builder: (context) => OfficeVoucherApproval(
                     onclickPendingListData: onclickPendingListData,
-                    heading: name)));
+                    heading: entryTypeName!,checkheading: name)));
           }
         }
         else{

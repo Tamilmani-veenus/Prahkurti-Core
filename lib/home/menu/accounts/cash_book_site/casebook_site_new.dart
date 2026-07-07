@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../../../app_theme/app_colors.dart';
 import '../../../../constants/ui_constant/icons_const.dart';
@@ -11,7 +12,8 @@ import '../../../../utilities/baseutitiles.dart';
 import '../../../../utilities/requestconstant.dart';
 
 class CashBook_Site extends StatefulWidget {
-  const CashBook_Site({Key? key}) : super(key: key);
+  final String heading;
+  const CashBook_Site({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<CashBook_Site> createState() => _CashBook_SiteState();
@@ -69,11 +71,13 @@ class _CashBook_SiteState extends State<CashBook_Site> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "Cash Book/Site",
-                            style: TextStyle(
-                                fontSize: RequestConstant.Heading_Font_SIZE,
-                                fontWeight: FontWeight.bold),
+                          Expanded(
+                            child: Text(
+                              widget.heading,
+                              style: TextStyle(
+                                  fontSize: RequestConstant.Heading_Font_SIZE,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                           TextButton(
                               onPressed: () {
@@ -346,6 +350,11 @@ class _CashBook_SiteState extends State<CashBook_Site> {
                       textAlign: TextAlign.center,
                       controller: cashBookSiteController.totalDebit,
                       keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'^\d+\.?\d{0,2}'),
+                        ),
+                      ],
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                         focusedBorder: OutlineInputBorder(
@@ -371,6 +380,11 @@ class _CashBook_SiteState extends State<CashBook_Site> {
                       textAlign: TextAlign.center,
                       controller: cashBookSiteController.totalCredit,
                       keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'^\d+\.?\d{0,2}'),
+                        ),
+                      ],
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                         focusedBorder: OutlineInputBorder(
@@ -408,6 +422,11 @@ class _CashBook_SiteState extends State<CashBook_Site> {
                       textAlign: TextAlign.center,
                       controller: cashBookSiteController.closingDebit,
                       keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'^\d+\.?\d{0,2}'),
+                        ),
+                      ],
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                         focusedBorder: OutlineInputBorder(
@@ -433,6 +452,11 @@ class _CashBook_SiteState extends State<CashBook_Site> {
                       textAlign: TextAlign.center,
                       controller: cashBookSiteController.closingCredit,
                       keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'^\d+\.?\d{0,2}'),
+                        ),
+                      ],
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                         focusedBorder: OutlineInputBorder(

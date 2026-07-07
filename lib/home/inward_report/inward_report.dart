@@ -19,7 +19,8 @@ import 'package:get/get.dart';
 import '../pdf_generate/pdf_model/pdfmodel.dart';
 
 class InwardReport extends StatefulWidget {
-  const InwardReport({Key? key}) : super(key: key);
+  final String heading;
+  const InwardReport({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<InwardReport> createState() => _InwardReportState();
@@ -45,8 +46,9 @@ class _InwardReportState extends State<InwardReport> {
 
       suppliercontroller.FromdateController.clear();
       suppliercontroller.TodateController.clear();
-      DateTime currentDate = DateTime. now();
-      suppliercontroller.FromdateController.text=currentDate.toString().substring(0,10);
+      DateTime currentDate = DateTime.now();
+      DateTime oneWeekBefore = currentDate.subtract(const Duration(days: 7));
+      suppliercontroller.FromdateController.text=oneWeekBefore.toString().substring(0,10);
       suppliercontroller.TodateController.text=currentDate.toString().substring(0,10);
       suppliercontroller.getSupplierListData.value=[];
       reportsController.projectname.text = "--ALL--";
@@ -57,9 +59,6 @@ class _InwardReportState extends State<InwardReport> {
       reportsController.selectedsuppliertId.value = 0;
       reportsController.Subheadername.text = "--ALL--";
       reportsController.materialDropdowntId.value = 0;
-      await reportsController.getReportProjectList();
-      await reportsController.getReportMaterialList();
-      await reportsController.getSupplierReportList();
 
     });
     super.initState();
@@ -85,12 +84,14 @@ class _InwardReportState extends State<InwardReport> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        "Inward Report",
-                        style: TextStyle(
-                            fontSize: RequestConstant.Heading_Font_SIZE,
-                            fontWeight: FontWeight.bold),
-                      ),
+                       Expanded(
+                         child: Text(
+                          widget.heading,
+                          style: TextStyle(
+                              fontSize: RequestConstant.Heading_Font_SIZE,
+                              fontWeight: FontWeight.bold),
+                                               ),
+                       ),
                       TextButton(
                           onPressed: () {
                             Navigator.pop(context);
@@ -102,7 +103,7 @@ class _InwardReportState extends State<InwardReport> {
                     ],
                   ),
                 ),
-      
+
                 Container(
                   margin: EdgeInsets.only(top: 3, left: 10, right: 10),
                   child: Row(
@@ -139,11 +140,18 @@ class _InwardReportState extends State<InwardReport> {
                                   ),
                                 ),
                                 onTap: () async {
+                                  DateTime today = DateTime.now();
+
+                                  DateTime initialDate = today.subtract(const Duration(days: 7));
+
+                                  if (initialDate.isBefore(DateTime(1900))) {
+                                    initialDate = DateTime(1900);
+                                  }
                                   var Frdate = await showDatePicker(
                                       context: context,
-                                      initialDate: DateTime.now(),
+                                      initialDate: initialDate,
                                       firstDate: DateTime(1900),
-                                      lastDate: DateTime(2100),
+                                      lastDate: today,
                                       builder: (context, child) {
                                         return Theme(data: Theme.of(context).copyWith(
                                           colorScheme: ColorScheme.light(
@@ -160,8 +168,10 @@ class _InwardReportState extends State<InwardReport> {
                                           child: child!,
                                         );
                                       });
-                                  suppliercontroller.FromdateController.text = Frdate.toString().substring(0, 10);
-                                },
+                                if (Frdate != null) {
+                                  suppliercontroller.FromdateController.text =
+                                      Frdate.toString().substring(0, 10);
+                                } },
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Select Date';
@@ -205,11 +215,13 @@ class _InwardReportState extends State<InwardReport> {
                                           color: Theme.of(context).primaryColor)),
                                 ),
                                 onTap: () async {
-                                  var Todate = await showDatePicker(
+                                  DateTime today = DateTime.now();
+                                  DateTime fromDate = DateTime.parse(suppliercontroller.FromdateController.text);
+                                  DateTime? Todate = await showDatePicker(
                                       context: context,
-                                      initialDate: DateTime.now(),
-                                      firstDate: DateTime(1900),
-                                      lastDate: DateTime(2100),
+                                      initialDate: today.isBefore(fromDate) ? fromDate : today,
+                                      firstDate: fromDate,
+                                      lastDate: DateTime.now(),
                                       builder: (context, child) {
                                         return Theme(data: Theme.of(context).copyWith(
                                           colorScheme: ColorScheme.light(
@@ -226,8 +238,10 @@ class _InwardReportState extends State<InwardReport> {
                                           child: child!,
                                         );
                                       });
-                                  suppliercontroller.TodateController.text = Todate.toString().substring(0, 10);
-                                },
+                                  if(Todate != null) {
+                                    suppliercontroller.TodateController.text =
+                                        Todate.toString().substring(0, 10);
+                                  }},
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Select Date';
@@ -242,7 +256,7 @@ class _InwardReportState extends State<InwardReport> {
                     ],
                   ),
                 ),
-      
+
                 Container(
                   margin: EdgeInsets.only(top: 5, left: 10, right: 10),
                   child: Card(
@@ -272,28 +286,29 @@ class _InwardReportState extends State<InwardReport> {
                               padding: EdgeInsets.symmetric(
                                   vertical: 8, horizontal: 8),
                               child: ConstIcons.projectName
-      
+
                           ),
                         ),
-                        onTap: () {
-                          // await projectController.getProjectList(context, 0);
-                          setState(() {
-                            bottomsheetControllers.projectNameReport(context, reportsController.getProjectdropDownvalue.value);
-                          });
-
+                        onTap: () async {
+                          await reportsController.getReportProjectList(Url: "Report");
+                            if(mounted) {
+                              bottomsheetControllers.projectNameReport(context,
+                                  reportsController.getProjectdropDownvalue
+                                      .value);
+                            }
                         },
                         validator: (value) {
                           if (value!.isEmpty || value == "--Select--") {
-                            return '\u26A0 Please select project name.';
+                            return '\u26A0 Required.';
                           }
                           return null;
                         },
-      
+
                       ),
                     ),
                   ),
                 ),
-      
+
                 Container(
                   margin: EdgeInsets.only(top: 5, left: 10, right: 10),
                   child: Card(
@@ -323,26 +338,26 @@ class _InwardReportState extends State<InwardReport> {
                               padding: EdgeInsets.symmetric(
                                   vertical: 8, horizontal: 8),
                               child: ConstIcons.siteName
-      
+
                           ),
                         ),
                         onTap: () async {
-                          await siteController.subcontEntry_siteDropdowntList(context, 0,type: "InwardReport");
-                              if (mounted) {
+                          await siteController.subcontEntry_siteDropdowntList(context, 0,type: "Report");
+                          if (mounted) {
                             bottomsheetControllers.siteNameReport(context, siteController.getSiteDropdownvalue.value);
-                              }},
+                          }},
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return '\u26A0 Please select site name.';
+                            return '\u26A0 Required.';
                           }
                           return null;
                         },
-      
+
                       ),
                     ),
                   ),
                 ),
-      
+
                 Container(
                   margin: EdgeInsets.only(top: 5, left: 10, right: 10),
                   child: Card(
@@ -371,23 +386,24 @@ class _InwardReportState extends State<InwardReport> {
                           prefixIcon: Padding(
                               padding: EdgeInsets.symmetric(
                                   vertical: 8, horizontal: 8),
-                              child: ConstIcons.projectName
-      
+                              child: ConstIcons.supplierName
+
                           ),
                         ),
-                        onTap: () {
-                          setState(() {
-                            bottomsheetControllers.supplierNameReport(context, reportsController.supplierListDropdown.value);
-                          });
-      
+                        onTap: () async {
+                          await reportsController.getSupplierReportList();
+                          if(mounted) {
+                            bottomsheetControllers.supplierNameReport(context,
+                                reportsController.supplierListDropdown.value);
+                          }
                         },
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return '\u26A0 Please select supplier name.';
+                            return '\u26A0 Required';
                           }
                           return null;
                         },
-      
+
                       ),
                     ),
                   ),
@@ -420,16 +436,16 @@ class _InwardReportState extends State<InwardReport> {
                           prefixIcon: Padding(
                               padding: EdgeInsets.symmetric(
                                   vertical: 8, horizontal: 8),
-                              child: ConstIcons.projectName
+                              child: ConstIcons.materialName
 
                           ),
                         ),
-                        onTap: () {
-                          setState(() {
-                            bottomsheetControllers.MRNMaterialName(context, reportsController.getMaterialdropDownvalue.value);
-                          });
-
-                        },
+                        onTap: () async {
+                          await reportsController.getReportMaterialList();
+                            if(mounted) {
+                              bottomsheetControllers.MRNMaterialName(
+                                  context, reportsController.getMaterialdropDownvalue.value);
+                            }},
                         validator: (value) {
                           if (value!.isEmpty) {
                             return '\u26A0 Please select Material Name.';
@@ -447,7 +463,7 @@ class _InwardReportState extends State<InwardReport> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-      
+
                         InkWell(
                           child: Container(
                             margin: EdgeInsets.only(left: 20, right: 20, top: 10),
@@ -477,9 +493,9 @@ class _InwardReportState extends State<InwardReport> {
                               suppliercontroller.getSupplierListData.value=[];
                               await suppliercontroller.getInwardtList();
                             }
-                            },
+                          },
                         ),
-      
+
                         VerticalDivider(
                           color: Colors.grey.shade400,
                           width: 5,
@@ -487,7 +503,7 @@ class _InwardReportState extends State<InwardReport> {
                           indent: 15,
                           endIndent: 8, //Spacing at the bottom of divider.
                         ),
-      
+
                         InkWell(
                           child: Container(
                             margin: EdgeInsets.only(left: 20, right: 20, top: 10),
@@ -514,21 +530,27 @@ class _InwardReportState extends State<InwardReport> {
                           ),
                           onTap: () async {
                             if(_formKey.currentState!.validate()){
-                              download(loginController.user.value.userId!, loginController.user.value.userType!,reportsController.selectedProjectId.value,reportsController.selectedsiteId.value,reportsController.projectname.text,reportsController.sitename.text, reportsController.selectedsuppliertId.value,reportsController.suppliername.text,suppliercontroller.FromdateController.text, suppliercontroller.TodateController.text,reportsController.materialDropdowntId.value);
+                              download(
+                                  reportsController.selectedProjectId.value,
+                                  reportsController.selectedsiteId.value,
+                                  reportsController.projectname.text,
+                                  reportsController.sitename.text,
+                                  reportsController.selectedsuppliertId.value, suppliercontroller.FromdateController.text,
+                                  suppliercontroller.TodateController.text,reportsController.materialDropdowntId.value);
                             }
                           },
                         ),
-      
+
                       ],
                     ),
                   ),
                 ),
-      
-      
+
+
                 SizedBox(height: BaseUtitiles.getheightofPercentage(context, 2),),
-      
+
                 ListDetails(),
-      
+
               ],
             ),
           ),
@@ -538,24 +560,11 @@ class _InwardReportState extends State<InwardReport> {
   }
 
 
-  download(int uid,String uType,int pId,int sId,String pName, String sName,int supId, String supName,String fdate,String todate,mId){
-    launch("${ApiConfig.WebURL}mobile-inward-report?fromDate=2020-04-01&toDate=2026-04-06&projectId=$pId&siteId=$sId&supplierId=$supId&materialId=$mId&access_token=${loginController.user.value.accessToken}");
-    print("${ApiConfig.WebURL}mobile-inward-report?fromDate=2020-04-01&toDate=2026-04-06&projectId=$pId&siteId=$sId&supplierId=$supId&materialId=$mId&access_token=${loginController.user.value.accessToken}");
+  download(int pId,int sId,String pName, String sName,int supId,String fdate,String todate,mId){
+    launch("${ApiConfig.WebURL}mobile-inward-report?fromDate=$fdate&toDate=$todate&projectId=$pId&siteId=$sId&supplierId=$supId&materialId=$mId&access_token=${loginController.user.value.accessToken}");
+    print("${ApiConfig.WebURL}mobile-inward-report?fromDate=$fdate&toDate=$todate&projectId=$pId&siteId=$sId&supplierId=$supId&materialId=$mId&access_token=${loginController.user.value.accessToken}");
   }
 
-  List<PdfListModel> getInwardReportList() {
-    suppliercontroller.getSupplierList_Pdf.clear();
-    suppliercontroller.getSupplierListData.forEach((element) async {
-      var list = PdfListModel(
-        inwardNo: element.inwardNo,
-        inwardDate: element.inwardDate,
-        supplierName: element.supplierName,
-        projectName: element.projectName,
-      );
-      suppliercontroller.getSupplierList_Pdf.add(list);
-    });
-    return suppliercontroller.getSupplierList_Pdf;
-  }
 
   Widget ListDetails(){
     return Container(
@@ -592,7 +601,7 @@ class _InwardReportState extends State<InwardReport> {
                                 children: [
                                   ConstIcons.list_date,
                                   Text(
-                                      suppliercontroller.getSupplierListData.value[index].entryDate.toString(),
+                                    suppliercontroller.getSupplierListData.value[index].entryDate.toString(),
                                     style: TextStyle(color: Theme.of(context).primaryColor,fontWeight: FontWeight.bold),
                                   ),
                                 ],

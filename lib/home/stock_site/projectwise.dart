@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import '../../../../constants/ui_constant/textfont_style.dart';
 import '../../../../controller/material_controller.dart';
 import '../../../../controller/projectcontroller.dart';
@@ -31,6 +33,7 @@ class _PrjectWiseState extends State<PrjectWise> {
   void initState() {
     var duration = const Duration(seconds: 0);
     Future.delayed(duration, () async {
+      reportsController.validateProject.value = false;
       stockSiteController.getStockList.value=[];
       reportsController.projectname.text = "--ALL--";
       reportsController.selectedProjectId.value = 0;
@@ -40,232 +43,282 @@ class _PrjectWiseState extends State<PrjectWise> {
       stockSiteController.matHeadDropdowntId.value = 0;
       stockSiteController.Materialsubname.text = "--ALL--";
       stockSiteController.matDropdowntId.value = 0;
-
       reportsController.materialDropdowntId.value=0;
-      reportsController.Subheadername.text="--ALL--";
-
     });
     super.initState();
   }
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 
   @override
   Widget build(BuildContext context) {
     return SafeArea( top: false,
-      child: Scaffold(
-        backgroundColor: Setmybackground,
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 2 / 100,
-              ),
-      
-              Container(
-                margin: const EdgeInsets.only(top: 5, left: 10, right: 10),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    side: const BorderSide(color: Colors.white70, width: 1),
-                    borderRadius: BorderRadius.circular(15),
+      child: Form(
+        key: _formKey,
+        child: Scaffold(
+          backgroundColor: Setmybackground,
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 2 / 100,
+                ),
+
+                Container(
+                  margin: const EdgeInsets.only(top: 5, left: 10, right: 10),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      side: const BorderSide(color: Colors.white70, width: 1),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 3,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                      child: Obx(()=> TextFormField(
+                          readOnly: true,
+                          controller: reportsController.projectname,
+                          cursorColor: Colors.black,
+                          autovalidateMode: reportsController.validateProject.value
+                              ? AutovalidateMode.always
+                              : AutovalidateMode.disabled,
+                          style: const TextStyle(color: Colors.black),
+                          decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.zero,
+                            border: InputBorder.none,
+                            labelText: "Project Name",
+                            labelStyle: TextStyle(
+                                color: Colors.grey,
+                                fontSize: RequestConstant.Lable_Font_SIZE),
+                            prefixIconConstraints:
+                                BoxConstraints(minWidth: 0, minHeight: 0),
+                            prefixIcon: Padding(
+                                padding:
+                                    EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                child: ConstIcons.projectName),
+                          ),
+                          onTap: () async {
+                            await reportsController.getReportProjectList(Url: "Report");
+                            bottomsheetControllers.projectNameReport(context, reportsController.getProjectdropDownvalue.value);
+                          },
+                          validator: (value) {
+                            if (!reportsController.validateProject.value) {
+                              return null;
+                            }
+
+                            if (value == null || value.isEmpty || value == "--ALL--") {
+                              return '\u26A0 ${RequestConstant.VALIDATE}';
+                            }
+
+                            return null;
+                          },
+                        ),
+                      ),
+                    ),
                   ),
-                  elevation: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                    child: TextFormField(
-                      readOnly: true,
-                      controller: reportsController.projectname,
-                      cursorColor: Colors.black,
-                      style: const TextStyle(color: Colors.black),
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.zero,
-                        border: InputBorder.none,
-                        labelText: "Project Name",
-                        labelStyle: TextStyle(
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 5, left: 10, right: 10),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      side: const BorderSide(color: Colors.white70, width: 1),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 3,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                      child: Obx(()=>
+                         TextFormField(
+                          readOnly: true,
+                          controller: reportsController.sitename,
+                          cursorColor: Colors.black,
+                          autovalidateMode: reportsController.validateProject.value
+                              ? AutovalidateMode.always
+                              : AutovalidateMode.disabled,
+                          style: const TextStyle(color: Colors.black),
+                          decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.zero,
+                            border: InputBorder.none,
+                            labelText: "Site Name",
+                            labelStyle: TextStyle(
+                                color: Colors.grey,
+                                fontSize: RequestConstant.Lable_Font_SIZE),
+                            prefixIconConstraints:
+                                BoxConstraints(minWidth: 0, minHeight: 0),
+                            prefixIcon: Padding(
+                                padding:
+                                    EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                child: ConstIcons.siteName),
+                          ),
+                          onTap: () async {
+                            await siteController.subcontEntry_siteDropdowntList(context, 0,type: "Report");
+                            if (mounted) {
+                              bottomsheetControllers.siteNameReport(context, siteController.getSiteDropdownvalue.value);
+                            }
+                          },
+                          validator: (value) {
+                            if (!reportsController.validateProject.value) {
+                              return null;
+                            }
+
+                            if (value == null || value.isEmpty || value == "--ALL--") {
+                              return '\u26A0 ${RequestConstant.VALIDATE}';
+                            }
+
+                            return null;
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      side: const BorderSide(color: Colors.white70, width: 1),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 3,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                      child: TextFormField(
+                        readOnly: true,
+                        controller: stockSiteController.materialHeadName,
+                        cursorColor: Colors.black,
+                        style: const TextStyle(color: Colors.black),
+                        decoration:  InputDecoration(
+                          contentPadding: EdgeInsets.zero,
+                          border: InputBorder.none,
+                          labelText: "Material Head Item",
+                          labelStyle: TextStyle(
                             color: Colors.grey,
-                            fontSize: RequestConstant.Lable_Font_SIZE),
-                        prefixIconConstraints:
-                            BoxConstraints(minWidth: 0, minHeight: 0),
-                        prefixIcon: Padding(
+                            fontSize: RequestConstant.Lable_Font_SIZE,
+                          ),
+                          prefixIconConstraints:
+                              BoxConstraints(minWidth: 0, minHeight: 0),
+                          prefixIcon: Padding(
                             padding:
                                 EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                            child: ConstIcons.projectName),
-                      ),
-                      onTap: () async {
-                        await reportsController.getReportProjectList();
-                        bottomsheetControllers.projectNameReport(context, reportsController.getProjectdropDownvalue.value);
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 5, left: 10, right: 10),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    side: const BorderSide(color: Colors.white70, width: 1),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  elevation: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                    child: TextFormField(
-                      readOnly: true,
-                      controller: reportsController.sitename,
-                      cursorColor: Colors.black,
-                      style: const TextStyle(color: Colors.black),
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.zero,
-                        border: InputBorder.none,
-                        labelText: "Site Name",
-                        labelStyle: TextStyle(
-                            color: Colors.grey,
-                            fontSize: RequestConstant.Lable_Font_SIZE),
-                        prefixIconConstraints:
-                            BoxConstraints(minWidth: 0, minHeight: 0),
-                        prefixIcon: Padding(
-                            padding:
-                                EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                            child: ConstIcons.siteName),
-                      ),
-                      onTap: () async {
-                        await siteController.subcontEntry_siteDropdowntList(context, 0,type: "StockReport");
-                        if (mounted) {
-                        bottomsheetControllers.siteNameReport(context, siteController.getSiteDropdownvalue.value);
-                        }
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    side: const BorderSide(color: Colors.white70, width: 1),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  elevation: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                    child: TextFormField(
-                      readOnly: true,
-                      controller: stockSiteController.materialHeadName,
-                      cursorColor: Colors.black,
-                      style: const TextStyle(color: Colors.black),
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.zero,
-                        border: InputBorder.none,
-                        labelText: "Material Head Item",
-                        labelStyle: TextStyle(
-                          color: Colors.grey,
-                          fontSize: RequestConstant.Lable_Font_SIZE,
-                        ),
-                        prefixIconConstraints:
-                            BoxConstraints(minWidth: 0, minHeight: 0),
-                        prefixIcon: Padding(
-                          padding:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                          child: ConstIcons.siteName,
-                        ),
-                      ),
-                      onTap: () async {
-                        await stockSiteController.getMaterialHeadReportList();
-                        if (mounted) {
-                          bottomsheetControllers.materialHeadItem(context, stockSiteController.getmaterialHeadDropDownvalue.value);
-                        }
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    side: const BorderSide(color: Colors.white70, width: 1),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  elevation: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                    child: TextFormField(
-                      readOnly: true,
-                      controller: stockSiteController.Materialsubname,
-                      cursorColor: Colors.black,
-                      style: const TextStyle(color: Colors.black),
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.zero,
-                        border: InputBorder.none,
-                        labelText: "Material Sub Item",
-                        labelStyle: TextStyle(
-                            color: Colors.grey,
-                            fontSize: RequestConstant.Lable_Font_SIZE),
-                        prefixIconConstraints:
-                            BoxConstraints(minWidth: 0, minHeight: 0),
-                        prefixIcon: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                            child: ConstIcons.siteName),
-                      ),
-                      onTap: () async {
-                        await stockSiteController.getProjectWiseSubmatList(stockSiteController.matHeadDropdowntId.value);
-
-                        if (mounted) {
-                          bottomsheetControllers.MaterialSubItem(context, stockSiteController.matHeadDropdowntId.value, stockSiteController.getmaterialSubdropDownvalue.value);
-                        }
-                      },
-                    ),
-                  ),
-                ),
-              ),
-
-              Container(
-                margin: const EdgeInsets.only(
-                    left: 20, right: 20, top: 10, bottom: 10),
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      SizedBox(
-                        width: BaseUtitiles.getWidthtofPercentage(context, 30),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Theme.of(context).primaryColor,
-                            side: const BorderSide(width: 3, color: Colors.white),
-                            elevation: 3,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30)),
+                            child: Icon(
+                              Icons.widgets,
+                              color: Theme.of(context).primaryColor,
+                            ),
                           ),
-                          onPressed: () async {
-                            await  stockSiteController.getProjectwiseshow("Projectwise");
-                          },
-                          child: const Text("Show"),
                         ),
+                        onTap: () async {
+                          await stockSiteController.getMaterialHeadReportList(Url: "Report");
+                          if (mounted) {
+                            bottomsheetControllers.materialHeadItem(context, stockSiteController.getmaterialHeadDropDownvalue.value);
+                          }
+                        },
                       ),
-                      SizedBox(
-                        width: BaseUtitiles.getWidthtofPercentage(context, 30),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Theme.of(context).primaryColor,
-                            side: const BorderSide(width: 3, color: Colors.white),
-                            elevation: 3,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                          ),
-                          onPressed: () async {
-                            stockSiteController.getProjectDetailisList(context, reportsController.projectname.text);
-                          },
-                          child: const Text("Details"),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-      
-              ListDetails(),
-      
-              // ListDatas(),
-            ],
+                Container(
+                  margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      side: const BorderSide(color: Colors.white70, width: 1),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 3,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                      child: TextFormField(
+                        readOnly: true,
+                        controller: stockSiteController.Materialsubname,
+                        cursorColor: Colors.black,
+                        style: const TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.zero,
+                          border: InputBorder.none,
+                          labelText: "Material Sub Item",
+                          labelStyle: TextStyle(
+                              color: Colors.grey,
+                              fontSize: RequestConstant.Lable_Font_SIZE),
+                          prefixIconConstraints:
+                              BoxConstraints(minWidth: 0, minHeight: 0),
+                          prefixIcon: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                              child: Icon(Icons.format_list_bulleted,color: Theme.of(context).primaryColor),),
+                        ),
+                        onTap: () async {
+                          await stockSiteController.getProjectWiseSubmatList(stockSiteController.matHeadDropdowntId.value,Url: "Report");
+
+                          if (mounted) {
+                            bottomsheetControllers.MaterialSubItem(context, stockSiteController.matHeadDropdowntId.value, stockSiteController.getmaterialSubdropDownvalue.value);
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+
+                Container(
+                  margin: const EdgeInsets.only(
+                      left: 20, right: 20, top: 10, bottom: 10),
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        SizedBox(
+                          width: BaseUtitiles.getWidthtofPercentage(context, 30),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Theme.of(context).primaryColor,
+                              side: const BorderSide(width: 3, color: Colors.white),
+                              elevation: 3,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30)),
+                            ),
+                            onPressed: () async {
+                              reportsController.validateProject.value = false;
+                              _formKey.currentState?.validate();
+
+                              await stockSiteController.getProjectwiseshow("Projectwise");
+                            },
+                            child: const Text("Show"),
+                          ),
+                        ),
+                        SizedBox(
+                          width: BaseUtitiles.getWidthtofPercentage(context, 30),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Theme.of(context).primaryColor,
+                              side: const BorderSide(width: 3, color: Colors.white),
+                              elevation: 3,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                            ),
+                            onPressed: () async {
+                              reportsController.validateProject.value = true;
+
+                              stockSiteController.getStockList.value = [];
+
+                              if (_formKey.currentState!.validate()) {
+                                _formKey.currentState!.save();
+
+                                await stockSiteController.getProjectDetailList(
+                                  context,
+                                  reportsController.projectname.text,
+                                );
+                              }
+                            },
+                            child: const Text("Details"),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                ListDetails(),
+
+                // ListDatas(),
+              ],
+            ),
           ),
         ),
       ),

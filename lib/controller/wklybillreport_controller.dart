@@ -14,13 +14,13 @@ class WklyBillReport_controller extends GetxController{
 
   RxList wklyreportDatas = [].obs;
 
-  Future wklybill_rptList() async {
-    wklyreportDatas.value.clear();
-    await ReportsProvider.getNMRreportList(projectController.selectedProjectId.value,0,fromdate.text,todate.text).then((value)async{
-      if(value!=null&& value.length>0){
-        wklyreportDatas.value=value;
-        return wklyreportDatas.value;
-      }
-    });
-  }
+  // Future wklybill_rptList() async {
+  //   wklyreportDatas.value.clear();
+  //   await ReportsProvider.getNMRreportList(projectController.selectedProjectId.value,0,fromdate.text,todate.text).then((value)async{
+  //     if(value!=null&& value.length>0){
+  //       wklyreportDatas.value=value;
+  //       return wklyreportDatas.value;
+  //     }
+  //   });
+  // }
 }

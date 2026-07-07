@@ -275,14 +275,7 @@ class TransferAcknowledgmentPendingController extends GetxController{
   //   });
   // }
 
-  Future EntryList_DeleteApi(int transId,String ackNo,String transNo) async {
-    await PendingListProvider.entryList_deleteAPI(transId,ackNo,transNo,loginController.UserId(),BaseUtitiles.deviceName)
-        .then((value) async {
-      if (value != null && value.length > 0) {
-        return value;
-      }
-    });
-  }
+
 
   EditTable_SaveTable() async {
     transferDetModelList.clear();
@@ -310,66 +303,5 @@ class TransferAcknowledgmentPendingController extends GetxController{
     else
       return saveButton.value=RequestConstant.SUBMIT;
   }
-
-
-  Future DeleteAlert(BuildContext context,int index) async {
-    return await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Alert!'),
-        content: Text('Do you want to Delete?'),
-        actions:[
-          Container(
-            margin: EdgeInsets.only(left: 20,right: 20),
-            child: IntrinsicHeight(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: TextButton(onPressed: (){
-                      Navigator.pop(context);
-                    }, child: Text("Cancel", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE))),
-                  ),
-                  VerticalDivider(
-                    color: Colors.grey.shade400,  //color of divider
-                    width: 5, //width space of divider
-                    thickness: 2, //thickness of divier line
-                    indent: 15, //Spacing at the top of divider.
-                    endIndent: 15, //Spacing at the bottom of divider.
-                  ),
-                  Expanded(
-                    child: TextButton(
-                        onPressed: () {
-                          EntryList_DeleteApi(entrylistDatas[index].transferId,entrylistDatas[index].ackNo,entrylistDatas[index].transferNo);
-                          entrylistDatas.removeAt(index);
-                          Navigator.of(context).pop();
-                        },
-                        child: Text("Delete", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE))),
-                  )
-                ],
-              ),
-            ),
-          ),
-
-
-          // ElevatedButton(
-          //   onPressed: () => Navigator.of(context).pop(),
-          //   child:Text('No'),
-          // ),
-          // ElevatedButton(
-          //   onPressed: () {
-          //     entrycheck=0;
-          //     editcheck=0;
-          //    EntryList_DeleteApi(entrylistDatas[index].transferId,entrylistDatas[index].ackNo,entrylistDatas[index].transferNo);
-          //    entrylistDatas.removeAt(index);
-          //     Navigator.of(context).pop();
-          //   },
-          //   child:Text('Yes'),
-          // ),
-        ],
-      ),
-    );
-  }
-
 
 }

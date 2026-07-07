@@ -17,7 +17,8 @@ import '../../utilities/apiconstant.dart';
 import '../pdf_generate/pdf_model/pdfmodel.dart';
 
 class MRNReport extends StatefulWidget {
-  const MRNReport({Key? key}) : super(key: key);
+  final String heading;
+  const MRNReport({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<MRNReport> createState() => _MRNReportState();
@@ -39,20 +40,16 @@ class _MRNReportState extends State<MRNReport> {
       siteController.FromdateController.clear();
       siteController.TodateController.clear();
       siteController.mrnListValue.value=[];
-      DateTime currentDate = DateTime. now();
-      siteController.FromdateController.text=currentDate.toString().substring(0,10);
+      DateTime currentDate = DateTime.now();
+      DateTime oneWeekBefore = currentDate.subtract(const Duration(days: 7));
+      siteController.FromdateController.text=oneWeekBefore.toString().substring(0, 10);
       siteController.TodateController.text=currentDate.toString().substring(0,10);
 
       reportsController.projectname.text = "--ALL--";
       reportsController.selectedProjectId.value = 0;
-
-      await reportsController.getReportProjectList();
-      await reportsController.getReportMaterialList();
-      // await reportsController.getSiteReportList(context,0);
-
-      reportsController.selectedsiteId.value=0;
+      reportsController.sitename.text = "--ALL--";
+      reportsController.selectedsiteId.value = 0;
       reportsController.Subheadername.text = "--ALL--";
-      reportsController.siteDropdownName.clear();
 
     });
     super.initState();
@@ -80,11 +77,13 @@ class _MRNReportState extends State<MRNReport> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "MRN Report",
-                        style: TextStyle(
-                            fontSize: RequestConstant.Heading_Font_SIZE,
-                            fontWeight: FontWeight.bold),
+                      Expanded(
+                        child: Text(
+                          widget.heading,
+                          style: TextStyle(
+                              fontSize: RequestConstant.Heading_Font_SIZE,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                       TextButton(
                           onPressed: () {
@@ -135,11 +134,17 @@ class _MRNReportState extends State<MRNReport> {
                                   ),
                                 ),
                                 onTap: () async {
+                                  DateTime today = DateTime.now();
+                                  DateTime initialDate = today.subtract(const Duration(days: 7));
+
+                                  if (initialDate.isBefore(DateTime(1900))) {
+                                    initialDate = DateTime(1900);
+                                  }
                                   var Frdate = await showDatePicker(
                                       context: context,
-                                      initialDate: DateTime.now(),
+                                      initialDate: initialDate,
                                       firstDate: DateTime(1900),
-                                      lastDate: DateTime(2100),
+                                      lastDate: today,
                                       builder: (context, child) {
                                         return Theme(data: Theme.of(context).copyWith(
                                           colorScheme: ColorScheme.light(
@@ -201,11 +206,13 @@ class _MRNReportState extends State<MRNReport> {
                                           color: Theme.of(context).primaryColor)),
                                 ),
                                 onTap: () async {
+                                  DateTime today = DateTime.now();
+                                  DateTime fromDate = DateTime.parse(siteController.FromdateController.text);
                                   var Frdate = await showDatePicker(
                                       context: context,
-                                      initialDate: DateTime.now(),
-                                      firstDate: DateTime(1900),
-                                      lastDate: DateTime(2100),
+                                      initialDate: today.isBefore(fromDate) ? fromDate : today,
+                                      firstDate: fromDate,
+                                      lastDate:  DateTime.now(),
                                       builder: (context, child) {
                                         return Theme(data: Theme.of(context).copyWith(
                                           colorScheme: ColorScheme.light(
@@ -222,8 +229,10 @@ class _MRNReportState extends State<MRNReport> {
                                           child: child!,
                                         );
                                       });
-                                  siteController.TodateController.text =
-                                      Frdate.toString().substring(0, 10);
+                                  if (Frdate != null) {
+                                    siteController.TodateController.text =
+                                        Frdate.toString().substring(0, 10);
+                                  }
                                 },
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
@@ -236,25 +245,6 @@ class _MRNReportState extends State<MRNReport> {
                           ),
                         ),
                       ),
-                      // Container(
-                      //   child: ElevatedButton(
-                      //       style: ElevatedButton.styleFrom(
-                      //           primary: Theme.of(context).primaryColor),
-                      //       onPressed: () async {
-                      //         setState(() {
-                      //           mrn_request_controller.getMrn_Req_EntryList();
-                      //         });
-                      //       },
-                      //       child: Center(
-                      //           child: Padding(
-                      //             padding: const EdgeInsets.only(top: 13, bottom: 13),
-                      //             child: Text("SHOW",
-                      //                 style: TextStyle(
-                      //                     color: Colors.white,
-                      //                     fontSize: RequestConstant.App_Font_SIZE,
-                      //                     fontWeight: FontWeight.bold)),
-                      //           ))),
-                      // ),
                     ],
                   ),
                 ),
@@ -291,16 +281,14 @@ class _MRNReportState extends State<MRNReport> {
       
                           ),
                         ),
-                        onTap: () {
-                          // await projectController.getProjectList(context, 0);
-                          setState(() {
-                            bottomsheetControllers.projectNameReport(context, reportsController.getProjectdropDownvalue.value);
-                          });
-      
-                        },
+                        onTap: () async {
+                          await reportsController.getReportProjectList(Url: "Report");
+                              if(mounted){
+                                bottomsheetControllers.projectNameReport(context, reportsController.getProjectdropDownvalue.value);
+                              }},
                         validator: (value) {
                           if (value!.isEmpty || value == "--Select--") {
-                            return '\u26A0 Please select project name.';
+                            return '\u26A0 Required.';
                           }
                           return null;
                         },
@@ -310,54 +298,58 @@ class _MRNReportState extends State<MRNReport> {
                   ),
                 ),
       
-                // Container(
-                //   margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                //   child: Card(
-                //     shape: RoundedRectangleBorder(
-                //       side: BorderSide(color: Colors.white70, width: 1),
-                //       borderRadius: BorderRadius.circular(15),
-                //     ),
-                //     elevation: 3,
-                //     child: Padding(
-                //       padding:
-                //       const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                //       child: TextFormField(
-                //         readOnly: true,
-                //         controller: reportsController.sitename,
-                //         cursorColor: Colors.black,
-                //         style: TextStyle(color: Colors.black),
-                //         decoration: InputDecoration(
-                //           contentPadding: EdgeInsets.zero,
-                //           border: InputBorder.none,
-                //           labelText: "Site Name",
-                //           labelStyle: TextStyle(
-                //               color: Colors.grey,
-                //               fontSize: RequestConstant.Lable_Font_SIZE),
-                //           prefixIconConstraints:
-                //           BoxConstraints(minWidth: 0, minHeight: 0),
-                //           prefixIcon: Padding(
-                //               padding: EdgeInsets.symmetric(
-                //                   vertical: 8, horizontal: 8),
-                //               child: ConstIcons.siteName
-                //
-                //           ),
-                //         ),
-                //         onTap: () {
-                //           setState(() {
-                //             bottomsheetControllers.siteNameReport(context, reportsController.getSiteDropdownvalue.value );
-                //           });
-                //         },
-                //         validator: (value) {
-                //           if (value!.isEmpty) {
-                //             return '\u26A0 Please select site name.';
-                //           }
-                //           return null;
-                //         },
-                //
-                //       ),
-                //     ),
-                //   ),
-                // ),
+                Container(
+                  margin: EdgeInsets.only(top: 5, left: 10, right: 10),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.white70, width: 1),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 3,
+                    child: Padding(
+                      padding:
+                      const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                      child: TextFormField(
+                        readOnly: true,
+                        controller: reportsController.sitename,
+                        cursorColor: Colors.black,
+                        style: TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.zero,
+                          border: InputBorder.none,
+                          labelText: "Site Name",
+                          labelStyle: TextStyle(
+                              color: Colors.grey,
+                              fontSize: RequestConstant.Lable_Font_SIZE),
+                          prefixIconConstraints:
+                          BoxConstraints(minWidth: 0, minHeight: 0),
+                          prefixIcon: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 8),
+                              child: ConstIcons.siteName
+
+                          ),
+                        ),
+                        onTap: () async {
+                          await siteController.subcontEntry_siteDropdowntList(
+                              context, 0,
+                              type: "Report");
+                          if (mounted) {
+                            bottomsheetControllers.siteNameReport(context,
+                                siteController.getSiteDropdownvalue.value);
+                          }
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return '\u26A0 Required';
+                          }
+                          return null;
+                        },
+
+                      ),
+                    ),
+                  ),
+                ),
 
                 Container(
                   margin: EdgeInsets.only(top: 5, left: 10, right: 10),
@@ -387,19 +379,21 @@ class _MRNReportState extends State<MRNReport> {
                           prefixIcon: Padding(
                               padding: EdgeInsets.symmetric(
                                   vertical: 8, horizontal: 8),
-                              child: ConstIcons.siteName
+                              child: ConstIcons.materialName
 
                           ),
                         ),
-                        onTap: () {
-                          setState(() {
-                            bottomsheetControllers.MRNMaterialName(context, reportsController.getMaterialdropDownvalue.value);
-
-                          });
+                        onTap: () async {
+                          await reportsController.getReportMaterialList();
+                          if(mounted) {
+                            bottomsheetControllers.MRNMaterialName(context,
+                                reportsController.getMaterialdropDownvalue
+                                    .value);
+                          }
                         },
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return '\u26A0 Please select site name.';
+                            return '\u26A0 Required.';
                           }
                           return null;
                         },
@@ -511,13 +505,12 @@ class _MRNReportState extends State<MRNReport> {
     print("${ApiConfig.WebURL}mobile-mrn-report?fromDate=$fdate&toDate=$todate&projectId=$pId&materialId=$mId&access_token=${loginController.user.value.accessToken}");
   }
 
-
-
   Widget ListDetails(){
     return Container(
-      height:BaseUtitiles.getheightofPercentage(context,54),
+      height:BaseUtitiles.getheightofPercentage(context,45),
       width: BaseUtitiles.getWidthtofPercentage(context,100),
       child: Obx(()=>ListView.builder(
+        padding: EdgeInsets.zero,
           shrinkWrap: true,
           physics: ScrollPhysics(),
           itemCount: siteController.mrnListValue.value.length,
@@ -630,13 +623,5 @@ class _MRNReportState extends State<MRNReport> {
     );
 
   }
-
-
-
-  // void Dropdownclear(){
-  //   siteController.siteDropdownName.clear();
-  //   siteController.selectedsitedropdownName.value="--Select--";
-  //
-  // }
 
 }

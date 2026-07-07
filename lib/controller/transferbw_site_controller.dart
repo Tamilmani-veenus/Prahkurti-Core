@@ -402,7 +402,7 @@ class TransferBt_Site_Controller extends GetxController {
   }
 
 
-  Future getStoreTransPendingView(trId,frSiteId, BuildContext context) async {
+  Future getStoreTransPendingView(trId,frSiteId,String MenuName, BuildContext context) async {
     transferAllDatasList.value = [];
     transferItemListdatas.value = [];
     final value =
@@ -418,7 +418,7 @@ class TransferBt_Site_Controller extends GetxController {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => TransferBetweenSites_Entry()));
+                  builder: (context) => TransferBetweenSites_Entry(heading: MenuName,)));
         } else {
           BaseUtitiles.showToast("No Data Found");
         }
@@ -455,7 +455,7 @@ class TransferBt_Site_Controller extends GetxController {
 
 
 
-  Future EntryList_EditApi(pId,sId,frsId,int workid, BuildContext context) async {
+  Future EntryList_EditApi(pId,sId,frsId,int workid,String MenuName, BuildContext context) async {
     final value = await TransferBetSiteProvider.entryList_editAPI(pId,sId,frsId,workid);
     if (value != null) {
       if (value.success == true) {
@@ -466,7 +466,7 @@ class TransferBt_Site_Controller extends GetxController {
         return Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => TransferBetweenSites_Entry()));
+                builder: (context) => TransferBetweenSites_Entry(heading: MenuName,)));
       } else {
         BaseUtitiles.showToast(value?.message ?? 'Something went wrong..');
       }

@@ -1,54 +1,81 @@
+// To parse this JSON data, do
+//
+//     final dprListResponse = dprListResponseFromJson(jsonString);
 
 import 'dart:convert';
 
-List<DprListResponse> dprListResponseFromJson(String str) => List<DprListResponse>.from(json.decode(str).map((x) => DprListResponse.fromJson(x)));
+DprListResponse dprListResponseFromJson(String str) => DprListResponse.fromJson(json.decode(str));
 
-String dprListResponseToJson(List<DprListResponse> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String dprListResponseToJson(DprListResponse data) => json.encode(data.toJson());
 
 class DprListResponse {
+  bool? success;
+  List<Result>? result;
+
   DprListResponse({
-    this.workId,
+    this.success,
+    this.result,
+  });
+
+  factory DprListResponse.fromJson(Map<String, dynamic> json) => DprListResponse(
+    success: json["success"],
+    result: List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "success": success,
+    "result": List<dynamic>.from(result!.map((x) => x.toJson())),
+  };
+}
+
+class Result {
+  int? id;
+  String? workNo;
+  String? workDate;
+  int? subContractorId;
+  int? siteid;
+  int? projectid;
+  String? projectName;
+  String? siteName;
+  String? subcontractName;
+  String? appStatus;
+
+  Result({
+    this.id,
     this.workNo,
     this.workDate,
+    this.subContractorId,
+    this.siteid,
+    this.projectid,
     this.projectName,
     this.siteName,
-    this.subContName,
-    this.invNo,
-    this.poNo,
+    this.subcontractName,
     this.appStatus,
   });
 
-  int? workId;
-  String? workNo;
-  String? workDate;
-  String? projectName;
-  String? siteName;
-  String? subContName;
-  String? invNo;
-  String? poNo;
-  String? appStatus;
-
-  factory DprListResponse.fromJson(Map<String, dynamic> json) => DprListResponse(
-    workId: json["WorkId"],
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    id: json["id"],
     workNo: json["WorkNo"],
     workDate: json["WorkDate"],
+    subContractorId: json["SubContractorId"],
+    siteid: json["Siteid"],
+    projectid: json["projectid"],
     projectName: json["ProjectName"],
     siteName: json["SiteName"],
-    subContName: json["SubContName"],
-    invNo: json["InvNo"],
-    poNo: json["PONo"],
+    subcontractName: json["SubcontractName"],
     appStatus: json["AppStatus"],
   );
 
   Map<String, dynamic> toJson() => {
-    "WorkId": workId,
+    "id": id,
     "WorkNo": workNo,
     "WorkDate": workDate,
+    "SubContractorId": subContractorId,
+    "Siteid": siteid,
+    "projectid": projectid,
     "ProjectName": projectName,
     "SiteName": siteName,
-    "SubContName": subContName,
-    "InvNo": invNo,
-    "PONo": poNo,
+    "SubcontractName": subcontractName,
     "AppStatus": appStatus,
   };
 }

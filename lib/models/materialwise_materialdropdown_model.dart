@@ -43,7 +43,7 @@ String materialWiseMaterialDropdownResponseToJson(MaterialWiseMaterialDropdownRe
 class MaterialWiseMaterialDropdownResponse {
   bool? success;
   String? message;
-  List<Result>? result;
+  List<MaterialNameResult>? result;
 
   MaterialWiseMaterialDropdownResponse({
     this.success,
@@ -54,7 +54,7 @@ class MaterialWiseMaterialDropdownResponse {
   factory MaterialWiseMaterialDropdownResponse.fromJson(Map<String, dynamic> json) => MaterialWiseMaterialDropdownResponse(
     success: json["success"],
     message: json["message"],
-    result: List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
+    result: List<MaterialNameResult>.from(json["result"].map((x) => MaterialNameResult.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -64,17 +64,17 @@ class MaterialWiseMaterialDropdownResponse {
   };
 }
 
-class Result {
+class MaterialNameResult {
   int? id;
   String? materialName;
 
 
-  Result({
+  MaterialNameResult({
     this.id,
     this.materialName,
   });
 
-  factory Result.fromJson(Map<String, dynamic> json) => Result(
+  factory MaterialNameResult.fromJson(Map<String, dynamic> json) => MaterialNameResult(
     id: json["id"],
     materialName: json["materialName"],
   );

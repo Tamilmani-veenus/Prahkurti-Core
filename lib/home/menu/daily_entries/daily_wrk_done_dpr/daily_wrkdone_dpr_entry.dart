@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -29,11 +30,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
+import '../../../punch_in_out/Image_galleryScreen.dart';
 import '../../../punch_in_out/camera_screen.dart';
 
 
 class DailyWork_done_DPR_Entry extends StatefulWidget {
-  const DailyWork_done_DPR_Entry({Key? key}) : super(key: key);
+  final String heading;
+  const DailyWork_done_DPR_Entry({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<DailyWork_done_DPR_Entry> createState() => _DailyWork_done_DPR_EntryState();
@@ -124,13 +127,15 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            "Daily Work Done - DPR",
-                            style: TextStyle(
-                                fontSize: RequestConstant.Heading_Font_SIZE,
-                                fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                           Expanded(
+                             child: Text(
+                              widget.heading,
+                              style: TextStyle(
+                                  fontSize: RequestConstant.Heading_Font_SIZE,
+                                  fontWeight: FontWeight.bold,
+                              ),
+                                                       ),
+                           ),
                           TextButton(
                               onPressed: () {
                                 Navigator.pop(context);
@@ -270,7 +275,7 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                           padding:
                           const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                           child: TextFormField(
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode: AutovalidateMode.always,
                             readOnly: true,
                             controller: projectController.projectname,
                             cursorColor: Colors.black,
@@ -321,7 +326,7 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                           padding:
                           const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                           child: TextFormField(
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode: AutovalidateMode.always,
                             readOnly: true,
                             controller: siteController.Sitename,
                             cursorColor: Colors.black,
@@ -370,7 +375,7 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                           padding:
                           const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                           child: TextFormField(
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode: AutovalidateMode.always,
                             readOnly: true,
                             controller: dailyWrkDone_DPR_Controller.entryTypeController,
                             cursorColor: Colors.black,
@@ -425,7 +430,7 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                           padding:
                           const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                           child: TextFormField(
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode: AutovalidateMode.always,
                             readOnly: true,
                             controller: dailyWrkDone_DPR_Controller.TypeSubcontractorname,
                             cursorColor: Colors.black,
@@ -508,7 +513,7 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                           padding:
                           const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                           child: TextFormField(
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode: AutovalidateMode.always,
                             readOnly: false,
                             controller: dailyWrkDone_DPR_Controller.dpr_remarksController,
                             cursorColor: Colors.black,
@@ -525,12 +530,12 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                                   padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                                   child: ConstIcons.remarks),
                             ),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return '\u26A0 ${RequestConstant.VALIDATE}';
-                              }
-                              return null;
-                            },
+                            // validator: (value) {
+                            //   if (value!.isEmpty) {
+                            //     return '\u26A0 ${RequestConstant.VALIDATE}';
+                            //   }
+                            //   return null;
+                            // },
                           ),
                         ),
                       ),
@@ -580,14 +585,19 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                                   primary: Setmybackground,
                                 ),
                                 onPressed: () async {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => CameraCapturePage(
-                                          fromScreen:
-                                          "DPR",
-                                        )),
-                                  );
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return const ImageGalleryPopup_Alert(imageUrl: "DPR");
+                                      });
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //       builder: (_) => CameraCapturePage(
+                                  //         fromScreen:
+                                  //         "DPR",
+                                  //       )),
+                                  // );
                                 },
                                 child: Row(
                                   mainAxisAlignment:
@@ -991,6 +1001,11 @@ Widget ListDetails(BuildContext context, ScrollController scrollController) {
                               textAlign: TextAlign.center,
                               controller: dailyWrkDone_DPR_Controller.Itemlist_RateControllers[index],
                               keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                  RegExp(r'^\d+\.?\d{0,2}'),
+                                ),
+                              ],
                               decoration: InputDecoration(
                                 contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                                 focusedBorder: OutlineInputBorder(
@@ -1005,7 +1020,7 @@ Widget ListDetails(BuildContext context, ScrollController scrollController) {
                               style: TextStyle(color: Colors.black),
                               onChanged: (value) {
                                 setState(() {
-                                  dailyWrkDone_DPR_Controller.dprItemlist_clickEdit();
+                                  dailyWrkDone_DPR_Controller.dprItemlist_clickEdits(index);
                                 });
 
                               },
@@ -1060,7 +1075,7 @@ Widget ListDetails(BuildContext context, ScrollController scrollController) {
                               } else {
                                 setState(() {
                                   dailyWrkDone_DPR_Controller.Itemlist_CurrentQtyControllers[index].text = "";
-                                  dailyWrkDone_DPR_Controller.dprItemlist_clickEdit();
+                                  dailyWrkDone_DPR_Controller.dprItemlist_clickEdits(index);
                                 });
                               }
                             },
@@ -1068,6 +1083,11 @@ Widget ListDetails(BuildContext context, ScrollController scrollController) {
                             textAlign: TextAlign.center,
                             controller: dailyWrkDone_DPR_Controller.Itemlist_CurrentQtyControllers[index],
                             keyboardType: TextInputType.numberWithOptions(decimal: true),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                RegExp(r'^\d+\.?\d{0,2}'),
+                              ),
+                            ],
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                               focusedBorder: OutlineInputBorder(
@@ -1082,7 +1102,7 @@ Widget ListDetails(BuildContext context, ScrollController scrollController) {
                             style: const TextStyle(color: Colors.black),
                             onChanged: (value) {
                               setState(() {
-                                dailyWrkDone_DPR_Controller.dprItemlist_clickEdit();
+                                dailyWrkDone_DPR_Controller.dprItemlist_clickEdits(index);
                               });
                             },
                           ),
@@ -1196,17 +1216,22 @@ Widget ListDetails(BuildContext context, ScrollController scrollController) {
                           Future.delayed(Duration(seconds: 0),(){
                             dailyWrkDone_DPR_Controller.saveButton.value=RequestConstant.SUBMIT;
                             dailyWrkDone_DPR_Controller.workId=0;
-                            dailyWrkDone_DPR_Controller.TypeSubcontId.value=0;
+                            projectController.projectname.text = "--SELECT--";
+                            projectController.selectedProjectId.value=0;
+                            siteController.Sitename.text = "--SELECT--";
+                            siteController.selectedsiteId.value = 0;
+                            dailyWrkDone_DPR_Controller.TypeSubcontractorname.text = "--SELECT--";
+                            dailyWrkDone_DPR_Controller.TypeSubcontId.value = 0;
+                            dailyWrkDone_DPR_Controller.entryTypeController.text="NMR";
+                            dailyWrkDone_DPR_Controller.dpr_remarksController.text="";
                             dailyWrkDone_DPR_Controller.delete_dpr_itemlist_Table();
-                            dailyWrkDone_DPR_Controller.dpr_itemview_DbList.value.clear();
-                            dailyWrkDone_DPR_Controller.dpr_preparedbyController.text=loginController.EmpName();
+                            dailyWrkDone_DPR_Controller.dpr_itemview_DbList.value=[];
+                            dailyWrkDone_DPR_Controller.dpr_preparedbyController.text = loginController.EmpName();
                             dailyWrkDone_DPR_Controller.dpr_autoYearWiseNoController.text=autoYearWiseNoController.DPR_autoYrsWise.value;
                             dailyWrkDone_DPR_Controller.dpr_dateController.text=BaseUtitiles.initiateCurrentDateFormat();
                             dailyWrkDone_DPR_Controller.dpr_referenceController.clear();
-                            dailyWrkDone_DPR_Controller.dpr_remarksController.text="";
-                            dailyWrkDone_DPR_Controller.entryTypeController.text="BOQ";
-                            dailyWrkDone_DPR_Controller.entryType="B";
                             dailyWrkDone_DPR_Controller.imageFiles.value=[];
+                            dailyWrkDone_DPR_Controller.gettingNetworkImages.value = [];
                           });
                           Navigator.pop(context);
                         },

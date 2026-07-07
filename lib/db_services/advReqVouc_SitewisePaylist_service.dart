@@ -21,11 +21,17 @@ class AdvReqVoucher_SiteWisePayment_Service {
   }
 
 
-  AdvreqVoucher_SiteWisePaymentTable_Update(
-      List<AdvReqVoucher_SiteWisePayment_TableModel> advReqVoucher_SiteWisePayment_TableModel) async {
-    advReqVoucher_SiteWisePayment_TableModel.forEach((element) async {
-      return await _dbManager.UpdateTableIdwise_AdvReqVou('advReqVoucherSitewisePayTable', element.AdvReqVoucher_SiteWisePayment_TableMap());
-    });
+  Future<void> AdvreqVoucher_SiteWisePaymentTable_Update(
+      List<AdvReqVoucher_SiteWisePayment_TableModel> models) async {
+
+    for (final element in models) {
+      int result = await _dbManager.UpdateTableIdwise_AdvReqVou(
+        'advReqVoucherSitewisePayTable',
+        element.AdvReqVoucher_SiteWisePayment_TableMap(),
+      );
+
+      print('Updated Rows: $result');
+    }
   }
 
   AdvreqVoucher_SiteWisePaymentTable_deleteById(

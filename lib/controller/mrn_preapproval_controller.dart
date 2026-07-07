@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -36,9 +37,7 @@ class MrnPreApprovalController extends GetxController {
   final mrnpre_PreparedbyText = TextEditingController();
   final searchcontroller = TextEditingController();
 
-  int entrycheck = 0;
   int reqId = 0;
-  int checkColor = 0;
   int qtycheck = 0;
   // int setValueCheck = 0;
   int? preparedById;

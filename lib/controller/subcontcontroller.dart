@@ -1,3 +1,4 @@
+import '../models/subcontract_dropdown_model.dart';
 import '../provider/common_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,9 +32,9 @@ class SubcontractorController extends GetxController {
   RxList labourmainList=[].obs;
   final LabournameText=new TextEditingController();
 
-  Future getLabourList(BuildContext context) async {
-    labourList.value = await CommonProvider.getLabour();
-  }
+  // Future getLabourList(BuildContext context) async {
+  //   labourList.value = await CommonProvider.getLabour();
+  // }
 
   setSelectedLabourID(String value) {
     if (labourList.value.length>0) {
@@ -63,15 +64,18 @@ class SubcontractorController extends GetxController {
    return checkScreen = 0;
   }
 
-  Future getSubcontList(BuildContext context,int pid,int sid,checkScreen) async {
+  Future getSubcontList(BuildContext context,int pid,int sid,checkScreen,{String? Url}) async {
     getdropDownvalue.value.clear();
     final value = await CommonProvider.getSubcontrator(pid,sid, checkScreen);
     if (value != null) {
       if(value.success == true){
-      getdropDownvalue.value = value.result!;
-      getdropDownvalue.forEach((element) {
-        return SubcontDropdownName.value.add(element.subContName);
-      });
+        getdropDownvalue.value = value.result!;
+        if(Url == "Report"){
+          getdropDownvalue.value.insert(
+            0,
+            SubcontResult(subContId: 0, subContName: "--ALL--"),
+          );
+        }
       }else {
         BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
       }
@@ -80,6 +84,7 @@ class SubcontractorController extends GetxController {
       BaseUtitiles.showToast('Something went wrong..');
     }
   }
+
 
   setSelectedSubcontID(String value) {
     if (getdropDownvalue.value.length>0) {

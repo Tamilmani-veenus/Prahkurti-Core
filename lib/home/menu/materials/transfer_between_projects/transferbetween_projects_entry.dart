@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import '../../../../../app_theme/app_colors.dart';
@@ -15,7 +16,8 @@ import '../../../../utilities/baseutitiles.dart';
 import '../../../../utilities/requestconstant.dart';
 
 class TrasferBetweenProjects_Entry extends StatefulWidget {
-  const TrasferBetweenProjects_Entry({Key? key}) : super(key: key);
+  final String heading;
+  const TrasferBetweenProjects_Entry({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<TrasferBetweenProjects_Entry> createState() =>
@@ -197,11 +199,13 @@ class _TrasferBetweenProjects_EntryState
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              "Transfer Between Projects",
-                              style: TextStyle(
-                                fontSize: RequestConstant.Heading_Font_SIZE,
-                                fontWeight: FontWeight.bold,
+                            Expanded(
+                              child: Text(
+                                widget.heading,
+                                style: TextStyle(
+                                  fontSize: RequestConstant.Heading_Font_SIZE,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                             TextButton(
@@ -328,7 +332,7 @@ class _TrasferBetweenProjects_EntryState
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
                               autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                                  AutovalidateMode.always,
                               readOnly: true,
                               controller: fromprojectController.fromprojectname,
                               cursorColor: Colors.black,
@@ -396,7 +400,7 @@ class _TrasferBetweenProjects_EntryState
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
                               autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                                  AutovalidateMode.always,
                               readOnly: true,
                               controller: fromsiteController.FromSitename,
                               cursorColor: Colors.black,
@@ -457,7 +461,7 @@ class _TrasferBetweenProjects_EntryState
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
                               autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                                  AutovalidateMode.always,
                               readOnly: true,
                               controller: projectController.projectnameAll,
                               cursorColor: Colors.black,
@@ -651,7 +655,7 @@ class _TrasferBetweenProjects_EntryState
                                       top: 3, left: 10, bottom: 5),
                                   child: TextFormField(
                                     autovalidateMode:
-                                        AutovalidateMode.onUserInteraction,
+                                        AutovalidateMode.always,
                                     controller: transferBW_project_Controller
                                         .vechicleNoText,
                                     cursorColor: Colors.black,
@@ -701,7 +705,7 @@ class _TrasferBetweenProjects_EntryState
                                       top: 3, left: 10, bottom: 5),
                                   child: TextFormField(
                                     autovalidateMode:
-                                        AutovalidateMode.onUserInteraction,
+                                        AutovalidateMode.always,
                                     // keyboardType: TextInputType.number,
                                     controller:
                                         transferBW_project_Controller.dcNoText,
@@ -826,7 +830,7 @@ class _TrasferBetweenProjects_EntryState
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.zero,
                                       border: InputBorder.none,
-                                      labelText: "Transport Amt",
+                                      labelText: "Total Amt",
                                       labelStyle: TextStyle(
                                           color: Colors.grey,
                                           fontSize:
@@ -867,7 +871,7 @@ class _TrasferBetweenProjects_EntryState
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
                               autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                                  AutovalidateMode.always,
                               controller:
                                   transferBW_project_Controller.remarksText,
                               cursorColor: Colors.black,
@@ -886,12 +890,12 @@ class _TrasferBetweenProjects_EntryState
                                         vertical: 8, horizontal: 8),
                                     child: ConstIcons.remarks),
                               ),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return '\u26A0 ${RequestConstant.VALIDATE}';
-                                }
-                                return null;
-                              },
+                              // validator: (value) {
+                              //   if (value!.isEmpty) {
+                              //     return '\u26A0 ${RequestConstant.VALIDATE}';
+                              //   }
+                              //   return null;
+                              // },
                             ),
                           ),
                         ),
@@ -1232,6 +1236,11 @@ class _TrasferBetweenProjects_EntryState
                                             .Itemlist_stockQty_ListController[
                                         index],
                                         keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp(r'^\d+\.?\d{0,2}'),
+                                          ),
+                                        ],
                                         decoration: InputDecoration(
                                           contentPadding:
                                           const EdgeInsets.fromLTRB(
@@ -1298,6 +1307,11 @@ class _TrasferBetweenProjects_EntryState
                                         keyboardType:
                                         TextInputType.numberWithOptions(
                                             decimal: true),
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp(r'^\d+\.?\d{0,2}'),
+                                          ),
+                                        ],
                                         decoration: InputDecoration(
                                           contentPadding:
                                           const EdgeInsets.fromLTRB(
@@ -1371,6 +1385,11 @@ class _TrasferBetweenProjects_EntryState
                                         controller: transferBW_project_Controller
                                             .Itemlist_Rate_ListController[index],
                                         keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp(r'^\d+\.?\d{0,2}'),
+                                          ),
+                                        ],
                                         decoration: InputDecoration(
                                           contentPadding:
                                           const EdgeInsets.fromLTRB(
@@ -1468,6 +1487,11 @@ class _TrasferBetweenProjects_EntryState
                                         keyboardType:
                                         TextInputType.numberWithOptions(
                                             decimal: true),
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp(r'^\d+\.?\d{0,2}'),
+                                          ),
+                                        ],
                                         decoration: InputDecoration(
                                           contentPadding:
                                           const EdgeInsets.fromLTRB(
@@ -1674,6 +1698,11 @@ class _TrasferBetweenProjects_EntryState
                                               .Itemlist_stockQty_ListController[
                                           index],
                                       keyboardType: TextInputType.number,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d+\.?\d{0,2}'),
+                                        ),
+                                      ],
                                       decoration: InputDecoration(
                                         contentPadding:
                                             const EdgeInsets.fromLTRB(
@@ -1740,6 +1769,11 @@ class _TrasferBetweenProjects_EntryState
                                       keyboardType:
                                           TextInputType.numberWithOptions(
                                               decimal: true),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d+\.?\d{0,2}'),
+                                        ),
+                                      ],
                                       decoration: InputDecoration(
                                         contentPadding:
                                             const EdgeInsets.fromLTRB(
@@ -1813,6 +1847,11 @@ class _TrasferBetweenProjects_EntryState
                                       controller: transferBW_project_Controller
                                           .Itemlist_Rate_ListController[index],
                                       keyboardType: TextInputType.number,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d+\.?\d{0,2}'),
+                                        ),
+                                      ],
                                       decoration: InputDecoration(
                                         contentPadding:
                                             const EdgeInsets.fromLTRB(
@@ -1910,6 +1949,11 @@ class _TrasferBetweenProjects_EntryState
                                       keyboardType:
                                           TextInputType.numberWithOptions(
                                               decimal: true),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d+\.?\d{0,2}'),
+                                        ),
+                                      ],
                                       decoration: InputDecoration(
                                         contentPadding:
                                             const EdgeInsets.fromLTRB(

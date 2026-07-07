@@ -1,141 +1,189 @@
 // To parse this JSON data, do
 //
-//     final cmpNMrEditResModel = cmpNMrEditResModelFromJson(jsonString);
+//     final cmpNmrEditResModel = cmpNmrEditResModelFromJson(jsonString);
 
 import 'dart:convert';
 
-List<CmpNMrEditResModel?>? cmpNMrEditResModelFromJson(String str) => json.decode(str) == null ? [] : List<CmpNMrEditResModel>.from(json.decode(str)!.map((x) => CmpNMrEditResModel.fromJson(x)));
+CmpNmrEditResModel cmpNmrEditResModelFromJson(String str) => CmpNmrEditResModel.fromJson(json.decode(str));
 
-String cmpNMrEditResModelToJson(List<CmpNMrEditResModel>? data) => json.encode(data == null ? [] : List<dynamic>.from(data.map((x) => x.toJson())));
+String cmpNmrEditResModelToJson(CmpNmrEditResModel data) => json.encode(data.toJson());
 
-class CmpNMrEditResModel {
-  CmpNMrEditResModel({
-    this.attenId,
-    this.attenNo,
-    this.attenDate,
-    this.projectId,
-    this.siteId,
-    this.companyId,
-    this.companyName,
-    this.projectName,
-    this.siteName,
-    this.remarks,
-    this.preparedby,
-    this.preparedbyName,
-    this.userId,
-    this.entryMode,
-    this.attendanceDet,
+class CmpNmrEditResModel {
+  bool? success;
+  String? message;
+  Result? result;
+
+  CmpNmrEditResModel({
+    this.success,
+    this.message,
+    this.result,
   });
 
-  int? attenId;
-  String? attenNo;
-  String? attenDate;
-  int? projectId;
-  int? siteId;
-  int? companyId;
-  String? companyName;
-  String? projectName;
-  String? siteName;
-  String? remarks;
-  int? preparedby;
-  String? preparedbyName;
-  int? userId;
-  dynamic entryMode;
-  List<AttendanceDet>? attendanceDet;
-
-  factory CmpNMrEditResModel.fromJson(Map<String, dynamic> json) => CmpNMrEditResModel(
-    attenId: json["AttenId"],
-    attenNo: json["AttenNo"],
-    attenDate: json["AttenDate"],
-    projectId: json["ProjectId"],
-    siteId: json["SiteId"],
-    companyId: json["CompanyId"],
-    companyName: json["CompanyName"],
-    projectName: json["ProjectName"],
-    siteName: json["SiteName"],
-    remarks: json["Remarks"],
-    preparedby: json["Preparedby"],
-    preparedbyName: json["PreparedbyName"],
-    userId: json["UserId"],
-    entryMode: json["EntryMode"],
-    attendanceDet: json["AttendanceDet"] == null ? [] : List<AttendanceDet>.from(json["AttendanceDet"]!.map((x) => AttendanceDet.fromJson(x))),
+  factory CmpNmrEditResModel.fromJson(Map<String, dynamic> json) => CmpNmrEditResModel(
+    success: json["success"],
+    message: json["message"],
+    result: json["result"]==null?null:Result.fromJson(json["result"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "AttenId": attenId,
-    "AttenNo": attenNo,
-    "AttenDate": attenDate,
-    "ProjectId": projectId,
-    "SiteId": siteId,
-    "CompanyId": companyId,
-    "CompanyName": companyName,
-    "ProjectName": projectName,
-    "SiteName": siteName,
-    "Remarks": remarks,
-    "Preparedby": preparedby,
-    "PreparedbyName": preparedbyName,
-    "UserId": userId,
-    "EntryMode": entryMode,
-    "AttendanceDet": attendanceDet == null ? [] : List<dynamic>.from(attendanceDet!.map((x) => x.toJson())),
+    "success": success,
+    "message": message,
+    "result": result==null?null:result!.toJson(),
   };
 }
 
-class AttendanceDet {
-  AttendanceDet({
-    this.nmrLbrId,
-    this.labourName,
-    this.categoryName,
-    this.shift,
-    this.shiftName,
-    this.status,
-    this.statusName,
-    this.wages,
-    this.otHrs,
-    this.busfare,
-    this.Advance,
-    this.detRemarks,
+class Result {
+  int? id;
+  String? nmrLabourAttendanceNo;
+  String? nmrLabourAttendanceDate;
+  int? projectId;
+  int? siteId;
+  int? subContractorId;
+  String? billStatus;
+  String? workType;
+  String? remarks;
+  int? createdBy;
+  String? createdDt;
+  String? projectName;
+  String? siteName;
+  String? subContractorName;
+  String? employeeName;
+  String? approveByName;
+  List<NmrLbrDet>? nmrLbrattendDetLink;
+
+  Result({
+    this.id,
+    this.nmrLabourAttendanceNo,
+    this.nmrLabourAttendanceDate,
+    this.projectId,
+    this.siteId,
+    this.subContractorId,
+    this.billStatus,
+    this.workType,
+    this.remarks,
+    this.createdBy,
+    this.createdDt,
+    this.projectName,
+    this.siteName,
+    this.subContractorName,
+    this.employeeName,
+    this.approveByName,
+    this.nmrLbrattendDetLink,
   });
 
-  int? nmrLbrId;
-  String? labourName;
-  String? categoryName;
-  String? shift;
-  String? shiftName;
-  String? status;
-  String? statusName;
-  double? wages;
-  double? otHrs;
-  double? busfare;
-  double? Advance;
-  String? detRemarks;
-
-  factory AttendanceDet.fromJson(Map<String, dynamic> json) => AttendanceDet(
-    nmrLbrId: json["NMRLbrId"],
-    labourName: json["LabourName"],
-    categoryName: json["CategoryName"],
-    shift: json["Shift"],
-    shiftName: json["ShiftName"],
-    status: json["Status"],
-    statusName: json["StatusName"],
-    wages: json["Wages"],
-    otHrs: json["OTHrs"],
-    busfare: json["Busfare"],
-    Advance: json["Advance"],
-    detRemarks: json["DetRemarks"],
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    id: json["id"],
+    nmrLabourAttendanceNo: json["nmrLabourAttendanceNo"],
+    nmrLabourAttendanceDate: json["nmrLabourAttendanceDate"],
+    projectId: json["projectId"],
+    siteId: json["siteId"],
+    subContractorId: json["subContractorId"],
+    billStatus: json["billStatus"],
+    workType: json["workType"],
+    remarks: json["remarks"],
+    createdBy: json["createdBy"],
+    createdDt:json["createdDt"],
+    projectName: json["projectName"],
+    siteName: json["siteName"],
+    subContractorName: json["subContractorName"],
+    employeeName: json["employeeName"],
+    approveByName: json["approveByName"],
+    nmrLbrattendDetLink: List<NmrLbrDet>.from(json["nmrLbrattendDetLink"].map((x) => NmrLbrDet.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "NMRLbrId": nmrLbrId,
-    "LabourName": labourName,
-    "CategoryName": categoryName,
-    "Shift": shift,
-    "ShiftName": shiftName,
-    "Status": status,
-    "StatusName": statusName,
-    "Wages": wages,
-    "OTHrs": otHrs,
-    "Busfare": busfare,
-    "Advance": Advance,
-    "DetRemarks": detRemarks,
+    "id": id,
+    "nmrLabourAttendanceNo": nmrLabourAttendanceNo,
+    "nmrLabourAttendanceDate": nmrLabourAttendanceDate,
+    "projectId": projectId,
+    "siteId": siteId,
+    "subContractorId": subContractorId,
+    "billStatus": billStatus,
+    "workType": workType,
+    "remarks": remarks,
+    "createdBy": createdBy,
+    "createdDt": createdDt,
+    "projectName": projectName,
+    "siteName": siteName,
+    "subContractorName": subContractorName,
+    "employeeName": employeeName,
+    "approveByName": approveByName,
+    "nmrLbrattendDetLink": List<dynamic>.from(nmrLbrattendDetLink!.map((x) => x.toJson())),
+  };
+}
+
+class NmrLbrDet {
+  int? id;
+  int? nmrLabourAttendanceMasId;
+  int? nmrLabourInfoId;
+  int? siteId;
+  String? status;
+  double? wages;
+  double? otHrs;
+  double? advance;
+  String? remarks;
+  double? busFare;
+  String? shift;
+  double? otAmount;
+  int? nmrLabourCategoryId;
+  String? labourName;
+  String? statusDesc;
+  String? labourCategoryName;
+
+  NmrLbrDet({
+    this.id,
+    this.nmrLabourAttendanceMasId,
+    this.nmrLabourInfoId,
+    this.siteId,
+    this.status,
+    this.wages,
+    this.otHrs,
+    this.advance,
+    this.remarks,
+    this.busFare,
+    this.shift,
+    this.otAmount,
+    this.nmrLabourCategoryId,
+    this.labourName,
+    this.statusDesc,
+    this.labourCategoryName,
+  });
+
+  factory NmrLbrDet.fromJson(Map<String, dynamic> json) => NmrLbrDet(
+    id: json["id"],
+    nmrLabourAttendanceMasId: json["nmrLabourAttendanceMasId"],
+    nmrLabourInfoId: json["nmrLabourInfoId"],
+    siteId: json["siteId"],
+    status: json["status"],
+    wages: json["wages"],
+    otHrs: json["otHrs"],
+    advance: json["advance"],
+    remarks: json["remarks"],
+    busFare: json["busFare"],
+    shift: json["shift"],
+    otAmount: json["otAmount"],
+    nmrLabourCategoryId: json["nmrLabourCategoryId"],
+    labourName: json["labourName"],
+    statusDesc: json["statusDesc"],
+    labourCategoryName: json["labourCategoryName"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "nmrLabourAttendanceMasId": nmrLabourAttendanceMasId,
+    "nmrLabourInfoId": nmrLabourInfoId,
+    "siteId": siteId,
+    "status": status,
+    "wages": wages,
+    "otHrs": otHrs,
+    "advance": advance,
+    "remarks": remarks,
+    "busFare": busFare,
+    "shift": shift,
+    "otAmount": otAmount,
+    "nmrLabourCategoryId": nmrLabourCategoryId,
+    "labourName": labourName,
+    "labourCategoryName": labourCategoryName,
+    "statusDesc": statusDesc,
   };
 }

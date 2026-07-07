@@ -4,9 +4,11 @@
 
 import 'dart:convert';
 
-GetHomeMenuListResponse getHomeMenuListResponseFromJson(String str) => GetHomeMenuListResponse.fromJson(json.decode(str));
+GetHomeMenuListResponse getHomeMenuListResponseFromJson(String str) =>
+    GetHomeMenuListResponse.fromJson(json.decode(str));
 
-String getHomeMenuListResponseToJson(GetHomeMenuListResponse data) => json.encode(data.toJson());
+String getHomeMenuListResponseToJson(GetHomeMenuListResponse data) =>
+    json.encode(data.toJson());
 
 class GetHomeMenuListResponse {
   bool? success;
@@ -19,17 +21,22 @@ class GetHomeMenuListResponse {
     this.result,
   });
 
-  factory GetHomeMenuListResponse.fromJson(Map<String, dynamic> json) => GetHomeMenuListResponse(
-    success: json["success"],
-    message: json["message"],
-    result: json["result"]==null?[]:List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
-  );
+  factory GetHomeMenuListResponse.fromJson(Map<String, dynamic> json) =>
+      GetHomeMenuListResponse(
+        success: json["success"],
+        message: json["message"],
+        result: json["result"] == null
+            ? []
+            : List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "success": success,
-    "message": message,
-    "result":result==null?[]: List<dynamic>.from(result!.map((x) => x.toJson())),
-  };
+        "success": success,
+        "message": message,
+        "result": result == null
+            ? []
+            : List<dynamic>.from(result!.map((x) => x.toJson())),
+      };
 }
 
 class Result {
@@ -42,32 +49,38 @@ class Result {
   });
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
-    moduleName: json["moduleName"],
-    menu: List<Menu>.from(json["menu"].map((x) => Menu.fromJson(x))),
-  );
+        moduleName: json["moduleName"],
+        menu: List<Menu>.from(json["menu"].map((x) => Menu.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "moduleName": moduleName,
-    "menu": menu==null?[]:List<dynamic>.from(menu!.map((x) => x.toJson())),
-  };
+        "moduleName": moduleName,
+        "menu": menu == null
+            ? []
+            : List<dynamic>.from(menu!.map((x) => x.toJson())),
+      };
 }
 
 class Menu {
   String? menuName;
+  String? dynamicMenuName;
   int? menuId;
 
   Menu({
     this.menuName,
+    this.dynamicMenuName,
     this.menuId,
   });
 
   factory Menu.fromJson(Map<String, dynamic> json) => Menu(
-    menuName: json["menuName"],
-    menuId: json["id"],
-  );
+    dynamicMenuName: json["menuName"],
+    menuName: json["mobileMenuName"],
+        menuId: json["id"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "menuName": menuName,
-    "id": menuId,
-  };
+        "mobileMenuName": menuName,
+        "menuName": dynamicMenuName,
+        "id": menuId,
+      };
 }

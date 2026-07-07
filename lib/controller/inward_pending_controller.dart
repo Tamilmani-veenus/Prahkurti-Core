@@ -59,15 +59,15 @@ class InwardPending_Controller extends GetxController
 
   LoginController loginController = Get.put(LoginController());
   PendingListController pendingListController =
-  Get.put(PendingListController());
+      Get.put(PendingListController());
 
   late List<InwardPendingItemListTableModel> ItemListTableModelList =
-  <InwardPendingItemListTableModel>[];
+      <InwardPendingItemListTableModel>[];
   var ItemListTableModel = InwardPendingItemListTableModel();
   var inwardPending_ItemlistService = InwardPending_ItemlistService();
   List ItemListTableModelReadList = <InwardPendingItemListTableModel>[];
   late List<InwardPendingItemListTableModel> itemListUpdateModelList =
-  <InwardPendingItemListTableModel>[];
+      <InwardPendingItemListTableModel>[];
   RxList ItemGetTableListdata = [].obs;
   RxList<InwardPendingItemListTableModel> add_PoAmdaprovalListvalue =
       <InwardPendingItemListTableModel>[].obs;
@@ -77,7 +77,6 @@ class InwardPending_Controller extends GetxController
   RxList PoAmdList = [].obs;
   RxList poAmd_mainList = [].obs;
   RxList validatecheck = [].obs;
-  RxList<getByIdResult> inwardAllDatasList = <getByIdResult>[].obs;
   RxList<getByIdResult> inwardItemListdatas = <getByIdResult>[].obs;
   RxString base64TypeImage = "".obs;
 
@@ -113,9 +112,6 @@ class InwardPending_Controller extends GetxController
     InwardVechileNoText.text = "";
     InwardDriverNameText.text = "";
     InwardRemarksText.text = "";
-    count.value = 0;
-    pickedImageCount.value = 0;
-    imageFiles.value = [];
     Zerovalueset(ItemGetTableListdata);
     itemlistTable_Delete();
     ItemGetTableListdata.value.clear();
@@ -152,10 +148,10 @@ class InwardPending_Controller extends GetxController
 
   /// ----- Po Amendment List -----
 
-  Future getPo_AmendmentList(BuildContext context, int purOrdId) async {
+  Future getPo_AmendmentList(BuildContext context, int id, type) async {
     PoAmdList.value.clear();
     poAmd_mainList.value.clear();
-    var response = await Inward_Pending_provider.getPoAmendment(purOrdId);
+    var response = await Inward_Pending_provider.getPoAmendment(id, type);
     if (response != null) {
       if (response.success == true) {
         if (response.result!.isNotEmpty) {
@@ -172,18 +168,21 @@ class InwardPending_Controller extends GetxController
     }
   }
 
-  Future getInward_Alldatas(int poId, BuildContext context) async {
-    inwardAllDatasList.value = [];
+  Future getInward_Alldatas(
+      int poId, String MenuName, BuildContext context) async {
     inwardItemListdatas.value = [];
     final response = await Inward_Pending_provider.getInward_ALLDatas(poId);
     if (response != null) {
       if (response.success == true) {
         if (response.result!.isNotEmpty) {
-          inwardAllDatasList.value = response.result!;
-          inwardItemListdatas.addAll(inwardAllDatasList);
+          inwardItemListdatas.value = response.result!;
           saveButton.value = RequestConstant.SUBMIT;
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Inward_entry()));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Inward_entry(
+                        heading: MenuName,
+                      )));
           FocusScope.of(context).unfocus();
         } else {
           BaseUtitiles.showToast("No Data Found");
@@ -193,6 +192,59 @@ class InwardPending_Controller extends GetxController
       }
     } else {
       BaseUtitiles.showToast("Something Went Wrong...");
+    }
+  }
+
+  Future getInwardWO_Alldatas(
+      int id, String menuName, BuildContext context) async {
+    inwardItemListdatas.clear();
+
+    final response1 = await Inward_Pending_provider.getInward_WOMasData(id);
+
+    final response2 = await Inward_Pending_provider.getInward_WODetData(id);
+
+    if (response1 != null &&
+        response1.success == true &&
+        response2 != null &&
+        response2.success == true) {
+      if (response1.result != null &&
+          response1.result!.isNotEmpty &&
+          response2.result != null &&
+          response2.result!.isNotEmpty) {
+        final master = response1.result!.first;
+
+        for (var detail in response2.result!) {
+          detail.workOrdId = master.workOrdId;
+          detail.workOrdNo = master.workOrdNo;
+          detail.supplierid = master.supplierid;
+          detail.projectid = master.projectid;
+          detail.projectName = master.projectName;
+          detail.siteid = master.siteid;
+          detail.siteName = master.siteName;
+          detail.supplierName = master.supplierName;
+          detail.inwardType = master.inwardType;
+          detail.purchaseType = master.purchaseType;
+
+          inwardItemListdatas.add(detail);
+        }
+
+        saveButton.value = RequestConstant.SUBMIT;
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Inward_entry(
+              heading: menuName,
+            ),
+          ),
+        );
+
+        FocusScope.of(context).unfocus();
+      } else {
+        BaseUtitiles.showToast("Something went wrong...");
+      }
+    } else {
+      BaseUtitiles.showToast("Something went wrong...");
     }
   }
 
@@ -219,26 +271,26 @@ class InwardPending_Controller extends GetxController
         Itemlist_Qty_MinusListController[i].text = "0.0";
       } else {
         Itemlist_Qty_PlusListController[i].text = ItemGetTableListdata[i]
-            .balQty <=
-            double.parse(
-                Itemlist_Inward_QtyListController[i].value.text.toString())
+                    .balQty <=
+                double.parse(
+                    Itemlist_Inward_QtyListController[i].value.text.toString())
             ? (double.parse(Itemlist_Inward_QtyListController[i]
-            .value
-            .text
-            .toString()) -
-            ItemGetTableListdata[i].balQty)
-            .toString()
+                        .value
+                        .text
+                        .toString()) -
+                    ItemGetTableListdata[i].balQty)
+                .toString()
             : Itemlist_Qty_PlusListController[i].text = "0.0";
         Itemlist_Qty_MinusListController[i].text = ItemGetTableListdata[i]
-            .balQty >=
-            double.parse(
-                Itemlist_Inward_QtyListController[i].value.text.toString())
+                    .balQty >=
+                double.parse(
+                    Itemlist_Inward_QtyListController[i].value.text.toString())
             ? (ItemGetTableListdata[i].balQty -
-            double.parse(Itemlist_Inward_QtyListController[i]
-                .value
-                .text
-                .toString()))
-            .toString()
+                    double.parse(Itemlist_Inward_QtyListController[i]
+                        .value
+                        .text
+                        .toString()))
+                .toString()
             : Itemlist_Qty_MinusListController[i].text = "0.0";
         if (id == element.id) {
           if (ItemGetTableListdata[i].balQty <
@@ -256,7 +308,7 @@ class InwardPending_Controller extends GetxController
 
         InwardNetAmtText.text =
             (double.parse(Itemlist_Inward_QtyListController[i].value.text) *
-                ItemGetTableListdata[i].rate)
+                    ItemGetTableListdata[i].rate)
                 .toString();
       }
       i++;
@@ -274,26 +326,29 @@ class InwardPending_Controller extends GetxController
     await inwardPending_ItemlistService.InwardPending_ItemlistTable_delete();
   }
 
-  inwardpending_itemlist_SaveTable() async {
+  inwardpending_itemlist_SaveTable(type) async {
     ItemListTableModelList.clear();
     inwardItemListdatas.value.forEach((element) {
       ItemListTableModel = new InwardPendingItemListTableModel();
-      ItemListTableModel.poDetId = element.poDetId;
+      ItemListTableModel.poDetId = type == "INWARD PENDING - WO"
+          ? element.workOrdDetId
+          : element.poDetId;
       ItemListTableModel.materialId = element.materialId;
       ItemListTableModel.scaleId = element.scaleId;
       ItemListTableModel.materialName = element.materialName;
       ItemListTableModel.unit = element.unit;
-      ItemListTableModel.poQty = element.poQty;
+      ItemListTableModel.poQty =
+          type == "INWARD PENDING - WO" ? element.woQty : element.poQty;
       ItemListTableModel.balQty = element.balQty;
       ItemListTableModel.rate = element.rate;
       ItemListTableModel.inwQty = 0.0;
-      ItemListTableModel.addQty = element.addQty;
-      ItemListTableModel.lessQty = element.lessQty;
+      ItemListTableModel.addQty = element.addQty ?? 0;
+      ItemListTableModel.lessQty = element.lessQty ?? 0;
       ItemListTableModelList.add(ItemListTableModel);
     });
     var savedatas =
-    await inwardPending_ItemlistService.InwardPending_ItemlistTable_Save(
-        ItemListTableModelList);
+        await inwardPending_ItemlistService.InwardPending_ItemlistTable_Save(
+            ItemListTableModelList);
     return savedatas;
   }
 
@@ -385,26 +440,26 @@ class InwardPending_Controller extends GetxController
   //     });
   // }
 
-  Future Save_EntryScreen(BuildContext context, int id) async {
+  Future Save_EntryScreen(BuildContext context, int id, type) async {
     await Future.delayed(const Duration(seconds: 0));
     InwardPendingSaveReq formdata = InwardPendingSaveReq(
       id: id != 0 ? id : 0,
       inwardNo: InwardAutoyearText.text,
       entryDate: InwardEntryDateText.text,
-      inwType: "P",
+      inwType: type == "INWARD PENDING - WO" ? "O" : "P",
       projectID: projectId,
       siteID: siteId,
       supplierID: supId,
       purType: saveButton.value == RequestConstant.RESUBMIT
-          ? editListApiDatas[0].purType
-          : inwardAllDatasList[0].purchaseType,
-      dcNo: InwardDCNoText.text==""?"-":InwardDCNoText.text,
+          ? editListApiDatas[0].purType.toString().trim() : inwardItemListdatas[0].purchaseType,
+      dcNo: InwardDCNoText.text == "" ? "-" : InwardDCNoText.text,
       dcDate: InwardDCDateText.text,
-      invoiceNo: InwardInvoiceNoText.text==""?"-":InwardInvoiceNoText.text,
+      invoiceNo: InwardInvoiceNoText.text == "" ? "-" : InwardInvoiceNoText.text,
       invoiceDate: InwardInvoiceDateText.text,
       purOrdMasId: saveButton.value == RequestConstant.RESUBMIT
-          ? editListApiDatas[0].purOrdMasId
-          : inwardAllDatasList[0].purOrdMasId,
+          ? editListApiDatas[0].purOrdMasId : type == "INWARD PENDING - WO" ? 0 : inwardItemListdatas[0].purOrdMasId,
+      workOrdMasId: saveButton.value == RequestConstant.RESUBMIT
+          ? editListApiDatas[0].workOrdMasId : type == "INWARD PENDING - WO" ? inwardItemListdatas[0].workOrdId : 0,
       vechileName: InwardVechileNoText.text,
       driverName: InwardDriverNameText.text,
       remarks: InwardRemarksText.text,
@@ -412,12 +467,15 @@ class InwardPending_Controller extends GetxController
       createdDt: BaseUtitiles().convertToUtcIso(InwardEntryDateText.text),
       selectedNo: saveButton.value == RequestConstant.RESUBMIT
           ? editListApiDatas[0].selectedNo
-          : inwardAllDatasList[0].purchaseOrdNo,
-      inwardDet: getDetDetails(id, context),
+          : type == "INWARD PENDING - WO"
+              ? inwardItemListdatas[0].workOrdNo
+              : inwardItemListdatas[0].purchaseOrdNo,
+      inwardDet: getDetDetails(id, type),
     );
 
     print(jsonEncode(formdata.toJson()));
-    final list = await Inward_Pending_provider.inward_Save(formdata, imageFiles, saveButton.value, id);
+    final list = await Inward_Pending_provider.inward_Save(
+        formdata, imageFiles, saveButton.value, id);
     if (list != null) {
       if (list["success"] == true) {
         if (id != 0) {
@@ -441,7 +499,7 @@ class InwardPending_Controller extends GetxController
     }
   }
 
-  List<InwardDet>? getDetDetails(id, context) {
+  List<InwardDet>? getDetDetails(id, type) {
     getInwardDetList.value = [];
 
     for (int i = 0; i < ItemGetTableListdata.length; i++) {
@@ -451,11 +509,16 @@ class InwardPending_Controller extends GetxController
         var list = InwardDet(
             id: saveButton.value == RequestConstant.RESUBMIT
                 ? (i < editListApiDatas.length
-                ? editListApiDatas[i].inwardDetId
-                : 0)
+                    ? editListApiDatas[i].inwardDetId
+                    : 0)
                 : 0,
             materialInwardMasID: id != 0 ? id : 0,
-            purOrdDetId: element.poDetId,
+            purOrdDetId:  type == "INWARD PENDING - WO"
+                ? 0
+                : element.poDetId,
+            workOrdDetId:   type == "INWARD PENDING - WO"
+                ? element.poDetId
+                : 0,
             materialID: element.materialId,
             scaleID: element.scaleId,
             qty: element.inwQty,
@@ -477,21 +540,23 @@ class InwardPending_Controller extends GetxController
 
   /// ------PoApproval Approval API--------------
 
-  Future PoAmendment_ApprovalButtonsave(BuildContext context, purOrdMasId, projectId, siteId, inwType) async {
+  Future PoAmendment_ApprovalButtonsave(BuildContext context, purOrdMasId,
+      projectId, siteId, inwType, type) async {
     await Future.delayed(const Duration(seconds: 0));
     String body = poAmendmentApproveResModelToJson(PoAmendmentApproveResModel(
-      purOrdOId: purOrdMasId,
-      woOrdId: 0,
+      purOrdOId: type == "INWARD PENDING - WO" ? 0 : purOrdMasId,
+      woOrdId: type == "INWARD PENDING - WO" ? purOrdMasId : 0,
       amdDate: punchInController.currentDate,
       projectId: projectId,
       siteId: siteId,
       amdType: "Q",
       inwardType: inwType,
-      inwardAmdsaveDetLink: getDetDetailsAmendment(),
+      inwardAmdsaveDetLink: getDetDetailsAmendment(type),
     ));
     var list =
-    await Inward_Pending_provider.inward_PoAmendment_ApprovalAPI(body);
+        await Inward_Pending_provider.inward_PoAmendment_ApprovalAPI(body);
     if (list != null) {
+      await pendingListController.getPendingList();
       Navigator.pop(context);
       Navigator.pop(context);
       Navigator.pop(context);
@@ -501,13 +566,13 @@ class InwardPending_Controller extends GetxController
 
   //--------Po Amendment InwardDet List-----------
 
-  List<InwardAmdsaveDetLink>? getDetDetailsAmendment() {
+  List<InwardAmdsaveDetLink>? getDetDetailsAmendment(type) {
     getInwardDetAmedmentList.value = [];
     PoAmdList.value.forEach((element) {
       if (element.isCheck == true) {
         var list = new InwardAmdsaveDetLink(
-          purDetId: element.purOrdDetId,
-          workOrdDetId: 0,
+          purDetId: type == "INWARD PENDING - WO" ? 0 : element.purOrdDetId,
+          workOrdDetId: type == "INWARD PENDING - WO" ? element.purOrdDetId : 0,
           materialid: element.MaterialId,
           scaleid: element.UnitId,
           addQty: 0,
@@ -528,7 +593,7 @@ class InwardPending_Controller extends GetxController
   }
 
   Future EntryList_EditApi(
-      int workid, String type, BuildContext context) async {
+      int workid, String type, String MenuName, BuildContext context) async {
     editListApiDatas.value = [];
     await Inward_Pending_provider.entryList_editAPI(workid, type)
         .then((value) async {
@@ -539,7 +604,11 @@ class InwardPending_Controller extends GetxController
           EditTable_SaveTable();
           getItemlistTablesDatas();
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => Inward_entry()));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Inward_entry(
+                        heading: MenuName,
+                      )));
         } else {
           BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
         }
@@ -582,8 +651,8 @@ class InwardPending_Controller extends GetxController
       ItemListTableModelList.add(ItemListTableModel);
     });
     var savedatas =
-    await inwardPending_ItemlistService.InwardPending_ItemlistTable_Save(
-        ItemListTableModelList);
+        await inwardPending_ItemlistService.InwardPending_ItemlistTable_Save(
+            ItemListTableModelList);
     return savedatas;
   }
 
@@ -629,15 +698,16 @@ class InwardPending_Controller extends GetxController
                   Expanded(
                     child: TextButton(
                       onPressed: () async {
-                        bool result = await EntryList_DeleteApi(inwardEtyList.value[index].id);
+                        bool result = await EntryList_DeleteApi(
+                            inwardEtyList.value[index].id);
                         if (result) {
                           itemlistTable_Delete();
-                          ItemGetTableListdata.value=[];
+                          ItemGetTableListdata.value = [];
                           inwardEtyList.value.removeAt(index);
                           update();
                           await getInward_EntryList();
                           Navigator.of(context).pop();
-                        }else{
+                        } else {
                           Navigator.of(context).pop();
                         }
                       },
@@ -661,9 +731,10 @@ class InwardPending_Controller extends GetxController
 
   Future<void> gettingImage() async {
     netWorkImageCount.value = 0;
-    gettingNetworkImageList.clear();
+    gettingNetworkImageList.value=[];
     imageId.clear();
-    final value = await Inward_Pending_provider.gettingImageProvider(inwardId!,"inward");
+    final value =
+        await Inward_Pending_provider.gettingImageProvider(inwardId!, "inward");
     if (value != null) {
       checkImgList.value = true;
       netWorkImageCount.value = value.length;
@@ -679,6 +750,6 @@ class InwardPending_Controller extends GetxController
   /// Delete image.....
 
   Future<bool> deletingImage(int imageId) async {
-    return await Inward_Pending_provider.deleteImageProvider(imageId,"inward");
+    return await Inward_Pending_provider.deleteImageProvider(imageId, "inward");
   }
 }

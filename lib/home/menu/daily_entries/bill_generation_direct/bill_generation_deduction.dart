@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../../../constants/ui_constant/icons_const.dart';
 import '../../../../controller/auto_yrwise_no_controller.dart';
@@ -42,7 +43,6 @@ class _Bill_Generation_direct_deductionState
           billGenerationDirectController.Debitamt.text = element.debitAmount.toString();
           billGenerationDirectController.Advded.text = element.advanceAmount.toString();
           billGenerationDirectController.materialDebitamt.text = element.materialDebitAmount.toString();
-          billGenerationDirectController.tobededadv.text = element.actualAdvanceAmount.toString();
           billGenerationDirectController.Roundoff.text = element.roundOff.toString();
           billGenerationDirectController.CreditRemarksController.text = element.creditRemarks.toString();
           billGenerationDirectController.DebitRemarksController.text = element.debitRemarks.toString();
@@ -71,7 +71,6 @@ class _Bill_Generation_direct_deductionState
         billGenerationDirectController.materialDebitRemarks.text = "-";
 
       }
-      billGenerationDirectController.Advded.text = "0";
     });
     super.initState();
   }
@@ -131,7 +130,7 @@ class _Bill_Generation_direct_deductionState
                         padding:
                             const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: billGenerationDirectController.billamount,
                           cursorColor: Colors.black,
@@ -183,9 +182,14 @@ class _Bill_Generation_direct_deductionState
                                   top: 3, left: 10, bottom: 5),
                               child: TextFormField(
                                 autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.always,
 
                                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
                                 controller:
                                 billGenerationDirectController.materialDebitamt,
                                 cursorColor: Colors.black,
@@ -264,12 +268,6 @@ class _Bill_Generation_direct_deductionState
                                     billGenerationDirectController.materialDebitamt.text="";
                                   }
                                 },
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '\u26A0 ${RequestConstant.VALIDATE}';
-                                  }
-                                  return null;
-                                },
                               ),
                             ),
                           ),
@@ -336,7 +334,7 @@ class _Bill_Generation_direct_deductionState
                                   top: 3, left: 10, bottom: 5),
                               child: TextFormField(
                                 autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
+                                    AutovalidateMode.always,
                                 onTap: () {
                                   if (billGenerationDirectController
                                               .Creditamt.text !=
@@ -358,6 +356,11 @@ class _Bill_Generation_direct_deductionState
                                   }
                                 },
                                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
                                 controller:
                                     billGenerationDirectController.Creditamt,
                                 cursorColor: Colors.black,
@@ -431,12 +434,7 @@ class _Bill_Generation_direct_deductionState
                                         value;
                                   }
                                 },
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '\u26A0 ${RequestConstant.VALIDATE}';
-                                  }
-                                  return null;
-                                },
+
                               ),
                             ),
                           ),
@@ -503,7 +501,7 @@ class _Bill_Generation_direct_deductionState
                                   top: 3, left: 10, bottom: 5),
                               child: TextFormField(
                                 autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
+                                    AutovalidateMode.always,
                                 onTap: () {
                                   if (billGenerationDirectController
                                               .Debitamt.text !=
@@ -525,6 +523,11 @@ class _Bill_Generation_direct_deductionState
                                   }
                                 },
                                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
                                 controller:
                                     billGenerationDirectController.Debitamt,
                                 cursorColor: Colors.black,
@@ -596,12 +599,6 @@ class _Bill_Generation_direct_deductionState
                                     billGenerationDirectController.oldDebitValue =
                                         value;
                                   }
-                                },
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '\u26A0 ${RequestConstant.VALIDATE}';
-                                  }
-                                  return null;
                                 },
                               ),
                             ),
@@ -709,41 +706,71 @@ class _Bill_Generation_direct_deductionState
                             child: Padding(
                               padding: const EdgeInsets.only(
                                   top: 3, left: 10, bottom: 5),
-                              child: TextFormField(
-                                keyboardType: TextInputType.number,
-                                readOnly: billGenerationDirectController.advance(
-                                    billGenerationDirectController.tobededadv.text),
-                                controller: billGenerationDirectController.Advded,
-                                cursorColor: Colors.black,
-                                style: const TextStyle(color: Colors.black),
-                                decoration: const InputDecoration(
-                                  contentPadding: EdgeInsets.zero,
-                                  border: InputBorder.none,
-                                  labelText: "Advance Deduction Amt",
-                                  labelStyle: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: RequestConstant.Lable_Font_SIZE,
+                              child: Obx(()=>
+                                TextFormField(
+                                  keyboardType: TextInputType.number,
+                                  readOnly: billGenerationDirectController.isAdvanceReadOnly.value,
+                                  controller: billGenerationDirectController.Advded,
+                                  cursorColor: Colors.black,
+                                  style: const TextStyle(color: Colors.black),
+                                  decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.zero,
+                                    border: InputBorder.none,
+                                    labelText: "Advance Deduction Amt",
+                                    labelStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: RequestConstant.Lable_Font_SIZE,
+                                    ),
+                                    prefixIconConstraints:
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
+                                    prefixIcon: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 8, horizontal: 8),
+                                      child: ConstIcons.advancededuction,
+                                    ),
                                   ),
-                                  prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
-                                  prefixIcon: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 8),
-                                    child: ConstIcons.advancededuction,
-                                  ),
+                                  onChanged: (value) async {
+                                    double advDed = double.tryParse(value) ?? 0;
+                                    double advLimit =
+                                        double.tryParse(billGenerationDirectController.tobededadv.text) ?? 0;
+
+                                    if (advDed > advLimit) {
+                                      BaseUtitiles.showToast(
+                                          "Advance deduction should not exceed advance limit.");
+
+                                      billGenerationDirectController.Advded.text = "0.0";
+                                      billGenerationDirectController.Advded.selection = TextSelection.fromPosition(
+                                        TextPosition(offset: billGenerationDirectController.Advded.text.length),
+                                      );
+
+                                      await billGenerationDirectController.deductionPaymentCalculation();
+                                      return;
+                                    }
+
+                                    bool success =
+                                    await billGenerationDirectController.deductionPaymentCalculation();
+
+                                    if (!success) {
+                                      BaseUtitiles.showToast(
+                                          "Advance deduction should not exceed net payable amount.");
+
+                                      billGenerationDirectController.Advded.text = "0.0";
+                                      billGenerationDirectController.Advded.selection = TextSelection.fromPosition(
+                                        TextPosition(offset: billGenerationDirectController.Advded.text.length),
+                                      );
+
+                                      await billGenerationDirectController.deductionPaymentCalculation();
+                                    }
+                                  },
+                                  onTap: (){
+                                    if(billGenerationDirectController.isAdvanceReadOnly.value==false) {
+                                      if (billGenerationDirectController.Advded.text == "0.0" ||
+                                          billGenerationDirectController.Advded.text == "0") {
+                                        billGenerationDirectController.Advded.text = "";
+                                      }
+                                    }
+                                  },
                                 ),
-                                onChanged: (value) {
-                                  setState(() {
-                                    billGenerationDirectController
-                                        .deductionPaymentCalculation();
-                                  });
-                                },
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '\u26A0 Enter advance deduction amount';
-                                  }
-                                  return null;
-                                },
                               ),
                             ),
                           ),
@@ -770,7 +797,7 @@ class _Bill_Generation_direct_deductionState
                                   top: 3, left: 10, bottom: 5),
                               child: TextFormField(
                                 autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.always,
                                 onTap: () {
                                   if (billGenerationDirectController
                                       .Roundoff.text !=
@@ -792,6 +819,11 @@ class _Bill_Generation_direct_deductionState
                                   }
                                 },
                                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
                                 controller:
                                 billGenerationDirectController.Roundoff,
                                 cursorColor: Colors.black,
@@ -865,12 +897,7 @@ class _Bill_Generation_direct_deductionState
                                         value;
                                   }
                                 },
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '\u26A0 ${RequestConstant.VALIDATE}';
-                                  }
-                                  return null;
-                                },
+
                               ),
                             ),
                           ),
@@ -893,8 +920,13 @@ class _Bill_Generation_direct_deductionState
                                   top: 3, left: 10, bottom: 5),
                               child: TextFormField(
                                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
                                 autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                                AutovalidateMode.always,
                                 controller:
                                 billGenerationDirectController.netpayamt,
                                 cursorColor: Colors.black,
@@ -914,12 +946,7 @@ class _Bill_Generation_direct_deductionState
                                           vertical: 8, horizontal: 8),
                                       child: ConstIcons.netAmt),
                                 ),
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '\u26A0 ${RequestConstant.VALIDATE}';
-                                  }
-                                  return null;
-                                },
+
                               ),
                             ),
                           ),

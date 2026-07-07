@@ -39,7 +39,7 @@ class _DailyWork_done_DPRLabour_EntryListScreenState extends State<DailyWork_don
     DateTime lastDayOfMonth = new DateTime(currentDate.year, currentDate.month - 1, 0);
     dailyWrkDone_DPRLabour_Controller.dprlabor_entryList_frdateController.text = lastDayOfMonth.toString().substring(0, 10);
     dailyWrkDone_DPRLabour_Controller.dprlabor_entryList_todateController.text = BaseUtitiles.initiateCurrentDateFormat();
-    dailyWrkDone_DPRLabour_Controller.dprLabour_getEntryList();
+    // dailyWrkDone_DPRLabour_Controller.dprLabour_getEntryList();
     dailyWrkDone_DPRLabour_Controller.dprLabour_EntryList.value = dailyWrkDone_DPRLabour_Controller.main_EntryList.value;
     super.initState();
   }
@@ -84,10 +84,10 @@ class _DailyWork_done_DPRLabour_EntryListScreenState extends State<DailyWork_don
                             context: context,
                             initialDate: DateTime.now(),
                             firstDate: DateTime(1900),
-                            lastDate: DateTime(2100));
+                            lastDate: DateTime.now(),);
                         dailyWrkDone_DPRLabour_Controller.dprlabor_entryList_frdateController.text =
                             Frdate.toString().substring(0, 10);
-                        dailyWrkDone_DPRLabour_Controller.dprLabour_getEntryList();
+                        // dailyWrkDone_DPRLabour_Controller.dprLabour_getEntryList();
                       },
                     ),
                   ),
@@ -115,7 +115,7 @@ class _DailyWork_done_DPRLabour_EntryListScreenState extends State<DailyWork_don
                             lastDate: DateTime(2100));
                         dailyWrkDone_DPRLabour_Controller.dprlabor_entryList_todateController.text =
                             Frdate.toString().substring(0, 10);
-                        dailyWrkDone_DPRLabour_Controller.dprLabour_getEntryList();
+                        // dailyWrkDone_DPRLabour_Controller.dprLabour_getEntryList();
                       },
                     ),
                   ),
@@ -200,7 +200,7 @@ class _DailyWork_done_DPRLabour_EntryListScreenState extends State<DailyWork_don
                               dailyWrkDone_DPRLabour_Controller.dprLabourlist.value.clear();
                               dailyWrkDone_DPRLabour_Controller.dpr_EditListApiValue.value.clear();
                               FocusScope.of(context).unfocus();
-                              dailyWrkDone_DPRLabour_Controller.DprLabourEntryList_EditApi(dailyWrkDone_DPRLabour_Controller.dprLabour_EntryList.value[index].workId,context,0);
+                              // dailyWrkDone_DPRLabour_Controller.DprLabourEntryList_EditApi(dailyWrkDone_DPRLabour_Controller.dprLabour_EntryList.value[index].workId,context,0);
                             }),
                       ),
                     ],

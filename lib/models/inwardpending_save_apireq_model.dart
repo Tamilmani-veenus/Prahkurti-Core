@@ -23,6 +23,7 @@ class InwardPendingSaveReq {
   String? invoiceNo;
   String? invoiceDate;
   int? purOrdMasId;
+  int? workOrdMasId;
   String? vechileName;
   String? driverName;
   String? remarks;
@@ -46,6 +47,7 @@ class InwardPendingSaveReq {
     this.invoiceNo,
     this.invoiceDate,
     this.purOrdMasId,
+    this.workOrdMasId,
     this.vechileName,
     this.driverName,
     this.remarks,
@@ -72,6 +74,7 @@ class InwardPendingSaveReq {
       invoiceNo: json['InvoiceNo'],
       invoiceDate: json['InvoiceDate'],
       purOrdMasId: json['PurOrdMasId'],
+      workOrdMasId: json['WorkOrdMasId'],
       vechileName: json['VechileName'],
       driverName: json['DriverName'],
       remarks: json['Remarks'],
@@ -103,6 +106,7 @@ class InwardPendingSaveReq {
       "InvoiceNo": invoiceNo,
       "InvoiceDate": invoiceDate,
       "PurOrdMasId": purOrdMasId,
+      "WorkOrdMasId": workOrdMasId,
       "VechileName": vechileName,
       "DriverName": driverName,
       "Remarks": remarks,
@@ -119,6 +123,7 @@ class InwardDet {
   int? id;
   int? materialInwardMasID;
   int? purOrdDetId;
+  int? workOrdDetId;
   int? materialID;
   int? scaleID;
   double? qty;
@@ -133,6 +138,7 @@ class InwardDet {
     this.id,
     this.materialInwardMasID,
     this.purOrdDetId,
+    this.workOrdDetId,
     this.materialID,
     this.scaleID,
     this.qty,
@@ -149,6 +155,7 @@ class InwardDet {
       id: json['id'],
       materialInwardMasID: json['materialInwardMasID'],
       purOrdDetId: json['purOrdDetId'],
+      workOrdDetId: json['workOrdDetId'],
       materialID: json['materialID'],
       scaleID: json['scaleID'],
       qty: (json['qty'] ?? 0).toDouble(),
@@ -166,6 +173,7 @@ class InwardDet {
       "id": id,
       "materialInwardMasID": materialInwardMasID,
       "purOrdDetId": purOrdDetId,
+      "workOrdDetId": workOrdDetId,
       "materialID": materialID,
       "scaleID": scaleID,
       "qty": qty,

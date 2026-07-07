@@ -3,7 +3,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:prahkurticore/splash/connectivity_service.dart';
 import 'package:upgrader/upgrader.dart';
+import 'package:prahkurticore/signalr_service.dart';
 import 'package:prahkurticore/utilities/apiconstant.dart';
 import '../splash/splash.dart';
 import 'package:flutter/material.dart';
@@ -21,12 +23,15 @@ Future<void> backgroundHandler(RemoteMessage message) async {
   print(message.notification!.title.toString());
 }
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 Future<void> main() async {
-  await ApiConfig.initializeUrl();
   WidgetsFlutterBinding.ensureInitialized();
+  await AppClient.init();
+  print("Package Name: ${AppClient.packageName}");
+  await ApiConfig.initializeUrl();
   await Upgrader.clearSavedSettings();
-  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp],
-  );
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp],);
   await SessionStorage.init();
   await Firebase.initializeApp(
       options: const FirebaseOptions(
@@ -36,6 +41,7 @@ Future<void> main() async {
           projectId: "prahkurti-72eac"));
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
   LocalNotificationService.initialize();
+  await Get.putAsync(() async => ConnectivityService());
   runApp(const StartApp());
 }
 
@@ -51,18 +57,20 @@ class _StartAppState extends State<StartApp> {
 
   @override
   void initState() {
+    super.initState();
 
-    /// ---- 1 ----
+    /// Start SignalR after UI is ready
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Future.delayed(const Duration(seconds: 3)); // ⏳ delay 3 seconds
+      SignalRService().startConnection();
+    });
 
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       print("FirebaseMessaging.instance.getInitialMessage");
       if (message != null) {
         print("New Notification");
       }
-    },
-    );
-
-    /// ---- 2 ----
+    });
 
     FirebaseMessaging.onMessage.listen((message) {
       if (kDebugMode) {
@@ -74,27 +82,20 @@ class _StartAppState extends State<StartApp> {
         print("message.data11 ${message.data}");
         LocalNotificationService.createanddisplaynotification(message);
       }
-    },
-    );
+    });
 
-    /// ---- 3 ----
-
-    FirebaseMessaging.onMessageOpenedApp.listen(
-          (message) {
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      if (kDebugMode) {
+        print("FirebaseMessaging.onMessageOpenedApp.listen");
+      }
+      if (message.notification != null) {
+        print(message.notification!.title.toString());
+        print(message.notification!.body.toString());
         if (kDebugMode) {
-          print("FirebaseMessaging.onMessageOpenedApp.listen");
+          print("Message ${message.data['_id']}");
         }
-        if (message.notification != null) {
-          print(message.notification!.title.toString());
-          print(message.notification!.body.toString());
-          if (kDebugMode) {
-            print("Message ${message.data['_id']}");
-          }
-        }
-      },
-    );
-
-    super.initState();
+      }
+    });
   }
 
   @override
@@ -110,6 +111,7 @@ class _StartAppState extends State<StartApp> {
 
   Widget _buildWithTheme(BuildContext context, ThemeState state) {
     return GetMaterialApp(
+      navigatorKey: navigatorKey,
       title: "Prahkurti Constructions",
       builder: (context, child) {
         return MediaQuery(

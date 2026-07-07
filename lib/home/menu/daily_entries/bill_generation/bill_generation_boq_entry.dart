@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../app_theme/app_colors.dart';
-import '../../../../commonpopup/billtype_alert.dart';
 import '../../../../commonpopup/entry_type_alert.dart';
 import '../../../../constants/ui_constant/icons_const.dart';
 import '../../../../controller/auto_yrwise_no_controller.dart';
@@ -15,12 +14,12 @@ import '../../../../utilities/baseutitiles.dart';
 import '../../../../utilities/requestconstant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'bill_generation_boq_itemlist.dart';
 
 
 class Bill_Generation_Boq_EntryScreen extends StatefulWidget {
-  const Bill_Generation_Boq_EntryScreen({Key? key}) : super(key: key);
+  final String heading;
+  const Bill_Generation_Boq_EntryScreen({Key? key,required this.heading}) : super(key: key);
 
   @override
   State<Bill_Generation_Boq_EntryScreen> createState() =>
@@ -147,11 +146,13 @@ class _Bill_Generation_Boq_EntryScreenState_Site
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "Bill Generation - BOQ",
-                          style: TextStyle(
-                              fontSize: RequestConstant.Heading_Font_SIZE,
-                              fontWeight: FontWeight.bold),
+                        Expanded(
+                          child: Text(
+                            widget.heading,
+                            style: TextStyle(
+                                fontSize: RequestConstant.Heading_Font_SIZE,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         TextButton(
                             onPressed: () {
@@ -274,7 +275,7 @@ class _Bill_Generation_Boq_EntryScreenState_Site
                       child: Padding(
                         padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: projectController.projectname,
                           cursorColor: Colors.black,
@@ -294,11 +295,15 @@ class _Bill_Generation_Boq_EntryScreenState_Site
                                 child: ConstIcons.projectName),
                           ),
                           onTap: () async {
-                            await projectController.getProjectList();
+                            if(billGenerationBoqController.saveButton.value == RequestConstant.RESUBMIT){
+                            }
+                            else{
+                              await projectController.getProjectList();
                             if(mounted) {
                               bottomsheetControllers.ProjectName(context,
                                   projectController.getdropDownvalue.value);
-                            }},
+                            }}
+                            },
                           validator: (value) {
                             if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
                               return '\u26A0 ${RequestConstant.VALIDATE}';
@@ -320,7 +325,7 @@ class _Bill_Generation_Boq_EntryScreenState_Site
                       child: Padding(
                         padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: siteController.Sitename,
                           cursorColor: Colors.black,
@@ -340,10 +345,14 @@ class _Bill_Generation_Boq_EntryScreenState_Site
                                 child: ConstIcons.siteName),
                           ),
                           onTap: () {
-                            setState(() {
-                              bottomsheetControllers.SiteName(context,
-                                  siteController.getSiteDropdownvalue.value);
-                            });
+                            if(billGenerationBoqController.saveButton.value == RequestConstant.RESUBMIT){
+                            }else{
+                              setState(() {
+                                bottomsheetControllers.SiteName(context,
+                                    siteController.getSiteDropdownvalue.value);
+                              });
+                            }
+
                           },
                           validator: (value) {
                             if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
@@ -366,7 +375,7 @@ class _Bill_Generation_Boq_EntryScreenState_Site
                       child: Padding(
                         padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: dailyWrkDone_DPR_Controller.TypeSubcontractorname,
                           cursorColor: Colors.black,
@@ -386,8 +395,12 @@ class _Bill_Generation_Boq_EntryScreenState_Site
                                 child: ConstIcons.subcontractorName),
                           ),
                           onTap: () async {
-                            await dailyWrkDone_DPR_Controller.dpr_getSubcotType();
-                            dailyWrkDone_DPR_Controller.SubcontractorName(context, dailyWrkDone_DPR_Controller.dpr_subcontractorList.value);
+                            if(billGenerationBoqController.saveButton.value == RequestConstant.RESUBMIT){
+                            }
+                            else {
+                              await dailyWrkDone_DPR_Controller.dpr_getSubcotType();
+                            dailyWrkDone_DPR_Controller.SubcontractorName(context, dailyWrkDone_DPR_Controller.dpr_subcontractorList.value);}
+
                           },
                           validator: (value) {
                             if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
@@ -412,7 +425,7 @@ class _Bill_Generation_Boq_EntryScreenState_Site
                         padding:
                         const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: billGenerationBoqController.entryTypeController,
                           cursorColor: Colors.black,
@@ -432,7 +445,7 @@ class _Bill_Generation_Boq_EntryScreenState_Site
                                 child: ConstIcons.types),
                           ),
                           onTap: () {
-                            if(dailyWrkDone_DPR_Controller.saveButton.value==RequestConstant.APPROVAL){
+                            if(billGenerationBoqController.saveButton.value==RequestConstant.APPROVAL){
 
                             }
                             else{
@@ -597,7 +610,7 @@ class _Bill_Generation_Boq_EntryScreenState_Site
                       child: Padding(
                         padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: subcontractorController.InvoiceNo,
                           cursorColor: Colors.black,
@@ -815,7 +828,7 @@ class _Bill_Generation_Boq_EntryScreenState_Site
                       child: Padding(
                         padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           readOnly: true,
                           controller: subcontractorController.WorkOrderNo,
                           cursorColor: Colors.black,
@@ -842,7 +855,8 @@ class _Bill_Generation_Boq_EntryScreenState_Site
                                 fromDate: billGenerationBoqController.FromdateController.text,
                                 toDate: billGenerationBoqController.TodateController.text);
                             bottomsheetControllers.WorkOrderName(context,
-                                subcontractorController.getdpDnWrkOrderValue.value,type: "BILL BOQ",todate:  billGenerationBoqController.TodateController.text);
+                                subcontractorController.getdpDnWrkOrderValue.value,type: "BILL BOQ",
+                                todate:  billGenerationBoqController.TodateController.text);
                           },
                           validator: (value)
                           {
@@ -868,7 +882,7 @@ class _Bill_Generation_Boq_EntryScreenState_Site
                       child: Padding(
                         padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.always,
                           controller: billGenerationBoqController.RemarksController,
                           cursorColor: Colors.black,
                           style: const TextStyle(color: Colors.black),
@@ -882,12 +896,12 @@ class _Bill_Generation_Boq_EntryScreenState_Site
                             prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
                             prefixIcon: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8), child: ConstIcons.remarks),
                           ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return '\u26A0 ${RequestConstant.VALIDATE}';
-                            }
-                            return null;
-                          },
+                          // validator: (value) {
+                          //   if (value!.isEmpty) {
+                          //     return '\u26A0 ${RequestConstant.VALIDATE}';
+                          //   }
+                          //   return null;
+                          // },
                         ),
                       ),
                     ),
@@ -927,10 +941,20 @@ class _Bill_Generation_Boq_EntryScreenState_Site
                       setState(() {
                         if(_formKey.currentState!.validate()){
                           _formKey.currentState!.save();
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Bill_Generation_Boq_Itemlist()));
+                          // if(billGenerationBoqController.bill_itemList.isEmpty)
+                          // {
+                          //   BaseUtitiles.showToast("No BOQ data found for the selected criteria.");
+                          // }
+                          // else
+                          //   {
+                          billGenerationBoqController.tobededadv.addListener(() {
+                            billGenerationBoqController.updateAdvanceReadOnly();
+                          });
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Bill_Generation_Boq_Itemlist()));
+                            // }
                         }
                       });
                     },
