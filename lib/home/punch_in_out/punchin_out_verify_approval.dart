@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-
-import '../../app_theme/app_colors.dart';
 import '../../controller/pendinglistcontroller.dart';
 import '../../utilities/baseutitiles.dart';
 import '../../utilities/requestconstant.dart';
@@ -26,7 +24,8 @@ class PunchVerifyApprovalScreen extends StatefulWidget {
     required this.inNAPRemarks,
     required this.outNAPRemarks,
     required this.onDutyRemarks,
-    required this.type,
+    required this.inStatus,
+    required this.outStatus,
   });
 
   final  String id;
@@ -46,7 +45,8 @@ class PunchVerifyApprovalScreen extends StatefulWidget {
   final  String inNAPRemarks;
   final  String outNAPRemarks;
   final  String onDutyRemarks;
-  final  String type;
+  final  String inStatus;
+  final  String outStatus;
 
   @override
   State<PunchVerifyApprovalScreen> createState() => _PunchVerifyApprovalScreenState();
@@ -60,7 +60,7 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
     return SafeArea(
       top: false,
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.grey.shade50,
         bottomNavigationBar: Container(
           child:  Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -172,8 +172,8 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                                           color: Colors.grey),
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
-                                  labelText: "Punch No",
-                                  labelStyle: TextStyle(
+                                  hintText: "Punch No",
+                                  hintStyle: TextStyle(
                                       color: Colors.grey,
                                       fontSize: RequestConstant.App_Font_SIZE),
                                   prefixIconConstraints:
@@ -209,8 +209,8 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
                                   contentPadding: EdgeInsets.zero,
-                                  labelText: "Staff name",
-                                  labelStyle: TextStyle(
+                                  hintText: "Staff name",
+                                  hintStyle: TextStyle(
                                       color: Colors.grey,
                                       fontSize: RequestConstant.App_Font_SIZE),
                                   prefixIconConstraints:
@@ -273,7 +273,7 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                               flex: 4,
                               child: TextFormField(
                                 readOnly: true,
-                                initialValue: "OnDuty",
+                                initialValue: widget.inStatus=="NA"?"Non-Alloted":"OnDuty",
                                 cursorColor: Colors.black,
                                 style: const TextStyle(color: Colors.black,fontSize: RequestConstant.Dropdown_Font_SIZE),
                                 decoration:  InputDecoration(
@@ -292,8 +292,8 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                                           color: Colors.grey),
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
-                                  labelText: "PunchInStatus",
-                                  labelStyle: TextStyle(
+                                  hintText: "PunchInStatus",
+                                  hintStyle: TextStyle(
                                       color: Colors.grey,
                                       fontSize: RequestConstant.App_Font_SIZE),
                                   prefixIconConstraints:
@@ -309,6 +309,15 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                             Expanded(
                               flex: 4,
                               child: TextFormField(
+                                onTap: () {
+                                  if(widget.inStatus=="OD") {
+                                    if (widget.inLocation != "" &&
+                                        widget.inLocation != "-") {
+                                      addressShowingAlert(
+                                          context, widget.inLocation);
+                                    }
+                                  }
+                                },
                                 readOnly: true,
                                 initialValue: widget.inLocation,
                                 cursorColor: Colors.black,
@@ -329,8 +338,8 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
                                   contentPadding: EdgeInsets.zero,
-                                  labelText: "ProjectInLocation",
-                                  labelStyle: TextStyle(
+                                  hintText: "ProjectInLocation",
+                                  hintStyle: TextStyle(
                                       color: Colors.grey,
                                       fontSize: RequestConstant.App_Font_SIZE),
                                   prefixIconConstraints:
@@ -386,8 +395,8 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                                           color: Colors.grey),
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
-                                  labelText: "PunchInDate",
-                                  labelStyle: TextStyle(
+                                  hintText: "PunchInDate",
+                                  hintStyle: TextStyle(
                                       color: Colors.grey,
                                       fontSize: RequestConstant.App_Font_SIZE),
                                   prefixIconConstraints:
@@ -423,8 +432,8 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
                                   contentPadding: EdgeInsets.zero,
-                                  labelText: "PunchInTime",
-                                  labelStyle: TextStyle(
+                                  hintText: "PunchInTime",
+                                  hintStyle: TextStyle(
                                       color: Colors.grey,
                                       fontSize: RequestConstant.App_Font_SIZE),
                                   prefixIconConstraints:
@@ -438,7 +447,7 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                             ),
                           ],
                         ),
-                        if(widget.type=="NonAlloted")
+                        if(widget.inStatus=="NA")
                           Column(crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
@@ -480,8 +489,8 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                                               color: Colors.grey),
                                           borderRadius: const BorderRadius.all(
                                               Radius.circular(10))),
-                                      labelText: "InNAPRemarks",
-                                      labelStyle: TextStyle(
+                                      hintText: "InNAPRemarks",
+                                      hintStyle: TextStyle(
                                           color: Colors.grey,
                                           fontSize: RequestConstant.App_Font_SIZE),
                                       prefixIconConstraints:
@@ -497,7 +506,7 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                             ),
                           ],
                         ),
-                        if(widget.type=="Onduty")
+                        if(widget.inStatus=="OD")
                           Column(crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(
@@ -539,8 +548,8 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                                                 color: Colors.grey),
                                             borderRadius: const BorderRadius.all(
                                                 Radius.circular(10))),
-                                        labelText: "InNAPRemarks",
-                                        labelStyle: TextStyle(
+                                        hintText: "InOndutyRemarks",
+                                        hintStyle: TextStyle(
                                             color: Colors.grey,
                                             fontSize: RequestConstant.App_Font_SIZE),
                                         prefixIconConstraints:
@@ -605,7 +614,7 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                               flex: 4,
                               child: TextFormField(
                                 readOnly: true,
-                                initialValue: "OnDuty",
+                                initialValue: widget.outStatus=="NA"?"Non-Alloted":widget.outStatus=="-"?"-":"OnDuty",
                                 cursorColor: Colors.black,
                                 style: const TextStyle(color: Colors.black,fontSize: RequestConstant.Dropdown_Font_SIZE),
                                 decoration:  InputDecoration(
@@ -624,8 +633,8 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                                           color: Colors.grey),
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
-                                  labelText: "PunchOutStatus",
-                                  labelStyle: TextStyle(
+                                  hintText: "PunchOutStatus",
+                                  hintStyle: TextStyle(
                                       color: Colors.grey,
                                       fontSize: RequestConstant.App_Font_SIZE),
                                   prefixIconConstraints:
@@ -641,6 +650,15 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                             Expanded(
                               flex: 4,
                               child: TextFormField(
+                                onTap: () {
+                                  if(widget.outStatus == "OD") {
+                                    if (widget.outLocation != "" &&
+                                        widget.outLocation != "-") {
+                                      addressShowingAlert(
+                                          context, widget.outLocation);
+                                    }
+                                  }
+                                },
                                 readOnly: true,
                                 initialValue: widget.outLocation,
                                 cursorColor: Colors.black,
@@ -661,8 +679,8 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
                                   contentPadding: EdgeInsets.zero,
-                                  labelText: "ProjectOutLocation",
-                                  labelStyle: TextStyle(
+                                  hintText: "ProjectOutLocation",
+                                  hintStyle: TextStyle(
                                       color: Colors.grey,
                                       fontSize: RequestConstant.App_Font_SIZE),
                                   prefixIconConstraints:
@@ -718,8 +736,8 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                                           color: Colors.grey),
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
-                                  labelText: "PunchOutDate",
-                                  labelStyle: TextStyle(
+                                  hintText: "PunchOutDate",
+                                  hintStyle: TextStyle(
                                       color: Colors.grey,
                                       fontSize: RequestConstant.App_Font_SIZE),
                                   prefixIconConstraints:
@@ -755,8 +773,8 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
                                   contentPadding: EdgeInsets.zero,
-                                  labelText: "PunchOutTime",
-                                  labelStyle: TextStyle(
+                                  hintText: "PunchOutTime",
+                                  hintStyle: TextStyle(
                                       color: Colors.grey,
                                       fontSize: RequestConstant.App_Font_SIZE),
                                   prefixIconConstraints:
@@ -809,8 +827,8 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                                           color: Colors.grey),
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
-                                  labelText: "TodayTask",
-                                  labelStyle: TextStyle(
+                                  hintText: "TodayTask",
+                                  hintStyle: TextStyle(
                                       color: Colors.grey,
                                       fontSize: RequestConstant.App_Font_SIZE),
                                   prefixIconConstraints:
@@ -863,8 +881,8 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                                           color: Colors.grey),
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
-                                  labelText: "TomarrowTask",
-                                  labelStyle: TextStyle(
+                                  hintText: "TomarrowTask",
+                                  hintStyle: TextStyle(
                                       color: Colors.grey,
                                       fontSize: RequestConstant.App_Font_SIZE),
                                   prefixIconConstraints:
@@ -917,8 +935,8 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                                           color: Colors.grey),
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10))),
-                                  labelText: "Remarks",
-                                  labelStyle: TextStyle(
+                                  hintText: "Remarks",
+                                  hintStyle: TextStyle(
                                       color: Colors.grey,
                                       fontSize: RequestConstant.App_Font_SIZE),
                                   prefixIconConstraints:
@@ -932,7 +950,7 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                             ),
                           ],
                         ),
-                        if(widget.type=="NonAlloted")Column(crossAxisAlignment: CrossAxisAlignment.start,
+                        if(widget.outStatus=="NA")Column(crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
                               height: BaseUtitiles.getheightofPercentage(context, 2),
@@ -973,8 +991,8 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                                               color: Colors.grey),
                                           borderRadius: const BorderRadius.all(
                                               Radius.circular(10))),
-                                      labelText: "InNAPRemarks",
-                                      labelStyle: TextStyle(
+                                      hintText: "InNAPRemarks",
+                                      hintStyle: TextStyle(
                                           color: Colors.grey,
                                           fontSize: RequestConstant.App_Font_SIZE),
                                       prefixIconConstraints:
@@ -990,6 +1008,64 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
                             ),
                           ],
                         ),
+                        if(widget.outStatus=="OD")Column(crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: BaseUtitiles.getheightofPercentage(context, 2),
+                              ),
+                              Row(mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                      flex: 2,
+                                      child: Text("Punch out Onduty remarks", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12),)),
+                                ],
+                              ),
+                              SizedBox(
+                                height: BaseUtitiles.getheightofPercentage(context, 1),
+                              ),
+                              Row(mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      readOnly: true,
+                                      maxLength: 5,
+                                      initialValue: widget.onDutyRemarks,
+                                      cursorColor: Colors.black,
+                                      style: const TextStyle(color: Colors.black,fontSize: RequestConstant.Dropdown_Font_SIZE),
+                                      decoration:  InputDecoration(
+                                        counterText: "",
+                                        floatingLabelBehavior:
+                                        FloatingLabelBehavior.never,
+                                        contentPadding: EdgeInsets.zero,
+                                        fillColor: Colors.white,
+                                        filled: true,
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.grey),
+                                            borderRadius: const BorderRadius.all(
+                                                Radius.circular(10))),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.grey),
+                                            borderRadius: const BorderRadius.all(
+                                                Radius.circular(10))),
+                                        hintText: "OutOndutyRemarks",
+                                        hintStyle: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: RequestConstant.App_Font_SIZE),
+                                        prefixIconConstraints:
+                                        BoxConstraints(minWidth: 0, minHeight: 0),
+                                        prefixIcon: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 8, horizontal: 8),
+                                            child: Icon( Icons.receipt_long, color: Color(0xFF4B3FFF),size: 20,)),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )
                       ],
                     ),
                   ),
@@ -1054,6 +1130,16 @@ class _PunchVerifyApprovalScreenState extends State<PunchVerifyApprovalScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Future addressShowingAlert(BuildContext context,address) async {
+    return await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Address'),
+        content: Text('${address}',style: TextStyle(fontSize: 13),),
       ),
     );
   }

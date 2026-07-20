@@ -22,6 +22,7 @@ import '../../../../../controller/projectcontroller.dart';
 import '../../../../../controller/sitecontroller.dart';
 import '../../../../../controller/sitevoucher_controller.dart';
 import '../../../../../controller/subcontcontroller.dart';
+import '../../../../../utilities/apiconstant.dart';
 import '../../../../../utilities/baseutitiles.dart';
 import '../../../../../utilities/image_view.dart';
 import '../../../../../utilities/requestconstant.dart';
@@ -1144,18 +1145,22 @@ class _SiteVoucher_EntryScreenState extends State<SiteVoucher_EntryScreen> {
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 _formKey.currentState!.save();
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //       builder: (_) => CameraCapturePage(
-                                //             fromScreen: "Site Voucher",
-                                //           )),
-                                // );
-                                showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return const ImageGalleryPopup_Alert(imageUrl: "SITE VOUCHER");
-                                    });
+                                if (!AppClient.isPrahkurti) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) =>
+                                            CameraCapturePage(
+                                              fromScreen: "Site Voucher",
+                                            )),
+                                  );
+                                }else {
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return const ImageGalleryPopup_Alert(imageUrl: "SITE VOUCHER");
+                                      });
+                                }
 
                               }
                             },

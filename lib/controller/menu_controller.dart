@@ -26,10 +26,12 @@ import '../home/menu/daily_entries/company_nmr_attendance/company_nmr_main.dart'
 import '../home/menu/daily_entries/daily_wrk_done_dpr(labour)/daily_wrkdone_dpr_labour.dart';
 import '../home/menu/daily_entries/daily_wrk_done_dpr(new)/daily_wrkdone_dpr_entrylistnew.dart';
 import '../home/menu/daily_entries/daily_wrk_done_dpr/daily_wrkdone_dpr_entrylist.dart';
+import '../home/menu/daily_entries/man_power_screens/man_power_entrylist.dart';
 import '../home/menu/daily_entries/pre_approval/preapproval_main.dart';
 import '../home/menu/daily_entries/subcont_nmr_weekbill_site/subcont_nmr_entrylist_site.dart';
 import '../home/menu/daily_entries/subcontractor_attendance_VCPL/subattendance_site_entry_list.dart';
 import '../home/menu/main_menu/boq_revised/boq_revised_entrylist.dart';
+import '../home/menu/main_menu/workOrder_Direct/workOrder_Direct_Entrylist.dart';
 import '../home/menu/materials/consumption/consumption_list.dart';
 import '../home/menu/materials/inward/inward_list.dart';
 import '../home/menu/materials/materialTransferRequest/materialTransReq_list.dart';
@@ -319,6 +321,12 @@ class Menu_Controller extends GetxController {
       Navigator.push(context, MaterialPageRoute(builder: (context) => AdvReq_Voucher_EntryList_new(heading: MenuName)),
       );
     }
+    else if (value == "Man Power") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Man_Power_Entrylist(heading: MenuName)),
+      );
+    }
   }
 
   AccountsScreen(String value,String MenuName, BuildContext context) {
@@ -352,7 +360,14 @@ class Menu_Controller extends GetxController {
         MaterialPageRoute(builder: (context) => Boq_Revised_EntryList(heading: MenuName,)),
       );
     }
+    if (value == "Work Order - Direct") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => WorkOrderDirect_EntryList(heading: MenuName,)),
+      );
+    }
   }
+
   PayrollScreen(String value, String MenuName, BuildContext context) {
     if (value == "Staff L & P Slip") {
       Navigator.push(context, MaterialPageRoute(builder: (context) => Requisitionslip_EntryList(heading: MenuName,)));

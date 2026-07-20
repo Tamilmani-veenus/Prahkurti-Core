@@ -60,6 +60,7 @@ class MRN_Request_Controller extends GetxController {
       Get.put(PendingListController());
   SiteController siteController = Get.put(SiteController());
   RxInt selectedMaterialId = 0.obs;
+  RxInt createdById = 0.obs;
   RxString selectedMaterialName = "".obs;
   RxList Material_itemview_GetDbList = [].obs;
   late List<bool> isChecked;
@@ -88,9 +89,6 @@ class MRN_Request_Controller extends GetxController {
   bool get isSubmit => saveButton.value == RequestConstant.SUBMIT;
   bool get isVerify => saveButton.value == RequestConstant.VERIFY;
   bool get isResubmit => saveButton.value == RequestConstant.RESUBMIT;
-  bool get isPreApprove => saveButton.value == RequestConstant.PREAPPROVAL;
-  bool get isFinalApprove => saveButton.value == RequestConstant.APPROVAL;
-
 
 
   Future getMrn_Req_EntryList() async {

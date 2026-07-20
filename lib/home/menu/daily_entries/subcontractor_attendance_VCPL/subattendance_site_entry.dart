@@ -609,19 +609,22 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                       Fluttertoast.showToast(
                                           msg: "No Work can't add Image");
                                     } else {
-                                      showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return const ImageGalleryPopup_Alert(imageUrl: "DLR");
-                                          });
-                                      // Navigator.push(
-                                      //   context,
-                                      //   MaterialPageRoute(
-                                      //       builder: (_) => CameraCapturePage(
-                                      //             fromScreen:
-                                      //                 "Subcontractor Attendance",
-                                      //           )),
-                                      // );
+                                      if (!AppClient.isPrahkurti) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (_) => CameraCapturePage(
+                                                fromScreen:
+                                                "Subcontractor Attendance",
+                                              )),
+                                        );
+                                      }else {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return const ImageGalleryPopup_Alert(imageUrl: "DLR");
+                                            });
+                                      }
                                     }
                                   },
                                   child: Row(

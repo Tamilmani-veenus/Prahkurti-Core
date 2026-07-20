@@ -14,17 +14,30 @@ class Dashboard_Controller extends GetxController {
 
   RxList main_List = [].obs;
 
-  Future DirectBill_EntryList() async {
-    main_List.value.clear();
-    // await Dashboard_Provider.getDashboardAPI_List(loginController.user.value.userType.toString()).then((value) async {
-    //   if (value != null && value.length > 0) {
-    //     main_List.value = value;
-    //     return main_List.value;
-    //   } else {
-    //     BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
-    //   }
-    // });
+
+  Future DashboardEntryList() async {
+    var response =
+    await Dashboard_Provider.getDashboardAPI_List();
+    if (response != null) {
+      if (response.success == true) {
+        main_List.value = [response.result];
+        if (main_List.isNotEmpty) {
+          return main_List.value;
+        } else {
+          BaseUtitiles.showToast("No Data Found");
+        }
+      } else {
+        BaseUtitiles.showToast(response.message ?? 'Something went wrong..');
+      }
+    } else {
+      BaseUtitiles.showToast("Something Went Wrong...");
+    }
   }
+
+
+
+
+
 
 
 }

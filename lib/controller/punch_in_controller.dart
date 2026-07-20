@@ -120,9 +120,9 @@ class PunchInController extends GetxController with StateMixin<HomeState> {
             InTime: currentTime.toString(),
             InStatus: allotedStatus,
             InNAPRemarks: allotedStatus == "NA" ? punchInRemarks.text : "-",
-            OnPinInLatitude: punchLat.value,
-            OnPinInLongitude: punchLon.value,
-            OnPinInAddress: punchAddress.value,
+            OnPinInLatitude: allotedStatus == "OD" ? punchLat.value : "-",
+            OnPinInLongitude: allotedStatus == "OD" ? punchLon.value : "-",
+            OnPinInAddress: allotedStatus == "OD" ? punchAddress.value : "-",
             OnDutyRemarks: allotedStatus == "OD" ? punchInRemarks.text : "-"),
         File(imageFile.value!.path),
         context);
@@ -163,10 +163,11 @@ class PunchInController extends GetxController with StateMixin<HomeState> {
           TodayTask: todayTaskPunchOut.text,
           TomorrowTask: tomorrowPlanPunchOut.text,
           OutNAPRemarks: allotedStatus == "NA" ? punchOutRemarks.text : "-",
-          OnPinOutAddress: punchAddress.value,
-          OnPinOutLatitude: punchLat.value,
-          OnPinOutLongitude: punchLon.value,
-          OnDutyRemarks: allotedStatus == "OD" ? punchOutRemarks.text : "-"
+          OnPinOutAddress: allotedStatus == "OD" ?punchAddress.value : "-",
+          OnPinOutLatitude: allotedStatus == "OD" ?punchLat.value : "-",
+          OnPinOutLongitude: allotedStatus == "OD" ?punchLon.value : "-",
+          OnDutyRemarks:  "-",
+          Remarks: allotedStatus == "OD" ? punchOutRemarks.text : "-"
     ),
         File(punchOutImageFile.value!.path),
         context);

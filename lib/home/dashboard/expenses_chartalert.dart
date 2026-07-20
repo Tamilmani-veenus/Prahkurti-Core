@@ -6,8 +6,9 @@ import '../../utilities/requestconstant.dart';
 
 
 class ExpensesChart_Alert extends StatefulWidget {
-  const ExpensesChart_Alert({Key? key, required this.list}) : super(key: key);
+  const ExpensesChart_Alert({Key? key, required this.list, required this.value}) : super(key: key);
   final list;
+  final String value;
 
   @override
   State<ExpensesChart_Alert> createState() => _ExpensesChart_AlertState();
@@ -22,148 +23,234 @@ class _ExpensesChart_AlertState extends State<ExpensesChart_Alert> {
     super.initState();
   }
   @override
+  @override
   Widget build(BuildContext context) {
     final List<ChartData> chartData = [
-      ChartData('Material Exp', widget.list.mtrExpAmt, Colors.pinkAccent),
-     ChartData('CompanyLab Exp', widget.list.nLbrExpAmt.toDouble(), Colors.orangeAccent),
-      ChartData('SubContLab Exp', widget.list.gLbrExpAmt, Colors.blueAccent),
-      ChartData('SubContBill Exp', widget.list.sbCnExpAmt, Colors.greenAccent),
-      ChartData('Site Material Exp', widget.list.siteMatrExpAmt, Colors.purpleAccent),
-      ChartData('Miscell Exp', widget.list.miscExpAmt, Colors.lightGreen),
-
+      ChartData(
+          'Material',
+          widget.list.materialExpenseAmount.toDouble(),
+          Colors.pinkAccent),
+      ChartData(
+          'SubCont Labour',
+          widget.list.nmrLabourExpenseAmount.toDouble(),
+          Colors.blueAccent),
+      ChartData(
+          'SubCont Bill',
+          widget.list.subcontractorExpenseAmount.toDouble(),
+          Colors.green),
+      ChartData(
+          'Site Material',
+          widget.list.siteMaterialExpenseAmount.toDouble(),
+          Colors.purpleAccent),
+      ChartData(
+          'Miscellaneous',
+          widget.list.miscellaneousExpenseAmount.toDouble(),
+          Colors.orange),
     ];
+
     return AlertDialog(
-      contentPadding: EdgeInsets.all(5.0),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        borderRadius: BorderRadius.circular(20),
       ),
-      content: SingleChildScrollView(
-        child: Container(
-          width: BaseUtitiles.getWidthtofPercentage(context,200),
-          child: Card(
-            color: Color.fromRGBO(240, 240, 240, 1),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(child: Container(
-                    margin: EdgeInsets.only(top: 10),
-                    child: Text("Expenses OverView",style: TextStyle(fontWeight: FontWeight.bold)))),
-                SfCircularChart(
-                  title: ChartTitle(text: widget.list.project.toString(),textStyle: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),),
-                  legend: Legend(isVisible: false),
+      contentPadding: EdgeInsets.zero,
+      content: Container(
+        width: MediaQuery.of(context).size.width * .9,
+        height: MediaQuery.of(context).size.height * .63,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 7,),
+              /// HEADER
+              Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                     Text(
+                      "Expenses Overview",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 19,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      widget.value == "P"
+                          ? widget.list.project.toString()
+                          : widget.list.siteName.toString(),
+                      textAlign: TextAlign.center,
+                      style:  TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 17,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              /// CHART
+              SizedBox(
+                height: 235,
+                child: SfCircularChart(
+                  legend: Legend(
+                    isVisible: false,
+                  ),
                   tooltipBehavior: _tooltipBehavior,
+                  annotations: [
+                    CircularChartAnnotation(
+                      widget: SizedBox(
+                        width: 90,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text(
+                              "Total",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            SizedBox(height: 5,),
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                // "1234567890",
+                                "₹${BaseUtitiles.amountFormat(widget.list.totalExpenseAmount)}",
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                   series: <CircularSeries>[
-                    PieSeries<ChartData, String>(
-                       // enableTooltip: true,
-                        dataSource: chartData,
-                        xValueMapper: (ChartData data, _) => data.x,
-                        yValueMapper: (ChartData data, _) => data.y,
-                        pointColorMapper:(ChartData data,  _) => data.color,
-                       // dataLabelSettings: DataLabelSettings(isVisible: true)
-                    ),
+                    DoughnutSeries<ChartData, String>(
+                      dataSource: chartData,
+                      xValueMapper: (ChartData data, _) => data.x,
+                      yValueMapper: (ChartData data, _) => data.y,
+                      pointColorMapper: (ChartData data, _) => data.color,
+                      innerRadius: '70%',
+                    )
                   ],
                 ),
+              ),
 
+              // Padding(
+              //   padding: const EdgeInsets.only(bottom: 15),
+              //   child: Column(
+              //     children: [
+              //       const Text(
+              //         "Total Expense",
+              //         style: TextStyle(color: Colors.grey),
+              //       ),
+              //       Text(
+              //         "${RequestConstant.CURRENCY_SYMBOL}${BaseUtitiles.amountFormat(widget.list.totalExpenseAmount)}",
+              //         style: TextStyle(
+              //           fontSize: 22,
+              //           fontWeight: FontWeight.bold,
+              //           color: Theme.of(context).primaryColor,
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
 
-                Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 10),
-                      height: BaseUtitiles.getheightofPercentage(context,2),
-                      width: BaseUtitiles.getWidthtofPercentage(context, 4),
-                      color: Colors.pinkAccent,
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(left: 10),
-                      child: Text( "Material                  "+ RequestConstant.CURRENCY_SYMBOL+ BaseUtitiles.amountFormat(widget.list.mtrExpAmt),style: TextStyle(fontWeight: FontWeight.bold),),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 10,top: 15),
-                      height: BaseUtitiles.getheightofPercentage(context,2),
-                      width: BaseUtitiles.getWidthtofPercentage(context, 4),
-                      color: Colors.orangeAccent,
-                    ),
+              const Divider(),
 
-                    Container(
-                      margin: EdgeInsets.only(left: 10,top: 10),
-                      child: Text("CompanyLab         " + RequestConstant.CURRENCY_SYMBOL+widget.list.nLbrExpAmt.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 10,top: 15),
-                      height: BaseUtitiles.getheightofPercentage(context,2),
-                      width: BaseUtitiles.getWidthtofPercentage(context, 4),
-                      color: Colors.blueAccent,
-                    ),
+              expenseTile(
+                Colors.pinkAccent,
+                Icons.inventory,
+                "Material",
+                widget.list.materialExpenseAmount,
+              ),
 
-                    Container(
-                      margin: EdgeInsets.only(left: 10,top: 10),
-                      child: Text("SubContLab           "+RequestConstant.CURRENCY_SYMBOL+ BaseUtitiles.amountFormat(widget.list.gLbrExpAmt),style: TextStyle(fontWeight: FontWeight.bold),),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 10,top: 15),
-                      height: BaseUtitiles.getheightofPercentage(context,2),
-                      width: BaseUtitiles.getWidthtofPercentage(context, 4),
-                      color: Colors.greenAccent,
-                    ),
+              expenseTile(
+                Colors.blueAccent,
+                Icons.groups,
+                "SubCont Labour",
+                widget.list.nmrLabourExpenseAmount,
+              ),
 
-                    Container(
-                      margin: EdgeInsets.only(left: 10,top: 10),
-                      child: Text("SubContBill            " + RequestConstant.CURRENCY_SYMBOL+ BaseUtitiles.amountFormat(widget.list.sbCnExpAmt),style: TextStyle(fontWeight: FontWeight.bold),),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 10,top: 10,bottom: 10),
-                      height: BaseUtitiles.getheightofPercentage(context,2),
-                      width: BaseUtitiles.getWidthtofPercentage(context, 4),
-                      color: Colors.purpleAccent,
-                    ),
+              expenseTile(
+                Colors.green,
+                Icons.receipt_long,
+                "SubCont Bill",
+                widget.list.subcontractorExpenseAmount,
+              ),
 
+              expenseTile(
+                Colors.purpleAccent,
+                Icons.home_work,
+                "Site Material",
+                widget.list.siteMaterialExpenseAmount,
+              ),
 
-                    Container(
-                      margin: EdgeInsets.only(left: 10,top: 10,bottom: 10),
-                      child: Text("Site Material          "+RequestConstant.CURRENCY_SYMBOL+ BaseUtitiles.amountFormat(widget.list.siteMatrExpAmt), style: TextStyle(fontWeight: FontWeight.bold),),
-                    ),
-                  ],
-                ),
+              expenseTile(
+                Colors.orange,
+                Icons.miscellaneous_services,
+                "Miscellaneous",
+                widget.list.miscellaneousExpenseAmount,
+              ),
 
-                Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 10,top: 5,bottom: 10),
-                      height: BaseUtitiles.getheightofPercentage(context,2),
-                      width: BaseUtitiles.getWidthtofPercentage(context, 4),
-                      color: Colors.lightGreen,
-                    ),
-
-                    Container(
-                      margin: EdgeInsets.only(left: 10,top: 5,bottom: 10),
-                      child: Text("Miscell                    "  + RequestConstant.CURRENCY_SYMBOL+ BaseUtitiles.amountFormat(widget.list.miscExpAmt),style: TextStyle(fontWeight: FontWeight.bold),),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+              const SizedBox(height: 5),
+            ],
           ),
         ),
       ),
     );
   }
+
+  Widget expenseTile(
+      Color color,
+      IconData icon,
+      String title,
+      double amount,
+      ) {
+    return ListTile(
+      dense: true,
+      visualDensity:  VisualDensity(
+        vertical: -2,
+        horizontal: 0,
+      ),
+      horizontalTitleGap: 4,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+      leading: CircleAvatar(
+        radius: 14,
+        backgroundColor: color,
+        child: Icon(
+          icon,
+          color: Colors.white,
+          size: 15,
+        ),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontWeight: FontWeight.w600,fontSize: 15
+        ),
+      ),
+      trailing: Text(
+        "${RequestConstant.CURRENCY_SYMBOL}${BaseUtitiles.amountFormat(amount)}",
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 15,
+        ),
+      ),
+    );
+  }
 }
+
+
 
 class ChartData {
   ChartData(this.x, this.y, [this.color]);

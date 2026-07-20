@@ -44,7 +44,7 @@ class PunchInSaveModel {
     "OnDutyRemarks": OnDutyRemarks,
     "InStatus": InStatus,
     "CreatedBy": CreatedBy,
-    "remarks": CreatedDt,
+    "CreatedDt": CreatedDt,
   };
 }
 
@@ -63,6 +63,7 @@ class PunchOutSaveModel {
   String? OnPinOutAddress;
   String? InDate;
   String? OnDutyRemarks;
+  String? Remarks;
 
   PunchOutSaveModel({
     this.id,
@@ -79,6 +80,7 @@ class PunchOutSaveModel {
     this.OnPinOutAddress,
     this.InDate,
     this.OnDutyRemarks,
+    this.Remarks,
   });
 
   Map<String, dynamic> toJson() => {
@@ -96,6 +98,7 @@ class PunchOutSaveModel {
     "OnPinOutAddress" : OnPinOutAddress,
     "InDate" : InDate,
     "OnDutyRemarks" : OnDutyRemarks,
+    "Remarks" : Remarks,
   };
 }
 

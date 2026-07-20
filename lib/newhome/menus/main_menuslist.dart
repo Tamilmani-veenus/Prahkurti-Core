@@ -477,6 +477,42 @@ class _MainManusListState extends State<MainManusList> {
                                                 ],
                                               ),
                                             )
+                                      :menuController.projPlanningList[index]
+                                          .menuName ==
+                                          "Work Order - Direct"
+                                          ? Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .primaryColor,
+                                          borderRadius:
+                                          const BorderRadius.all(
+                                            Radius.circular(10),
+                                          ),
+                                          // gradient: LinearGradient(
+                                          //   begin:
+                                          //       Alignment.topLeft,
+                                          //   end: Alignment
+                                          //       .bottomRight,
+                                          //   colors: [
+                                          //     purple,
+                                          //     blue,
+                                          //   ],
+                                          // ),
+                                        ),
+                                        child:  Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                          children: [
+                                            Icon(FontAwesomeIcons
+                                                .fileContract,color: Colors.white,
+                                              size: 20,)
+                                            // Image.asset('assets/images/ic_wallet.png',
+                                            //     width: 22),
+                                          ],
+                                        ),
+                                      )
                                           : SizedBox()
                                     ],
                                   ),
@@ -915,6 +951,36 @@ class _MainManusListState extends State<MainManusList> {
                                                                                 ],
                                                                               ),
                                                                             )
+                                      :menuController.dailyEntryList[index].menuName ==
+                                          "Man Power"
+                                          ? Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context).primaryColor,
+                                          borderRadius: const BorderRadius.all(
+                                            Radius.circular(10),
+                                          ),
+                                          // gradient: LinearGradient(
+                                          //   begin: Alignment.topLeft,
+                                          //   end: Alignment.bottomRight,
+                                          //   colors: [
+                                          //     purple,
+                                          //     blue,
+                                          //   ],
+                                          // ),
+                                        ),
+                                        child: const Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.diversity_3,
+                                              color: Colors.white,
+                                              size: 25,
+                                            )
+                                          ],
+                                        ),
+                                      )
                                                                           : SizedBox()
                                     ],
                                   ),

@@ -7,105 +7,137 @@ import 'package:get/get.dart';
 
 import '../utilities/requestconstant.dart';
 
-
 class ExpensesController extends GetxController {
   CompanyController companyController = Get.put(CompanyController());
   ProjectController projectController = Get.put(ProjectController());
   RxList reportExpensesList = [].obs;
   RxList supplierOSExpensesList = [].obs;
   RxList subcontractorOSExpensesList = [].obs;
+  RxString ReportType = "".obs;
+  final ReportTypeController = TextEditingController();
+  final expensesFromDateController = TextEditingController();
+  final expensesToDateController = TextEditingController();
 
 
 
-  Future getProjectExpensesList() async {
-    await ExpensesProvider.getProject_Expenses_reportList(
-            companyController.selectedCompanyId.value, companyController.selectedProjectId_CompanyWise.value).then((value) async {
-      if (value != null && value.length > 0) {
-        reportExpensesList.value = value;
-        totalAmtProject();
-        update();
-        return reportExpensesList.value;
+  Future getProjectExpensesList(String fromDate, String Todate) async {
+    reportExpensesList.value.clear();
+    prjttotalamt.value = 0.0;
+    final value = await ExpensesProvider.getProject_Expenses_reportList(companyController.selectedCompanyId.value,fromDate,Todate);
+    if (value != null) {
+      if(value.success == true){
+        if(value.result!.isNotEmpty){
+          reportExpensesList.value = value.result!;
+          prjtbalTotalAmt = value.grandTotal?.totalExpenseAmount ?? 0;
+
+          prjttotalamt.value = prjtbalTotalAmt.toDouble();
+
+          prjttotalamtcontroller.text = BaseUtitiles.amountFormat(
+            double.parse(prjtbalTotalAmt.toStringAsFixed(3)),
+          );
+          print("Total Amount :: $prjtbalTotalAmt");
+
+          update();
+          return reportExpensesList.value;
+        } else {
+          BaseUtitiles.showToast("No Record Found..");
+        }
       }
-      else{
-        BaseUtitiles.showToast("No Record Found..");
+      else {
+        BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
       }
-    });
+    }
+    else{
+      BaseUtitiles.showToast('Something went wrong..');
+    }
   }
+
+
 
   final prjttotalamtcontroller = TextEditingController();
 
-  RxInt prjttotalamt = 0.obs;
+  RxDouble prjttotalamt = 0.0.obs;
   num prjtbalTotalAmt = 0;
 
-  totalAmtProject(){
-    prjtbalTotalAmt = 0;
-    for (int i = 0; i < reportExpensesList.value.length; i++) {
-      prjtbalTotalAmt = prjtbalTotalAmt + reportExpensesList.value[i].totExpAmt;
+
+
+  Future getSupplierOS_ExpensesList(fromDate,toDate) async {
+    supplierOSExpensesList.value.clear();
+    totalamt.value = 0.0;
+    final value = await ExpensesProvider.getSupplierOs_Expenses_reportList(companyController.selectedCompanyId.value,fromDate,toDate);
+    if (value != null) {
+      if(value.success == true){
+        if(value.result!.isNotEmpty){
+          supplierOSExpensesList.value = value.result!;
+          balTotalAmt = value.grandTotal?["netTotalBalanceAmount"] ?? 0.0;
+
+          totalamt.value = balTotalAmt.toDouble();
+
+          totalamtcontroller.text = BaseUtitiles.amountFormat(
+            double.parse(balTotalAmt.toStringAsFixed(3)),
+          );
+          print("Total Amount :: $balTotalAmt");
+
+          update();
+          return supplierOSExpensesList.value;
+        } else {
+          BaseUtitiles.showToast("No Record Found..");
+        }
+      }
+      else {
+        BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
+      }
     }
-    prjttotalamt.value = prjtbalTotalAmt.toInt();
-    prjttotalamtcontroller.text = BaseUtitiles.amountFormat(double.parse(prjtbalTotalAmt.toStringAsFixed(3)));
-    print("Total Amount :: $prjtbalTotalAmt");
-    return prjttotalamtcontroller.text;
+    else{
+      BaseUtitiles.showToast('Something went wrong..');
+    }
   }
 
-  Future getSupplierOS_ExpensesList() async {
-    await ExpensesProvider.getSupplierOs_Expenses_reportList(companyController.selectedCompanyId.value).then((value) async {
-      if (value != null && value.length > 0) {
-        supplierOSExpensesList.value = value;
-        totalAmt();
-        update();
-        return supplierOSExpensesList.value;
-      }else{
-        BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
-      }
-    });
-  }
 
   final totalamtcontroller = TextEditingController();
 
-  RxInt totalamt = 0.obs;
+  RxDouble totalamt = 0.0.obs;
   num balTotalAmt = 0;
 
-  totalAmt(){
-    balTotalAmt = 0;
-    for (int i = 0; i < supplierOSExpensesList.value.length; i++) {
-      balTotalAmt = balTotalAmt + supplierOSExpensesList.value[i].balamt;
+
+
+  Future getSubcontractor_ExpensesList(String fromDate,String toDate) async {
+    subcontractorOSExpensesList.value.clear();
+    totalSubamt.value = 0.0;
+    final value = await ExpensesProvider.getSubcontractorOs_Expenses_reportList(companyController.selectedCompanyId.value,fromDate,toDate);
+    if (value != null) {
+      if(value.success == true){
+        if(value.result!.isNotEmpty){
+          subcontractorOSExpensesList.value = value.result!;
+          balTotalSubAmt = value.grandTotal?["netBalanceAmount"] ?? 0.0;
+
+          totalSubamt.value = balTotalSubAmt.toDouble();
+
+          totalamtSubcontcontroller.text = BaseUtitiles.amountFormat(
+            double.parse(balTotalSubAmt.toStringAsFixed(3)),
+          );
+          print("Total Amount :: $balTotalSubAmt");
+
+          update();
+          return subcontractorOSExpensesList.value;
+        } else {
+          BaseUtitiles.showToast("No Record Found..");
+        }
+      }
+      else {
+        BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
+      }
     }
-    totalamt.value = balTotalAmt.toInt();
-    totalamtcontroller.text = BaseUtitiles.amountFormat(double.parse(balTotalAmt.toStringAsFixed(3)));
-    print("Total Amount :: $balTotalAmt");
-    return totalamtcontroller.text;
+    else{
+      BaseUtitiles.showToast('Something went wrong..');
+    }
   }
 
-  // Future getSubcontractor_ExpensesList() async {
-  //   await ExpensesProvider.getSubcontractorOs_Expenses_reportList(
-  //       companyController.selectedCompanyId.value)
-  //       .then((value) async {
-  //     if (value != null && value.length > 0) {
-  //       subcontractorOSExpensesList.value = value;
-  //       totalSubAmt();
-  //       update();
-  //       return subcontractorOSExpensesList.value;
-  //     }else{
-  //       BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
-  //     }
-  //   });
-  // }
+
+
 
   final totalamtSubcontcontroller = TextEditingController();
 
-  RxInt totalSubamt = 0.obs;
+  RxDouble totalSubamt = 0.0.obs;
   num balTotalSubAmt = 0;
-
-  totalSubAmt(){
-    balTotalSubAmt = 0;
-    for (int i = 0; i < subcontractorOSExpensesList.value.length; i++) {
-      balTotalSubAmt = balTotalSubAmt + subcontractorOSExpensesList.value[i].balAmt;
-    }
-    totalSubamt.value = balTotalSubAmt.toInt();
-    totalamtSubcontcontroller.text = BaseUtitiles.amountFormat(double.parse(balTotalSubAmt.toStringAsFixed(3)));
-    print("Total Subcont Amount :: $balTotalSubAmt");
-    return totalamtSubcontcontroller.text;
-  }
-
 }

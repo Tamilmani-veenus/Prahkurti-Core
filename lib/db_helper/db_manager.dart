@@ -19,10 +19,10 @@ class DBManager {
     }
   }
 
-  insertData(table, data) async {
-    var connection =  _database;
-    return await connection?.insert(table, data);
-  }
+    insertData(table, data) async {
+      var connection =  _database;
+      return await connection?.insert(table, data);
+    }
 
   readData(table) async {
     var connection =  _database;
@@ -45,7 +45,10 @@ class DBManager {
     return await connection?.rawQuery("select id,catId,catName,wages,nos,netAmt,remarks,siteId,siteName,MrgOtHrs,MrgOtAmt,EvgOtHrs,EvgOtAmt,EvgExtrsAmt,Extra from subcontAttendanceDet group by siteId,catId");
   }
 
-
+  deleteDataByCatId(table, data) async {
+    var connection =  _database;
+    return await connection?.rawDelete('delete from $table where catId=?',[data['catId']]);
+  }
 
   deleteDataById(table, data) async {
     var connection =  _database;
@@ -67,6 +70,13 @@ class DBManager {
     return await connection?.rawDelete('delete from $table where materialId=?',[data['materialId']]);
   }
 
+  deleteApiRows(table) async {
+    var connection = _database;
+    return await connection?.rawDelete(
+      "DELETE FROM $table WHERE isApi = ?",
+      [1],
+    );
+  }
 
   orderBy(table, data)async{
     var connection =  _database;
@@ -132,8 +142,16 @@ class DBManager {
   }
 
   directBill_deleteDataById(table, data) async {
-    var connection =  _database;
-    return await connection?.rawDelete('delete from $table where id=?',[data['id']]);
+    var connection = _database;
+
+    int count = await connection!.rawDelete(
+      'DELETE FROM $table WHERE id=?',
+      [data['id']],
+    );
+
+    print("Deleted Rows = $count, ID = ${data['id']}");
+
+    return count;
   }
   deleteMaterialById(table, data) async {
     var connection =  _database;

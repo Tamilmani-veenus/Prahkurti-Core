@@ -36,9 +36,11 @@ class _Bill_Generation_direct_deductionState
     Future.delayed(duration, () async {
 
       if (billGenerationDirectController.saveButton.value == RequestConstant.RESUBMIT || billGenerationDirectController.saveButton.value == RequestConstant.VERIFY || billGenerationDirectController.saveButton.value == RequestConstant.APPROVAL) {
-        billGenerationDirectController.bill_editListApiDatas.forEach((element) {
+        for (var element in billGenerationDirectController.bill_editListApiDatas) {
           billGenerationDirectController.workid = element.id;
           billGenerationDirectController.billamount.text = element.billAmount.toString();
+          billGenerationDirectController.finalBillAmt.text = element.finalBillAmount.toString();
+          billGenerationDirectController.netBillAmt.text = element.netBillAmount.toString();
           billGenerationDirectController.Creditamt.text = element.creditAmount.toString();
           billGenerationDirectController.Debitamt.text = element.debitAmount.toString();
           billGenerationDirectController.Advded.text = element.advanceAmount.toString();
@@ -50,12 +52,9 @@ class _Bill_Generation_direct_deductionState
           billGenerationDirectController.tobededadv.text = element.actualAdvanceAmount.toString();
           billGenerationDirectController.to_be_dection_advance = element.advanceAmount.toString();
           billGenerationDirectController.netpayamt.text = element.netPayAmount.toString();
-
-        });
-        billGenerationDirectController.setBaseNetPay(
-            billGenerationDirectController.billamount.text);
+        }
+        await billGenerationDirectController.deductionPaymentCalculation();
       }
-      await billGenerationDirectController.DirectBill_CalculationList();
 
       if (billGenerationDirectController.saveButton.value == RequestConstant.SUBMIT) {
         billGenerationDirectController.workid = 0;
@@ -64,12 +63,13 @@ class _Bill_Generation_direct_deductionState
         billGenerationDirectController.Debitamt.text = "0.0";
         billGenerationDirectController.Advded.text = "0.0";
         billGenerationDirectController.Roundoff.text = "0.0";
+        billGenerationDirectController.netBillAmt.text = "0.0";
+        billGenerationDirectController.finalBillAmt.text = "0.0";
         billGenerationDirectController.tobededadv.text = billGenerationDirectController.to_be_dection_advance;
-        billGenerationDirectController.deductionPaymentCalculation();
         billGenerationDirectController.CreditRemarksController.text = "-";
         billGenerationDirectController.DebitRemarksController.text = "-";
         billGenerationDirectController.materialDebitRemarks.text = "-";
-
+        await billGenerationDirectController.deductionPaymentCalculation();
       }
     });
     super.initState();
@@ -138,7 +138,7 @@ class _Bill_Generation_direct_deductionState
                           decoration: const InputDecoration(
                             contentPadding: EdgeInsets.zero,
                             border: InputBorder.none,
-                            labelText: "Bill Amount",
+                            labelText: "Bill Amt",
                             labelStyle: TextStyle(
                               color: Colors.grey,
                               fontSize: RequestConstant.Lable_Font_SIZE,
@@ -183,7 +183,6 @@ class _Bill_Generation_direct_deductionState
                               child: TextFormField(
                                 autovalidateMode:
                                 AutovalidateMode.always,
-
                                 keyboardType: TextInputType.numberWithOptions(decimal: true),
                                 inputFormatters: [
                                   FilteringTextInputFormatter.allow(
@@ -197,7 +196,7 @@ class _Bill_Generation_direct_deductionState
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.zero,
                                   border: InputBorder.none,
-                                  labelText: "MaterialDebit Amount",
+                                  labelText: "Material Debit Amt",
                                   labelStyle: TextStyle(
                                     color: Colors.grey,
                                     fontSize: RequestConstant.Lable_Font_SIZE,
@@ -228,12 +227,6 @@ class _Bill_Generation_direct_deductionState
 
                                   // INVALID
                                   if (!success) {
-
-                                    BaseUtitiles.showToast(
-                                      "Net Bill Amount cannot be negative. "
-                                          "Please reduce the deductions "
-                                          "or add-less percentages.",
-                                    );
 
                                     // PREVENT onChanged LOOP
                                     billGenerationDirectController.isRestoring = true;
@@ -296,7 +289,7 @@ class _Bill_Generation_direct_deductionState
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.zero,
                                   border: InputBorder.none,
-                                  labelText: "Remarks",
+                                  labelText: "Material Debit Remarks",
                                   labelStyle: TextStyle(
                                     color: Colors.grey,
                                     fontSize: RequestConstant.Lable_Font_SIZE,
@@ -361,14 +354,13 @@ class _Bill_Generation_direct_deductionState
                                     RegExp(r'^\d+\.?\d{0,2}'),
                                   ),
                                 ],
-                                controller:
-                                    billGenerationDirectController.Creditamt,
+                                controller: billGenerationDirectController.Creditamt,
                                 cursorColor: Colors.black,
                                 style: const TextStyle(color: Colors.black),
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.zero,
                                   border: InputBorder.none,
-                                  labelText: "Credit-Amount",
+                                  labelText: "Credit Amt",
                                   labelStyle: TextStyle(
                                     color: Colors.grey,
                                     fontSize: RequestConstant.Lable_Font_SIZE,
@@ -399,12 +391,6 @@ class _Bill_Generation_direct_deductionState
 
                                   // INVALID
                                   if (!success) {
-
-                                    BaseUtitiles.showToast(
-                                      "Net Bill Amount cannot be negative. "
-                                          "Please reduce the deductions "
-                                          "or add-less percentages.",
-                                    );
 
                                     // PREVENT onChanged LOOP
                                     billGenerationDirectController.isRestoring = true;
@@ -463,7 +449,7 @@ class _Bill_Generation_direct_deductionState
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.zero,
                                   border: InputBorder.none,
-                                  labelText: "Remarks",
+                                  labelText: "Credit Remarks",
                                   labelStyle: TextStyle(
                                     color: Colors.grey,
                                     fontSize: RequestConstant.Lable_Font_SIZE,
@@ -535,7 +521,7 @@ class _Bill_Generation_direct_deductionState
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.zero,
                                   border: InputBorder.none,
-                                  labelText: "Debit-Amount",
+                                  labelText: "Debit Amt",
                                   labelStyle: TextStyle(
                                     color: Colors.grey,
                                     fontSize: RequestConstant.Lable_Font_SIZE,
@@ -565,13 +551,6 @@ class _Bill_Generation_direct_deductionState
 
                                   // INVALID
                                   if (!success) {
-
-                                    BaseUtitiles.showToast(
-                                      "Net Bill Amount cannot be negative. "
-                                          "Please reduce the deductions "
-                                          "or add-less percentages.",
-                                    );
-
                                     // PREVENT RE-TRIGGER
                                     billGenerationDirectController.isRestoring = true;
 
@@ -628,7 +607,7 @@ class _Bill_Generation_direct_deductionState
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.zero,
                                   border: InputBorder.none,
-                                  labelText: "Remarks",
+                                  labelText: "Debit Remarks",
                                   labelStyle: TextStyle(
                                       color: Colors.grey,
                                       fontSize: RequestConstant.Lable_Font_SIZE),
@@ -751,9 +730,6 @@ class _Bill_Generation_direct_deductionState
                                     await billGenerationDirectController.deductionPaymentCalculation();
 
                                     if (!success) {
-                                      BaseUtitiles.showToast(
-                                          "Advance deduction should not exceed net payable amount.");
-
                                       billGenerationDirectController.Advded.text = "0.0";
                                       billGenerationDirectController.Advded.selection = TextSelection.fromPosition(
                                         TextPosition(offset: billGenerationDirectController.Advded.text.length),
@@ -770,6 +746,150 @@ class _Bill_Generation_direct_deductionState
                                       }
                                     }
                                   },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          margin:
+                          const EdgeInsets.only(top: 10, left: 10, right: 10),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              side: const BorderSide(
+                                  color: Colors.white70, width: 1),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 3,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 3, left: 10, bottom: 5),
+                              child: TextFormField(
+                                readOnly: true,
+                                autovalidateMode:
+                                AutovalidateMode.always,
+                                onTap: () {
+                                  if (billGenerationDirectController
+                                      .netBillAmt.text !=
+                                      "" &&
+                                      billGenerationDirectController
+                                          .netBillAmt.text !=
+                                          "0" &&
+                                      billGenerationDirectController
+                                          .netBillAmt.text !=
+                                          "0.0") {
+                                    return;
+                                  } else {
+                                    setState(() {
+                                      billGenerationDirectController
+                                          .netBillAmt.text = "";
+                                      billGenerationDirectController
+                                          .deductionPaymentCalculation();
+                                    });
+                                  }
+                                },
+                                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
+                                controller:
+                                billGenerationDirectController.netBillAmt,
+                                cursorColor: Colors.black,
+                                style: const TextStyle(color: Colors.black),
+                                decoration:  InputDecoration(
+                                  contentPadding: EdgeInsets.zero,
+                                  border: InputBorder.none,
+                                  labelText: "Net Bill Amt",
+                                  labelStyle: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: RequestConstant.Lable_Font_SIZE,
+                                  ),
+                                  prefixIconConstraints:
+                                  BoxConstraints(minWidth: 0, minHeight: 0),
+                                  prefixIcon: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 8),
+                                    child:Icon( Icons.attach_money, color: Theme.of(context).primaryColor),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          margin:
+                          const EdgeInsets.only(top: 10, left: 10, right: 10),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              side: const BorderSide(
+                                  color: Colors.white70, width: 1),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 3,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 3, left: 10, bottom: 5),
+                              child: TextFormField(
+                                readOnly: true,
+                                autovalidateMode:
+                                AutovalidateMode.always,
+                                onTap: () {
+                                  if (billGenerationDirectController
+                                      .finalBillAmt.text !=
+                                      "" &&
+                                      billGenerationDirectController
+                                          .finalBillAmt.text !=
+                                          "0" &&
+                                      billGenerationDirectController
+                                          .finalBillAmt.text !=
+                                          "0.0") {
+                                    return;
+                                  } else {
+                                    setState(() {
+                                      billGenerationDirectController
+                                          .finalBillAmt.text = "";
+                                      billGenerationDirectController
+                                          .deductionPaymentCalculation();
+                                    });
+                                  }
+                                },
+                                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
+                                controller:
+                                billGenerationDirectController.finalBillAmt,
+                                cursorColor: Colors.black,
+                                style: const TextStyle(color: Colors.black),
+                                decoration:  InputDecoration(
+                                  contentPadding: EdgeInsets.zero,
+                                  border: InputBorder.none,
+                                  labelText: "Final Bill Amt",
+                                  labelStyle: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: RequestConstant.Lable_Font_SIZE,
+                                  ),
+                                  prefixIconConstraints:
+                                  BoxConstraints(minWidth: 0, minHeight: 0),
+                                  prefixIcon: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 8),
+                                    child:Icon( Icons.paid, color: Theme.of(context).primaryColor),
+                                  ),
                                 ),
                               ),
                             ),
@@ -818,10 +938,10 @@ class _Bill_Generation_direct_deductionState
                                     });
                                   }
                                 },
-                                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                keyboardType: TextInputType.number,
                                 inputFormatters: [
                                   FilteringTextInputFormatter.allow(
-                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                    RegExp(r'^-?\d*\.?\d{0,2}$'),
                                   ),
                                 ],
                                 controller:
@@ -845,7 +965,6 @@ class _Bill_Generation_direct_deductionState
                                   ),
                                 ),
                                 onChanged: (value) async {
-
                                   // PREVENT LOOP
                                   if (billGenerationDirectController.isRestoring) {
                                     return;
@@ -862,12 +981,6 @@ class _Bill_Generation_direct_deductionState
 
                                   // INVALID
                                   if (!success) {
-
-                                    BaseUtitiles.showToast(
-                                      "Net Bill Amount cannot be negative. "
-                                          "Please reduce the deductions "
-                                          "or add-less percentages.",
-                                    );
 
                                     // PREVENT onChanged LOOP
                                     billGenerationDirectController.isRestoring = true;
@@ -1083,8 +1196,6 @@ class _Bill_Generation_direct_deductionState
                                         item.addLessId!,
 
                                         percent,
-
-                                        billGenerationDirectController.baseNetPayAmt,
                                       );
 
                                       // RESTORE ONLY CURRENT FIELD
@@ -1342,9 +1453,7 @@ class _Bill_Generation_direct_deductionState
       builder: (context) => AlertDialog(
         title: const Text('Alert!'),
         content: Text(
-          billGenerationDirectController.saveButton.value == RequestConstant.RESUBMIT
-              ? 'Are you sure to Re-Submit?'
-              : 'Are you sure to Submit?',
+               'Are you sure to ${billGenerationDirectController.saveButton.value}?',
         ),
         actions: [
           Container(
@@ -1503,6 +1612,8 @@ class _Bill_Generation_direct_deductionState
                               billGenerationDirectController.tobededadv.text;
                           billGenerationDirectController.Roundoff.text = "0";
                           billGenerationDirectController.netpayamt.text = "0.0";
+                          billGenerationDirectController.netBillAmt.text = "0.0";
+                          billGenerationDirectController.finalBillAmt.text = "0.0";
                           billGenerationDirectController.tobededadv.text =
                               billGenerationDirectController
                                   .to_be_dection_advance;

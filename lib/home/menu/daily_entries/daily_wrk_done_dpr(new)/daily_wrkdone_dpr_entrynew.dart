@@ -15,6 +15,7 @@ import '../../../../controller/projectcontroller.dart';
 import '../../../../controller/sitecontroller.dart';
 import '../../../../controller/subcontcontroller.dart';
 import '../../../../home/menu/daily_entries/daily_wrk_done_dpr/type_subcont_alert.dart';
+import '../../../../utilities/apiconstant.dart';
 import '../../../../utilities/baseutitiles.dart';
 import '../../../../utilities/image_view.dart';
 import '../../../../utilities/requestconstant.dart';
@@ -646,19 +647,22 @@ class _DailyWork_done_DPR_New_EntryState extends State<DailyWork_done_DPR_Entry_
                                   primary: Setmybackground,
                                 ),
                                 onPressed: () async {
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return const ImageGalleryPopup_Alert(imageUrl: "DPR NEW");
-                                      });
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //       builder: (_) => CameraCapturePage(
-                                  //         fromScreen:
-                                  //         "DPR-NEW",
-                                  //       )),
-                                  // );
+                                  if (!AppClient.isPrahkurti) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => CameraCapturePage(
+                                            fromScreen:
+                                            "DPR-NEW",
+                                          )),
+                                    );
+                                  }else {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return const ImageGalleryPopup_Alert(imageUrl: "DPR NEW");
+                                        });
+                                  }
                                 },
                                 child: Row(
                                   mainAxisAlignment:

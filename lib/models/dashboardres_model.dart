@@ -4,11 +4,35 @@
 
 import 'dart:convert';
 
-List<DashboardResModel> dashboardResModelFromJson(String str) => List<DashboardResModel>.from(json.decode(str).map((x) => DashboardResModel.fromJson(x)));
+DashboardResModel dashboardResModelFromJson(String str) => DashboardResModel.fromJson(json.decode(str));
 
-String dashboardResModelToJson(List<DashboardResModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String dashboardResModelToJson(DashboardResModel data) => json.encode(data.toJson());
 
 class DashboardResModel {
+  bool? success;
+  Result? result;
+  String? message;
+
+  DashboardResModel({
+    this.success,
+    this.result,
+    this.message,
+  });
+
+  factory DashboardResModel.fromJson(Map<String, dynamic> json) => DashboardResModel(
+    success: json["success"],
+    result: Result.fromJson(json["result"]),
+    message: json["message"]
+  );
+
+  Map<String, dynamic> toJson() => {
+    "success": success,
+    "result": result!.toJson(),
+    "message": message
+  };
+}
+
+class Result {
   int? totalProjects;
   double? customerAmt;
   double? incomeAmt;
@@ -18,7 +42,7 @@ class DashboardResModel {
   double? supplierAmt;
   double? subContAmt;
 
-  DashboardResModel({
+  Result({
     this.totalProjects,
     this.customerAmt,
     this.incomeAmt,
@@ -29,14 +53,14 @@ class DashboardResModel {
     this.subContAmt,
   });
 
-  factory DashboardResModel.fromJson(Map<String, dynamic> json) => DashboardResModel(
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
     totalProjects: json["TotalProjects"],
-    customerAmt: json["CustomerAmt"].toDouble(),
-    incomeAmt: json["IncomeAmt"].toDouble(),
+    customerAmt: json["CustomerAmt"],
+    incomeAmt: json["IncomeAmt"],
     expensesAmt: json["ExpensesAmt"],
     cashinHand: json["CashinHand"].toDouble(),
-    bankAmt: json["BankAmt"].toDouble(),
-    supplierAmt: json["SupplierAmt"],
+    bankAmt: json["BankAmt"],
+    supplierAmt: json["SupplierAmt"].toDouble(),
     subContAmt: json["SubContAmt"],
   );
 

@@ -1724,70 +1724,65 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
   Future SubmitAlert(BuildContext context) async {
     return await showDialog(
       context: context,
-      builder: (context) => WillPopScope(
-        onWillPop: () async {
-          return requisitionSlipController.willPop;
-        },
-        child: AlertDialog(
-          title: const Text('Alert!'),
-          content: Text(
-              'Are you sure to ${requisitionSlipController.saveButton.value}?'),
-          actions: [
-            Container(
-              margin: const EdgeInsets.only(left: 20, right: 20),
-              child: IntrinsicHeight(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text(
-                          "Cancel",
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontWeight: FontWeight.bold,
-                            fontSize: RequestConstant.Lable_Font_SIZE,
-                          ),
+      builder: (context) => AlertDialog(
+        title: const Text('Alert!'),
+        content: Text(
+            'Are you sure to ${requisitionSlipController.saveButton.value}?'),
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(left: 20, right: 20),
+            child: IntrinsicHeight(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        "Cancel",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                          fontSize: RequestConstant.Lable_Font_SIZE,
                         ),
                       ),
                     ),
-                    VerticalDivider(
-                      color: Colors.grey.shade400,
-                      width: 5,
-                      thickness: 2,
-                      indent: 15,
-                      endIndent: 15,
-                    ),
-                    Expanded(
-                      child: TextButton(
-                        onPressed: () async {
-                             if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
-                             await requisitionSlipController.SaveButtonStaffReqScreen(
-                               context,
-                               requisitionSlipController.reqId
-                             );
-                           }
-                        },
-                        child: Text(
-                          requisitionSlipController.saveButton.value,
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: RequestConstant.Lable_Font_SIZE,
-                          ),
+                  ),
+                  VerticalDivider(
+                    color: Colors.grey.shade400,
+                    width: 5,
+                    thickness: 2,
+                    indent: 15,
+                    endIndent: 15,
+                  ),
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () async {
+                           if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
+                           await requisitionSlipController.SaveButtonStaffReqScreen(
+                             context,
+                             requisitionSlipController.reqId
+                           );
+                         }
+                      },
+                      child: Text(
+                        requisitionSlipController.saveButton.value,
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: RequestConstant.Lable_Font_SIZE,
                         ),
                       ),
+                    ),
 
-                    )
-                  ],
-                ),
+                  )
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

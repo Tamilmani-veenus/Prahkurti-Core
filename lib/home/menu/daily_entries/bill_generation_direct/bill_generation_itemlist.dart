@@ -80,8 +80,8 @@ class _Bill_Generation_ItemlistState extends State<Bill_Generation_Itemlist> {
                       child: TextFormField(
                         controller: billGenerationDirectController.itemDescController,
                         cursorColor: Colors.black,
-                        enabled: billGenerationDirectController
-                            .ItemGetTableListdata.value.isEmpty,
+                        // enabled: billGenerationDirectController
+                        //     .ItemGetTableListdata.value.isEmpty,
                         style: const TextStyle(color: Colors.black),
                         decoration: const InputDecoration(
                           contentPadding: EdgeInsets.zero,
@@ -126,12 +126,12 @@ class _Bill_Generation_ItemlistState extends State<Bill_Generation_Itemlist> {
                               padding: const EdgeInsets.only(
                                   top: 3, left: 10, bottom: 5),
                               child: TextFormField(
+                                textCapitalization: TextCapitalization.characters,
                                 controller: billGenerationDirectController
                                     .itemUnitController,
                                 cursorColor: Colors.black,
-                                enabled: billGenerationDirectController
-                                    .ItemGetTableListdata.value.isEmpty,
-
+                                // enabled: billGenerationDirectController
+                                //     .ItemGetTableListdata.value.isEmpty,
                                 style: const TextStyle(color: Colors.black),
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.zero,
@@ -153,6 +153,15 @@ class _Bill_Generation_ItemlistState extends State<Bill_Generation_Itemlist> {
                                     return '\u26A0 Enter user name';
                                   }
                                   return null;
+                                },
+                                onChanged: (value) {
+                                  billGenerationDirectController.itemUnitController.value =
+                                      TextEditingValue(
+                                        text: value.toUpperCase(),
+                                        selection: TextSelection.collapsed(
+                                          offset: value.length,
+                                        ),
+                                      );
                                 },
                               ),
                             ),
@@ -182,8 +191,8 @@ class _Bill_Generation_ItemlistState extends State<Bill_Generation_Itemlist> {
                                 controller: billGenerationDirectController
                                     .itemQuantityController,
                                 cursorColor: Colors.black,
-                                enabled: billGenerationDirectController
-                                    .ItemGetTableListdata.value.isEmpty,
+                                // enabled: billGenerationDirectController
+                                //     .ItemGetTableListdata.value.isEmpty,
                                 style: const TextStyle(color: Colors.black),
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.zero,
@@ -233,8 +242,8 @@ class _Bill_Generation_ItemlistState extends State<Bill_Generation_Itemlist> {
                                 ],
                                 controller: billGenerationDirectController
                                     .itemRateController,
-                                enabled: billGenerationDirectController
-                                    .ItemGetTableListdata.value.isEmpty,
+                                // enabled: billGenerationDirectController
+                                //     .ItemGetTableListdata.value.isEmpty,
                                 cursorColor: Colors.black,
                                 style: const TextStyle(color: Colors.black),
                                 decoration: const InputDecoration(
@@ -377,7 +386,7 @@ class _Bill_Generation_ItemlistState extends State<Bill_Generation_Itemlist> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const Bill_Generation_direct_deduction()));
+                              builder: (context) =>  Bill_Generation_direct_deduction()));
                     });
                   },
                 ),
@@ -557,10 +566,7 @@ class _Bill_Generation_ItemlistState extends State<Bill_Generation_Itemlist> {
                                   if(billGenerationDirectController.itemlist_ListQtyController[index].text != "" && billGenerationDirectController.itemlist_ListQtyController[index].text != "0" && billGenerationDirectController.itemlist_ListQtyController[index].text != "0.0"){
                                     return;
                                   } else {
-                                    setState(() {
                                       billGenerationDirectController.itemlist_ListQtyController[index].text = "";
-                                      billGenerationDirectController.itemListclickChanged();
-                                    });
                                   }
                                 },
                                 controller: billGenerationDirectController.itemlist_ListQtyController[index],
@@ -584,11 +590,9 @@ class _Bill_Generation_ItemlistState extends State<Bill_Generation_Itemlist> {
                                           color: Theme.of(context).primaryColor),
                                       borderRadius: const BorderRadius.all(Radius.circular(10))),
                                 ),
-                                onChanged: (value) {
-                                  setState(() {
-                                    billGenerationDirectController.itemListclickChanged();
-                                  });
-                                }),
+                              onChanged: (value) async {
+                                await billGenerationDirectController.itemListclickChanged();
+                              }),
                           )),
                     ],
                   ),
@@ -613,10 +617,7 @@ class _Bill_Generation_ItemlistState extends State<Bill_Generation_Itemlist> {
                                   if(billGenerationDirectController.itemlist_ListRateController[index].text != "" && billGenerationDirectController.itemlist_ListRateController[index].text != "0" && billGenerationDirectController.itemlist_ListRateController[index].text != "0.0"){
                                     return;
                                   } else {
-                                    setState(() {
                                       billGenerationDirectController.itemlist_ListRateController[index].text = "";
-                                      billGenerationDirectController.itemListclickChanged();
-                                    });
                                   }
                                 },
                                 controller: billGenerationDirectController.itemlist_ListRateController[index],
@@ -638,11 +639,9 @@ class _Bill_Generation_ItemlistState extends State<Bill_Generation_Itemlist> {
                                       borderSide: BorderSide(color: Theme.of(context).primaryColor),
                                       borderRadius: const BorderRadius.all(Radius.circular(10))),
                                 ),
-                                onChanged: (value) {
-                                  setState(() {
-                                    billGenerationDirectController.itemListclickChanged();
-                                  });
-                                }),
+                              onChanged: (value) async {
+                                await billGenerationDirectController.itemListclickChanged();
+                              }),
                           )),
                       const Expanded(
                         flex: 6,

@@ -75,15 +75,17 @@ class ProjectController extends GetxController{
 
   //-----------
 
-  Future getProjectListAll(BuildContext context,int check) async {
+  Future getProjectListAll(BuildContext context) async {
     getdropDownvalueAll.value.clear();
     final value = await CommonProvider.getprojectAll();
     if (value != null) {
       if(value.success == true) {
-        getdropDownvalueAll.value = value.result!;
-        getdropDownvalueAll.forEach((element) {
-          return ProjectDropdownNameAll.value.add(element.project);
-        });
+        if( value.result!.isNotEmpty) {
+          getdropDownvalueAll.value = value.result!;
+        }
+        else{
+          BaseUtitiles.showToast("No Data Found");
+        }
       }
       else {
         BaseUtitiles.showToast(value.message ?? 'Something went wrong..');

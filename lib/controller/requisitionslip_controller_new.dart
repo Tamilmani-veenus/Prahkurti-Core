@@ -58,7 +58,6 @@ class  RequisitionSlipControllerNew extends GetxController{
   StaffController staffController = Get.put(StaffController());
 
   var type = 'L'.obs;
-  bool willPop = false;
 
   int reqId=0;
   RxString saveButton=RequestConstant.SUBMIT.obs;

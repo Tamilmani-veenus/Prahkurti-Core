@@ -133,10 +133,10 @@ class _RadiusViewState extends State<RadiusView> {
                                 fontSize: 10.0,
                               ),
                               keyboardType: TextInputType.number,
-                              hintText: "Enter a radius",
+                              // hintText: "Enter a radius",
                               validator: (radius) {
                                 if (radius == null || radius.isEmpty) {
-                                  return 'Enter a radius';
+                                  return '';
                                 } else if (int.tryParse(radius)! < 100) {
                                   return 'Radius must be at least 100';
                                 } else {
@@ -182,11 +182,6 @@ class _RadiusViewState extends State<RadiusView> {
                                 }
                                 null;
                               }
-                            } else {
-                              if (kDebugMode) {
-                                print("Hello Three");
-                              }
-                              null;
                             }
                           },
                         ),

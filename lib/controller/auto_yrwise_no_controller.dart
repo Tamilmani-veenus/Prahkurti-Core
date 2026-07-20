@@ -26,6 +26,8 @@ class AutoYearWiseNoController extends GetxController {
   RxString BOQRevised_autoYrsWise = "".obs;
   RxString RequisitionSlip_autoYrsWise = "".obs;
   RxString MRNIndentPreIndent_autoYrsWise = "".obs;
+  RxString ManPower_autoYrsWise = "".obs;
+  RxString WorkOrdDirect_autoYrWise = "".obs;
 
 
   Future AutoYearWiseNo(Url) async {
@@ -115,6 +117,14 @@ class AutoYearWiseNoController extends GetxController {
         else if (Url == "REQ SLIP") {
             RequisitionSlip_autoYrsWise.value = value["entryAutoNo"];
             return RequisitionSlip_autoYrsWise.value;
+        }
+        else if (Url == "MANPOWER") {
+          ManPower_autoYrsWise.value = value["entryAutoNo"];
+          return ManPower_autoYrsWise.value;
+        }
+        else if (Url == "WORK ORDER DIRECT") {
+          WorkOrdDirect_autoYrWise.value = value["entryAutoNo"];
+          return WorkOrdDirect_autoYrWise.value;
         }
       }
         else {

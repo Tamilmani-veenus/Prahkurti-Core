@@ -55,6 +55,8 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
         nmrWklyController.autoYearWiseNoController.text=autoYearWiseNoController.NMR_autoYrsWise.value;
       }
 
+      await nmrWklyController.DirectBill_CalculationList();
+
       if(nmrWklyController.saveButton.value == RequestConstant.RESUBMIT || nmrWklyController.saveButton.value == RequestConstant.VERIFY || nmrWklyController.saveButton.value == RequestConstant.APPROVAL){
         nmrWklyController.EditListSaveDatas.value.forEach((element) {
           siteController.Sitename.text=element.siteName.toString();

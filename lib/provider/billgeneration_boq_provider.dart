@@ -24,9 +24,9 @@ class BillGenerateBoqProvider {
     }
   }
 
-  static Future<BillDirectDetCalculations?> getBillDirectCalculation_List() async {
+  static Future<BillDirectDetCalculations?> getBillDirectCalculation_List({pId,siteId,subId,wrkOrdId,type}) async {
     try{
-      final value = await ApiManager.getAPICall(ApiConstant.GET_DIRECTBILL_CALCULATION_LIST);
+      final value = await ApiManager.getAPICall(type=="WorkOrder"?"${ApiConstant.GET_WRKORDER_ADD_LESS}?workOrderId=$wrkOrdId&projectId=$pId&siteId=$siteId&subcontractorId=$subId":ApiConstant.GET_DIRECTBILL_CALCULATION_LIST);
       print("AdvEntryList:" + value);
       return billDirectDetCalculationsFromJson(value);
     }

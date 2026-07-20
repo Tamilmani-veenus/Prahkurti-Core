@@ -162,7 +162,7 @@ class DailyWrkDone_DPR_Controller extends GetxController {
     delete_dpr_itemlist_Table();
     dpr_itemview_DbList.value.clear();
     TypeSubcontractorname.text=RequestConstant.SELECT;
-    entryTypeController.text="TYPE";
+    entryTypeController.text="";
     dpr_preparedbyController.text=loginController.UserName();
     dpr_EditListApiValue.value.clear();
     dpr_dateController.text=BaseUtitiles.initiateCurrentDateFormat();
@@ -511,9 +511,6 @@ class DailyWrkDone_DPR_Controller extends GetxController {
       element.subContractDailyWorkDets.forEach((val) {
         dprItemListTableModel = new DprItemListTableModel();
         dprItemListTableModel.reqDetId = val.id!;
-        print("SSSSSSSS...${dprItemListTableModel.reqDetId}");
-        print("SSSSSSSS...${val.id}");
-
         dprItemListTableModel.headItemId = val.headItemId!;
         dprItemListTableModel.subItemId = val.subItemId!;
         dprItemListTableModel.level3ItemId = val.level3ItemId!;
@@ -542,9 +539,6 @@ class DailyWrkDone_DPR_Controller extends GetxController {
     dprItem.forEach((user) {
       var dprItemListModel = DprItemListTableModel();
       dprItemListModel.reqDetId = user['reqDetId'];
-      print("EEEEEEE...${dprItemListModel.reqDetId}");
-      print("EEEEEEE...${user['reqDetId']}");
-
       dprItemListModel.headItemId = user['headItemId'];
       dprItemListModel.subItemId = user['subItemId'];
       dprItemListModel.level3ItemId = user['level3ItemId'];

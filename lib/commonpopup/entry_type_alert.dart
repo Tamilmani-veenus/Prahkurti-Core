@@ -26,8 +26,8 @@ class _EntryTypeAlertState extends State<EntryTypeAlert> {
   void initState() {
     // TODO: implement initState
     list = widget.from == "BILL BOQ"
-        ? ["BOQ", "DIRECT"]
-        : ["NMR","BOQ"];
+        ? ["BOQ", "DIRECT"] : widget.from == "DPR"
+        ? ["NMR","RATE"] : ["NMR","BOQ"];
     super.initState();
   }
 
@@ -67,10 +67,12 @@ class _EntryTypeAlertState extends State<EntryTypeAlert> {
                             if (selectedType == "NMR") {
                               dailyWrkDone_DPR_Controller.entryType = "N";
                             } else if (selectedType == "BOQ") {
-                              dailyWrkDone_DPR_Controller.entryType = "B";
                               billGenerationBoqController.entryType.value = "B";
                             } else if (selectedType == "DIRECT") {
                               billGenerationBoqController.entryType.value = "D";
+                            }
+                            else if (selectedType == "RATE") {
+                              dailyWrkDone_DPR_Controller.entryType = "R";
                             }
 
                             Navigator.pop(context);

@@ -505,7 +505,7 @@ class InwardPending_Controller extends GetxController
     for (int i = 0; i < ItemGetTableListdata.length; i++) {
       final element = ItemGetTableListdata[i];
 
-      if (element.inwQty > 0) {
+      // if (element.inwQty > 0) {
         var list = InwardDet(
             id: saveButton.value == RequestConstant.RESUBMIT
                 ? (i < editListApiDatas.length
@@ -532,7 +532,7 @@ class InwardPending_Controller extends GetxController
                 : "N".toString().trim());
 
         getInwardDetList.add(list);
-      }
+      // }
     }
 
     return getInwardDetList;
@@ -600,15 +600,21 @@ class InwardPending_Controller extends GetxController
       if (value != null) {
         if (value.success == true) {
           editListApiDatas.value = value.result!;
-          saveButton.value = RequestConstant.RESUBMIT;
-          EditTable_SaveTable();
-          getItemlistTablesDatas();
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Inward_entry(
-                        heading: MenuName,
-                      )));
+          if(value.result!.isNotEmpty) {
+            saveButton.value = RequestConstant.RESUBMIT;
+            EditTable_SaveTable();
+            getItemlistTablesDatas();
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        Inward_entry(
+                          heading: MenuName,
+                        )));
+          }
+          else {
+            BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
+          }
         } else {
           BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
         }
