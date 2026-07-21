@@ -129,7 +129,7 @@ class SubcontractorController extends GetxController {
 
   Future getInvoiceNoList(int pid,  int subid) async {
     getInvoiceNoValue.value.clear();
-    final value = await await CommonProvider.getInvoiceNoList(pid,subid);
+    final value = await CommonProvider.getInvoiceNoList(pid,subid);
     if (value != null) {
       if(value.success==true){
         if(value.result!.isNotEmpty){

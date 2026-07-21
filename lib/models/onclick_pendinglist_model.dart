@@ -46,6 +46,7 @@ class OnClickListResult {
   String? requisitionNo;
   String? advanceReqVoucherDate;
   String? advanceReqVoucherNo;
+  String? workOrderNo;
   String? NMRLabourAttendanceNo;
   String? requisitionTypeValue;
   String? reqOrdNo;
@@ -98,6 +99,7 @@ class OnClickListResult {
   int? preparedByid;
   double? netAmt;
   double? netAmount;
+  double? netamount;
   String? frProjectName;
   int? toProjectId;
   String? toProjectName;
@@ -229,6 +231,9 @@ class OnClickListResult {
   String? outNAPRemarks;
   String? designationName;
   String? onDutyRemarks;
+  String? inStatus;
+  String? outStatus;
+  String? rentalWrkType;
 
   OnClickListResult({
     this.id,
@@ -240,6 +245,7 @@ class OnClickListResult {
     this.requisitionNo,
     this.advanceReqVoucherDate,
     this.advanceReqVoucherNo,
+    this.workOrderNo,
     this.NMRLabourAttendanceNo,
     this.requisitionTypeValue,
     this.NMRLabourAttendanceDate1,
@@ -293,6 +299,7 @@ class OnClickListResult {
     this.preparedName,
     this.netAmt,
     this.netAmount,
+    this.netamount,
     this.frProjectName,
     this.toProjectId,
     this.toProjectName,
@@ -424,6 +431,9 @@ class OnClickListResult {
     this.outNAPRemarks,
     this.designationName,
     this.onDutyRemarks,
+    this.inStatus,
+    this.outStatus,
+    this.rentalWrkType,
   });
 
   factory OnClickListResult.fromJson(Map<String, dynamic> json) => OnClickListResult(
@@ -437,6 +447,7 @@ class OnClickListResult {
     requisitionNo: json["requisitionNo"],
     advanceReqVoucherDate: json["advanceReqVoucherDate"],
     advanceReqVoucherNo: json["advanceReqVoucherNo"],
+    workOrderNo: json["workOrderNo"],
     NMRLabourAttendanceNo: json["NMRLabourAttendanceNo"],
     requisitionTypeValue: json["requisitionTypeValue"],
     NMRLabourAttendanceDate1: json["NMRLabourAttendanceDate1"],
@@ -491,6 +502,7 @@ class OnClickListResult {
     preparedByBOQ: json["preparedBy"],
     netAmt: json["NetAmt"],
     netAmount: json["NetAmount"],
+    netamount: json["netAmount"],
     frProjectName: json["FrProjectName"],
     toProjectId: json["ToProjectId"],
     toProjectName: json["ToProjectName"],
@@ -619,6 +631,9 @@ class OnClickListResult {
     outNAPRemarks: json["OutNAPRemarks"],
     onDutyRemarks: json["OnDutyRemarks"],
     designationName: json["DesignationName"],
+    inStatus: json["InStatus"],
+    outStatus: json["OutStatus"],
+    rentalWrkType: json["type"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -631,6 +646,7 @@ class OnClickListResult {
     "requisitionNo": requisitionNo,
     "advanceReqVoucherDate": advanceReqVoucherDate,
     "advanceReqVoucherNo": advanceReqVoucherNo,
+    "workOrderNo": workOrderNo,
     "NMRLabourAttendanceNo": NMRLabourAttendanceNo,
     "requisitionTypeValue": requisitionTypeValue,
     "NMRLabourAttendanceDate1": NMRLabourAttendanceDate1,
@@ -691,6 +707,7 @@ class OnClickListResult {
     "preparedBy": preparedByBOQ,
     "NetAmt": netAmt,
     "NetAmount":netAmount,
+    "netAmount": netamount,
     "FrProjectName": frProjectName,
     "ToProjectId": toProjectId,
     "ToProjectName": toProjectName,
@@ -815,5 +832,6 @@ class OnClickListResult {
     "OutNAPRemarks": outNAPRemarks,
     "OnDutyRemarks": onDutyRemarks,
     "DesignationName": designationName,
+    "type": rentalWrkType
   };
 }

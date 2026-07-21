@@ -29,7 +29,8 @@ class NmrSaveRequest {
   double? actualAdvanceAmount;
   double? roundOff;
   double? netPayAmount;
-  double? balanceAmount;
+  double? netBillAmount;
+  // double? balanceAmount;
   String? remarks;
   int? createdBy;
   String? createdDt;
@@ -59,7 +60,8 @@ class NmrSaveRequest {
     this.actualAdvanceAmount,
     this.roundOff,
     this.netPayAmount,
-    this.balanceAmount,
+    this.netBillAmount,
+    // this.balanceAmount,
     this.remarks,
     this.createdBy,
     this.createdDt,
@@ -90,7 +92,8 @@ class NmrSaveRequest {
     actualAdvanceAmount: json["actualAdvanceAmount"],
     roundOff: json["roundOff"],
     netPayAmount: json["netPayAmount"],
-    balanceAmount: json["balanceAmount"],
+    netBillAmount: json["netBillAmount"],
+    // balanceAmount: json["balanceAmount"],
     remarks: json["remarks"],
     createdBy: json["createdBy"],
     createdDt: json["createdDt"],
@@ -121,7 +124,8 @@ class NmrSaveRequest {
     "actualAdvanceAmount": actualAdvanceAmount,
     "roundOff": roundOff,
     "netPayAmount": netPayAmount,
-    "balanceAmount": balanceAmount,
+    "netBillAmount": netBillAmount,
+    // "balanceAmount": balanceAmount,
     "remarks": remarks,
     "createdBy": createdBy,
     "createdDt": createdDt,

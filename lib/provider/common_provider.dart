@@ -44,7 +44,7 @@ class CommonProvider {
   static Future<ProjectDropdownListResponse?> getprojectAll() async {
     try {
       final response =
-          await ApiManager.getAPICall(ApiConstant.GETPROJECTDROPDOWNLISTALL);
+          await ApiManager.getAPICall(ApiConstant.GETREPORTPROJECTDROPDOWNLIST);
       print("response...${response}");
       return projectDropdownListResponseFromJson(response);
     } catch (error) {
@@ -55,9 +55,7 @@ class CommonProvider {
 
   static Future<ProjectDropdownListResponse?> getReportproject(type) async {
     try {
-      final response = await ApiManager.getAPICall(type == "attendance Rpt"
-          ? ApiConstant.GETPROJECTDROPDOWNLIST
-          : ApiConstant.GETREPORTPROJECTDROPDOWNLIST);
+      final response = await ApiManager.getAPICall(ApiConstant.GETREPORTPROJECTDROPDOWNLIST);
       print("response...${response}");
       return projectDropdownListResponseFromJson(response);
     } catch (error) {
@@ -186,38 +184,49 @@ class CommonProvider {
     }
   }
 
-
-  static Future<List> getCompany(int userId, int i) async {
-    List responseData = [];
-
-    if (i == 0) {
-      await ApiManager.getAPICall(
-              "ApiConstant.GETCOMPANYDROPDOWNLIST" + "?UserId=$userId")
-          .then((value) {
-        responseData = companyDropdownListResponseFromJson(value);
-        if (responseData != null && responseData.length > 0) {
-          return responseData;
-        }
-      }, onError: (error) {
-        print(error);
-        print("Error == $error");
-        BaseUtitiles.showToast('Something went wrong..');
-      });
-    } else {
-      await ApiManager.getAPICall("ApiConstant.GETCOMPANYALL_DROPDOWNLIST").then(
-          (value) {
-        responseData = companyDropdownListResponseFromJson(value);
-        if (responseData != null && responseData.length > 0) {
-          return responseData;
-        }
-      }, onError: (error) {
-        print(error);
-        print("Error == $error");
-        BaseUtitiles.showToast('Something went wrong..');
-      });
+  static Future<CompanyDropdownListResponse?> getCompany() async {
+    try {
+      final response =
+      await ApiManager.getAPICall(ApiConstant.GETCOMPANYDROPDOWNLIST);
+      print("response...${response}");
+      return companyDropdownListResponseFromJson(response);
+    } catch (error) {
+      print("Error == $error");
+      return null;
     }
-    return responseData;
   }
+
+  // static Future<List> getCompany(int userId, int i) async {
+  //   List responseData = [];
+  //
+  //   if (i == 0) {
+  //     await ApiManager.getAPICall(
+  //             "ApiConstant.GETCOMPANYDROPDOWNLIST" + "?UserId=$userId")
+  //         .then((value) {
+  //       responseData = companyDropdownListResponseFromJson(value);
+  //       if (responseData != null && responseData.length > 0) {
+  //         return responseData;
+  //       }
+  //     }, onError: (error) {
+  //       print(error);
+  //       print("Error == $error");
+  //       BaseUtitiles.showToast('Something went wrong..');
+  //     });
+  //   } else {
+  //     await ApiManager.getAPICall("ApiConstant.GETCOMPANYALL_DROPDOWNLIST").then(
+  //         (value) {
+  //       responseData = companyDropdownListResponseFromJson(value);
+  //       if (responseData != null && responseData.length > 0) {
+  //         return responseData;
+  //       }
+  //     }, onError: (error) {
+  //       print(error);
+  //       print("Error == $error");
+  //       BaseUtitiles.showToast('Something went wrong..');
+  //     });
+  //   }
+  //   return responseData;
+  // }
 
   static Future<List> getmaterialsubDropdown(int mhId, reportScreen) async {
     List responseData = [];
@@ -403,7 +412,15 @@ class CommonProvider {
             "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=AcknowledgeNo&tableName=MaterialTransferAckmas&formName=MaterialAckMas");
       } else if (Url == "REQ SLIP") {
         response = await ApiManager.getAPICall(
-            "${ApiConstant.GETAUTONO_YEAR_WISE}?fieldName=RequisitionNo&tableName=StaffRequisitionSlip&formName=StaffRequisitionSlip");
+            "${ApiConstant
+                .GETAUTONO_YEAR_WISE}?fieldName=RequisitionNo&tableName=StaffRequisitionSlip&formName=StaffRequisitionSlip");
+      } else if (Url == "MANPOWER") {
+        response = await ApiManager.getAPICall(
+            "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=ManPowerNo&tableName=ManPowerMas&formName=ManPower");
+      }
+      else if (Url == "WORK ORDER DIRECT") {
+        response = await ApiManager.getAPICall(
+            "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=WorkOrderNo&tableName=SubcontractWorkOrderMas&formName=SubcontractWorkOrderMas");
       }
       final data = json.decode(response);
       return data;

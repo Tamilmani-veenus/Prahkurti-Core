@@ -21,6 +21,7 @@ import '../../../../controller/projectcontroller.dart';
 import '../../../../controller/sitecontroller.dart';
 import '../../../../controller/subcontcontroller.dart';
 import '../../../../home/menu/daily_entries/daily_wrk_done_dpr/type_subcont_alert.dart';
+import '../../../../utilities/apiconstant.dart';
 import '../../../../utilities/baseutitiles.dart';
 import '../../../../utilities/image_view.dart';
 import '../../../../utilities/print_logger.dart';
@@ -67,7 +68,7 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
           dailyWrkDone_DPR_Controller.workId=element.id!;
           projectController.projectname.text=element.projectName;
           dailyWrkDone_DPR_Controller.TypeSubcontractorname.text=element.subcontractorName;
-          dailyWrkDone_DPR_Controller.entryTypeController.text=element.entryType == "N" ? "NMR" : "BOQ";
+          dailyWrkDone_DPR_Controller.entryTypeController.text=element.entryType == "N" ? "NMR" : "RATE";
           siteController.Sitename.text=element.siteName;
           dailyWrkDone_DPR_Controller.dpr_preparedbyController.text=element.createdName;
           dailyWrkDone_DPR_Controller.dpr_autoYearWiseNoController.text=element.workNo;
@@ -585,19 +586,23 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                                   primary: Setmybackground,
                                 ),
                                 onPressed: () async {
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return const ImageGalleryPopup_Alert(imageUrl: "DPR");
-                                      });
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //       builder: (_) => CameraCapturePage(
-                                  //         fromScreen:
-                                  //         "DPR",
-                                  //       )),
-                                  // );
+                                  if (!AppClient.isPrahkurti) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => CameraCapturePage(
+                                            fromScreen:
+                                            "DPR",
+                                          )),
+                                    );
+                                  }else {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return const ImageGalleryPopup_Alert(imageUrl: "DPR");
+                                        });
+                                  }
+
                                 },
                                 child: Row(
                                   mainAxisAlignment:

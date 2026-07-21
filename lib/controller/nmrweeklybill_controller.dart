@@ -43,6 +43,7 @@ class NMRWklyController extends GetxController {
   final tobededadv = TextEditingController();
   final Advded = TextEditingController();
   final Roundoff = TextEditingController();
+  final netBillAmt = TextEditingController();
   final netpayamt = TextEditingController();
   final EntrylistFrDate = TextEditingController();
   final EntrylistToDate = TextEditingController();
@@ -243,6 +244,7 @@ class NMRWklyController extends GetxController {
       toDate: TodateController.text,
       billNo: subcontractorController.InvoiceNo.text,
       billAmount: double.tryParse(billamount.text) ?? 0.0,
+      netBillAmount: double.tryParse(netBillAmt.text) ?? 0.0,
       foodAmount: double.tryParse(foodDeduction.text) ?? 0.0,
       bankCharges: 0,
       debitAmount: double.tryParse(Debitamt.text) ?? 0.0,
@@ -253,7 +255,7 @@ class NMRWklyController extends GetxController {
       actualAdvanceAmount: double.tryParse(tobededadv.text) ?? 0.0,
       roundOff: double.tryParse(Roundoff.text) ?? 0.0,
       netPayAmount: double.tryParse(netpayamt.text) ?? 0.0,
-      balanceAmount: 0,
+      // balanceAmount: 0,
       remarks: RemarksController.text,
       createdBy: int.tryParse(loginController.EmpId()),
       createdDt: BaseUtitiles().convertToUtcIso(NmrentryDateController.text),
@@ -332,17 +334,12 @@ class NMRWklyController extends GetxController {
 
   Future<bool> deduction_paymentCalculation() async {
 
-    double advLimit =
-        double.tryParse(tobededadv.text) ?? 0;
-
-    double advDed =
-        double.tryParse(Advded.text) ?? 0;
+    double advLimit = double.tryParse(tobededadv.text) ?? 0;
+    double advDed = double.tryParse(Advded.text) ?? 0;
 
     if (advLimit < advDed) {
-      advDed=0;
       BaseUtitiles.showToast(
           "Please change the adv deduction amount");
-
       return false;
     }
 
@@ -351,88 +348,41 @@ class NMRWklyController extends GetxController {
     double totalNetAmount = 0.0;
 
     for (var item in NmritemList.value) {
-
       totalNetAmount +=
-      (saveButton.value ==
-          RequestConstant.RESUBMIT ||
-
-          saveButton.value ==
-              RequestConstant.VERIFY ||
-
-          saveButton.value ==
-              RequestConstant.APPROVAL)
-
+      (saveButton.value == RequestConstant.RESUBMIT ||
+          saveButton.value == RequestConstant.VERIFY ||
+          saveButton.value == RequestConstant.APPROVAL)
           ? (item.nmrAmount ?? 0)
-
           : (item.netAmt ?? 0);
     }
 
-    billamount.text =
-        totalNetAmount.toStringAsFixed(2);
+    billamount.text = totalNetAmount.toStringAsFixed(2);
 
-    double bill =
-        double.tryParse(billamount.text) ?? 0;
-
-    double food =
-        double.tryParse(foodDeduction.text) ?? 0;
-
-    double credit =
-        double.tryParse(Creditamt.text) ?? 0;
-
-    double debit =
-        double.tryParse(Debitamt.text) ?? 0;
-
-    double adv =
-        double.tryParse(Advded.text) ?? 0;
+    double bill = double.tryParse(billamount.text) ?? 0;
+    double food = double.tryParse(foodDeduction.text) ?? 0;
+    double credit = double.tryParse(Creditamt.text) ?? 0;
+    double debit = double.tryParse(Debitamt.text) ?? 0;
+    double adv = double.tryParse(Advded.text) ?? 0;
+    String roundText = Roundoff.text.trim();
 
     double round =
-        double.tryParse(Roundoff.text) ?? 0;
+    (roundText.isEmpty || roundText == "-")
+        ? 0
+        : double.tryParse(roundText) ?? 0;
+    // Recalculate all Add/Less, NetBill and NetPay
+    recalculateAddLessAmounts(
+      bill: bill,
+      credit: credit,
+      debit: debit,
+      food: food,
+      adv: adv,
+      round: round,
+    );
 
-    // IMPORTANT
-    setBaseNetPay(billamount.text);
-
-    // RECALCULATE ADD/LESS FIRST
-    for (var item in directBillGen_ItemReadList) {
-
-      double percent =
-          item.percentValue ?? 0.0;
-
-      double amt =
-          (bill * percent) / 100;
-
-      if (amt == 0) {
-
-        item.amount = 0.0;
-
-      } else {
-
-        item.amount =
-        item.addLessType == "-"
-            ? -amt
-            : amt;
-      }
-    }
-
-    // NOW GET UPDATED TOTAL
-    double addLessTotal =
-        totalAddLess;
-
-    // FINAL NET
-    double netAmount =
-        bill +
-            credit -
-            debit -
-            adv -
-            food +
-            round +
-            addLessTotal;
-
-    // VALIDATION
-    if (netAmount < 0) {
+    // Optional validation
+    if ((double.tryParse(netpayamt.text) ?? 0) < 0) {
       return false;
     }
-
-    netpayamt.text = netAmount.toStringAsFixed(2);
 
     directBillGen_ItemReadList.refresh();
 
@@ -440,17 +390,256 @@ class NMRWklyController extends GetxController {
 
     return true;
   }
+  // ADD THIS
+  bool calculateAndUpdate(
+      int addLessId,
+      double percent,
+      ) {
+    final item = directBillGen_ItemReadList.firstWhereOrNull(
+          (e) => e.addLessId == addLessId,
+    );
 
+    if (item == null) return false;
 
+    // Store old percentage
+    final oldPercent = item.percentValue ?? 0.0;
+
+    // Update percentage
+    item.percentValue = percent;
+    String roundText = Roundoff.text.trim();
+
+    double round =
+    (roundText.isEmpty || roundText == "-")
+        ? 0
+        : double.tryParse(roundText) ?? 0;
+    // Recalculate everything
+    recalculateAddLessAmounts(
+      bill: double.tryParse(billamount.text) ?? 0,
+      credit: double.tryParse(Creditamt.text) ?? 0,
+      debit: double.tryParse(Debitamt.text) ?? 0,
+      food: double.tryParse(foodDeduction.text) ?? 0,
+      adv: double.tryParse(Advded.text) ?? 0,
+      round: round,
+    );
+
+    // Validate Net Pay
+    final netPay = double.tryParse(netpayamt.text) ?? 0;
+
+    if (netPay < 0) {
+      BaseUtitiles.showToast(
+        "Net Pay Amount cannot be negative.",
+      );
+
+      // Restore only percentage
+      item.percentValue = oldPercent;
+
+      // Recalculate again using restored percentage
+      recalculateAddLessAmounts(
+        bill: double.tryParse(billamount.text) ?? 0,
+        credit: double.tryParse(Creditamt.text) ?? 0,
+        debit: double.tryParse(Debitamt.text) ?? 0,
+        food: double.tryParse(foodDeduction.text) ?? 0,
+        adv: double.tryParse(Advded.text) ?? 0,
+        round: round,
+      );
+
+      directBillGen_ItemReadList.refresh();
+      update();
+
+      return false;
+    }
+
+    directBillGen_ItemReadList.refresh();
+    update();
+
+    return true;
+  }
+
+  void recalculateAddLessAmounts({
+    required double bill,
+    required double credit,
+    required double debit,
+    required double food,
+    required double adv,
+    required double round,
+  }) {
+
+    //-----------------------------
+    // STEP 1
+    // Calculate every row amount
+    //-----------------------------
+
+    for (var item in directBillGen_ItemReadList) {
+
+      final name = (item.addLessName ?? "").trim().toUpperCase();
+      final percent = item.percentValue ?? 0;
+
+      switch (name) {
+
+      // Bill Amount Base
+        case "SGST":
+        case "CGST":
+        case "IGST":
+
+          double amt = bill * percent / 100;
+
+          item.amount =
+          item.addLessType == "-" ? -amt : amt;
+
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    //-----------------------------
+    // Read GST values
+    //-----------------------------
+
+    double sgst = 0;
+    double cgst = 0;
+    double igst = 0;
+
+    for (var item in directBillGen_ItemReadList) {
+
+      switch ((item.addLessName ?? "").trim().toUpperCase()) {
+
+        case "SGST":
+          sgst = item.amount ?? 0;
+          break;
+
+        case "CGST":
+          cgst = item.amount ?? 0;
+          break;
+
+        case "IGST":
+          igst = item.amount ?? 0;
+          break;
+      }
+    }
+
+    //-----------------------------
+    // STEP 2
+    // NET BILL
+    //-----------------------------
+
+    double netBill =
+        bill +
+            credit -
+            debit +
+            sgst +
+            cgst +
+            igst +
+            round;
+
+    netBillAmt.text = netBill.toStringAsFixed(2);
+
+    //-----------------------------
+    // STEP 3
+    // Retention / TDS
+    //-----------------------------
+
+    for (var item in directBillGen_ItemReadList) {
+
+      final name = (item.addLessName ?? "").trim().toUpperCase();
+      final percent = item.percentValue ?? 0;
+
+      switch (name) {
+
+        case "RETENTION":
+
+          double amt = netBill * percent / 100;
+
+          item.amount =
+          item.addLessType == "-" ? -amt : amt;
+
+          break;
+
+        case "TDS":
+
+          double amt = netBill * percent / 100;
+
+          item.amount =
+          item.addLessType == "-" ? -amt : amt;
+
+          break;
+
+        case "GST HOLD":
+
+          double amt = netBill * percent / 100;
+
+          item.amount =
+          item.addLessType == "-" ? -amt : amt;
+
+          break;
+      }
+    }
+
+    //-----------------------------
+    // Read deduction values
+    //-----------------------------
+
+    double retention = 0;
+    double tds = 0;
+    double gstHold = 0;
+
+    for (var item in directBillGen_ItemReadList) {
+
+      switch ((item.addLessName ?? "").trim().toUpperCase()) {
+
+        case "RETENTION":
+          retention = item.amount ?? 0;
+          break;
+
+        case "TDS":
+          tds = item.amount ?? 0;
+          break;
+
+        case "GST HOLD":
+          gstHold = item.amount ?? 0;
+          break;
+      }
+    }
+
+    //-----------------------------
+    // STEP 4
+    // NET PAY
+    //-----------------------------
+
+    double netPay =
+        netBill +
+            retention +
+            tds +
+            gstHold -
+            food -
+            adv;
+
+    netBillAmt.text = netBill.toStringAsFixed(2);
+    netpayamt.text = netPay.toStringAsFixed(2);
+
+    //-----------------------------
+    // Refresh
+    //-----------------------------
+
+    directBillGen_ItemReadList.refresh();
+    update();
+  }
 
   void updateAdvanceReadOnly() {
     final amt = double.tryParse(tobededadv.text) ?? 0.0;
     isAdvanceReadOnly.value = amt <= 0;
   }
 
-  Future DirectBill_CalculationList() async {
+  Future DirectBill_CalculationList({type}) async {
     billDet_Calculation.value=[];
-    final value = await DirectBillGenerateProvider.getBillDirectCalculation_List();
+    final value = await DirectBillGenerateProvider.getBillDirectCalculation_List(
+      pId:projectController.selectedProjectId.value,
+      siteId:siteController.selectedsiteId.value,
+      subId:subcontractorController.selectedSubcontId.value,
+      wrkOrdId:subcontractorController.selectedWorkOrderId.value,
+      type: type,
+    );
     if (value != null) {
       if(value.success==true){
         if(value.result!.isNotEmpty){
@@ -459,167 +648,54 @@ class NMRWklyController extends GetxController {
           await directBillCalculationSave();
           await getDirectBillCalDatas();
           if(saveButton.value == RequestConstant.RESUBMIT || saveButton.value == RequestConstant.VERIFY || saveButton.value == RequestConstant.APPROVAL) {
-            setBaseNetPay(billamount.text);
             await preloadEditAddLessData(EditListSaveDatas[0].subContractorNmrBillAddLessSetupS);
           }
         }
-        else {
-          BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
-        }
-      }else {
-        BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
+        // else {
+        //   BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+        // }
       }
+      // else {
+      //   BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
+      // }
     } else {
       BaseUtitiles.showToast("Something Went Wrong...");
     }
   }
 
-  void setBaseNetPay(String value) {
-    baseNetPayAmt = double.tryParse(value) ?? 0.0;
-    netpayamt.text = baseNetPayAmt.toStringAsFixed(2);
-    print("=== setBaseNetPay called: $baseNetPayAmt ==="); // 👈 add this
-
-  }
-
-// ADD THIS
-  bool calculateAndUpdate(
-      int addLessId,
-      double percent,
-      double baseAmount,
-      ) {
-
-    final item = directBillGen_ItemReadList
-        .firstWhereOrNull(
-          (e) => e.addLessId == addLessId,
-    );
-
-    if (item == null) return false;
-
-    // OLD VALUES
-    double oldPercent =
-        item.percentValue ?? 0.0;
-
-    double oldAmount =
-        item.amount ?? 0.0;
-
-    // NEW AMOUNT
-    double amt =
-        (baseAmount * percent) / 100;
-
-    double newAmount;
-
-    if (amt == 0) {
-
-      newAmount = 0.0;
-
-    } else {
-
-      newAmount =
-      item.addLessType == "-"
-          ? -amt
-          : amt;
-    }
-
-    // TEMP TOTAL
-    double tempTotal =
-        totalAddLess -
-            oldAmount +
-            newAmount;
-
-    double bill =
-        double.tryParse(billamount.text) ?? 0;
-
-    double food =
-        double.tryParse(foodDeduction.text) ?? 0;
-
-    double credit =
-        double.tryParse(Creditamt.text) ?? 0;
-
-    double debit =
-        double.tryParse(Debitamt.text) ?? 0;
-
-    double adv =
-        double.tryParse(Advded.text) ?? 0;
+  // ADD THIS
+  void updateNetPay() {
+    String roundText = Roundoff.text.trim();
 
     double round =
-        double.tryParse(Roundoff.text) ?? 0;
+    (roundText.isEmpty || roundText == "-")
+        ? 0
+        : double.tryParse(roundText) ?? 0;
+    recalculateAddLessAmounts(
+      bill: double.tryParse(billamount.text) ?? 0,
+      credit: double.tryParse(Creditamt.text) ?? 0,
+      debit: double.tryParse(Debitamt.text) ?? 0,
+      food: double.tryParse(foodDeduction.text) ?? 0,
+      adv: double.tryParse(Advded.text) ?? 0,
+      round: round,
+    );
 
-    double netAmount =
-        bill +
-            credit -
-            debit -
-            adv -
-            food +
-            round +
-            tempTotal;
-
-    // NEGATIVE VALIDATION
-    if (netAmount < 0) {
-
-      BaseUtitiles.showToast(
-        "Net Bill Amount cannot be negative. "
-            "Please reduce the deductions "
-            "or add-less percentages.",
-      );
-
-      // RESTORE OLD VALUES
-      item.percentValue = oldPercent;
-      item.amount = oldAmount;
-
-      directBillGen_ItemReadList.refresh();
-
-      return false;
-    }
-
-    // FINAL UPDATE
-    item.percentValue = percent;
-    item.amount = newAmount;
-
-    netpayamt.text =
-        netAmount.toStringAsFixed(2);
-
-    directBillGen_ItemReadList.refresh();
-
-    update();
-
-    return true;
   }
 
   // ADD THIS
-  void updateNetPay() {
-
-    double bill = double.tryParse(billamount.text) ?? 0;
-    double food = double.tryParse(foodDeduction.text) ?? 0;
-    double credit = double.tryParse(Creditamt.text) ?? 0;
-    double debit = double.tryParse(Debitamt.text) ?? 0;
-    double adv = double.tryParse(Advded.text) ?? 0;
-    double round = double.tryParse(Roundoff.text) ?? 0;
-
-    double addLessTotal = totalAddLess;
-
-    double netAmount =
-        bill +
-            credit -
-            debit -
-            adv -
-            food +
-            round +
-            addLessTotal;
-
-    netpayamt.text = netAmount.toStringAsFixed(2);
-  }
-
-// ADD THIS
   Future<void> saveUpdatedCalcData() async {
     await updateDirectBillCalDatas();
   }
 
-// ADD THIS
-  double get totalAddLess {
-    return directBillGen_ItemReadList.fold(
-      0.0,
-          (sum, item) => sum + (item.amount ?? 0.0),
-    );
+  double getTotalAddLess() {
+
+    double total = 0;
+
+    for (final item in directBillGen_ItemReadList) {
+      total += item.amount ?? 0;
+    }
+
+    return total;
   }
 
   void initPercentControllers() {
@@ -636,23 +712,26 @@ class NMRWklyController extends GetxController {
   }
 
 
-  directBillCalculationSave() async {
-    int i = 0;
-    directBillTableModelList=[];
-    billDet_Calculation.value.forEach((element) {
-      directBillTable = new DirectBillGSTCalTable();
+  Future<void> directBillCalculationSave() async {
+    directBillTableModelList = [];
+
+    for (final element in billDet_Calculation.value) {
+      final directBillTable = DirectBillGSTCalTable();
+
       directBillTable.reqDetId = 0;
       directBillTable.addLessId = element.id;
-      directBillTable.percentValue = 0.0;
+      directBillTable.percentValue = element.percentage.value;
       directBillTable.amount = 0.0;
-      directBillTable.addLessName =  element.addLessName;
+      directBillTable.addLessName = element.addLessName;
       directBillTable.addLessType = element.addLessType;
+
       directBillTableModelList.add(directBillTable);
-      i++;
-    });
-    var savedatas = await directBillGen_ItemlistService.DirectBillGST_ItemTable_Save(directBillTableModelList);
-    return savedatas;
+    }
+
+    await directBillGen_ItemlistService
+        .DirectBillGST_ItemTable_Save(directBillTableModelList);
   }
+
 
   Future getDirectBillCalDatas() async {
     var datas = await directBillGen_ItemlistService.DirectBillGST_ItemlistTable_readAll();
@@ -694,10 +773,8 @@ class NMRWklyController extends GetxController {
 
   Future<void> preloadEditAddLessData(List<dynamic> editAddLessList) async {
 
-    // First load local DB rows
     await getDirectBillCalDatas();
 
-    // Update local rows with edit API values
     for (var editItem in editAddLessList) {
 
       int index = directBillGen_ItemReadList.indexWhere(
@@ -706,16 +783,14 @@ class NMRWklyController extends GetxController {
 
       if (index != -1) {
 
-        directBillGen_ItemReadList[index].reqDetId =
-        editItem.id;
+        directBillGen_ItemReadList[index].reqDetId = editItem.id;
 
         directBillGen_ItemReadList[index].percentValue =
             (editItem.percentValue ?? 0).toDouble();
 
-        directBillGen_ItemReadList[index].amount =
-            (editItem.amount ?? 0).toDouble();
+        // Don't use API amount. Recalculate it.
+        directBillGen_ItemReadList[index].amount = 0;
 
-        // Update controller text also
         percentControllers[index].text =
         (editItem.percentValue ?? 0) == 0
             ? ''
@@ -723,12 +798,23 @@ class NMRWklyController extends GetxController {
       }
     }
 
-    // Refresh UI
     directBillGen_ItemReadList.refresh();
+    String roundText = Roundoff.text.trim();
 
-    // Recalculate total/netpay
-    updateNetPay();
+    double round =
+    (roundText.isEmpty || roundText == "-")
+        ? 0
+        : double.tryParse(roundText) ?? 0;
+    recalculateAddLessAmounts(
+      bill: double.tryParse(billamount.text) ?? 0,
+      credit: double.tryParse(Creditamt.text) ?? 0,
+      debit: double.tryParse(Debitamt.text) ?? 0,
+      food: double.tryParse(foodDeduction.text) ?? 0,
+      adv: double.tryParse(Advded.text) ?? 0,
+      round: round,
+    );
   }
+
 
   Future NmrEntryList_EditApi(int workid,String MenuName, BuildContext context,from, bool checkSts) async {
     EditListSaveDatas.value=[];

@@ -420,32 +420,32 @@ class _Subcont_NMR_EntryListScreenState_Site
                                           )),
                                     ],
                                   ),
-                                  SizedBox(height: 5,),
-                                  Row(
-                                    children: <Widget>[
-                                      Container(
-                                        margin: EdgeInsets.only(top: 2, left: 10),
-                                        child: Text(""),
-                                      ),
-                                      Expanded(
-                                          flex: 3,
-                                          child: Text(
-                                            "Bill No",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,),
-                                          )),
-                                      Expanded(
-                                          flex: 6,
-                                          child: Text(
-                                            nmrWklyController
-                                                .NmrEtyList.value[index].billNo
-                                                .toString(),
-                                            style: TextStyle(
-                                              color: Colors.black,),
-                                          )),
-                                    ],
-                                  ),
+                                  // SizedBox(height: 5,),
+                                  // Row(
+                                  //   children: <Widget>[
+                                  //     Container(
+                                  //       margin: EdgeInsets.only(top: 2, left: 10),
+                                  //       child: Text(""),
+                                  //     ),
+                                  //     Expanded(
+                                  //         flex: 3,
+                                  //         child: Text(
+                                  //           "Bill No",
+                                  //           style: TextStyle(
+                                  //             fontWeight: FontWeight.bold,
+                                  //             color: Colors.black,),
+                                  //         )),
+                                  //     Expanded(
+                                  //         flex: 6,
+                                  //         child: Text(
+                                  //           nmrWklyController
+                                  //               .NmrEtyList.value[index].billNo
+                                  //               .toString(),
+                                  //           style: TextStyle(
+                                  //             color: Colors.black,),
+                                  //         )),
+                                  //   ],
+                                  // ),
                                   SizedBox(height: 5,),
                                   Row(
                                     children: <Widget>[

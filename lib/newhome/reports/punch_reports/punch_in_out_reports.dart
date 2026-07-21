@@ -54,11 +54,15 @@ class _PunchInOutReportsState extends State<PunchInOutReports> with SingleTicker
         appBar: AppBar(
           iconTheme: const IconThemeData(color: Colors.black),
           backgroundColor: Setmybackground,
-          title: Expanded(
-            child: Text(
-              widget.heading,
-              style: TextStyle(color: Colors.black),
-            ),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  widget.heading,
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+            ],
           ),
           bottom: TabBar(
             labelColor: Colors.black,

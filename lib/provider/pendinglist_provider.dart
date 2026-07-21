@@ -36,9 +36,9 @@ class PendingListProvider {
     }
   }
 
-  static Future getReqNoList(reqId) async {
+  static Future getReqNoList(reqId,type) async {
     try {
-      final response = await ApiManager.getAPICall(ApiConstant.REQNOLISTAPI + "?Id=$reqId&mode=PO");
+      final response = await ApiManager.getAPICall(type == "P" ? ApiConstant.REQNOLISTAPI + "?Id=$reqId&mode=PO" : ApiConstant.REQNORENTALWORKLISTAPI + "?WordOrdId=$reqId");
 
       return jsonDecode(response);
     } catch (error) {
@@ -222,6 +222,12 @@ class PendingListProvider {
       }
       else if (formName == "STAFF NON-ALLOTED PUNCH IN & OUT APPROVAL") {
         response = await ApiManager.getAPICall(ApiConstant.GET_NONALLOT_PUNCHINOUT_APPRLIST);
+      }
+      else if (formName == "WORK ORDER VERIFICATION PENDING - DIRECT") {
+        response = await ApiManager.getAPICall(ApiConstant.GET_WORKORDERVERIFYLIST);
+      }
+      else if (formName == "WORK ORDER APPROVAL PENDING") {
+        response = await ApiManager.getAPICall(ApiConstant.GET_WORKORDERAPPROVALLIST);
       }
       else if (formName == "PENDING PO [AGENCY]" || formName == "PENDING PO [TRADER]" || formName == "PENDING PO [SUPPLIER]") {
         String supplierCategory = formName == "PENDING PO [SUPPLIER]"
@@ -511,7 +517,7 @@ class PendingListProvider {
 
   //---MRN Verification More Details--
   static Future<OnclickPendingDet?> getOnclickDetProvider(String Url, int Rid,
-      {String? purchaseType}) async {
+      {String? purchaseType, String? rentalType}) async {
     var response;
     try {
       if (Url == "MRN VERIFICATION") {
@@ -527,8 +533,13 @@ class PendingListProvider {
         response = await ApiManager.getAPICall(
             "${ApiConstant.PENDING_PO_MOREDETAILS}?reqMasId=$Rid");
       } else if (Url == "PO VERIFICATION" || Url == "PO APPROVAL") {
-        response = await ApiManager.getAPICall(
-            "${ApiConstant.POVERIFICATION_MOREDETAILS}?purOrdMasId=$Rid&purType=$purchaseType");
+        if(rentalType == "P"){
+          response = await ApiManager.getAPICall(
+            "${ApiConstant.POVERIFICATION_MOREDETAILS}?purOrdMasId=$Rid&purType=$purchaseType");}
+        else {
+            response = await ApiManager.getAPICall(
+                "${ApiConstant.PORENTALVERIFICATION_MOREDETAILS}?id=$Rid");
+          }
       } else if (Url == "INWARD PENDING") {
         response = await ApiManager.getAPICall(
             "${ApiConstant.INWARD_MOREDETAILS}?PoId=$Rid");
@@ -612,7 +623,9 @@ class PendingListProvider {
 
   static Future PunchInAprovalAPI(id, status) async {
     try {
-      final response = await ApiManager.postCall(ApiConstant.PUNCH_IN_VERIFY_APPROVE + "id=$id&IsVerification=$status");
+      final response = await ApiManager.postCall(ApiConstant.PUNCH_IN_VERIFY_APPROVE + "?id=$id&IsVerification=$status");
+      print("eeee...${response}");
+      print("eeee...${jsonDecode(response)}");
       return jsonDecode(response);
     } catch (error) {
       print("Error == $error");

@@ -92,7 +92,7 @@ class DailyEntriesController extends GetxController {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => Subcontractor_Site_Category()));
+                  builder: (context) => Subcontractor_Site_Category(type: 'subcontAttendance',)));
         } else {
           BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
         }

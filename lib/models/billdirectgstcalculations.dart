@@ -42,7 +42,7 @@ class Result {
   dynamic active;
   int? createdBy;
   String? createdDt;
-  RxDouble percentage = 0.0.obs;
+  RxDouble percentage;
   RxDouble amount = 0.0.obs;
 
 
@@ -53,15 +53,20 @@ class Result {
     this.active,
     this.createdBy,
     this.createdDt,
-  });
+    double percentage = 0.0,
+  })  : percentage = percentage.obs;
+
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
-    id: json["id"],
-    addLessName: json["addLessName"],
-    addLessType: json["addLessType"],
+    id: json["id"] ?? json["addLessId"],
+    addLessName: json["addLessName"] ?? json["AddLessName"],
+    addLessType: json["addLessType"] ?? json["AddLessType"],
     active: json["active"],
     createdBy: json["createdBy"],
     createdDt: json["createdDt"],
+    percentage: (json["PercentValue"] as num?)?.toDouble() ??
+        (json["percentValue"] as num?)?.toDouble() ??
+        0.0,
   );
 
   Map<String, dynamic> toJson() => {
@@ -71,5 +76,6 @@ class Result {
     "active": active,
     "createdBy": createdBy,
     "createdDt": createdDt,
+    "percentage": percentage.value,
   };
 }

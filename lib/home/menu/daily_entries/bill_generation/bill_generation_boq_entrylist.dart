@@ -325,29 +325,36 @@ class _Bill_Generation_Boq_EntrylistState_Site
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-
-
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Container(
-                                      width: BaseUtitiles.getWidthtofPercentage(context, 50),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                              margin: EdgeInsets.only(left:5,right: 5),
-                                              child: ConstIcons.list_date),
-                                          Text(
-                                            billGenerationBoqController.bill_entryList.value[index].workDate.toString(),
-                                            style: TextStyle(
-                                                color: Theme.of(context).primaryColor,
-                                                fontWeight: FontWeight.bold),
+                                    Row(
+                                      children: [
+                                        Container(
+                                          width: BaseUtitiles
+                                              .getWidthtofPercentage(
+                                              context, 50),
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                                margin: EdgeInsets.only(
+                                                    left: 5, right: 3),
+                                                child: ConstIcons.list_date,
+                                              ),
+                                              Text(
+                                                billGenerationBoqController.bill_entryList.value[index].workDate.toString(),
+                                                style: TextStyle(
+                                                    color: Theme.of(context).primaryColor,
+                                                    fontWeight: FontWeight.bold),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
+                                        )
+                                      ],
                                     ),
-                                    Expanded(
-                                      flex: 1,
+                                    Container(
+                                      margin: EdgeInsets.only(right: 10),
                                       child: Text(
                                         billGenerationBoqController.bill_entryList.value[index].workNo.toString(),
                                         style: TextStyle(fontWeight: FontWeight.bold),
@@ -356,11 +363,10 @@ class _Bill_Generation_Boq_EntrylistState_Site
                                   ],
                                 ),
                                 SizedBox(height: 5),
-
                                 Row(
                                   children: <Widget>[
                                     Container(
-                                      margin: EdgeInsets.only(left: 10),
+                                      margin: EdgeInsets.only(left: 10,top: 10),
                                       child: Text(""),
                                     ),
                                     Expanded(
@@ -381,12 +387,10 @@ class _Bill_Generation_Boq_EntrylistState_Site
                                   ],
                                 ),
                                 SizedBox(height: 5),
-                                SizedBox(height: 5),
-
                                 Row(
                                   children: <Widget>[
                                     Container(
-                                      margin: EdgeInsets.only(top: 2, left: 10),
+                                      margin: EdgeInsets.only( left: 10),
                                       child: Text(""),
                                     ),
                                     Expanded(
@@ -406,10 +410,11 @@ class _Bill_Generation_Boq_EntrylistState_Site
                                         )),
                                   ],
                                 ),
+                                SizedBox(height: 10),
                                 Row(
                                   children: <Widget>[
                                     Container(
-                                      margin: EdgeInsets.only(top: 10, left: 10),
+                                      margin: EdgeInsets.only(left: 10),
                                       child: Text(""),
                                     ),
                                     Expanded(
@@ -430,14 +435,11 @@ class _Bill_Generation_Boq_EntrylistState_Site
                                         )),
                                   ],
                                 ),
-
-
-                                SizedBox(height: 5),
-
+                                SizedBox(height: 10),
                                 Row(
                                   children: <Widget>[
                                     Container(
-                                      margin: EdgeInsets.only(top: 5, left: 10),
+                                      margin: EdgeInsets.only( left: 10),
                                       child: Text(""),
                                     ),
                                     Expanded(
@@ -458,13 +460,11 @@ class _Bill_Generation_Boq_EntrylistState_Site
                                         )),
                                   ],
                                 ),
-
-                                SizedBox(height: 5),
-
+                                SizedBox(height: 10),
                                 Row(
                                   children: <Widget>[
                                     Container(
-                                      margin: EdgeInsets.only(top: 2, left: 10),
+                                      margin: EdgeInsets.only( left: 10),
                                       child: Text(""),
                                     ),
                                     Expanded(
@@ -484,15 +484,11 @@ class _Bill_Generation_Boq_EntrylistState_Site
                                         )),
                                   ],
                                 ),
-
-
-
-                                SizedBox(height: 5),
-
+                                SizedBox(height: 10),
                                 Row(
                                   children: <Widget>[
                                     Container(
-                                      margin: EdgeInsets.only(top: 2, left: 10),
+                                      margin: EdgeInsets.only( left: 10),
                                       child: Text(""),
                                     ),
                                     Expanded(

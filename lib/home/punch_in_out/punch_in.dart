@@ -247,10 +247,12 @@ class _PunchInState extends State<PunchIn> {
                     padding: const EdgeInsets.all(32.0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(15.0),
-                      child: Image.file(
+                      child: punchInController.imageFile.value != null
+                          ? Image.file(
                         File(punchInController.imageFile.value!.path),
                         fit: BoxFit.fill,
-                      ),
+                      )
+                          : const SizedBox()
                     ),
                   ),
                 ),

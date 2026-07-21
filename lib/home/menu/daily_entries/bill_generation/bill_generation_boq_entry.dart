@@ -74,6 +74,8 @@ class _Bill_Generation_Boq_EntryScreenState_Site
           billGenerationBoqController.RemarksController.text = element.remarks.toString();
         });
       }
+      await billGenerationBoqController.DirectBill_CalculationList();
+
       if (billGenerationBoqController.saveButton.value == RequestConstant.SUBMIT) {
         await autoYearWiseNoController.AutoYearWiseNo("BILL BOQ");
         billGenerationBoqController.autoYearWiseNoController.text =
@@ -118,8 +120,6 @@ class _Bill_Generation_Boq_EntryScreenState_Site
     });
     super.initState();
   }
-
-
 
   @override
   Widget build(BuildContext context) {

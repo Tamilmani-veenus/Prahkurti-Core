@@ -9,11 +9,15 @@ class DirectBillGen_ItemlistService {
     _dbManager = DBManager();
   }
 
-  DirectBillGen_ItemlistTable_Save(
-      List<DirectBillGenItemListTableModel> directBillGenItemListTableModel) async {
-    directBillGenItemListTableModel.forEach((element) async {
-      return await _dbManager.insertData('directBillGenItemlistTable', element.DirectBillGenItemListTableMap());
-    });
+  Future DirectBillGen_ItemlistTable_Save(
+      List<DirectBillGenItemListTableModel> list) async {
+
+    for (var element in list) {
+      await _dbManager.insertData(
+        'directBillGenItemlistTable',
+        element.DirectBillGenItemListTableMap(),
+      );
+    }
   }
 
   DirectBillGen_ItemlistTable_readAll() async {
@@ -21,23 +25,34 @@ class DirectBillGen_ItemlistService {
   }
 
 
-  DirectBillGen_ItemlistTable_Update(
-      List<DirectBillGenItemListTableModel> directBillGenItemListTableModel) async {
-    directBillGenItemListTableModel.forEach((element) async {
-      return await _dbManager.UpdateTableIdwise('directBillGenItemlistTable', element.DirectBillGenItemListTableMap());
-    });
+  Future DirectBillGen_ItemlistTable_Update(
+      List<DirectBillGenItemListTableModel> list) async {
+
+    for (var element in list) {
+      await _dbManager.UpdateTableIdwise(
+        'directBillGenItemlistTable',
+        element.DirectBillGenItemListTableMap(),
+      );
+    }
   }
 
-  DirectBillGen_ItemlistTable_deleteById(
-      List<DirectBillGenItemListTableModel> directBillGenItemListTableModel) async {
-    directBillGenItemListTableModel.forEach((element) async {
-      return await _dbManager.directBill_deleteDataById(
-          'directBillGenItemlistTable', element.DirectBillGenItemListTableMap());
-    });
+  Future DirectBillGen_ItemlistTable_deleteById(
+      List<DirectBillGenItemListTableModel> list) async {
+
+    for (var element in list) {
+      await _dbManager.directBill_deleteDataById(
+        'directBillGenItemlistTable',
+        element.DirectBillGenItemListTableMap(),
+      );
+    }
   }
 
   DirectBillGen_ItemlistTable_delete() async {
     return await _dbManager.delete('directBillGenItemlistTable');
+  }
+
+  billgen_DeleteApiRows() async {
+    return await _dbManager.deleteApiRows('directBillGenItemlistTable');
   }
 
   DirectBillGen_ItemlistTable_OrderBy(

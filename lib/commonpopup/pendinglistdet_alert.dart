@@ -2283,7 +2283,18 @@ class _PendingList_PoSupTradAgenPopupState extends State<PendingList_PoSupTradAg
 ///-------------PendingPo Approval------------
 
 class PendingPo_Approval_Popup extends StatefulWidget {
-  const PendingPo_Approval_Popup({Key? key, required this.id, required this.heading, required this.list,required this.ReqNo,required this.projectName, required this.siteName, required this.supplierName, required this.preparedBy, required this.Date,required this.dueDate, required this.netAmount}) : super(key: key);
+  const PendingPo_Approval_Popup({Key? key, required this.id,
+    required this.heading,
+    required this.list,
+    required this.ReqNo,
+    required this.projectName,
+    required this.siteName,
+    required this.supplierName,
+    required this.preparedBy,
+    required this.Date,
+    required this.dueDate,
+    required this.netAmount,
+    required this.type}) : super(key: key);
   final int id;
   final String heading;
   final List list;
@@ -2295,6 +2306,7 @@ class PendingPo_Approval_Popup extends StatefulWidget {
   final String Date;
   final String dueDate;
   final String netAmount;
+  final String type;
 
 
   @override
@@ -2399,11 +2411,11 @@ class _PendingPo_Approval_PopupState extends State<PendingPo_Approval_Popup> {
                             ],
                           ),
                         ),
-
                         Expanded(
                           flex: 5,
 
                           child: Text(
+
                               "${RequestConstant.CURRENCY_SYMBOL} "
                             "${pendingListController
                                 .onclickPendingListDet[0].netPayAmount.toString()}",
@@ -2734,6 +2746,7 @@ class _PendingPo_Approval_PopupState extends State<PendingPo_Approval_Popup> {
               SizedBox(height: 15),
               /// HORIZONTAL SCROLL AREA
 
+              widget.type == "P"?
               Expanded(
                 child: Row(
                   children: [
@@ -2931,368 +2944,198 @@ class _PendingPo_Approval_PopupState extends State<PendingPo_Approval_Popup> {
                     ),
                   ],
                 ),
+              ) :
+              Expanded(
+                child: Row(
+                  children: [
+
+                    /// FIXED SECTION
+                    SizedBox(
+                      width: 200,
+                      child: Column(
+                        children: [
+
+                          /// HEADER
+                          Container(
+                            height: 50,
+                            color: Theme.of(context).primaryColor,
+
+                            child: Row(
+                              children: [
+
+                                // fixedHeaderCell("S.No", 30),
+
+                                fixedHeaderCell("", 40),
+
+                                fixedHeaderCell("Material Name", 160),
+                              ],
+                            ),
+                          ),
+
+                          /// DATA
+                          Expanded(
+                            child: ListView.builder(
+                              controller: leftController,
+                              itemCount: pendingListController
+                                  .onclickPendingListDet.length,
+                              itemBuilder: (context, index) {
+
+                                var item = pendingListController
+                                    .onclickPendingListDet[index];
+
+                                return Container(
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                        color: Colors.grey.shade300,
+                                      ),
+                                      //   right: BorderSide(
+                                      //   color: Colors.grey.shade400,
+                                      //   width: 1,
+                                      // ),
+                                    ),
+                                  ),
+
+                                  child: Row(
+                                    children: [
+
+                                      /// S.NO
+                                      // fixedDataCell(
+                                      //   "${index + 1}",
+                                      //   30,
+                                      // ),
+
+                                      /// Action
+
+                                      Container(
+                                        width: 40,
+                                        height: 60,
+                                        decoration: BoxDecoration(
+                                          border: Border(
+                                            right: BorderSide(
+                                              color: Colors.grey.shade300,
+                                            ),
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: InkWell(
+                                            onTap: () {
+                                              pendingListController.poapprovalSupplierlist(
+                                                context,
+                                                item.materialId,
+                                                item.materialName.toString(),
+                                                item.scaleName.toString(),
+                                              );
+                                            },
+                                            child: Icon(
+                                              Icons.search,
+                                              size: 25,
+                                              color: Theme.of(context).primaryColor,
+                                            ),
+                                          ),
+                                        ),
+
+                                      ),
+
+                                      /// MATERIAL
+                                      fixedDataCell(
+                                        "${item.materialName}\n(${item.scaleName})",
+                                        160,
+                                        alignment: Alignment.centerLeft,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    /// SCROLLABLE SECTION
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: SizedBox(
+                          width: 510,
+                          child: Column(
+                            children: [
+
+                              /// HEADER
+                              Container(
+                                height: 50,
+                                color: Theme.of(context).primaryColor,
+                                child: Row(
+                                  children: [
+                                    headerCell("Bal\nQty"),
+                                    headerCell("Qty"),
+                                    headerCell("Approx\nDays"),
+                                    headerCell("Rate"),
+                                    headerCell("Amt"),
+                                    headerCell("Net\nAmt"),
+                                  ],
+                                ),
+                              ),
+
+                              /// DATA
+                              Expanded(
+                                child: ListView.builder(
+                                  controller: rightController,
+                                  itemCount: pendingListController
+                                      .onclickPendingListDet.length,
+                                  itemBuilder: (context, index) {
+
+                                    var item = pendingListController
+                                        .onclickPendingListDet[index];
+
+                                    return Container(
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: Colors.grey.shade300,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          dataCell(
+                                            item.reqQty.toString(),
+                                          ),
+                                          dataCell(item.qty.toString()),
+                                          dataCell(
+                                            item.approxDays.toString(),
+                                          ),
+
+                                          dataCell(
+                                            item.rate.toString(),
+                                          ),
+
+                                          dataCell(
+                                            item.amount.toString(),
+                                          ),
+
+                                          dataCell(
+                                            item.netAmount.toString(),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               )
-              // Expanded(
-              //   child: SingleChildScrollView(
-              //     scrollDirection: Axis.horizontal,
-              //
-              //     child: SizedBox(
-              //       width: 750,
-              //
-              //       child: Column(
-              //         crossAxisAlignment: CrossAxisAlignment.start,
-              //         children: [
-              //
-              //           /// HEADER
-              //           Container(
-              //             color: Theme.of(context).primaryColor,
-              //
-              //             child: Table(
-              //               border: TableBorder(
-              //                 verticalInside: BorderSide(
-              //                   color: Colors.white24,
-              //                 ),
-              //               ),
-              //
-              //               columnWidths: {
-              //
-              //                 /// MATERIAL NAME BIGGER
-              //                 0: FixedColumnWidth(150),
-              //
-              //                 /// ALL SAME WIDTH
-              //                 1: FixedColumnWidth(75),
-              //                 2: FixedColumnWidth(75),
-              //                 3: FixedColumnWidth(75),
-              //                 4: FixedColumnWidth(75),
-              //                 5: FixedColumnWidth(75),
-              //                 6: FixedColumnWidth(75),
-              //                 7: FixedColumnWidth(75),
-              //                 8: FixedColumnWidth(75),
-              //               },
-              //
-              //               children: [
-              //
-              //                 TableRow(
-              //                   children: [
-              //
-              //                     tableHeader("Material Name"),
-              //
-              //                     tableHeader("Qty"),
-              //
-              //                     tableHeader("PO\nRate"),
-              //
-              //                     tableHeader("PO\nAmt"),
-              //
-              //                     tableHeader("GST %"),
-              //
-              //                     tableHeader("GST\nAmt"),
-              //
-              //                     tableHeader("Net\nAmt"),
-              //
-              //                     tableHeader("Data\nRate"),
-              //
-              //                     tableHeader(""),
-              //                   ],
-              //                 ),
-              //               ],
-              //             ),
-              //           ),
-              //
-              //           /// LIST
-              //           Expanded(
-              //             child: ListView.builder(
-              //               itemCount: pendingListController
-              //                   .onclickPendingListDet.length,
-              //
-              //               itemBuilder: (context, index) {
-              //
-              //                 var item =
-              //                 pendingListController
-              //                     .onclickPendingListDet[index];
-              //
-              //                 return Container(
-              //
-              //                   decoration: BoxDecoration(
-              //                     border: Border(
-              //                       bottom: BorderSide(
-              //                         color: Colors.grey.shade300,
-              //                       ),
-              //                     ),
-              //                   ),
-              //
-              //                   child: Table(
-              //                     border: TableBorder(
-              //                       verticalInside: BorderSide(
-              //                         color: Colors.grey.shade300,
-              //                       ),
-              //                     ),
-              //
-              //                     columnWidths: {
-              //
-              //                       /// MATERIAL NAME BIGGER
-              //                       0: FixedColumnWidth(150),
-              //
-              //                       /// ALL SAME WIDTH
-              //                       1: FixedColumnWidth(75),
-              //                       2: FixedColumnWidth(75),
-              //                       3: FixedColumnWidth(75),
-              //                       4: FixedColumnWidth(75),
-              //                       5: FixedColumnWidth(75),
-              //                       6: FixedColumnWidth(75),
-              //                       7: FixedColumnWidth(75),
-              //                       8: FixedColumnWidth(75),
-              //                     },
-              //
-              //                     children: [
-              //
-              //                       TableRow(
-              //                         children: [
-              //
-              //                           tableCell(
-              //                             "${item.materialName} "
-              //                                 "(${item.scaleName})"
-              //                           ),
-              //
-              //                           tableCell(
-              //                             item.Poqty.toString()
-              //                           ),
-              //
-              //                           tableCell(
-              //                             item.rate.toString()
-              //                           ),
-              //
-              //                           tableCell(
-              //                             item.amount.toString()
-              //                           ),
-              //
-              //                           tableCell(
-              //                             item.GSTPer.toString()
-              //                           ),
-              //
-              //                           tableCell(
-              //                             item.GSTAmt.toString()
-              //                           ),
-              //
-              //                           tableCell(
-              //                             item.netAmount.toString()
-              //                           ),
-              //
-              //                           tableCell("0.0"),
-              //
-              //                           Padding(
-              //                             padding: EdgeInsets.all(8),
-              //
-              //                             child: InkWell(
-              //                               onTap: () {
-              //
-              //                                 pendingListController
-              //                                     .poapprovalSupplierlist(
-              //                                   context,
-              //                                   item.materialId,
-              //                                   item.materialName
-              //                                       .toString(),
-              //                                   item.scaleName
-              //                                       .toString(),
-              //                                 );
-              //                               },
-              //
-              //                               child: Icon(
-              //                                 Icons
-              //                                     .arrow_circle_right_outlined,
-              //
-              //                                 color:
-              //                                 Theme.of(context)
-              //                                     .primaryColor,
-              //                               ),
-              //                             ),
-              //                           ),
-              //                         ],
-              //                       ),
-              //                     ],
-              //                   ),
-              //                 );
-              //               },
-              //             ),
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              //   ),
-              // ),
 
 
-
-
-
-
-
-
-
-
-              // Expanded(
-              //   child: SingleChildScrollView(
-              //     scrollDirection: Axis.horizontal,
-              //
-              //     child: SizedBox(
-              //       width: 620,
-              //
-              //       child: Column(
-              //         children: [
-              //
-              //           /// TABLE HEADER
-              //           Container(
-              //             color: Theme.of(context).primaryColor,
-              //             padding: EdgeInsets.symmetric(
-              //                 vertical: 12),
-              //
-              //             child: Row(
-              //               children: [
-              //
-              //                 headerCell("Material Name", 120),
-              //
-              //                 // headerCell("Unit\nPrice", 60),
-              //
-              //                 headerCell("Qty", 60),
-              //
-              //                 headerCell("PO\nRate", 60),
-              //
-              //                 headerCell("PO\nAmt", 60),
-              //
-              //                 headerCell("GST %", 60),
-              //
-              //                 headerCell("GST\nAmt", 60),
-              //
-              //                 headerCell("Net\nAmt", 60),
-              //
-              //                 headerCell("Data\nRate", 60),
-              //
-              //                 // headerCell("Action", 80),
-              //               ],
-              //             ),
-              //           ),
-              //
-              //           /// LIST
-              //           Expanded(
-              //             child: ListView.builder(
-              //               itemCount: pendingListController
-              //                   .onclickPendingListDet.length,
-              //
-              //               itemBuilder: (context, index) {
-              //
-              //                 var item =
-              //                 pendingListController
-              //                     .onclickPendingListDet[index];
-              //
-              //                 return Container(
-              //                   padding: EdgeInsets.symmetric(
-              //                     vertical: 12,
-              //                   ),
-              //
-              //                   decoration: BoxDecoration(
-              //                     border: Border(
-              //                       bottom: BorderSide(
-              //                         color: Colors.grey.shade300,
-              //                       ),
-              //                     ),
-              //                   ),
-              //
-              //                   child: Row(
-              //                     children: [
-              //
-              //                       /// MATERIAL
-              //                       dataCell(
-              //                         "${item.materialName.toString()} ( ${item.scaleName} )",
-              //                         120,
-              //                       ),
-              //
-              //                       /// UNIT PRICE
-              //                       // dataCell(
-              //                       //   "₹ ${item.rate}",
-              //                       //   60,
-              //                       // ),
-              //
-              //                       /// QTY
-              //                       dataCell(
-              //                         item.Poqty.toString(),
-              //                         60,
-              //                       ),
-              //
-              //                       /// PO RATE
-              //                       dataCell(
-              //                         item.rate.toString(),
-              //                         60,
-              //                       ),
-              //
-              //                       /// PO AMT
-              //                       dataCell(
-              //                         item.amount.toString(),
-              //                         60,
-              //                       ),
-              //
-              //                       /// GST %
-              //                       dataCell(
-              //                         item.GSTPer.toString(),
-              //                         60,
-              //                       ),
-              //
-              //                       /// GST AMT
-              //                       dataCell(
-              //                         item.GSTAmt.toString(),
-              //                         60,
-              //                       ),
-              //
-              //                       /// NET AMT
-              //                       dataCell(
-              //                         item.netAmount.toString(),
-              //                         60,
-              //                       ),
-              //
-              //                       /// DATA RATE
-              //                       dataCell(
-              //                         "0.0",
-              //                         // item.rate.toString() ==
-              //                         //     "null"
-              //                         //     ? "-"
-              //                         //     : item.rate.toString(),
-              //                         60,
-              //                       ),
-              //
-              //                       /// ACTION
-              //                       SizedBox(
-              //                         width: 80,
-              //
-              //                         child: InkWell(
-              //                           onTap: () {
-              //
-              //                             pendingListController
-              //                                 .poapprovalSupplierlist(
-              //                               context,
-              //                               item.materialId,
-              //                               item.materialName
-              //                                   .toString(),
-              //                               item.scaleName.toString(),
-              //                             );
-              //                             },
-              //
-              //                           child: Icon(
-              //                             Icons
-              //                                 .arrow_circle_right_outlined,
-              //                             color: Theme.of(context).primaryColor,
-              //                             size: 28,
-              //                           ),
-              //                         ),
-              //                       ),
-              //                     ],
-              //                   ),
-              //                 );
-              //               },
-              //             ),
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              //   ),
-              // ),
             ],
           ),
         ),
@@ -3393,54 +3236,7 @@ class _PendingPo_Approval_PopupState extends State<PendingPo_Approval_Popup> {
     );
   }
 
-  Widget tableHeader(String text) {
 
-    return SizedBox(
-      height: 50,
-
-      child: Center(
-        child: Padding(
-          padding: EdgeInsets.all(6),
-
-          child: Text(
-            text,
-
-            textAlign: TextAlign.center,
-
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget tableCell(String text) {
-
-    return SizedBox(
-      height: 50,
-
-      child: Center(
-        child: Padding(
-          padding: EdgeInsets.all(6),
-
-          child: Text(
-            text,
-
-            textAlign: TextAlign.center,
-
-            maxLines: 2,
-            style: TextStyle(
-              fontSize: 12,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 
 
   Widget buildInfoRow(
@@ -3608,7 +3404,7 @@ class _PendingPo_Approval_PopupState extends State<PendingPo_Approval_Popup> {
                     child: TextButton(
                         onPressed: () async {
                           pendingListController.getPoAprovalDetList.value = [];
-                          await pendingListController.poAproval_buttonApi(context, widget.heading.toString(),id: widget.id);
+                          await pendingListController.poAproval_buttonApi(context, widget.heading.toString(),widget.type,id: widget.id);
                           Navigator.pop(context);
                           Navigator.pop(context);
                           Navigator.pop(context);

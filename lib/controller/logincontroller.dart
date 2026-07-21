@@ -95,9 +95,10 @@ class LoginController extends GetxController {
 
   getLoginDetails(BuildContext context) async {
 
-    Map<String, String> body = {
+    Map<String, dynamic> body = {
       "userName": username_controller.text.trim(),
       "password": password_controller.text.trim(),
+      // "isMobileLogin": true
     };
 
     var value = await AuthendicationProvider.getAuthendication( body, context);
@@ -138,9 +139,10 @@ class LoginController extends GetxController {
 
   Future getLoginNew_seassionvalues(BuildContext context) async {
 
-    Map<String, String> body = {
+    Map<String, dynamic> body = {
       "userName": seassion_values.userName.toString().trim(),
       "password": seassion_values.userPassword.toString().trim(),
+      // "isMobileLogin": true
     };
 
     var value = await AuthendicationProvider.getAuthendication( body, context,from: "session");

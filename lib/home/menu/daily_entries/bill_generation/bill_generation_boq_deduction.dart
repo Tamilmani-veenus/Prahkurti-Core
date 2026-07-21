@@ -32,13 +32,16 @@ class _Bill_Generation_Boq_deductionState
 
   @override
   void initState() {
+    super.initState();
     var duration = const Duration(seconds: 0);
     Future.delayed(duration, () async {
 
       if (billGenerationBoqController.saveButton.value == RequestConstant.RESUBMIT || billGenerationBoqController.saveButton.value == RequestConstant.VERIFY || billGenerationBoqController.saveButton.value == RequestConstant.APPROVAL) {
-        billGenerationBoqController.bill_editListApiDatas.forEach((element) {
+        for (var element in billGenerationBoqController.bill_editListApiDatas) {
           billGenerationBoqController.workid = element.id;
           billGenerationBoqController.billamount.text = element.billAmount.toString();
+          billGenerationBoqController.finalBillAmt.text = element.finalBillAmount.toString();
+          billGenerationBoqController.netBillAmt.text = element.netBillAmount.toString();
           billGenerationBoqController.Creditamt.text = element.creditAmount.toString();
           billGenerationBoqController.Debitamt.text = element.debitAmount.toString();
           billGenerationBoqController.Advded.text = element.advanceAmount.toString();
@@ -51,10 +54,9 @@ class _Bill_Generation_Boq_deductionState
           billGenerationBoqController.tobededadv.text = element.actualAdvanceAmount.toString();
           billGenerationBoqController.to_be_dection_advance = element.advanceAmount.toString();
           billGenerationBoqController.netpayamt.text = element.netPayAmount.toString();
-        });
-        billGenerationBoqController.setBaseNetPay(billGenerationBoqController.billamount.text);
+        }
+        await billGenerationBoqController.deductionPaymentCalculation();
       }
-      await billGenerationBoqController.DirectBill_CalculationList();
 
       if (billGenerationBoqController.saveButton.value == RequestConstant.SUBMIT) {
         billGenerationBoqController.workid = 0;
@@ -63,15 +65,16 @@ class _Bill_Generation_Boq_deductionState
         billGenerationBoqController.Debitamt.text = "0.0";
         billGenerationBoqController.Advded.text = "0.0";
         billGenerationBoqController.Roundoff.text = "0.0";
+        billGenerationBoqController.netBillAmt.text = "0.0";
+        billGenerationBoqController.finalBillAmt.text = "0.0";
+        billGenerationBoqController.netpayamt.text = "0.0";
         billGenerationBoqController.tobededadv.text = billGenerationBoqController.to_be_dection_advance;
-        billGenerationBoqController.deductionPaymentCalculation();
         billGenerationBoqController.CreditRemarksController.text = "-";
         billGenerationBoqController.DebitRemarksController.text = "-";
         billGenerationBoqController.materialDebitRemarks.text = "-";
+        await billGenerationBoqController.deductionPaymentCalculation();
       }
-      await billGenerationBoqController.DirectBill_CalculationList();
     });
-    super.initState();
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -137,7 +140,7 @@ class _Bill_Generation_Boq_deductionState
                           decoration: const InputDecoration(
                             contentPadding: EdgeInsets.zero,
                             border: InputBorder.none,
-                            labelText: "Bill Amount",
+                            labelText: "Bill Amt",
                             labelStyle: TextStyle(
                               color: Colors.grey,
                               fontSize: RequestConstant.Lable_Font_SIZE,
@@ -196,7 +199,7 @@ class _Bill_Generation_Boq_deductionState
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.zero,
                                   border: InputBorder.none,
-                                  labelText: "MaterialDebit Amount",
+                                  labelText: "Material Debit Amt",
                                   labelStyle: TextStyle(
                                     color: Colors.grey,
                                     fontSize: RequestConstant.Lable_Font_SIZE,
@@ -227,12 +230,6 @@ class _Bill_Generation_Boq_deductionState
 
                                   // INVALID
                                   if (!success) {
-
-                                    BaseUtitiles.showToast(
-                                      "Net Bill Amount cannot be negative. "
-                                          "Please reduce the deductions "
-                                          "or add-less percentages.",
-                                    );
 
                                     // PREVENT onChanged LOOP
                                     billGenerationBoqController.isRestoring = true;
@@ -296,7 +293,7 @@ class _Bill_Generation_Boq_deductionState
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.zero,
                                   border: InputBorder.none,
-                                  labelText: "Remarks",
+                                  labelText: "Material Debit Remarks",
                                   labelStyle: TextStyle(
                                     color: Colors.grey,
                                     fontSize: RequestConstant.Lable_Font_SIZE,
@@ -368,7 +365,7 @@ class _Bill_Generation_Boq_deductionState
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.zero,
                                   border: InputBorder.none,
-                                  labelText: "Credit-Amount",
+                                  labelText: "Credit Amt",
                                   labelStyle: TextStyle(
                                     color: Colors.grey,
                                     fontSize: RequestConstant.Lable_Font_SIZE,
@@ -399,12 +396,6 @@ class _Bill_Generation_Boq_deductionState
 
                                   // INVALID
                                   if (!success) {
-
-                                    BaseUtitiles.showToast(
-                                      "Net Bill Amount cannot be negative. "
-                                          "Please reduce the deductions "
-                                          "or add-less percentages.",
-                                    );
 
                                     // PREVENT onChanged LOOP
                                     billGenerationBoqController.isRestoring = true;
@@ -463,7 +454,7 @@ class _Bill_Generation_Boq_deductionState
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.zero,
                                   border: InputBorder.none,
-                                  labelText: "Remarks",
+                                  labelText: "Credit Remarks",
                                   labelStyle: TextStyle(
                                     color: Colors.grey,
                                     fontSize: RequestConstant.Lable_Font_SIZE,
@@ -535,7 +526,7 @@ class _Bill_Generation_Boq_deductionState
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.zero,
                                   border: InputBorder.none,
-                                  labelText: "Debit-Amount",
+                                  labelText: "Debit Amt",
                                   labelStyle: TextStyle(
                                     color: Colors.grey,
                                     fontSize: RequestConstant.Lable_Font_SIZE,
@@ -565,12 +556,6 @@ class _Bill_Generation_Boq_deductionState
 
                                   // INVALID
                                   if (!success) {
-
-                                    BaseUtitiles.showToast(
-                                      "Net Bill Amount cannot be negative. "
-                                          "Please reduce the deductions "
-                                          "or add-less percentages.",
-                                    );
 
                                     // PREVENT RE-TRIGGER
                                     billGenerationBoqController.isRestoring = true;
@@ -629,7 +614,7 @@ class _Bill_Generation_Boq_deductionState
                                 decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.zero,
                                   border: InputBorder.none,
-                                  labelText: "Remarks",
+                                  labelText: "Debit Remarks",
                                   labelStyle: TextStyle(
                                       color: Colors.grey,
                                       fontSize: RequestConstant.Lable_Font_SIZE),
@@ -741,7 +726,7 @@ class _Bill_Generation_Boq_deductionState
                                         double.tryParse(billGenerationBoqController.tobededadv.text) ?? 0;
 
                                     if (advDed > advLimit) {
-                                      BaseUtitiles.showToast(
+                                    BaseUtitiles.showToast(
                                           "Advance deduction should not exceed advance limit.");
 
                                       billGenerationBoqController.Advded.text = "0.0";
@@ -757,9 +742,6 @@ class _Bill_Generation_Boq_deductionState
                                     await billGenerationBoqController.deductionPaymentCalculation();
 
                                     if (!success) {
-                                      BaseUtitiles.showToast(
-                                          "Advance deduction should not exceed net payable amount.");
-
                                       billGenerationBoqController.Advded.text = "0.0";
                                       billGenerationBoqController.Advded.selection = TextSelection.fromPosition(
                                         TextPosition(offset: billGenerationBoqController.Advded.text.length),
@@ -776,6 +758,150 @@ class _Bill_Generation_Boq_deductionState
                                       }
                                     }
                                   },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          margin:
+                          const EdgeInsets.only(top: 10, left: 10, right: 10),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              side: const BorderSide(
+                                  color: Colors.white70, width: 1),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 3,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 3, left: 10, bottom: 5),
+                              child: TextFormField(
+                                readOnly: true,
+                                autovalidateMode:
+                                AutovalidateMode.always,
+                                onTap: () {
+                                  if (billGenerationBoqController
+                                      .netBillAmt.text !=
+                                      "" &&
+                                      billGenerationBoqController
+                                          .netBillAmt.text !=
+                                          "0" &&
+                                      billGenerationBoqController
+                                          .netBillAmt.text !=
+                                          "0.0") {
+                                    return;
+                                  } else {
+                                    setState(() {
+                                      billGenerationBoqController
+                                          .netBillAmt.text = "";
+                                      billGenerationBoqController
+                                          .deductionPaymentCalculation();
+                                    });
+                                  }
+                                },
+                                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
+                                controller:
+                                billGenerationBoqController.netBillAmt,
+                                cursorColor: Colors.black,
+                                style: const TextStyle(color: Colors.black),
+                                decoration:  InputDecoration(
+                                  contentPadding: EdgeInsets.zero,
+                                  border: InputBorder.none,
+                                  labelText: "Net Bill Amt",
+                                  labelStyle: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: RequestConstant.Lable_Font_SIZE,
+                                  ),
+                                  prefixIconConstraints:
+                                  BoxConstraints(minWidth: 0, minHeight: 0),
+                                  prefixIcon: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 8),
+                                    child:Icon( Icons.attach_money, color: Theme.of(context).primaryColor),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          margin:
+                          const EdgeInsets.only(top: 10, left: 10, right: 10),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              side: const BorderSide(
+                                  color: Colors.white70, width: 1),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 3,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 3, left: 10, bottom: 5),
+                              child: TextFormField(
+                                readOnly: true,
+                                autovalidateMode:
+                                AutovalidateMode.always,
+                                onTap: () {
+                                  if (billGenerationBoqController
+                                      .finalBillAmt.text !=
+                                      "" &&
+                                      billGenerationBoqController
+                                          .finalBillAmt.text !=
+                                          "0" &&
+                                      billGenerationBoqController
+                                          .finalBillAmt.text !=
+                                          "0.0") {
+                                    return;
+                                  } else {
+                                    setState(() {
+                                      billGenerationBoqController
+                                          .finalBillAmt.text = "";
+                                      billGenerationBoqController
+                                          .deductionPaymentCalculation();
+                                    });
+                                  }
+                                },
+                                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                  ),
+                                ],
+                                controller:
+                                billGenerationBoqController.finalBillAmt,
+                                cursorColor: Colors.black,
+                                style: const TextStyle(color: Colors.black),
+                                decoration:  InputDecoration(
+                                  contentPadding: EdgeInsets.zero,
+                                  border: InputBorder.none,
+                                  labelText: "Final Bill Amt",
+                                  labelStyle: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: RequestConstant.Lable_Font_SIZE,
+                                  ),
+                                  prefixIconConstraints:
+                                  BoxConstraints(minWidth: 0, minHeight: 0),
+                                  prefixIcon: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 8),
+                                    child:Icon( Icons.paid, color: Theme.of(context).primaryColor),
+                                  ),
                                 ),
                               ),
                             ),
@@ -824,10 +950,10 @@ class _Bill_Generation_Boq_deductionState
                                     });
                                   }
                                 },
-                                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                keyboardType: TextInputType.number,
                                 inputFormatters: [
                                   FilteringTextInputFormatter.allow(
-                                    RegExp(r'^\d+\.?\d{0,2}'),
+                                    RegExp(r'^-?\d*\.?\d{0,2}$'),
                                   ),
                                 ],
                                 controller:
@@ -868,12 +994,6 @@ class _Bill_Generation_Boq_deductionState
 
                                   // INVALID
                                   if (!success) {
-
-                                    BaseUtitiles.showToast(
-                                      "Net Bill Amount cannot be negative. "
-                                          "Please reduce the deductions "
-                                          "or add-less percentages.",
-                                    );
 
                                     // PREVENT onChanged LOOP
                                     billGenerationBoqController.isRestoring = true;
@@ -1094,7 +1214,6 @@ class _Bill_Generation_Boq_deductionState
 
                                         percent,
 
-                                        billGenerationBoqController.baseNetPayAmt,
                                       );
 
                                       // RESTORE ONLY CURRENT FIELD
@@ -1291,7 +1410,8 @@ class _Bill_Generation_Boq_deductionState
                               }
                               else if ((billGenerationBoqController.materialDebitamt.text != "0" &&
                                   billGenerationBoqController.materialDebitamt.text != "0.0" &&
-                                  billGenerationBoqController.materialDebitamt.text != "0.00") &&
+                                  billGenerationBoqController.materialDebitamt.text != "0.00" &&
+                                  billGenerationBoqController.materialDebitamt.text != "") &&
                                   billGenerationBoqController.materialDebitamt.text.isEmpty) {
                                 Fluttertoast.showToast(msg: "Please enter Material Debit remarks");
                               }
@@ -1518,6 +1638,8 @@ class _Bill_Generation_Boq_deductionState
                           billGenerationBoqController.Advded.text =
                               billGenerationBoqController.tobededadv.text;
                           billGenerationBoqController.Roundoff.text = "0";
+                          billGenerationBoqController.netBillAmt.text = "0.0";
+                          billGenerationBoqController.finalBillAmt.text = "0.0";
                           billGenerationBoqController.netpayamt.text = "0.0";
                           billGenerationBoqController.tobededadv.text =
                               billGenerationBoqController

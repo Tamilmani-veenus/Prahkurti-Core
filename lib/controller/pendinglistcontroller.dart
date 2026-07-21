@@ -169,6 +169,7 @@ class PendingListController extends GetxController {
     if (response != null) {
       if (response["success"] == true) {
         await getPendingList();
+        BaseUtitiles.showToast(response["message"] ?? 'Something went wrong..');
         BaseUtitiles.popMultiple(context, count: 4);
       } else {
         BaseUtitiles.popMultiple(context, count: 4);
@@ -224,12 +225,12 @@ class PendingListController extends GetxController {
   }
 
 
-  Future poAproval_buttonApi(BuildContext context, String Urlname, {int? id}) async {
+  Future poAproval_buttonApi(BuildContext context, String Urlname,type, {int? id}) async {
 
     List body = [];
 
     List<ApprovalDet>? finalList = getPoAprovalDetList.value.length == 0
-        ? getPoApprovalDet(id)
+        ? getPoApprovalDet(id,type)
         : getPoAprovalDetList.value;
 
     if (finalList != null) {
@@ -252,11 +253,11 @@ class PendingListController extends GetxController {
 
   ///-------------Po Approval && Direct Transfer (Verify & Approval)
 
-  List<ApprovalDet>? getPoApprovalDet(id) {
+  List<ApprovalDet>? getPoApprovalDet(id,type) {
     // add_PoaprovalListvalue.value.forEach((element) {
       var list = new ApprovalDet(
         id: id,
-        poWoType: "PO",
+        poWoType: type == "P" ? "PO" : "Rentel WO",
       );
       getPoAprovalDetList.value.add(list);
     // });
@@ -393,9 +394,9 @@ class PendingListController extends GetxController {
     }
   }
 
-  Future getReqNoApi(reqId) async {
+  Future getReqNoApi(reqId,type) async {
     reqNoList.value=[];
-      var response = await PendingListProvider.getReqNoList(reqId);
+      var response = await PendingListProvider.getReqNoList(reqId,type);
       if (response != null) {
         if(response["success"]==true) {
           if (response["result"]!.isNotEmpty) {
@@ -601,14 +602,21 @@ class PendingListController extends GetxController {
   Future PoVerification_ApproveDetDetails(
       String Url, int RID, String Reqno,BuildContext context,
       String projectName, String siteName,String supName,String preparedBy,
-      String date,String dueDate,String netAmount,{String? purchaseType}) async {
+      String date,String dueDate,String netAmount,{String? purchaseType,String? rentalType}) async {
     onclickPendingListDet.clear();
-    var response = await PendingListProvider.getOnclickDetProvider(Url, RID, purchaseType:purchaseType);
+    var response = await PendingListProvider.getOnclickDetProvider(Url, RID, purchaseType:purchaseType,rentalType: rentalType);
     if (response != null ) {
       if(response.success==true){
-        onclickPendingListDet = response.result?.mMatPurOrdLink ?? [];
+        if(rentalType == "P") {
+          onclickPendingListDet = response.result?.mMatPurOrdLink ?? [];
+        }
+        else {
+            onclickPendingListDet = response.result?.mMatRenWorkElement ?? [];
+          }
         print(onclickPendingListDet.toString());
-        await getReqNoApi(RID);
+        print("SSSSSSSSSS...${
+            onclickPendingListDet[0].netPayAmount.toString()}");
+        await getReqNoApi(RID,rentalType);
         return Navigator.push(
             context,
             MaterialPageRoute(
@@ -622,6 +630,7 @@ class PendingListController extends GetxController {
                   Date: date,
                   dueDate: dueDate,
                   netAmount: netAmount,
+                  type: rentalType!,
                 )));
       }
       else {
@@ -1136,7 +1145,7 @@ class PendingListController extends GetxController {
                           heading:
                           entryTypeName!,checkheading: name)),
             )
-                : name == "WORK ORDER VERIFICATION - DIRECT" ||
+                : name == "WORK ORDER VERIFICATION PENDING - DIRECT" ||
                 name ==
                     "WORK ORDER VERIFICATION - BOQ"
                 ? Navigator
@@ -1148,7 +1157,7 @@ class PendingListController extends GetxController {
                           heading: entryTypeName!,checkheading: name)),
             )
                 : name ==
-                "WORK ORDER APPROVAL"
+                "WORK ORDER APPROVAL PENDING"
                 ? Navigator
                 .push(
               context,

@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:prahkurticore/utilities/apiconstant.dart';
 
 import '../../../../app_theme/app_colors.dart';
@@ -34,16 +35,19 @@ class _Subcont_NMR_DeductionState_Site
   void initState() {
     var duration = const Duration(seconds: 0);
     Future.delayed(duration, () async {
-
-      if (nmrWklyController.saveButton.value == RequestConstant.RESUBMIT || nmrWklyController.saveButton.value == RequestConstant.VERIFY || nmrWklyController.saveButton.value == RequestConstant.APPROVAL) {
+      if (nmrWklyController.saveButton.value == RequestConstant.RESUBMIT ||
+          nmrWklyController.saveButton.value == RequestConstant.VERIFY ||
+          nmrWklyController.saveButton.value == RequestConstant.APPROVAL) {
         nmrWklyController.EditListSaveDatas.forEach((element) {
           nmrWklyController.workid = element.id;
           nmrWklyController.billamount.text = element.billAmount.toString();
+          nmrWklyController.netBillAmt.text = element.netBillAmount.toString();
           nmrWklyController.Creditamt.text = element.creditAmount.toString();
           nmrWklyController.Debitamt.text = element.debitAmount.toString();
           nmrWklyController.Advded.text = element.advanceAmount.toString();
           nmrWklyController.foodDeduction.text = element.foodAmount.toString();
-          nmrWklyController.tobededadv.text = element.actualAdvanceAmount.toString();
+          nmrWklyController.tobededadv.text =
+              element.actualAdvanceAmount.toString();
           nmrWklyController.Roundoff.text = element.roundOff.toString();
           nmrWklyController.CreditRemarksController.text =
               element.creditRemarks.toString();
@@ -51,27 +55,28 @@ class _Subcont_NMR_DeductionState_Site
               element.debitRemarks.toString();
           nmrWklyController.netpayamt.text = element.netPayAmount.toString();
         });
-        nmrWklyController.setBaseNetPay(
-            nmrWklyController.billamount.text);
+        await nmrWklyController.deduction_paymentCalculation();
       }
-      await nmrWklyController.DirectBill_CalculationList();
 
-    if (nmrWklyController.saveButton.value == RequestConstant.SUBMIT) {
-      nmrWklyController.workid = 0;
-      nmrWklyController.foodDeduction.text = "0.0";
-      nmrWklyController.Creditamt.text = "0.0";
-      nmrWklyController.Debitamt.text = "0.0";
-      nmrWklyController.Advded.text = "0.0";
-      nmrWklyController.Roundoff.text = "0.0";
-      nmrWklyController.tobededadv.text = billGenerationDirectController.to_be_dection_advance;
-      nmrWklyController.deduction_paymentCalculation();
-      nmrWklyController.CreditRemarksController.text = "-";
-      nmrWklyController.DebitRemarksController.text = "-";
-    }
+      if (nmrWklyController.saveButton.value == RequestConstant.SUBMIT) {
+        nmrWklyController.workid = 0;
+        nmrWklyController.billamount.text = "0.0";
+        nmrWklyController.foodDeduction.text = "0.0";
+        nmrWklyController.Creditamt.text = "0.0";
+        nmrWklyController.Debitamt.text = "0.0";
+        nmrWklyController.Advded.text = "0.0";
+        nmrWklyController.Roundoff.text = "0.0";
+        nmrWklyController.netBillAmt.text = "0.0";
+        nmrWklyController.netpayamt.text = "0.0";
+        nmrWklyController.tobededadv.text =
+            billGenerationDirectController.to_be_dection_advance;
+        nmrWklyController.CreditRemarksController.text = "-";
+        nmrWklyController.DebitRemarksController.text = "-";
+        await nmrWklyController.deduction_paymentCalculation();
+      }
     });
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -109,11 +114,10 @@ class _Subcont_NMR_DeductionState_Site
                           },
                           child: const Text("Back",
                               style:
-                              TextStyle(color: Colors.grey, fontSize: 18)))
+                                  TextStyle(color: Colors.grey, fontSize: 18)))
                     ],
                   ),
                 ),
-
                 Container(
                   margin: EdgeInsets.only(top: 10, left: 10, right: 10),
                   child: Card(
@@ -124,7 +128,7 @@ class _Subcont_NMR_DeductionState_Site
                     elevation: 3,
                     child: Padding(
                       padding:
-                      const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                          const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                       child: TextFormField(
                         readOnly: true,
                         controller: nmrWklyController.billamount,
@@ -138,7 +142,7 @@ class _Subcont_NMR_DeductionState_Site
                               color: Colors.grey,
                               fontSize: RequestConstant.Lable_Font_SIZE),
                           prefixIconConstraints:
-                          BoxConstraints(minWidth: 0, minHeight: 0),
+                              BoxConstraints(minWidth: 0, minHeight: 0),
                           prefixIcon: Padding(
                               padding: EdgeInsets.symmetric(
                                   vertical: 8, horizontal: 8),
@@ -148,99 +152,92 @@ class _Subcont_NMR_DeductionState_Site
                     ),
                   ),
                 ),
-                !AppClient.isRKCPL ?
-                Container(
-                  margin: EdgeInsets.only(top: 10, left: 10, right: 10),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.white70, width: 1),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 3,
-                    child: Padding(
-                      padding:
-                      const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                      child: TextFormField(
-                        controller: nmrWklyController.foodDeduction,
-                        cursorColor: Colors.black,
-                        style: TextStyle(color: Colors.black),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.zero,
-                          border: InputBorder.none,
-                          labelText: "Food Deduction",
-                          labelStyle: TextStyle(
-                              color: Colors.grey,
-                              fontSize: RequestConstant.Lable_Font_SIZE),
-                          prefixIconConstraints:
-                          BoxConstraints(minWidth: 0, minHeight: 0),
-                          prefixIcon: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 8),
-                              child: ConstIcons.preparedBy),
+                !AppClient.isRKCPL
+                    ? Container(
+                        margin: EdgeInsets.only(top: 10, left: 10, right: 10),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(color: Colors.white70, width: 1),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          elevation: 3,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 3, left: 10, bottom: 5),
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              controller: nmrWklyController.foodDeduction,
+                              cursorColor: Colors.black,
+                              style: TextStyle(color: Colors.black),
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.zero,
+                                border: InputBorder.none,
+                                labelText: "Food Deduction",
+                                labelStyle: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: RequestConstant.Lable_Font_SIZE),
+                                prefixIconConstraints:
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
+                                prefixIcon: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 8),
+                                    child: ConstIcons.preparedBy),
+                              ),
+                              onChanged: (value) async {
+                                // PREVENT LOOP
+                                if (nmrWklyController.isRestoring) {
+                                  return;
+                                }
+
+                                // STORE OLD VALUE
+                                String oldValue =
+                                    nmrWklyController.oldFoodValue;
+
+                                // CALCULATE
+                                bool success = await nmrWklyController
+                                    .deduction_paymentCalculation();
+
+                                // INVALID
+                                if (!success) {
+
+                                  // PREVENT onChanged LOOP
+                                  nmrWklyController.isRestoring = true;
+
+                                  // RESTORE OLD VALUE
+                                  nmrWklyController.foodDeduction.text =
+                                      oldValue;
+
+                                  // CURSOR POSITION
+                                  nmrWklyController.foodDeduction.selection =
+                                      TextSelection.fromPosition(
+                                    TextPosition(
+                                      offset: oldValue.length,
+                                    ),
+                                  );
+
+                                  nmrWklyController.isRestoring = false;
+
+                                  // RECALCULATE
+                                  await nmrWklyController
+                                      .deduction_paymentCalculation();
+                                } else {
+                                  // SAVE VALID VALUE
+                                  nmrWklyController.oldFoodValue = value;
+                                }
+                              },
+                              onTap: () {
+                                if (nmrWklyController.foodDeduction.text ==
+                                        "0.0" ||
+                                    nmrWklyController.foodDeduction.text ==
+                                        "0") {
+                                  nmrWklyController.foodDeduction.text = "";
+                                }
+                              },
+                            ),
+                          ),
                         ),
-                        onChanged: (value) async {
-
-                          // PREVENT LOOP
-                          if (nmrWklyController.isRestoring) {
-                            return;
-                          }
-
-                          // STORE OLD VALUE
-                          String oldValue =
-                              nmrWklyController.oldFoodValue;
-
-                          // CALCULATE
-                          bool success =
-                          await nmrWklyController
-                              .deduction_paymentCalculation();
-
-                          // INVALID
-                          if (!success) {
-
-                            BaseUtitiles.showToast(
-                              "Net Bill Amount cannot be negative. "
-                                  "Please reduce the deductions "
-                                  "or add-less percentages.",
-                            );
-
-                            // PREVENT onChanged LOOP
-                            nmrWklyController.isRestoring = true;
-
-                            // RESTORE OLD VALUE
-                            nmrWklyController.foodDeduction.text =
-                                oldValue;
-
-                            // CURSOR POSITION
-                            nmrWklyController.foodDeduction.selection =
-                                TextSelection.fromPosition(
-                                  TextPosition(
-                                    offset: oldValue.length,
-                                  ),
-                                );
-
-                            nmrWklyController.isRestoring = false;
-
-                            // RECALCULATE
-                            await nmrWklyController
-                                .deduction_paymentCalculation();
-
-                          } else {
-
-                            // SAVE VALID VALUE
-                            nmrWklyController.oldFoodValue =
-                                value;
-                          }
-                        },
-                        onTap: (){
-                          if(nmrWklyController.foodDeduction.text=="0.0"||nmrWklyController.foodDeduction.text=="0"){
-                            nmrWklyController.foodDeduction.text="";
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                ) : SizedBox(),
-
+                      )
+                    : SizedBox(),
                 Row(
                   children: [
                     Expanded(
@@ -269,14 +266,13 @@ class _Subcont_NMR_DeductionState_Site
                                     color: Colors.grey,
                                     fontSize: RequestConstant.Lable_Font_SIZE),
                                 prefixIconConstraints:
-                                BoxConstraints(minWidth: 0, minHeight: 0),
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
                                 prefixIcon: Padding(
                                     padding: EdgeInsets.symmetric(
                                         vertical: 8, horizontal: 8),
                                     child: ConstIcons.creditAmt),
                               ),
                               onChanged: (value) async {
-
                                 // PREVENT LOOP
                                 if (nmrWklyController.isRestoring) {
                                   return;
@@ -287,50 +283,40 @@ class _Subcont_NMR_DeductionState_Site
                                     nmrWklyController.oldCreditValue;
 
                                 // CALCULATE FIRST
-                                bool success =
-                                await nmrWklyController
+                                bool success = await nmrWklyController
                                     .deduction_paymentCalculation();
 
                                 // INVALID
                                 if (!success) {
 
-                                  BaseUtitiles.showToast(
-                                    "Net Bill Amount cannot be negative. "
-                                        "Please reduce the deductions "
-                                        "or add-less percentages.",
-                                  );
-
                                   // PREVENT onChanged LOOP
                                   nmrWklyController.isRestoring = true;
 
                                   // RESTORE OLD VALUE
-                                  nmrWklyController.Creditamt.text =
-                                      oldValue;
+                                  nmrWklyController.Creditamt.text = oldValue;
 
                                   // CURSOR POSITION
                                   nmrWklyController.Creditamt.selection =
                                       TextSelection.fromPosition(
-                                        TextPosition(
-                                          offset: oldValue.length,
-                                        ),
-                                      );
+                                    TextPosition(
+                                      offset: oldValue.length,
+                                    ),
+                                  );
 
                                   nmrWklyController.isRestoring = false;
 
                                   // RECALCULATE
                                   await nmrWklyController
                                       .deduction_paymentCalculation();
-
                                 } else {
-
                                   // SAVE VALID VALUE
-                                  nmrWklyController.oldCreditValue =
-                                      value;
+                                  nmrWklyController.oldCreditValue = value;
                                 }
                               },
-                              onTap: (){
-                                if(nmrWklyController.Creditamt.text=="0.0"||nmrWklyController.Creditamt.text=="0"){
-                                  nmrWklyController.Creditamt.text="";
+                              onTap: () {
+                                if (nmrWklyController.Creditamt.text == "0.0" ||
+                                    nmrWklyController.Creditamt.text == "0") {
+                                  nmrWklyController.Creditamt.text = "";
                                 }
                               },
                             ),
@@ -353,7 +339,7 @@ class _Subcont_NMR_DeductionState_Site
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
                               controller:
-                              nmrWklyController.CreditRemarksController,
+                                  nmrWklyController.CreditRemarksController,
                               cursorColor: Colors.black,
                               style: TextStyle(color: Colors.black),
                               decoration: InputDecoration(
@@ -364,7 +350,7 @@ class _Subcont_NMR_DeductionState_Site
                                     color: Colors.grey,
                                     fontSize: RequestConstant.Lable_Font_SIZE),
                                 prefixIconConstraints:
-                                BoxConstraints(minWidth: 0, minHeight: 0),
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
                                 prefixIcon: Padding(
                                     padding: EdgeInsets.symmetric(
                                         vertical: 8, horizontal: 8),
@@ -377,7 +363,6 @@ class _Subcont_NMR_DeductionState_Site
                     ),
                   ],
                 ),
-
                 Row(
                   children: [
                     Expanded(
@@ -407,14 +392,13 @@ class _Subcont_NMR_DeductionState_Site
                                     color: Colors.grey,
                                     fontSize: RequestConstant.Lable_Font_SIZE),
                                 prefixIconConstraints:
-                                BoxConstraints(minWidth: 0, minHeight: 0),
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
                                 prefixIcon: Padding(
                                     padding: EdgeInsets.symmetric(
                                         vertical: 8, horizontal: 8),
                                     child: ConstIcons.debitAmt),
                               ),
                               onChanged: (value) async {
-
                                 // PREVENT LOOP
                                 if (nmrWklyController.isRestoring) {
                                   return;
@@ -425,50 +409,41 @@ class _Subcont_NMR_DeductionState_Site
                                     nmrWklyController.oldDebitValue;
 
                                 // CALCULATE
-                                bool success =
-                                await nmrWklyController
+                                bool success = await nmrWklyController
                                     .deduction_paymentCalculation();
 
                                 // INVALID
                                 if (!success) {
 
-                                  BaseUtitiles.showToast(
-                                    "Net Bill Amount cannot be negative. "
-                                        "Please reduce the deductions "
-                                        "or add-less percentages.",
-                                  );
 
                                   // PREVENT RE-TRIGGER
                                   nmrWklyController.isRestoring = true;
 
                                   // RESTORE OLD VALUE
-                                  nmrWklyController.Debitamt.text =
-                                      oldValue;
+                                  nmrWklyController.Debitamt.text = oldValue;
 
                                   // CURSOR
                                   nmrWklyController.Debitamt.selection =
                                       TextSelection.fromPosition(
-                                        TextPosition(
-                                          offset: oldValue.length,
-                                        ),
-                                      );
+                                    TextPosition(
+                                      offset: oldValue.length,
+                                    ),
+                                  );
 
                                   // ALLOW AGAIN
                                   nmrWklyController.isRestoring = false;
 
                                   await nmrWklyController
                                       .deduction_paymentCalculation();
-
                                 } else {
-
                                   // SAVE VALID VALUE
-                                  nmrWklyController.oldDebitValue =
-                                      value;
+                                  nmrWklyController.oldDebitValue = value;
                                 }
                               },
-                              onTap: (){
-                                if(nmrWklyController.Debitamt.text=="0.0"||nmrWklyController.Debitamt.text=="0"){
-                                  nmrWklyController.Debitamt.text="";
+                              onTap: () {
+                                if (nmrWklyController.Debitamt.text == "0.0" ||
+                                    nmrWklyController.Debitamt.text == "0") {
+                                  nmrWklyController.Debitamt.text = "";
                                 }
                               },
                             ),
@@ -491,7 +466,7 @@ class _Subcont_NMR_DeductionState_Site
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
                               controller:
-                              nmrWklyController.DebitRemarksController,
+                                  nmrWklyController.DebitRemarksController,
                               cursorColor: Colors.black,
                               style: TextStyle(color: Colors.black),
                               decoration: InputDecoration(
@@ -502,7 +477,7 @@ class _Subcont_NMR_DeductionState_Site
                                     color: Colors.grey,
                                     fontSize: RequestConstant.Lable_Font_SIZE),
                                 prefixIconConstraints:
-                                BoxConstraints(minWidth: 0, minHeight: 0),
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
                                 prefixIcon: Padding(
                                     padding: EdgeInsets.symmetric(
                                         vertical: 8, horizontal: 8),
@@ -515,121 +490,6 @@ class _Subcont_NMR_DeductionState_Site
                     ),
                   ],
                 ),
-
-                Container(
-                  margin: EdgeInsets.only(top: 10, left: 10, right: 10),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.white70, width: 1),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 3,
-                    child: Padding(
-                      padding:
-                      const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                      child: TextFormField(
-                        readOnly: true,
-                        controller: nmrWklyController.tobededadv,
-                        cursorColor: Colors.black,
-                        style: TextStyle(color: Colors.black),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.zero,
-                          border: InputBorder.none,
-                          labelText: "To Be Deduction in Advance",
-                          labelStyle: TextStyle(
-                              color: Colors.grey,
-                              fontSize: RequestConstant.Lable_Font_SIZE),
-                          prefixIconConstraints:
-                          BoxConstraints(minWidth: 0, minHeight: 0),
-                          prefixIcon: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 8),
-                              child: ConstIcons.deduction),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-                Container(
-                  margin: EdgeInsets.only(top: 10, left: 10, right: 10),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.white70, width: 1),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 3,
-                    child: Padding(
-                      padding:
-                      const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                      child: Obx(()=>
-                        TextFormField(
-                          keyboardType: TextInputType.number,
-                          readOnly: nmrWklyController.isAdvanceReadOnly.value,
-                          controller: nmrWklyController.Advded,
-                          cursorColor: Colors.black,
-                          style: TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.zero,
-                            border: InputBorder.none,
-                            labelText: "Advance Deduction Amt",
-                            labelStyle: TextStyle(
-                                color: Colors.grey,
-                                fontSize: RequestConstant.Lable_Font_SIZE),
-                            prefixIconConstraints:
-                            BoxConstraints(minWidth: 0, minHeight: 0),
-                            prefixIcon: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 8),
-                                child: ConstIcons.advancededuction),
-                          ),
-                            onChanged: (value) async {
-                              double advDed = double.tryParse(value) ?? 0;
-                              double advLimit =
-                                  double.tryParse(nmrWklyController.tobededadv.text) ?? 0;
-
-                              if (advDed > advLimit) {
-                                BaseUtitiles.showToast(
-                                    "Advance deduction should not exceed advance limit.");
-
-                                nmrWklyController.Advded.text = "0.0";
-                                nmrWklyController.Advded.selection = TextSelection.fromPosition(
-                                  TextPosition(offset: nmrWklyController.Advded.text.length),
-                                );
-
-                                await nmrWklyController.deduction_paymentCalculation();
-                                return;
-                              }
-
-                              bool success =
-                              await nmrWklyController.deduction_paymentCalculation();
-
-                              if (!success) {
-                                BaseUtitiles.showToast(
-                                    "Advance deduction should not exceed net payable amount.");
-
-                                nmrWklyController.Advded.text = "0.0";
-                                nmrWklyController.Advded.selection = TextSelection.fromPosition(
-                                  TextPosition(offset: nmrWklyController.Advded.text.length),
-                                );
-
-                                await nmrWklyController.deduction_paymentCalculation();
-                              }
-                            },
-                          onTap: (){
-                            if(nmrWklyController.isAdvanceReadOnly.value==false) {
-                              if (nmrWklyController.Advded.text == "0.0" ||
-                                  nmrWklyController.Advded.text == "0") {
-                                nmrWklyController.Advded.text = "";
-                              }
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
                 Row(
                   children: [
                     Expanded(
@@ -646,82 +506,269 @@ class _Subcont_NMR_DeductionState_Site
                             padding: const EdgeInsets.only(
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
-                              keyboardType: TextInputType.number,
-                              controller: nmrWklyController.Roundoff,
+                              readOnly: true,
+                              controller: nmrWklyController.tobededadv,
                               cursorColor: Colors.black,
                               style: TextStyle(color: Colors.black),
                               decoration: InputDecoration(
                                 contentPadding: EdgeInsets.zero,
                                 border: InputBorder.none,
-                                labelText: "Round off",
+                                labelText: "To Be Deduction in Advance",
                                 labelStyle: TextStyle(
                                     color: Colors.grey,
                                     fontSize: RequestConstant.Lable_Font_SIZE),
                                 prefixIconConstraints:
-                                BoxConstraints(minWidth: 0, minHeight: 0),
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
                                 prefixIcon: Padding(
                                     padding: EdgeInsets.symmetric(
                                         vertical: 8, horizontal: 8),
-                                    child: ConstIcons.roundoff),
+                                    child: ConstIcons.deduction),
                               ),
-                              onChanged: (value) async {
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        margin: EdgeInsets.only(top: 10, left: 10, right: 10),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(color: Colors.white70, width: 1),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          elevation: 3,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 3, left: 10, bottom: 5),
+                            child: Obx(
+                              () => TextFormField(
+                                keyboardType: TextInputType.number,
+                                readOnly:
+                                    nmrWklyController.isAdvanceReadOnly.value,
+                                controller: nmrWklyController.Advded,
+                                cursorColor: Colors.black,
+                                style: TextStyle(color: Colors.black),
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.zero,
+                                  border: InputBorder.none,
+                                  labelText: "Advance Deduction Amt",
+                                  labelStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize:
+                                          RequestConstant.Lable_Font_SIZE),
+                                  prefixIconConstraints:
+                                      BoxConstraints(minWidth: 0, minHeight: 0),
+                                  prefixIcon: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 8, horizontal: 8),
+                                      child: ConstIcons.advancededuction),
+                                ),
+                                onChanged: (value) async {
+                                  double advDed = double.tryParse(value) ?? 0;
+                                  double advLimit = double.tryParse(
+                                          nmrWklyController.tobededadv.text) ??
+                                      0;
 
-                                // PREVENT LOOP
-                                if (nmrWklyController.isRestoring) {
-                                  return;
-                                }
+                                  if (advDed > advLimit) {
+                                    BaseUtitiles.showToast(
+                                        "Advance deduction should not exceed advance limit.");
 
-                                // STORE OLD VALUE
-                                String oldValue =
-                                    nmrWklyController.oldRoundOffValue;
+                                    nmrWklyController.Advded.text = "0.0";
+                                    nmrWklyController.Advded.selection =
+                                        TextSelection.fromPosition(
+                                      TextPosition(
+                                          offset: nmrWklyController
+                                              .Advded.text.length),
+                                    );
 
-                                // CALCULATE
-                                bool success =
-                                await nmrWklyController
-                                    .deduction_paymentCalculation();
+                                    await nmrWklyController
+                                        .deduction_paymentCalculation();
+                                    return;
+                                  }
 
-                                // INVALID
-                                if (!success) {
-
-                                  BaseUtitiles.showToast(
-                                    "Net Bill Amount cannot be negative. "
-                                        "Please reduce the deductions "
-                                        "or add-less percentages.",
-                                  );
-
-                                  // PREVENT onChanged LOOP
-                                  nmrWklyController.isRestoring = true;
-
-                                  // RESTORE OLD VALUE
-                                  nmrWklyController.Roundoff.text =
-                                      oldValue;
-
-                                  // CURSOR POSITION
-                                  nmrWklyController.Roundoff.selection =
-                                      TextSelection.fromPosition(
-                                        TextPosition(
-                                          offset: oldValue.length,
-                                        ),
-                                      );
-
-                                  nmrWklyController.isRestoring = false;
-
-                                  // RECALCULATE
-                                  await nmrWklyController
+                                  bool success = await nmrWklyController
                                       .deduction_paymentCalculation();
 
-                                } else {
+                                  if (!success) {
+                                    nmrWklyController.Advded.text = "0.0";
+                                    nmrWklyController.Advded.selection =
+                                        TextSelection.fromPosition(
+                                      TextPosition(
+                                          offset: nmrWklyController
+                                              .Advded.text.length),
+                                    );
 
-                                  // SAVE VALID VALUE
-                                  nmrWklyController.oldRoundOffValue =
-                                      value;
+                                    await nmrWklyController
+                                        .deduction_paymentCalculation();
+                                  }
+                                },
+                                onTap: () {
+                                  if (nmrWklyController
+                                          .isAdvanceReadOnly.value ==
+                                      false) {
+                                    if (nmrWklyController.Advded.text ==
+                                            "0.0" ||
+                                        nmrWklyController.Advded.text == "0") {
+                                      nmrWklyController.Advded.text = "";
+                                    }
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 10, left: 10, right: 10),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.white70, width: 1),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 3,
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                      child: TextFormField(
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'^-?\d*\.?\d{0,2}$'),
+                          ),
+                        ],
+                        controller: nmrWklyController.Roundoff,
+                        cursorColor: Colors.black,
+                        style: TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.zero,
+                          border: InputBorder.none,
+                          labelText: "Round off",
+                          labelStyle: TextStyle(
+                              color: Colors.grey,
+                              fontSize: RequestConstant.Lable_Font_SIZE),
+                          prefixIconConstraints:
+                              BoxConstraints(minWidth: 0, minHeight: 0),
+                          prefixIcon: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 8),
+                              child: ConstIcons.roundoff),
+                        ),
+                        onChanged: (value) async {
+                          // PREVENT LOOP
+                          if (nmrWklyController.isRestoring) {
+                            return;
+                          }
+
+                          // STORE OLD VALUE
+                          String oldValue = nmrWklyController.oldRoundOffValue;
+
+                          // CALCULATE
+                          bool success = await nmrWklyController
+                              .deduction_paymentCalculation();
+
+                          // INVALID
+                          if (!success) {
+
+                            // PREVENT onChanged LOOP
+                            nmrWklyController.isRestoring = true;
+
+                            // RESTORE OLD VALUE
+                            nmrWklyController.Roundoff.text = oldValue;
+
+                            // CURSOR POSITION
+                            nmrWklyController.Roundoff.selection =
+                                TextSelection.fromPosition(
+                              TextPosition(
+                                offset: oldValue.length,
+                              ),
+                            );
+
+                            nmrWklyController.isRestoring = false;
+
+                            // RECALCULATE
+                            await nmrWklyController
+                                .deduction_paymentCalculation();
+                          } else {
+                            // SAVE VALID VALUE
+                            nmrWklyController.oldRoundOffValue = value;
+                          }
+                        },
+                        onTap: () {
+                          if (nmrWklyController.Roundoff.text == "0.0" ||
+                              nmrWklyController.Roundoff.text == "0") {
+                            nmrWklyController.Roundoff.text = "";
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        margin:
+                            const EdgeInsets.only(top: 10, left: 10, right: 10),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                                color: Colors.white70, width: 1),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          elevation: 3,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 3, left: 10, bottom: 5),
+                            child: TextFormField(
+                              readOnly: true,
+                              autovalidateMode: AutovalidateMode.always,
+                              onTap: () {
+                                if (nmrWklyController.netBillAmt.text != "" &&
+                                    nmrWklyController.netBillAmt.text != "0" &&
+                                    nmrWklyController.netBillAmt.text !=
+                                        "0.0") {
+                                  return;
+                                } else {
+                                  setState(() {
+                                    nmrWklyController.netBillAmt.text = "";
+                                    nmrWklyController
+                                        .deduction_paymentCalculation();
+                                  });
                                 }
                               },
-                              onTap: (){
-                                if(nmrWklyController.Roundoff.text=="0.0"||nmrWklyController.Roundoff.text=="0"){
-                                  nmrWklyController.Roundoff.text="";
-                                }
-                              },
+                              keyboardType: TextInputType.numberWithOptions(
+                                  decimal: true),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                  RegExp(r'^\d+\.?\d{0,2}'),
+                                ),
+                              ],
+                              controller: nmrWklyController.netBillAmt,
+                              cursorColor: Colors.black,
+                              style: const TextStyle(color: Colors.black),
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.zero,
+                                border: InputBorder.none,
+                                labelText: "Net Bill Amt",
+                                labelStyle: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: RequestConstant.Lable_Font_SIZE,
+                                ),
+                                prefixIconConstraints:
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
+                                prefixIcon: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 8),
+                                  child: Icon(Icons.attach_money,
+                                      color: Theme.of(context).primaryColor),
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -753,7 +800,7 @@ class _Subcont_NMR_DeductionState_Site
                                     color: Colors.grey,
                                     fontSize: RequestConstant.Lable_Font_SIZE),
                                 prefixIconConstraints:
-                                BoxConstraints(minWidth: 0, minHeight: 0),
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
                                 prefixIcon: Padding(
                                     padding: EdgeInsets.symmetric(
                                         vertical: 8, horizontal: 8),
@@ -766,7 +813,6 @@ class _Subcont_NMR_DeductionState_Site
                     ),
                   ],
                 ),
-
                 Container(
                   margin: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
@@ -781,7 +827,7 @@ class _Subcont_NMR_DeductionState_Site
                       ),
                     ],
                   ),
-                  child: Obx((){
+                  child: Obx(() {
                     return Table(
                       border: TableBorder(
                         horizontalInside: BorderSide(
@@ -800,13 +846,12 @@ class _Subcont_NMR_DeductionState_Site
                         3: FlexColumnWidth(2),
                       },
                       children: [
-
                         /// HEADER
                         TableRow(
                           decoration: BoxDecoration(
                             color: Theme.of(context).primaryColor,
                           ),
-                          children:  [
+                          children: [
                             tableHeader("DESCRIPTION"),
                             tableHeader("+/-"),
                             tableHeader("%"),
@@ -818,8 +863,9 @@ class _Subcont_NMR_DeductionState_Site
                         // ADD THIS
                         ...List.generate(
                           nmrWklyController.directBillGen_ItemReadList.length,
-                              (index) {
-                            final item = nmrWklyController.directBillGen_ItemReadList[index];
+                          (index) {
+                            final item = nmrWklyController
+                                .directBillGen_ItemReadList[index];
 
                             return TableRow(
                               children: [
@@ -854,7 +900,8 @@ class _Subcont_NMR_DeductionState_Site
                                   height: 45,
                                   padding: const EdgeInsets.all(8),
                                   child: TextFormField(
-                                    controller: nmrWklyController.percentControllers[index],
+                                    controller: nmrWklyController
+                                        .percentControllers[index],
                                     keyboardType: TextInputType.number,
                                     cursorColor: Colors.black,
                                     textInputAction: TextInputAction.done,
@@ -863,63 +910,56 @@ class _Subcont_NMR_DeductionState_Site
                                       contentPadding: EdgeInsets.zero,
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(6),
-                                        borderSide: BorderSide(color: Colors.grey, width: 1),
+                                        borderSide: BorderSide(
+                                            color: Colors.grey, width: 1),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(6),
-                                        borderSide: BorderSide(color: Colors.grey, width: 1.5),
+                                        borderSide: BorderSide(
+                                            color: Colors.grey, width: 1.5),
                                       ),
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(6),
                                       ),
                                     ),
                                     onChanged: (val) {
-
-                                      final item =
-                                      nmrWklyController
+                                      final item = nmrWklyController
                                           .directBillGen_ItemReadList[index];
 
                                       double oldPercent =
                                           item.percentValue ?? 0.0;
 
-                                      double oldAmount =
-                                          item.amount ?? 0.0;
+                                      double oldAmount = item.amount ?? 0.0;
 
                                       final percent =
                                           double.tryParse(val) ?? 0.0;
 
                                       bool success =
-                                      nmrWklyController.calculateAndUpdate(
-
+                                          nmrWklyController.calculateAndUpdate(
                                         item.addLessId!,
-
                                         percent,
-
-                                        nmrWklyController.baseNetPayAmt,
                                       );
 
                                       // RESTORE ONLY CURRENT FIELD
                                       if (!success) {
+                                        nmrWklyController
+                                                .percentControllers[index]
+                                                .text =
+                                            oldPercent == 0
+                                                ? ''
+                                                : oldPercent.toString();
 
                                         nmrWklyController
-                                            .percentControllers[index]
-                                            .text =
-                                        oldPercent == 0
-                                            ? ''
-                                            : oldPercent.toString();
-
-                                        nmrWklyController
-                                            .percentControllers[index]
-                                            .selection =
+                                                .percentControllers[index]
+                                                .selection =
                                             TextSelection.fromPosition(
-                                              TextPosition(
-                                                offset:
-                                                nmrWklyController
-                                                    .percentControllers[index]
-                                                    .text
-                                                    .length,
-                                              ),
-                                            );
+                                          TextPosition(
+                                            offset: nmrWklyController
+                                                .percentControllers[index]
+                                                .text
+                                                .length,
+                                          ),
+                                        );
 
                                         item.percentValue = oldPercent;
                                         item.amount = oldAmount;
@@ -930,16 +970,22 @@ class _Subcont_NMR_DeductionState_Site
                                       }
                                     },
                                     onEditingComplete: () async {
-                                      FocusScope.of(context).unfocus();   // closes keyboard
-                                      await nmrWklyController.saveUpdatedCalcData();
+                                      FocusScope.of(context)
+                                          .unfocus(); // closes keyboard
+                                      await nmrWklyController
+                                          .saveUpdatedCalcData();
                                     },
                                   ),
                                 ),
                                 Obx(() {
                                   final updated = nmrWklyController.directBillGen_ItemReadList
                                       .firstWhereOrNull((e) => e.addLessId == item.addLessId);
+
+                                  final amount = (updated?.amount ?? 0.0);
+                                  final displayAmount = amount == 0 || amount.abs() < 0.005 ? 0.0 : amount;
+
                                   return tableCellText(
-                                    (updated?.amount ?? 0.0).toStringAsFixed(2),
+                                    displayAmount.toStringAsFixed(2),
                                     align: TextAlign.right,
                                   );
                                 }),
@@ -947,6 +993,7 @@ class _Subcont_NMR_DeductionState_Site
                             );
                           },
                         ),
+
                         /// TOTAL ROW
                         TableRow(
                           decoration: BoxDecoration(
@@ -968,106 +1015,103 @@ class _Subcont_NMR_DeductionState_Site
                             const SizedBox(),
                             const SizedBox(),
                             /// TOTAL AMOUNT
-                            // ADD THIS
                             Obx(() => Container(
-                              height: 50,
-                              alignment: Alignment.center,
-                              child: Text(
-                                (nmrWklyController.totalAddLess.abs() < 0.001
-                                    ? 0.0
-                                    : nmrWklyController.totalAddLess)
-                                    .toStringAsFixed(2), // ← getter from controller
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            )),
+                                  height: 50,
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    nmrWklyController
+                                        .getTotalAddLess()
+                                        .toStringAsFixed(2),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ))
                           ],
                         ),
                       ],
-                    );}
-                  ),
+                    );
+                  }),
                 ),
               ],
             ),
           ),
           bottomNavigationBar: Container(
-              padding: EdgeInsets.only(
-                top: 8,
-                bottom: 10,
-              ),
-
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.shade300,
-                    blurRadius: 5,
-                  )
-                ],
-              ),
-
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-
-                children: [
-
-                  SizedBox(height: 7),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Expanded(
-                        child: InkWell(
-                          child: Container(
-                            margin: EdgeInsets.only(left: 20, right: 20),
-                            height: BaseUtitiles.getheightofPercentage(context, 4),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
-                                color: Colors.white),
-                            alignment: Alignment.center,
-                            child: Text(
-                              "Reset",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: RequestConstant.Lable_Font_SIZE,
-                                  color: Theme.of(context).primaryColor),
-                            ),
-                          ),
-                          onTap: () {
-                            ResetAlert(context);
-                          },
-                        ),
-                      ),
-                      Expanded(
-                        child: InkWell(
-                          child: Container(
-                            margin: EdgeInsets.only(left: 20, right: 20),
-                            height: BaseUtitiles.getheightofPercentage(context, 4),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
-                                color: Theme.of(context).primaryColor),
-                            alignment: Alignment.center,
-                            child: Text(
-                              nmrWklyController.saveButton.value,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: RequestConstant.Lable_Font_SIZE,
-                                  color: Colors.white),
-                            ),
-                          ),
-                          onTap: () {
-                            SubmitAlert(context);
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+            padding: EdgeInsets.only(
+              top: 8,
+              bottom: 10,
             ),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.shade300,
+                  blurRadius: 5,
+                )
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 7),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Expanded(
+                      child: InkWell(
+                        child: Container(
+                          margin: EdgeInsets.only(left: 20, right: 20),
+                          height:
+                              BaseUtitiles.getheightofPercentage(context, 4),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              color: Colors.white),
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Reset",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                color: Theme.of(context).primaryColor),
+                          ),
+                        ),
+                        onTap: () {
+                          ResetAlert(context);
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: InkWell(
+                        child: Container(
+                          margin: EdgeInsets.only(left: 20, right: 20),
+                          height:
+                              BaseUtitiles.getheightofPercentage(context, 4),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              color: Theme.of(context).primaryColor),
+                          alignment: Alignment.center,
+                          child: Text(
+                            nmrWklyController.saveButton.value,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: RequestConstant.Lable_Font_SIZE,
+                                color: Colors.white),
+                          ),
+                        ),
+                        onTap: () {
+                          SubmitAlert(context);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -1089,9 +1133,9 @@ class _Subcont_NMR_DeductionState_Site
   }
 
   Widget tableCellText(
-      String text, {
-        TextAlign align = TextAlign.left,
-      }) {
+    String text, {
+    TextAlign align = TextAlign.left,
+  }) {
     return Container(
       height: 40,
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -1106,7 +1150,6 @@ class _Subcont_NMR_DeductionState_Site
       ),
     );
   }
-
 
   Future SubmitAlert(BuildContext context) async {
     return await showDialog(
@@ -1146,25 +1189,24 @@ class _Subcont_NMR_DeductionState_Site
                   Expanded(
                     child: TextButton(
                         onPressed: () async {
-                          if (
-                          projectController.selectedProjectId.value != 0 &&
+                          if (projectController.selectedProjectId.value != 0 &&
                               siteController.selectedsiteId.value != 0 &&
                               subcontractorController.selectedSubcontId.value !=
                                   0) {
-                            if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
+                            if (await BaseUtitiles.checkNetworkAndShowLoader(
+                                context)) {
                               await nmrWklyController
                                   .SaveButton_DeductionScreen(
-                                  context,
-                                  nmrWklyController.workid != 0
-                                      ? nmrWklyController.workid
-                                      : 0);
+                                      context,
+                                      nmrWklyController.workid != 0
+                                          ? nmrWklyController.workid
+                                          : 0);
                             }
                           } else {
                             BaseUtitiles.showToast("Please check once again");
                           }
                         },
-                        child: Text(
-                            nmrWklyController.saveButton.value,
+                        child: Text(nmrWklyController.saveButton.value,
                             style: TextStyle(
                                 color: Theme.of(context).primaryColor,
                                 fontWeight: FontWeight.bold,
@@ -1241,6 +1283,7 @@ class _Subcont_NMR_DeductionState_Site
                           nmrWklyController.DebitRemarksController.text = "-";
                           nmrWklyController.Advded.text = "0.0";
                           nmrWklyController.Roundoff.text = "0.0";
+                          nmrWklyController.netBillAmt.text = "0.0";
                           nmrWklyController.netpayamt.text = "0.0";
 
                           Navigator.pop(context);

@@ -43,6 +43,7 @@ class Result {
   String? toDate;
   String? billNo;
   double? billAmount;
+  double? netBillAmount;
   double? foodAmount;
   double? bankCharges;
   double? debitAmount;
@@ -76,6 +77,7 @@ class Result {
     this.toDate,
     this.billNo,
     this.billAmount,
+    this.netBillAmount,
     this.foodAmount,
     this.bankCharges,
     this.debitAmount,
@@ -110,6 +112,7 @@ class Result {
     toDate: json["toDate"],
     billNo: json["billNo"],
     billAmount: json["billAmount"],
+    netBillAmount: json["netBillAmount"],
     foodAmount: json["foodAmount"],
     bankCharges: json["bankCharges"],
     debitAmount: json["debitAmount"],
@@ -144,6 +147,7 @@ class Result {
     "toDate": toDate,
     "billNo": billNo,
     "billAmount": billAmount,
+    "netBillAmount": netBillAmount,
     "foodAmount": foodAmount,
     "bankCharges": bankCharges,
     "debitAmount": debitAmount,

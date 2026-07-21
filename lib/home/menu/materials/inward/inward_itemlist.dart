@@ -8,6 +8,7 @@ import '../../../../../app_theme/app_colors.dart';
 import '../../../../controller/inward_pending_controller.dart';
 import '../../../../controller/projectcontroller.dart';
 import '../../../../controller/sitecontroller.dart';
+import '../../../../utilities/apiconstant.dart';
 import '../../../../utilities/baseutitiles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -102,18 +103,22 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                           ),
                         ),
                         onTap: () async {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return const ImageGalleryPopup_Alert(imageUrl: "Inward");
-                              });
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //       builder: (_) => CameraCapturePage(
-                          //             fromScreen: "Inward",
-                          //           )),
-                          // );
+                          if (!AppClient.isPrahkurti) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) =>
+                                      CameraCapturePage(
+                                        fromScreen: "Inward",
+                                      )),
+                            );
+                          }else {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return const ImageGalleryPopup_Alert(imageUrl: "Inward");
+                                });
+                          }
                         },
                       )),
                 listDetails(),
@@ -135,7 +140,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                         child: StatefulBuilder(
                           builder: (context, setState) => InkWell(
                             onTap: () async {
-                                var inwardQtyNonNullableList = <double>[];
+                              var inwardQtyNonNullableList = <double>[];
 
                                 for (int i = 0;
                                 i <
@@ -174,7 +179,6 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                                   BaseUtitiles.showToast("Please add image");
                                   return;
                                 }
-
                                 if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
                                   await inwardPendingcontroller.getItemlistTablesDatas();
                                   await inwardPendingcontroller.Save_EntryScreen(
@@ -182,7 +186,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                                     isResubmit
                                         ? inwardPendingcontroller.inwardID
                                         : 0,
-                                      widget.heading
+                                      widget.heading=="Inward Pending - WO"?"INWARD PENDING - WO": widget.heading
                                   );
                                 }
                             },
@@ -657,18 +661,22 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                     ),
                   ),
                   onTap: () async {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return const ImageGalleryPopup_Alert(imageUrl: "Inward");
-                        });
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //       builder: (_) => CameraCapturePage(
-                    //             fromScreen: "Inward",
-                    //           )),
-                    // );
+                    if (!AppClient.isPrahkurti) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) =>
+                                CameraCapturePage(
+                                  fromScreen: "Inward",
+                                )),
+                      );
+                    }else {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return const ImageGalleryPopup_Alert(imageUrl: "Inward");
+                          });
+                    }
                   },
                 );
               } else {
@@ -676,17 +684,22 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                   padding: EdgeInsets.only(left: 16.4, bottom: 24.r),
                   child: GestureDetector(
                     onTap: () async {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return const ImageGalleryPopup_Alert(imageUrl: "InwardButton");
-                          });
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (_) => CameraCapturePage(
-                      //               fromScreen: "InwardAddButton",
-                      //             )));
+                      if (!AppClient.isPrahkurti) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  CameraCapturePage(
+                                    fromScreen: "InwardAddButton",
+                                  )),
+                        );
+                      }else {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return const ImageGalleryPopup_Alert(imageUrl: "InwardButton");
+                            });
+                      }
                     },
                     child: CircleAvatar(
                       radius: 25,
@@ -749,17 +762,22 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                     ),
                   ),
                   onTap: () async {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return const ImageGalleryPopup_Alert(imageUrl: "Inward");
-                        });
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (_) => CameraCapturePage(
-                    //               fromScreen: "Inward",
-                    //             )));
+                    if (!AppClient.isPrahkurti) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) =>
+                                CameraCapturePage(
+                                  fromScreen: "Inward",
+                                )),
+                      );
+                    }else {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return const ImageGalleryPopup_Alert(imageUrl: "Inward");
+                          });
+                    }
                   },
                 );
               }
@@ -916,17 +934,23 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
       padding: EdgeInsets.only(left: 16.4, bottom: 24.r),
       child: GestureDetector(
         onTap: () async {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return const ImageGalleryPopup_Alert(imageUrl: "InwardButton");
-              });
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (_) => CameraCapturePage(
-          //               fromScreen: "InwardAddButton",
-          //             )));
+          if (!AppClient.isPrahkurti) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) =>
+                      CameraCapturePage(
+                        fromScreen: "InwardAddButton",
+                      )),
+            );
+          }else {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return const ImageGalleryPopup_Alert(imageUrl: "InwardButton");
+                });
+          }
+
         },
         child: CircleAvatar(
           radius: 25,

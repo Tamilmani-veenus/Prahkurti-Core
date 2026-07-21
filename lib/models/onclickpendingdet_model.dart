@@ -5,8 +5,6 @@
 
 import 'dart:convert';
 
-import 'onclickpendingdet_model.dart';
-
 OnclickPendingDet onclickPendingDetFromJson(String str) => OnclickPendingDet.fromJson(json.decode(str));
 
 String onclickPendingDetToJson(OnclickPendingDet data) => json.encode(data.toJson());
@@ -64,11 +62,13 @@ class OnclickPendingDetResult {
   List<MMatReqMasLink>? mMatReqMasLink;
   List<MMatPurOrdLink>? mMatPurOrdLink;
   List<MaterialTransferRequestDets>? materialTransferRequestDets;
+  List<MMatRenWorkElement>?mMatRenWorkElement;
 
   OnclickPendingDetResult({
     this.mMatReqMasLink,
     this.mMatPurOrdLink,
     this.materialTransferRequestDets,
+    this.mMatRenWorkElement,
   });
 
 
@@ -91,6 +91,12 @@ class OnclickPendingDetResult {
           : List<MaterialTransferRequestDets>.from(
           json["materialTransferRequestDets"]
               .map((x) => MaterialTransferRequestDets.fromJson(x))),
+
+      mMatRenWorkElement: json["mMatRenWork"] == null
+          ? []
+          : List<MMatRenWorkElement>.from(
+          json["mMatRenWork"]
+              .map((x) => MMatRenWorkElement.fromJson(x))),
     );
   }
 
@@ -98,6 +104,7 @@ class OnclickPendingDetResult {
     "mMatReqMasLink": List<dynamic>.from(mMatReqMasLink!.map((x) => x.toJson())),
     "mMatPurOrdLink": List<dynamic>.from(mMatPurOrdLink!.map((x) => x.toJson())),
     "materialTransferRequestDets": List<dynamic>.from(materialTransferRequestDets!.map((x) => x.toJson())),
+    "mMatRenWork": List<dynamic>.from(mMatRenWorkElement!.map((x) =>  x.toJson()))
   };
 }
 
@@ -532,6 +539,122 @@ class MaterialTransferRequestDets {
     "scaleName": scaleName,
     "stockQty": stockQty,
     "material": material,
+  };
+}
+
+class MMatRenWorkElement {
+  int? id;
+  int? materialWorkOrderMasid;
+  int? materialId;
+  double? qty;
+  int? scaleId;
+  double? rate;
+  double? amount;
+  double? discntPercentage;
+  double? discntAmount;
+  double? netAmount;
+  String? remarks;
+  String? woDescription;
+  int? materialReqOrdDetid;
+  double? reqQty;
+  double? reqRate;
+  double? addQty;
+  double? lessQty;
+  double? amedmentRate;
+  double? approxDays;
+  String? materialName;
+  int? unitId;
+  String? scaleName;
+  int? createdBy;
+  String? createdDt;
+  double? netPayAmount;
+
+
+  MMatRenWorkElement({
+    this.id,
+    this.materialWorkOrderMasid,
+    this.materialId,
+    this.qty,
+    this.scaleId,
+    this.rate,
+    this.amount,
+    this.discntPercentage,
+    this.discntAmount,
+    this.netAmount,
+    this.remarks,
+    this.woDescription,
+    this.materialReqOrdDetid,
+    this.reqQty,
+    this.reqRate,
+    this.addQty,
+    this.lessQty,
+    this.amedmentRate,
+    this.approxDays,
+    this.materialName,
+    this.unitId,
+    this.scaleName,
+    this.createdBy,
+    this.createdDt,
+    this.netPayAmount,
+
+  });
+
+  factory MMatRenWorkElement.fromJson(Map<String, dynamic> json) => MMatRenWorkElement(
+    id: json["id"],
+    materialWorkOrderMasid: json["materialWorkOrderMasid"],
+    materialId: json["materialID"],
+    qty: json["qty"],
+    scaleId: json["scaleID"],
+    rate: json["rate"],
+    amount: json["amount"],
+    discntPercentage: json["discntPercentage"],
+    discntAmount: json["discntAmount"],
+    netAmount: json["netAmount"],
+    remarks: json["remarks"],
+    woDescription: json["woDescription"],
+    materialReqOrdDetid: json["materialReqOrdDetid"],
+    reqQty: json["reqQty"],
+    reqRate: json["reqRate"],
+    addQty: json["addQty"],
+    lessQty: json["lessQty"],
+    amedmentRate: json["amedmentRate"],
+    approxDays: json["approxDays"],
+    materialName: json["materialName"],
+    unitId: json["unitID"],
+    scaleName: json["unitName"],
+    createdBy: json["createdBy"],
+    createdDt: json["createdDt"],
+    netPayAmount: json["totalDetNetAmount"],
+
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "materialWorkOrderMasid": materialWorkOrderMasid,
+    "materialID": materialId,
+    "qty": qty,
+    "scaleID": scaleId,
+    "rate": rate,
+    "amount": amount,
+    "discntPercentage": discntPercentage,
+    "discntAmount": discntAmount,
+    "netAmount": netAmount,
+    "remarks": remarks,
+    "woDescription": woDescription,
+    "materialReqOrdDetid": materialReqOrdDetid,
+    "reqQty": reqQty,
+    "reqRate": reqRate,
+    "addQty": addQty,
+    "lessQty": lessQty,
+    "amedmentRate": amedmentRate,
+    "approxDays": approxDays,
+    "materialName": materialName,
+    "unitID": unitId,
+    "unitName": scaleName,
+    "createdBy": createdBy,
+    "createdDt": createdDt,
+    "totalDetNetAmount": netPayAmount,
+
   };
 }
 

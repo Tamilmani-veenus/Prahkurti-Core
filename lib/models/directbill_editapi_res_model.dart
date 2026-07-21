@@ -61,6 +61,7 @@ class Result {
   double? netPayAmount;
   double? roundOff;
   double? penaltyAmount;
+  double? netBillAmount;
   double? advanceAmount;
   double? actualAdvanceAmount;
   double? balanceAmount;
@@ -109,6 +110,7 @@ class Result {
     this.toWorkDate,
     this.billNo,
     this.billAmount,
+    this.netBillAmount,
     this.finalBillAmount,
     this.netPayAmount,
     this.roundOff,
@@ -161,7 +163,8 @@ class Result {
     fromWorkDate: json["fromWorkDate"],
     toWorkDate: json["toWorkDate"],
     billNo: json["billNo"],
-    billAmount: json["netBillAmount"],
+    netBillAmount: json["netBillAmount"],
+    billAmount: json["billAmount"],
     finalBillAmount: json["finalBillAmount"],
     netPayAmount: json["netPayAmount"],
     roundOff: json["roundOff"],
@@ -214,7 +217,8 @@ class Result {
     "fromWorkDate": fromWorkDate,
     "toWorkDate": toWorkDate,
     "billNo": billNo,
-    "netBillAmount": billAmount,
+    "netBillAmount": netBillAmount,
+    "billAmount": billAmount,
     "finalBillAmount": finalBillAmount,
     "netPayAmount": netPayAmount,
     "roundOff": roundOff,

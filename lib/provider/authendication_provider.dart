@@ -34,6 +34,7 @@ class AuthendicationProvider {
       final res = userFromJson(response);
       return res;
 
+
     }  catch (error) {
       print("Error == $error");
       if(from!="session") {
