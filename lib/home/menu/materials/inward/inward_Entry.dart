@@ -51,6 +51,7 @@ class _InwardState extends State<Inward_entry> {
         inward_controller.InwardRemarksText.text = "";
         inward_controller.InwardVechileNoText.text = "";
         inward_controller.InwardDriverNameText.text ="";
+        inward_controller.createdById.value=0;
         inward_controller.InwardEntryDateText.text = BaseUtitiles.initiateCurrentDateFormat();
         inward_controller.InwardInvoiceDateText.text = BaseUtitiles.initiateCurrentDateFormat();
         inward_controller.InwardDCDateText.text = BaseUtitiles.initiateCurrentDateFormat();
@@ -92,12 +93,13 @@ class _InwardState extends State<Inward_entry> {
           inward_controller.InwardTypeText.text =
               element.inwType == "P" ? "Against PO" : "Against Rental WO";
           inward_controller.InwardNoText.text = element.selectedNo.toString();
-          inward_controller.InwardVechileNoText.text = element.vechileName.toString();
+          inward_controller.InwardVechileNoText.text = element.vechileName?? "-";
           inward_controller.InwardDriverNameText.text =
-              element.driverName.toString();
+              element.driverName ?? "-";
           inward_controller.projectId = element.projectId;
           inward_controller.siteId = element.siteId;
           inward_controller.supId = element.supplierId;
+          inward_controller.createdById.value=element.createdBy;
           inward_controller.InwardRemarksText.text = element.remarks == null ? "" : element.remarks.toString();
         });
       }

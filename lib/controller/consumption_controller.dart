@@ -65,6 +65,7 @@ class Consumption_Controller extends GetxController {
   RxList Consum_TypeListApiValue = [].obs;
 
   int UsageId = 0;
+  RxInt createdById = 0.obs;
 
   bool get isSubmit => saveButton.value == RequestConstant.SUBMIT;
   bool get isResubmit => saveButton.value == RequestConstant.RESUBMIT;
@@ -363,12 +364,12 @@ class Consumption_Controller extends GetxController {
       subContractId: subcontractorController.selectedSubcontId.value,
       remarks: Consum_RemarksController.text,
       expenseType: expenseType,
-      createdBy: isSubmit ? int.parse(loginController.EmpId()) : null,
-      createdDt:
-          isSubmit ? BaseUtitiles().convertToUtcIso(ConsumDate.text) : null,
-      updatedBy: isResubmit ? int.parse(loginController.EmpId()) : null,
-      updatedDt:
-          isResubmit ? BaseUtitiles().convertToUtcIso(ConsumDate.text) : null,
+      createdBy: isSubmit ? int.parse(loginController.EmpId()) : createdById.value,
+      // createdDt:
+      //     isSubmit ? BaseUtitiles().convertToUtcIso(ConsumDate.text) : null,
+      // updatedBy: isResubmit ? int.parse(loginController.EmpId()) : null,
+      // updatedDt:
+      //     isResubmit ? BaseUtitiles().convertToUtcIso(ConsumDate.text) : null,
       consumptionDet: getusageDetList.value.length == 0
           ? getConumDet(id)
           : getusageDetList.value,

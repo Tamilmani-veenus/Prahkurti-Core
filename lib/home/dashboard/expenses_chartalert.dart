@@ -145,26 +145,6 @@ class _ExpensesChart_AlertState extends State<ExpensesChart_Alert> {
                 ),
               ),
 
-              // Padding(
-              //   padding: const EdgeInsets.only(bottom: 15),
-              //   child: Column(
-              //     children: [
-              //       const Text(
-              //         "Total Expense",
-              //         style: TextStyle(color: Colors.grey),
-              //       ),
-              //       Text(
-              //         "${RequestConstant.CURRENCY_SYMBOL}${BaseUtitiles.amountFormat(widget.list.totalExpenseAmount)}",
-              //         style: TextStyle(
-              //           fontSize: 22,
-              //           fontWeight: FontWeight.bold,
-              //           color: Theme.of(context).primaryColor,
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
-
               const Divider(),
 
               expenseTile(

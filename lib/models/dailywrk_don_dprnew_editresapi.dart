@@ -116,9 +116,9 @@ class Result {
     workTypeDesc: json["workTypeDesc"],
     headItemId: json["headItemId"],
     headItemName: json["headItemName"],
-    subcontractDailyWorkCements: List<SubcontractDailyWorkCement>.from(json["subcontractDailyWorkCements"].map((x) => SubcontractDailyWorkCement.fromJson(x))),
-    subcontractDailyWorkLabours: List<SubcontractDailyWorkLabour>.from(json["subcontractDailyWorkLabours"].map((x) => SubcontractDailyWorkLabour.fromJson(x))),
-    subcontractDailyWorkMeasurements: List<SubcontractDailyWorkMeasurement>.from(json["subcontractDailyWorkMeasurements"].map((x) => SubcontractDailyWorkMeasurement.fromJson(x))),
+    subcontractDailyWorkCements: json["subcontractDailyWorkCements"]==null?[]:List<SubcontractDailyWorkCement>.from(json["subcontractDailyWorkCements"].map((x) => SubcontractDailyWorkCement.fromJson(x))),
+    subcontractDailyWorkLabours:  json["subcontractDailyWorkLabours"]==null?[]:List<SubcontractDailyWorkLabour>.from(json["subcontractDailyWorkLabours"].map((x) => SubcontractDailyWorkLabour.fromJson(x))),
+    subcontractDailyWorkMeasurements:  json["subcontractDailyWorkMeasurements"]==null?[]:List<SubcontractDailyWorkMeasurement>.from(json["subcontractDailyWorkMeasurements"].map((x) => SubcontractDailyWorkMeasurement.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {

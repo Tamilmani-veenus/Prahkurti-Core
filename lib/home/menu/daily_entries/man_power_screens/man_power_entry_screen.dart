@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -38,38 +40,47 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
     var duration = const Duration(seconds: 0);
     Future.delayed(duration, () async {
       if (manPowerController.saveButton.value == RequestConstant.SUBMIT) {
+        manPowerController.readListdata.value=[];
+        manPowerController.deleteSubcontDetTableDatas();
         projectController.projectname.text = "--SELECT--";
         projectController.selectedProjectId.value = 0;
         siteController.Sitename.text = "--SELECT--";
         siteController.selectedsiteId.value = 0;
+        siteController.headNameController.text = "--SELECT--";
+        siteController.selectedHeadId.value = 0;
+        manPowerController.selectedIds.value=[];
+        manPowerController.manpowerLevel3ItemList.value=[];
         await autoYearWiseNoController.AutoYearWiseNo("MANPOWER");
         manPowerController.autoYearWiseNoController.text = autoYearWiseNoController.ManPower_autoYrsWise.value;
         manPowerController.ManPowerDateController.text = BaseUtitiles.initiateCurrentDateFormat();
         manPowerController.preparedbyController.text = loginController.EmpName();
+        manPowerController.createdById.value = 0;
+        manPowerController.savedNos.value = 0;
         manPowerController.RemarksController.text = "";
       }
+      else {
+        for (int j = 0; j < manPowerController.manpowerEditApiValue.length; j++) {
+          final element = manPowerController.manpowerEditApiValue[j];
 
-      // if (dailyEntriesController.saveButton.value == RequestConstant.RESUBMIT || dailyEntriesController.saveButton.value == RequestConstant.APPROVAL ) {
-      //   dailyEntriesController.EditListResDatas.forEach((element) async {
-      //     DLRId = element.id;
-      //     dailyEntriesController.attendId = element.id!;
-      //     dailyEntriesController.AttendDateController.text = element.labourAttendanceDate;
-      //     dailyEntriesController.autoYearWiseNoController.text = element.labourAttendanceNo;
-      //     projectController.projectname.text = element.projectName;
-      //     projectController.selectedProjectId.value = element.projectId;
-      //     subcontractorController.Subcontractorname.text = element.subContractorName;
-      //     subcontractorController.selectedSubcontId.value = element.subcontractorId;
-      //     siteController.Sitename.text = element.siteName;
-      //     siteController.selectedsiteId.value = element.siteId;
-      //     dailyEntriesController.WorkTypeTextController.text = element.workType! == "N" ? "NMR" : element.workType! == "R" ? "RATE" : "".toUpperCase();
-      //     dailyEntriesController.Nmr_Rate.value = element.workType!;
-      //     dailyEntriesController.RemarksController.text = element.remarks==null?"-":element.remarks;
-      //   });
-      //   await dailyEntriesController.gettingImage();
-      // }
+          projectController.projectname.text = element.projectName;
+          projectController.selectedProjectId.value = element.projectId;
+          siteController.Sitename.text = element.siteName;
+          siteController.selectedsiteId.value = element.siteId;
+          siteController.headNameController.text = element.materialHeadName;
+          siteController.selectedHeadId.value = element.headItemId;
+          manPowerController.autoYearWiseNoController.text = element.manPowerNo;
+          manPowerController.ManPowerDateController.text = element.entryDate;
+          manPowerController.preparedbyController.text = element.createdByName;
+          manPowerController.createdById.value = element.createdBy;
+          manPowerController.RemarksController.text = element.remarks;
+
+          for (int i = 0; i < element.manPowerDets.length; i++) {
+            manPowerController.savedNos.value = element.manPowerDets[i].nos;
+          }
+        }
+      }
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -348,6 +359,51 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
                       ),
                     ),
                     Container(
+                      margin: EdgeInsets.only(top: 5, left: 10, right: 10),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(color: Colors.white70, width: 1),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        elevation: 3,
+                        child: Padding(
+                          padding:
+                          const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                          child: TextFormField(
+                            autovalidateMode: AutovalidateMode.always,
+                            readOnly: true,
+                            controller: siteController.headNameController,
+                            cursorColor: Colors.black,
+                            style: TextStyle(color: Colors.black),
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.zero,
+                              border: InputBorder.none,
+                              labelText: "Head Name",
+                              labelStyle: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: RequestConstant.Lable_Font_SIZE),
+                              prefixIconConstraints:
+                              BoxConstraints(minWidth: 0, minHeight: 0),
+                              prefixIcon: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 8),
+                                  child: ConstIcons.dcNo),
+                            ),
+                            onTap: () async {
+                              await siteController.headNameList("ManPower");
+                              bottomsheetControllers.dprNewHeadName(context, siteController.getHeadNameDropdownvalue.value,"ManPower" );
+                            },
+                            validator: (value) {
+                              if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
+                                return '\u26A0 ${RequestConstant.VALIDATE}';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
                       margin:
                       const EdgeInsets.only(top: 2, left: 10, right: 10),
                       child: Card(
@@ -430,36 +486,80 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
                       ),
                     ),
                     SizedBox(height: BaseUtitiles.getheightofPercentage(context, 1)),
-                    Center(
-                      child: SizedBox(
-                        width: 220, // Fixed width
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Setmybackground,
-                          ),
-                          onPressed: () async {
-                            if (_formkey.currentState!.validate()) {
-                              manPowerController.getShowClickPopList(context);
-                            }
-                          },
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.add,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                "Add Labour Details",
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10, right: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Setmybackground,
                                 ),
-                              ),
-                            ],
+                                onPressed: () async {
+                                  if (_formkey.currentState!.validate()) {
+                                    await manPowerController.getLevel3ItemList(context);
+                                  }
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.add,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                    Flexible(
+                                      child: Obx(()=>
+                                         Text(
+                                           manPowerController.selectedIds.isEmpty?"Add BOQ Items":"Add BOQ Items (${manPowerController.selectedIds.length})",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color:
+                                              Theme.of(context).primaryColor),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )),
                           ),
-                        ),
+                          const SizedBox(
+                            width: 14,
+                          ),
+                          Expanded(
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Setmybackground,
+                              ),
+                              onPressed: () async {
+                                if (_formkey.currentState!.validate()) {
+                                 await manPowerController.getShowClickPopList(context);
+                                }
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.add,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                  Flexible(
+                                    child: Text(
+                                      "Add Labour Details",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+
+                        ],
                       ),
                     ),
 
@@ -593,63 +693,35 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
                           ),
                         )),
                     onTap: () {
-                      // if (_formkey.currentState!.validate()) {
-                      //   _formkey.currentState!.save();
-                      //   if (dailyEntriesController.readListdata.isEmpty) {
-                      //     Fluttertoast.showToast(msg: "Please add labour details");
-                      //   } else {
-                      //     bool hasInvalid = false;
-                      //     bool isWageNotSet = false;
-                      //
-                      //     for (int i = 0; i < dailyEntriesController.readListdata.length; i++) {
-                      //       final nosText = dailyEntriesController
-                      //           .EntrySCreenNosControllers[i]
-                      //           .text
-                      //           .trim();
-                      //
-                      //       final morOtText = dailyEntriesController
-                      //           .MrngOtHrsControllers[i]
-                      //           .text
-                      //           .trim();
-                      //
-                      //       final eveOtText = dailyEntriesController
-                      //           .EvgOtHrsControllers[i]
-                      //           .text
-                      //           .trim();
-                      //
-                      //       final amtText = dailyEntriesController
-                      //           .NetAmtController[i]
-                      //           .text
-                      //           .trim();
-                      //
-                      //       final double nosValue = double.tryParse(nosText) ?? 0;
-                      //       final double morOtValue = double.tryParse(morOtText) ?? 0;
-                      //       final double eveOtValue = double.tryParse(eveOtText) ?? 0;
-                      //       final double amtValue = double.tryParse(amtText) ?? 0;
-                      //
-                      //       if (amtValue <= 0) {
-                      //         isWageNotSet = true;
-                      //       }
-                      //
-                      //       if (nosValue <= 0 && morOtValue <= 0 && eveOtValue <= 0) {
-                      //         hasInvalid = true;
-                      //         break;
-                      //       }
-                      //     }
-                      //
-                      //     if (hasInvalid) {
-                      //       BaseUtitiles.showToast(
-                      //         "Please enter either Nos, MOR OT Hrs, or EVE OT Hrs.",
-                      //       );
-                      //     } else if (isWageNotSet) {
-                      //       BaseUtitiles.showToast(
-                      //         "Please set the wages for the subcontractor category.",
-                      //       );
-                      //     } else {
-                      //       SubmitAlert(context);
-                      //     }
-                      //   }
-                      // }
+                      if (_formkey.currentState!.validate()) {
+                        _formkey.currentState!.save();
+                        if(manPowerController.readListdata.value.isEmpty){
+                          BaseUtitiles.showToast("Please add labour details");
+                        }else{
+                          bool hasInvalid = false;
+                          for (int i = 0; i < manPowerController.readListdata.length; i++) {
+                            final controller = manPowerController.NosControllers[i];
+                            final text = controller.text.trim();
+
+                            if (text.isEmpty) {
+                              hasInvalid = true;
+                              break;
+                            }
+
+                            final value = double.tryParse(text);
+                            if (value == null || value <= 0) {
+                              hasInvalid = true;
+                              break;
+                            }
+                          }
+                          if (hasInvalid) {
+                            BaseUtitiles.showToast("Nos cannot be empty or zero.");
+                          } else {
+                            SubmitAlert(context);
+                          }
+                        }
+
+                      }
                     },
                   ),
                 ),
@@ -743,22 +815,10 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
                                               Expanded(
                                                 child: TextButton(
                                                     onPressed: () {
-                                                      // dailyEntriesController
-                                                      //     .deleteParticularList(
-                                                      //     dailyEntriesController
-                                                      //         .readListdata[
-                                                      //     index]);
-                                                      // dailyEntriesController
-                                                      //     .getDetTablesDatas();
-                                                      // dailyEntriesController
-                                                      //     .readListdata
-                                                      //     .remove(dailyEntriesController
-                                                      //     .readListdata[
-                                                      // index]);
-                                                      // Navigator.pop(
-                                                      //     context,
-                                                      //     dailyEntriesController
-                                                      //         .readListdata);
+                                                      manPowerController.deleteParticularList(manPowerController.readListdata[index]);
+                                                      manPowerController.readListdata.remove(manPowerController.readListdata[index]);
+                                                      manPowerController.getDetTablesDatas();
+                                                      Navigator.pop(context);
                                                     },
                                                     child: const Text("Delete",
                                                         style: TextStyle(
@@ -785,21 +845,21 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
                       ),
                       Container(
                         margin:
-                        const EdgeInsets.only(top: 10, left: 10, right: 3),
+                        const EdgeInsets.only(top: 5, left: 10, right: 3),
                         child: Row(
                           children: <Widget>[
                             Expanded(
                               flex: 2,
                               child: Text("Nos",
                                 style: TextStyle(
-                                  fontSize: 12.0,
+                                  fontSize: 13.0,
                                   fontWeight: FontWeight.normal,
                                   color: Colors.black,
                                 ),
                               ),
                             ),
                             Expanded(
-                                flex: 4,
+                                flex: 3,
                                 child: Container(
                                   margin: const EdgeInsets.only(right: 11),
                                   height: BaseUtitiles.getheightofPercentage(
@@ -834,11 +894,14 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
                                       controller: manPowerController
                                           .NosControllers[index],
                                       cursorColor: Colors.black,
-                                      keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                      keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                       inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                          RegExp(r'^\d+\.?\d{0,2}'),
-                                        ),
+                                        TextInputFormatter.withFunction((oldValue, newValue) {
+                                          return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                              ? newValue
+                                              : oldValue;
+                                        }),
                                       ],
                                       textAlign: TextAlign.center,
                                       decoration: InputDecoration(
@@ -877,14 +940,14 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
                               flex: 2,
                               child: Text("Remarks",
                                     style: TextStyle(
-                                      fontSize: 12.0,
+                                      fontSize: 13.0,
                                       fontWeight: FontWeight.normal,
                                       color: Colors.black,
                                     ),
                               ),
                             ),
                             Expanded(
-                                flex: 4,
+                                flex: 3,
                                 child: Container(
                                   margin: const EdgeInsets.only(right: 11),
                                   height: BaseUtitiles.getheightofPercentage(
@@ -971,51 +1034,27 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
                     child: TextButton(
                         onPressed: () async {
                           Future.delayed(Duration(seconds: 0), () async {
-                            setState(() {
-                              // if (dailyEntriesController.saveButton.value != RequestConstant.APPROVAL) {
-                              //   dailyEntriesController.readListdata.value
-                              //       .clear();
-                              //   dailyEntriesController
-                              //       .deleteSubcontDetTableDatas();
-                              //   siteController.selectedsiteId.value = 0;
-                              //   subcontractorController
-                              //       .selectedSubcontId.value = 0;
-                              //   siteController.getSiteDropdownvalue.value
-                              //       .clear();
-                              //   dailyEntriesController.saveButton.value =
-                              //       RequestConstant.SUBMIT;
-                              //   dailyEntriesController.attendId = 0;
-                              //   projectController.selectedProjectId = 0.obs;
-                              //   dailyEntriesController
-                              //       .AttendDateController.text =
-                              //       BaseUtitiles.initiateCurrentDateFormat();
-                              //   dailyEntriesController
-                              //       .autoYearWiseNoController.text =
-                              //       autoYearWiseNoController
-                              //           .SubcontAttendance_autoYrsWise.value;
-                              //   dailyEntriesController.RemarksController.text =
-                              //   "";
-                              //   projectController.projectname.text =
-                              //   "--SELECT--";
-                              //   subcontractorController.Subcontractorname.text =
-                              //   "--SELECT--";
-                              //   subcontractorController
-                              //       .selectedSubcontId.value = 0;
-                              //   siteController.Sitename.text = "--SELECT--";
-                              //   siteController.siteDropdownName.clear();
-                              //   dailyEntriesController
-                              //       .WorkTypeTextController.text = "NMR";
-                              //   dailyEntriesController.Nmr_Rate.value =
-                              //       RequestConstant.N;
-                              //   bottomsheetControllers.searchcontroller.text =
-                              //   "";
-                              //   dailyEntriesController.imageFiles.value = [];
-                              //   Navigator.pop(context);
-                              // } else {
-                              //   BaseUtitiles.showToast(
-                              //       "In this approval page can't be reset");
-                              // }
-                            });
+                              if (manPowerController.saveButton.value != RequestConstant.APPROVAL) {
+                                manPowerController.readListdata.value=[];
+                                manPowerController.deleteSubcontDetTableDatas();
+                                projectController.projectname.text = "--SELECT--";
+                                projectController.selectedProjectId.value = 0;
+                                siteController.Sitename.text = "--SELECT--";
+                                siteController.selectedsiteId.value = 0;
+                                siteController.headNameController.text = "--SELECT--";
+                                siteController.selectedHeadId.value = 0;
+                                manPowerController.selectedIds.value=[];
+                                manPowerController.manpowerLevel3ItemList.value=[];
+                                await autoYearWiseNoController.AutoYearWiseNo("MANPOWER");
+                                manPowerController.autoYearWiseNoController.text = autoYearWiseNoController.ManPower_autoYrsWise.value;
+                                manPowerController.ManPowerDateController.text = BaseUtitiles.initiateCurrentDateFormat();
+                                manPowerController.preparedbyController.text = loginController.EmpName();
+                                manPowerController.createdById.value = 0;
+                                manPowerController.RemarksController.text = "";
+                              } else {
+                                BaseUtitiles.showToast(
+                                    "In this approval page can't be reset");
+                              }
                           });
                         },
                         child: Text("Reset",
@@ -1069,15 +1108,13 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
                     child: StatefulBuilder(
                       builder: (context, setState) => TextButton(
                         onPressed: () async {
-                          // if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
-                          //   await dailyEntriesController.getDetTablesDatas();
-                          //   await dailyEntriesController.SaveEntryScreen(
-                          //       context,
-                          //       dailyEntriesController.attendId != 0
-                          //           ? dailyEntriesController.attendId
-                          //           : 0
-                          //   );
-                          // }
+                          if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
+                            await manPowerController.getDetTablesDatas();
+                            await manPowerController.SaveEntryScreen(
+                                context,
+                                manPowerController.saveButton.value==RequestConstant.SUBMIT?0:manPowerController.manpowerEditApiValue[0].id
+                            );
+                          }
                         },
                         child: Text(
                           manPowerController.saveButton.value,
@@ -1099,75 +1136,4 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
     );
   }
 
-  Future DeleteAlert(BuildContext context, int index, itemType) async {
-    return await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Alert!'),
-        content: const Text('Do you want to Delete?'),
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(left: 20, right: 20),
-            child: IntrinsicHeight(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text("Cancel",
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                                fontSize: RequestConstant.Lable_Font_SIZE))),
-                  ),
-                  VerticalDivider(
-                    color: Colors.grey.shade400, //color of divider
-                    width: 5, //width space of divider
-                    thickness: 2, //thickness of divier line
-                    indent: 15, //Spacing at the top of divider.
-                    endIndent: 15, //Spacing at the bottom of divider.
-                  ),
-                  Expanded(
-                    child: TextButton(
-                        onPressed: () async {
-                          // if (itemType == "String") {
-                          //   final imageId = dailyEntriesController.imageIds[index];
-                          //
-                          //   final isDeleted = await dailyEntriesController.deletingImage(imageId);
-                          //
-                          //   if (isDeleted) {
-                          //     dailyEntriesController.gettingNetworkImages.removeAt(index);
-                          //   }
-                          // } else if (itemType == "File") {
-                          //   int localIndex = index -
-                          //       dailyEntriesController
-                          //           .gettingNetworkImages.length;
-                          //   if (localIndex >= 0 &&
-                          //       localIndex <
-                          //           dailyEntriesController.imageFiles.length) {
-                          //     setState(() {
-                          //       dailyEntriesController.imageFiles
-                          //           .removeAt(localIndex);
-                          //     });
-                          //   }
-                          // }
-                          // Navigator.pop(context);
-                        },
-                        child: const Text("Delete",
-                            style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                                fontSize: RequestConstant.Lable_Font_SIZE))),
-                  )
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

@@ -8,6 +8,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 import '../models/boqrevised_itemlist_model.dart';
+import '../models/labourDashboard_model.dart';
+import '../models/manpowerlevel3_model.dart';
 
 String? punchStatus;
 bool punchIn = false;
@@ -26,6 +28,40 @@ class BaseUtitiles {
   static double getWidthtofPercentage(BuildContext context, int percentage) {
     double _width = MediaQuery.of(context).size.width;
     return (_width / 100) * percentage;
+  }
+
+  String formatAmount(String? value) {
+    if (value == null || value.isEmpty) return "0";
+
+    // Extract number and optional suffix (L, CR, etc.)
+    final parts = value.trim().split(' ');
+
+    final number = double.tryParse(parts[0]);
+    if (number == null) return value;
+
+    final formattedNumber = number % 1 == 0
+        ? number.toInt().toString()
+        : number.toStringAsFixed(2);
+
+    if (parts.length > 1) {
+      return "$formattedNumber ${parts.sublist(1).join(' ')}";
+    }
+
+    return formattedNumber;
+  }
+
+  String getGreeting() {
+    final hour = DateTime.now().hour;
+
+    if (hour >= 5 && hour < 12) {
+      return "Good Morning";
+    } else if (hour >= 12 && hour < 17) {
+      return "Good Afternoon";
+    } else if (hour >= 17 && hour < 21) {
+      return "Good Evening";
+    } else {
+      return "Good Night";
+    }
   }
 
   static showToast(String message) => Fluttertoast.showToast(msg: message, toastLength: Toast.LENGTH_LONG,);
@@ -876,8 +912,9 @@ class BaseUtitiles {
             item.purchaseOrdNo.toString().toLowerCase().contains(value) ||
             item.purchaseOrdNo.toString().toUpperCase().contains(value) ||
             item.SupplierContactNo.toString().contains(value)  ||
-            item.delaydays.toString().contains(value)
+            item.delaydays.toString().contains(value) ||
 
+            item.manPowerNo.toString().contains(value)
         )
         {
           dummyListData.value.add(item);
@@ -1279,12 +1316,31 @@ class BaseUtitiles {
     }
   }
 
+  static List<Level3Result> addBoqPopupAlert(
+      String value,
+      List<Level3Result> list,
+      ) {
+    if (value.isEmpty) {
+      return List<Level3Result>.from(list);
+    }
+
+    return list.where((item) {
+      final search = value.toLowerCase();
+
+      return item.level3Item.toString().toLowerCase().contains(search) ||
+          item.headandSubName.toString().toLowerCase().contains(search) ||
+          item.scaleName.toString().toLowerCase().contains(search) ||
+          item.qty.toString().contains(search);
+    }).toList();
+  }
+
+
   static materialName_DPRNew(String value,list)  {
     dummyListData.value.clear();
     if (value.isNotEmpty) {
       list.forEach((item) {
-        if (item.materialName.toString().toLowerCase().contains(value) ||
-            item.materialName.toString().toUpperCase().contains(value))
+        if (item["materialName"].toString().toLowerCase().contains(value) ||
+            item["materialName"].toString().toUpperCase().contains(value))
         {
           dummyListData.value.add(item);
         }
@@ -1719,6 +1775,38 @@ class BaseUtitiles {
     ).format(value);
     return numberFormatter;
   }
+
+  static String formatProjectName(String text) {
+    if (text.isEmpty) return "";
+
+    // Split by spaces or hyphens
+    final words = text.split(RegExp(r'[\s-]+'));
+
+    // One word only
+    if (words.length == 1) {
+      if (text.length <= 14) return text;
+      return '${text.substring(0, 14)}\n${text.substring(14)}';
+    }
+
+    // Two words
+    if (words.length == 2) {
+      return '${words[0]} ${words[1]}';
+    }
+
+    // Three or more words
+    final middle = (words.length / 2).ceil();
+
+    return '${words.take(middle).join(" ")}\n${words.skip(middle).join(" ")}';
+  }
+
+  static String formatNumber(num? value) {
+    if (value == null) return "0";
+
+    return value % 1 == 0
+        ? value.toInt().toString() // Whole number
+        : value.toStringAsFixed(2); // Decimal with 2 digits
+  }
+
 
 }
 

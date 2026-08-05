@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:ffi';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:prahkurticore/controller/pendinglistcontroller.dart';
@@ -60,6 +63,7 @@ class  RequisitionSlipControllerNew extends GetxController{
   var type = 'L'.obs;
 
   int reqId=0;
+  RxInt createdById = 0.obs;
   RxString saveButton=RequestConstant.SUBMIT.obs;
   RxList ReqSlipEtyList = [].obs;
   RxList mainentrylist = [].obs;
@@ -164,8 +168,8 @@ class  RequisitionSlipControllerNew extends GetxController{
       permissionTimeHrs: int.tryParse(RequiredHrs.text),
       permissionTimeMins: int.tryParse(RequiredMins.text),
       totalPermissionHours: double.tryParse(TotalHrs.text),
-      createdBy: int.tryParse(loginController.EmpId()),
-      createdDt: BaseUtitiles().convertToUtcIso(Reqdate.text),
+      createdBy: saveButton.value==RequestConstant.SUBMIT?int.tryParse(loginController.EmpId()):createdById.value,
+      // createdDt: BaseUtitiles().convertToUtcIso(Reqdate.text),
       verifyStatus: "N",
       approveStatus: "N",
       verifyRemarks: "-",
@@ -209,8 +213,8 @@ class  RequisitionSlipControllerNew extends GetxController{
       permissionTimeHrs: data.permissionTimeHrs,
       permissionTimeMins: data.permissionTimeMins,
       totalPermissionHours: data.totalPermissionHours,
-      createdBy: int.tryParse(loginController.EmpId()),
-      createdDt: data.entryDateMobile,
+      createdBy: data.createdBy,
+      // createdDt: data.entryDateMobile,
       verifyRemarks: type=="Verify"||type=="Verify-Reject"?remarksValue.text:"",
       approveRemarks: type=="Approve"||type=="Approve-Reject"?remarksValue.text:"",
       verifyStatus: type=="Verify-Reject"?"R":"Y",

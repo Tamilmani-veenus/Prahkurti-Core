@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:prahkurticore/home/dashboard/radius_view.dart';
 import 'package:prahkurticore/home/dashboard/search_field.dart';
@@ -10,9 +11,11 @@ import '../../controller/logincontroller.dart';
 import '../../controller/punch_in_controller.dart';
 import '../../controller/site_location_controller.dart';
 import '../../splash/splash.dart';
+import '../../utilities/apiconstant.dart';
 import '../../utilities/baseutitiles.dart';
 import '../punch_in_out/punch_in.dart';
 import '../punch_in_out/punch_out.dart';
+import 'map_view.dart';
 
 class SiteLocationView extends StatefulWidget {
   const SiteLocationView(
@@ -30,11 +33,21 @@ class _SiteLocationViewState extends State<SiteLocationView> {
   PunchInController punchInController = Get.put(PunchInController());
   LoginController loginController = Get.put(LoginController());
   Timer? _debounce;
+  Position? position;
 
   @override
   void initState() {
-    siteLocationController.projectNameSearch.text = "";
     super.initState();
+
+    siteLocationController.projectNameSearch.text = "";
+    if (AppClient.isIOSProjects) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+        );
+        setState(() {});
+      });
+    }
   }
 
   @override
@@ -44,7 +57,7 @@ class _SiteLocationViewState extends State<SiteLocationView> {
       onWillPop: () async {
         setState(() {
           siteLocationController.projectNameSearch.text = "";
-          punchInController.selectedRadio.value=0;
+          punchInController.selectedRadio.value = 0;
           punchIn = false;
         });
         return true;
@@ -72,7 +85,7 @@ class _SiteLocationViewState extends State<SiteLocationView> {
                     setState(() {
                       Get.back();
                       siteLocationController.projectNameSearch.text = "";
-                      punchInController.selectedRadio.value=0;
+                      punchInController.selectedRadio.value = 0;
                       punchIn = false;
                     });
                   }),
@@ -156,10 +169,9 @@ class _SiteLocationViewState extends State<SiteLocationView> {
                       }
                       return ListView.builder(
                         itemCount:
-                        siteLocationController.projectNameRxList.length,
+                            siteLocationController.projectNameRxList.length,
                         itemBuilder: (context, i) {
-                          return Obx(() =>
-                              GestureDetector(
+                          return Obx(() => GestureDetector(
                                 onTap: () async {
                                   FocusScope.of(context).unfocus();
                                   siteLocationController
@@ -170,80 +182,83 @@ class _SiteLocationViewState extends State<SiteLocationView> {
                                         siteLocationController
                                             .projectNameRxList[i].projectId
                                             .toString();
-                                    Get.to(() =>
-                                        RadiusView(
-                                            ProjectId: siteLocationController
-                                                .projectId));
+                                    if (AppClient.isIOSProjects) {
+                                      if (position != null) {
+                                        Get.to(() => DrawMapView(
+                                              latitude:
+                                                  position!.latitude.toString(),
+                                              longitude: position!.longitude
+                                                  .toString(),
+                                              ProjectId: siteLocationController
+                                                  .projectId,
+                                            ));
+                                      }
+                                    }else{
+                                      Get.to(() =>
+                                         RadiusView(
+                                              ProjectId: siteLocationController
+                                                  .projectId));
+                                    }
                                   } else {
                                     await punchInController
                                         .getProjectPunchInSts();
                                     if (punchIn == true) {
                                       if (siteLocationController
-                                          .projectNameRxList[i]
-                                          .pinStatus ==
+                                              .projectNameRxList[i].pinStatus ==
                                           "True") {
                                         siteLocationController.projectId =
                                             siteLocationController
-                                                .projectNameRxList[i]
-                                                .projectId
+                                                .projectNameRxList[i].projectId
                                                 .toString();
                                         siteLocationController.locId =
                                             siteLocationController
                                                 .projectNameRxList[i].locid
                                                 .toString();
-                                        Get.to(() =>
-                                            PunchIn(
-                                                latitude: siteLocationController
-                                                    .projectNameRxList[i]
-                                                    .latitude
-                                                    .toString(),
-                                                longitude: siteLocationController
-                                                    .projectNameRxList[i]
-                                                    .longitude
-                                                    .toString(),
-                                                radius: siteLocationController
-                                                    .projectNameRxList[i].radius
-                                                    .toString(),
-                                                allotedStatus:
+                                        Get.to(() => PunchIn(
+                                            latitude: siteLocationController
+                                                .projectNameRxList[i].latitude
+                                                .toString(),
+                                            longitude: siteLocationController
+                                                .projectNameRxList[i].longitude
+                                                .toString(),
+                                            radius: siteLocationController
+                                                .projectNameRxList[i].radius
+                                                .toString(),
+                                            allotedStatus:
                                                 widget.allotedStatus));
                                       } else {
                                         Fluttertoast.showToast(
                                             msg:
-                                            "This project doesn't pin the map");
+                                                "This project doesn't pin the map");
                                       }
                                     } else if (punchIn == false) {
                                       if (siteLocationController
-                                          .projectNameRxList[i]
-                                          .pinStatus ==
+                                              .projectNameRxList[i].pinStatus ==
                                           "True") {
                                         siteLocationController.projectId =
                                             siteLocationController
-                                                .projectNameRxList[i]
-                                                .projectId
+                                                .projectNameRxList[i].projectId
                                                 .toString();
                                         siteLocationController.locId =
                                             siteLocationController
                                                 .projectNameRxList[i].locid
                                                 .toString();
-                                        Get.to(() =>
-                                            PunchOut(
-                                                latitude: siteLocationController
-                                                    .projectNameRxList[i]
-                                                    .latitude
-                                                    .toString(),
-                                                longitude: siteLocationController
-                                                    .projectNameRxList[i]
-                                                    .longitude
-                                                    .toString(),
-                                                radius: siteLocationController
-                                                    .projectNameRxList[i].radius
-                                                    .toString(),
-                                                allotedStatus:
+                                        Get.to(() => PunchOut(
+                                            latitude: siteLocationController
+                                                .projectNameRxList[i].latitude
+                                                .toString(),
+                                            longitude: siteLocationController
+                                                .projectNameRxList[i].longitude
+                                                .toString(),
+                                            radius: siteLocationController
+                                                .projectNameRxList[i].radius
+                                                .toString(),
+                                            allotedStatus:
                                                 widget.allotedStatus));
                                       } else {
                                         Fluttertoast.showToast(
                                             msg:
-                                            "This project doesn't pin the map");
+                                                "This project doesn't pin the map");
                                       }
                                     } else {
                                       null;
@@ -257,11 +272,10 @@ class _SiteLocationViewState extends State<SiteLocationView> {
                                     children: [
                                       Row(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                            CrossAxisAlignment.center,
                                         children: [
                                           const CircleAvatar(
-                                            backgroundColor:
-                                            Color(0xFFF5F5F5),
+                                            backgroundColor: Color(0xFFF5F5F5),
                                             child: ConstIcons.projectName,
                                           ),
                                           Expanded(
@@ -269,23 +283,22 @@ class _SiteLocationViewState extends State<SiteLocationView> {
                                               padding: EdgeInsets.all(16.r),
                                               child: Column(
                                                 crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   SizedBox(
                                                     width: 250.r,
                                                     child: Text(
                                                       siteLocationController
-                                                          .projectNameRxList![
-                                                      i]
+                                                          .projectNameRxList![i]
                                                           .projectName
                                                           .toString(),
-                                                      overflow: TextOverflow
-                                                          .ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                       style: TextStyle(
                                                         fontSize: ScreenUtil()
                                                             .setSp(14),
                                                         fontWeight:
-                                                        FontWeight.normal,
+                                                            FontWeight.normal,
                                                       ),
                                                     ),
                                                   ),
@@ -294,29 +307,29 @@ class _SiteLocationViewState extends State<SiteLocationView> {
                                             ),
                                           ),
                                           siteLocationController
-                                              .projectNameRxList![i]
-                                              .pinStatus
-                                              .toString() ==
-                                              "True"
+                                                      .projectNameRxList![i]
+                                                      .pinStatus
+                                                      .toString() ==
+                                                  "True"
                                               ? Align(
-                                            alignment: Alignment.center,
-                                            child: SizedBox(
-                                              height: 20,
-                                              width: 20,
-                                              child: Image.asset(
-                                                  "assets/select_check.png"),
-                                            ),
-                                          )
+                                                  alignment: Alignment.center,
+                                                  child: SizedBox(
+                                                    height: 20,
+                                                    width: 20,
+                                                    child: Image.asset(
+                                                        "assets/select_check.png"),
+                                                  ),
+                                                )
                                               : Container(
-                                            width: 20,
-                                            height: 20,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                  color: const Color(
-                                                      0xFF69e772)),
-                                            ),
-                                          ),
+                                                  width: 20,
+                                                  height: 20,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
+                                                        color: const Color(
+                                                            0xFF69e772)),
+                                                  ),
+                                                ),
                                         ],
                                       ),
                                       const Divider(
@@ -331,11 +344,11 @@ class _SiteLocationViewState extends State<SiteLocationView> {
                                 ),
                               ));
                         },
-
                       );
                     }),
-                ),
-                )],
+                  ),
+                )
+              ],
             )),
       ),
     );

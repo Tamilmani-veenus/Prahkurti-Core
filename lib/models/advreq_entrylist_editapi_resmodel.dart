@@ -27,6 +27,7 @@ class AdvReqEditApiRes {
 
   Map<String, dynamic> toJson() => {
     "success": success,
+    "message": message,
     "result": result==null?null:result!.toJson(),
   };
 }

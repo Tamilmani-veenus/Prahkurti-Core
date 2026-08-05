@@ -35,7 +35,6 @@ class SignInPage extends StatefulWidget {
     }
   }
 
-
   @override
   State<SignInPage> createState() => _SignInPageState();
 }

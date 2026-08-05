@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import '../../../../app_theme/app_colors.dart';
@@ -1014,7 +1017,15 @@ class _Company_nmr_entryscreenState extends State<Company_nmr_entryscreen> {
                                         textAlign: TextAlign.center,
                                         controller: companyNmrAttendanceController
                                             .statusText[index],
-                                        keyboardType: TextInputType.number,
+                                        keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                        inputFormatters: [
+                                          TextInputFormatter.withFunction((oldValue, newValue) {
+                                            return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                ? newValue
+                                                : oldValue;
+                                          }),
+                                        ],
                                         decoration: InputDecoration(
                                           contentPadding:
                                           EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
@@ -1056,7 +1067,15 @@ class _Company_nmr_entryscreenState extends State<Company_nmr_entryscreen> {
                                         textAlign: TextAlign.center,
                                         controller: companyNmrAttendanceController
                                             .oThrsText[index],
-                                        keyboardType: TextInputType.number,
+                                        keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                        inputFormatters: [
+                                          TextInputFormatter.withFunction((oldValue, newValue) {
+                                            return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                ? newValue
+                                                : oldValue;
+                                          }),
+                                        ],
                                         decoration: InputDecoration(
                                           contentPadding:
                                           EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),

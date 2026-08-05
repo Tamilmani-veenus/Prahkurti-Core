@@ -108,8 +108,7 @@ class SiteController extends GetxController {
 
   Future headNameList(type) async {
     getHeadNameDropdownvalue.value = [];
-    final value =
-        await CommonProvider.dprNewHeadNameDropdown(selectedsiteId.value, type);
+    final value = await CommonProvider.dprNewHeadNameDropdown(selectedsiteId.value, type,projectController.selectedProjectId);
     if (value != null) {
       if (value.success == true) {
         if (value.result!.isNotEmpty) {

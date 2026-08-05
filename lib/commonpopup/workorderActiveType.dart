@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:prahkurticore/controller/workOrderBoq_Controller.dart';
 import '../controller/workorderDirect_Controller.dart';
 import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
@@ -15,6 +16,7 @@ class WorkOrderType_Alert extends StatefulWidget {
 class _WorkOrderType_AlertState extends State<WorkOrderType_Alert> {
 
   WorkOrderDirectController workOrderDirectController=Get.put(WorkOrderDirectController());
+  WorkOrderBoqController workOrderBoqController = Get.put(WorkOrderBoqController());
 
   List<String> list = ["Active","Inactive"];
 
@@ -34,7 +36,6 @@ class _WorkOrderType_AlertState extends State<WorkOrderType_Alert> {
                 color: Theme.of(context).primaryColor,
                 child: const Center(child: Text("Active Status",style: TextStyle(color: Colors.white),)),
               ),
-
               Container(
                 margin: const EdgeInsets.only(top: 20),
                 width: BaseUtitiles.getWidthtofPercentage(context, 80),
@@ -45,12 +46,16 @@ class _WorkOrderType_AlertState extends State<WorkOrderType_Alert> {
                       return InkWell(
                         onTap: ()  async {
                           if(index==0){
-                            workOrderDirectController.WorkOrdActiveTypeText.text="Active";
-                            workOrderDirectController.workOrdActTypeID.value="Y";
+                            workOrderDirectController.WorkOrdActiveTypeText.text = "Active";
+                            workOrderDirectController.workOrdActTypeID.value = "Y";
+                            workOrderBoqController.WorkOrdActiveTypeText.text = "Active";
+                            workOrderBoqController.workOrdActTypeID.value = "Y";
                           }
                           else{
-                            workOrderDirectController.WorkOrdActiveTypeText.text="Inactive";
-                            workOrderDirectController.workOrdActTypeID.value="N";
+                            workOrderDirectController.WorkOrdActiveTypeText.text = "Inactive";
+                            workOrderDirectController.workOrdActTypeID.value = "N";
+                            workOrderBoqController.WorkOrdActiveTypeText.text = "Inactive";
+                            workOrderBoqController.workOrdActTypeID.value = "N";
                           }
 
                           Navigator.pop(context);

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -93,8 +95,7 @@ class _Subcontractor_Site_CategoryState
                     ),
                     onTap: () async {
                       if (widget.type == "subcontAttendance") {
-                        await dailyEntriesController
-                            .saveSubContDetTableDatas(context);
+                        await dailyEntriesController.saveSubContDetTableDatas(context);
                         await dailyEntriesController.getDetTablesDatas();
                       } else {
                         await manPowerController.saveManPowerDetTableDatas(context);
@@ -234,15 +235,15 @@ class _Subcontractor_Site_CategoryState
                                                                 .NosControllers[
                                                             index],
                                                     cursorColor: Colors.black,
+                                                    keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                                     inputFormatters: [
-                                                      FilteringTextInputFormatter
-                                                          .allow(
-                                                        RegExp(
-                                                            r'^\d+\.?\d{0,2}'),
-                                                      ),
+                                                      TextInputFormatter.withFunction((oldValue, newValue) {
+                                                        return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                            ? newValue
+                                                            : oldValue;
+                                                      }),
                                                     ],
-                                                    keyboardType:
-                                                        TextInputType.number,
                                                     style: const TextStyle(
                                                         color: Colors.black),
                                                     decoration: InputDecoration(
@@ -339,17 +340,17 @@ class _Subcontractor_Site_CategoryState
                                                                 .OtHrsController[
                                                             index],
                                                     cursorColor: Colors.black,
-                                                    keyboardType:
-                                                        TextInputType.number,
+                                                    keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                                    inputFormatters: [
+                                                      TextInputFormatter.withFunction((oldValue, newValue) {
+                                                        return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                            ? newValue
+                                                            : oldValue;
+                                                      }),
+                                                    ],
                                                     style: const TextStyle(
                                                         color: Colors.black),
-                                                    inputFormatters: [
-                                                      FilteringTextInputFormatter
-                                                          .allow(
-                                                        RegExp(
-                                                            r'^\d+\.?\d{0,2}'),
-                                                      ),
-                                                    ],
                                                     decoration: InputDecoration(
                                                       contentPadding:
                                                           EdgeInsets.zero,
@@ -486,15 +487,15 @@ class _Subcontractor_Site_CategoryState
                                                                 .NosControllers[
                                                             index],
                                                     cursorColor: Colors.black,
+                                                    keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                                     inputFormatters: [
-                                                      FilteringTextInputFormatter
-                                                          .allow(
-                                                        RegExp(
-                                                            r'^\d+\.?\d{0,2}'),
-                                                      ),
+                                                      TextInputFormatter.withFunction((oldValue, newValue) {
+                                                        return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                            ? newValue
+                                                            : oldValue;
+                                                      }),
                                                     ],
-                                                    keyboardType:
-                                                        TextInputType.number,
                                                     style: const TextStyle(
                                                         color: Colors.black),
                                                     decoration: InputDecoration(

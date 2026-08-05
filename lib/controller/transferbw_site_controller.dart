@@ -49,6 +49,7 @@ class TransferBt_Site_Controller extends GetxController {
   List<TextEditingController> Show_Itemlist_TransQtyController = [];
 
   int transId = 0;
+  RxInt createdById = 0.obs;
 
   RxString type = "".obs;
   RxString saveButton = RequestConstant.SUBMIT.obs;
@@ -305,19 +306,12 @@ class TransferBt_Site_Controller extends GetxController {
       subContractId: subcontractorController.selectedSubcontId.value,
       transferType: radioValue.value == "transfer_usage" ? 1 : isPending ? 0 : 0,
       reqOrdMasId: isPending ? transferAllDatasList[0].reqMasid : isResubmit ? editListApiDatas[0].reqOrdMasId : null,
-
-
-      //add
-      createdBy: isSubmit ? int.parse(loginController.EmpId()) : null,
-      createdDt:
-          isSubmit ? BaseUtitiles().convertToUtcIso(entryDateText.text) : null,
-
-      //update
-      updatedBy: isResubmit ? int.parse(loginController.EmpId()) : null,
-      updatedDate: isResubmit
-          ? BaseUtitiles().convertToUtcIso(entryDateText.text)
-          : null,
-
+      createdBy: isResubmit ? createdById.value : int.parse(loginController.EmpId()) ,
+      // createdDt: isSubmit ? BaseUtitiles().convertToUtcIso(entryDateText.text) : null,
+      // updatedBy: isResubmit ? int.parse(loginController.EmpId()) : null,
+      // updatedDate: isResubmit
+      //     ? BaseUtitiles().convertToUtcIso(entryDateText.text)
+      //     : null,
       materialSiteLink: getTransfferbetDetList.isEmpty
           ? getDetDetails(id)
           : getTransfferbetDetList,

@@ -28,7 +28,7 @@ class RequisitonSlipsaveRequest {
   int? permissionTimeMins;
   double? totalPermissionHours;
   int? createdBy;
-  String? createdDt;
+  // String? createdDt;
   String? verifyStatus;
   String? approveStatus;
   String? verifyRemarks;
@@ -54,7 +54,7 @@ class RequisitonSlipsaveRequest {
     this.permissionTimeMins,
     this.totalPermissionHours,
     this.createdBy,
-    this.createdDt,
+    // this.createdDt,
     this.verifyStatus,
     this.approveStatus,
     this.verifyRemarks,
@@ -81,7 +81,7 @@ class RequisitonSlipsaveRequest {
     permissionTimeMins: json["permissionTimeMins"],
     totalPermissionHours: json["totalPermissionHours"],
     createdBy: json["createdBy"],
-    createdDt: json["createdDt"],
+    // createdDt: json["createdDt"],
     verifyStatus: json["verifyStatus"],
     approveStatus: json["approveStatus"],
     verifyRemarks: json["verifyRemarks"],
@@ -108,7 +108,7 @@ class RequisitonSlipsaveRequest {
     "permissionTimeMins": permissionTimeMins,
     "totalPermissionHours": totalPermissionHours,
     "createdBy": createdBy,
-    "createdDt": createdDt,
+    // "createdDt": createdDt,
     "verifyStatus": verifyStatus,
     "approveStatus": approveStatus,
     "verifyRemarks": verifyRemarks,

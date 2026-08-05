@@ -21,7 +21,9 @@ class WorkOrdDirectEditModel {
 
   factory WorkOrdDirectEditModel.fromJson(Map<String, dynamic> json) => WorkOrdDirectEditModel(
     success: json["success"],
-    result: Result.fromJson(json["result"]),
+      result: json["result"] != null
+          ? Result.fromJson(json["result"])
+          : null,
     message: json["message"]
   );
 
@@ -145,7 +147,7 @@ class Result {
     level3ItemName: json["level3ItemName"],
     entryTypeName: json["entryTypeName"],
     subcontractWorkOrderDetlink: List<SubcontractWorkOrderDetlink>.from(json["subcontractWorkOrderDetlink"].map((x) => SubcontractWorkOrderDetlink.fromJson(x))),
-    subcontractWorkOrderAddLessSetuplink: List<SubcontractWorkOrderAddLessSetuplink>.from(json["subcontractWorkOrderAddLessSetuplink"].map((x) => SubcontractWorkOrderAddLessSetuplink.fromJson(x))),
+    subcontractWorkOrderAddLessSetuplink: List<SubcontractWorkOrderAddLessSetuplink>.from(json["subcontractWorkOrderAddLessSetup"].map((x) => SubcontractWorkOrderAddLessSetuplink.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -184,7 +186,7 @@ class Result {
     "level3ItemName": level3ItemName,
     "entryTypeName": entryTypeName,
     "subcontractWorkOrderDetlink": List<dynamic>.from(subcontractWorkOrderDetlink!.map((x) => x.toJson())),
-    "subcontractWorkOrderAddLessSetuplink": List<dynamic>.from(subcontractWorkOrderAddLessSetuplink!.map((x) => x.toJson())),
+    "subcontractWorkOrderAddLessSetup": List<dynamic>.from(subcontractWorkOrderAddLessSetuplink!.map((x) => x.toJson())),
   };
 }
 

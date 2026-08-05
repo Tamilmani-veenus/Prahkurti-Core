@@ -95,8 +95,6 @@ class Consumption_provider{
     }
   }
 
-
-
   //---Delete API----
 
   static Future<bool> Consum_entryList_deleteAPI(int UsageId) async {

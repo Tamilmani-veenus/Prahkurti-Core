@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -38,8 +40,9 @@ class _WorkOrderDirectDeductionState extends State<WorkOrderDirectDeduction> {
           workOrderDirectController.workOrdamount.text = element.workOrderAmount.toString();
           workOrderDirectController.Roundoff.text = element.roundOff.toString();
           workOrderDirectController.netpayamt.text = element.netAmount.toString();
-          workOrderDirectController.deductionPaymentCalculation();
+          // workOrderDirectController.deductionPaymentCalculation();
         });
+        await workOrderDirectController.deductionPaymentCalculation();
         workOrderDirectController.setBaseNetPay(
             workOrderDirectController.workOrdamount.text);
       }
@@ -184,11 +187,14 @@ class _WorkOrderDirectDeductionState extends State<WorkOrderDirectDeduction> {
                                     });
                                   }
                                 },
-                                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                 inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                    RegExp(r'^\d+\.?\d{0,2}'),
-                                  ),
+                                  TextInputFormatter.withFunction((oldValue, newValue) {
+                                    return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                        ? newValue
+                                        : oldValue;
+                                  }),
                                 ],
                                 controller:
                                 workOrderDirectController.Roundoff,
@@ -285,11 +291,14 @@ class _WorkOrderDirectDeductionState extends State<WorkOrderDirectDeduction> {
                               padding: const EdgeInsets.only(
                                   top: 3, left: 10, bottom: 5),
                               child: TextFormField(
-                                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                 inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                    RegExp(r'^\d+\.?\d{0,2}'),
-                                  ),
+                                  TextInputFormatter.withFunction((oldValue, newValue) {
+                                    return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                        ? newValue
+                                        : oldValue;
+                                  }),
                                 ],
                                 autovalidateMode:
                                 AutovalidateMode.always,
@@ -406,7 +415,15 @@ class _WorkOrderDirectDeductionState extends State<WorkOrderDirectDeduction> {
                                   padding: const EdgeInsets.all(8),
                                   child: TextFormField(
                                     controller: workOrderDirectController.percentControllers[index],
-                                    keyboardType: TextInputType.number,
+                                    keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                    inputFormatters: [
+                                      TextInputFormatter.withFunction((oldValue, newValue) {
+                                        return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                            ? newValue
+                                            : oldValue;
+                                      }),
+                                    ],
                                     cursorColor: Colors.black,
                                     textAlign: TextAlign.center,
                                     decoration: InputDecoration(

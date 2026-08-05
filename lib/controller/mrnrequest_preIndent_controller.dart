@@ -43,7 +43,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
   int reqId=0;
 
   int addMaterialControl = 0;
-
+  RxInt createdById = 0.obs;
 
   RxString ReqType = "".obs;
   RxString selectedMaterialName = "".obs;
@@ -458,7 +458,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
       siteId: siteController.selectedsiteId.value,
       reqRemarks: RemarksController.text,
       //SAVE
-      createdBy: isSubmit ? int.parse(loginController.EmpId()) : null,
+      createdBy: isSubmit ? int.parse(loginController.EmpId()) : createdById.value,
       createdDt: isSubmit
           ? BaseUtitiles().convertToUtcIso(RequestDateController.text)
           : null,

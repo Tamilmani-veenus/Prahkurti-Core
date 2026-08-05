@@ -53,6 +53,7 @@ class _WorkOrdDirectEntryScreenState extends State<WorkOrdDirectEntryScreen> {
           workOrderDirectController.WorkStatusTypeText.text = element.workStatus == "C" ? "Completed" : "Pending";
           workOrderDirectController.WorkOrdActiveTypeText.text = element.active == "Y" ? "Active" : "Inactive";
           workOrderDirectController.PreparedByController.text = element.createdName.toString();
+          workOrderDirectController.createdById.value = element.createdBy;
           workOrderDirectController.RemarksController.text = element.remarks.toString();
         });
       }
@@ -74,6 +75,7 @@ class _WorkOrdDirectEntryScreenState extends State<WorkOrdDirectEntryScreen> {
         workOrderDirectController.workOrdStsTypeId.value = "0";
         workOrderDirectController.PreparedByController.text = loginController.EmpName();
         workOrderDirectController.RemarksController.text = "";
+        workOrderDirectController.createdById.value=0;
         workOrderDirectController.workOrder_itemlistTable_Delete();
         workOrderDirectController.ItemGetTableListdata.value.clear();
         workOrderDirectController.workOrdamount.text = "0.0";
@@ -116,7 +118,7 @@ class _WorkOrdDirectEntryScreenState extends State<WorkOrdDirectEntryScreen> {
                           child: Text(
                             widget.heading,
                             style: TextStyle(
-                                fontSize: RequestConstant.Heading_Font_SIZE,
+                                fontSize: workOrderDirectController.saveButton.value == RequestConstant.RESUBMIT || workOrderDirectController.saveButton.value == RequestConstant.SUBMIT? RequestConstant.Heading_Font_SIZE : 16,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),

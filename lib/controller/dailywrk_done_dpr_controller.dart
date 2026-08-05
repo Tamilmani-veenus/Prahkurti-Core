@@ -40,8 +40,6 @@ class DailyWrkDone_DPR_Controller extends GetxController {
   LoginController loginController = Get.put(LoginController());
   PendingListController pendingListController=Get.put(PendingListController());
 
-  // DailyWrkDone_DPRNEW_Controller dailyWrkDone_DPRNEW_Controller = Get.put(DailyWrkDone_DPRNEW_Controller());
-
   final dpr_autoYearWiseNoController = TextEditingController();
   final dpr_dateController = TextEditingController();
   final dpr_referenceController = TextEditingController();
@@ -69,7 +67,6 @@ class DailyWrkDone_DPR_Controller extends GetxController {
   List<TextEditingController> Addwrk_HeadNameControllers = [];
 
   int check = 0;
-  int checklist = 0;
   int workId=0;
   RxString saveButton=RequestConstant.SUBMIT.obs;
 
@@ -106,6 +103,7 @@ class DailyWrkDone_DPR_Controller extends GetxController {
   var gettingNetworkImages = <String>[].obs;
   List<int> imageIds = [];
   RxInt pickedImageCount = 0.obs;
+  RxInt createdById = 0.obs;
 
 
   Future dpr_getItemList(int prid,int siteid,int subcontid,BuildContext context) async {
@@ -181,7 +179,7 @@ class DailyWrkDone_DPR_Controller extends GetxController {
           checkdata == 1 ? saveButton.value = RequestConstant.APPROVAL : saveButton.value = RequestConstant.RESUBMIT;
           dpr_entrylist_editSaveDetTable();
           getDprTablesDatas();
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) => DailyWork_done_DPR_Entry(heading:MenuName,)),
@@ -617,8 +615,8 @@ class DailyWrkDone_DPR_Controller extends GetxController {
         refNo: dpr_referenceController.text.isEmpty ? "0" : dpr_referenceController.text,
         totalamt: totalNetAmount.text,
         remarks: dpr_remarksController.text.isEmpty ? "-" : dpr_remarksController.text,
-        createdBy: int.tryParse(loginController.EmpId()),
-        createdDate: BaseUtitiles().convertToUtcIso(dpr_dateController.text),
+        createdBy: saveButton.value == RequestConstant.SUBMIT ?int.tryParse(loginController.EmpId()) : createdById.value,
+        // createdDate: BaseUtitiles().convertToUtcIso(dpr_dateController.text),
         approveStatus: saveButton.value == RequestConstant.APPROVAL ? "Y" : "N",
         verifyStatus: saveButton.value == RequestConstant.APPROVAL ? "Y" : "N",
         subContractDailyWorkDets: getDprListDet(id)
@@ -626,20 +624,16 @@ class DailyWrkDone_DPR_Controller extends GetxController {
     const JsonEncoder encoder = JsonEncoder.withIndent('  ');
     final prettyJson = encoder.convert(formdata.toJson());
     debugPrint(prettyJson, wrapWidth: 1024);
-    if(checklist == 0) {
       final list = await DPRProvider.SaveIemListScreenEntryAPI(formdata,imageFiles,saveButton,id);
       if (list != null) {
         if (list["success"] == true) {
-          if (saveButton.value == RequestConstant.SUBMIT ||
-              saveButton.value == RequestConstant.RESUBMIT) {
-            BaseUtitiles.showToast(list["message"]);
+          BaseUtitiles.showToast(list["message"]);
+          if (saveButton.value == RequestConstant.SUBMIT || saveButton.value == RequestConstant.RESUBMIT) {
             await dpr_getEntryList();
-            BaseUtitiles.popMultiple(context, count: 3);
           } else if (saveButton.value == RequestConstant.APPROVAL) {
-            BaseUtitiles.showToast(list["message"]);
             await pendingListController.getPendingList();
-            BaseUtitiles.popMultiple(context, count: 3);
           }
+          BaseUtitiles.popMultiple(context, count: 3);
         } else {
           BaseUtitiles.showToast(list["message"] ?? 'Something went wrong..');
           BaseUtitiles.popMultiple(context, count: 2);
@@ -647,41 +641,33 @@ class DailyWrkDone_DPR_Controller extends GetxController {
       } else {
         BaseUtitiles.showToast("Something went wrong..");
         BaseUtitiles.popMultiple(context, count: 3);
-      }}
-    else {
-      Get.back();
-      Get.back();
-      Fluttertoast.showToast(msg: "DPR Work Done Not Saved With Empty List....");
-    }
+      }
   }
 
 
-  List<SubContractDailyWorkDets>? getDprListDet(int iid) {
-    checklist = 0;
+  List<SubContractDailyWorkDets>? getDprListDet(int id) {
     dpr_itemview_DbList.value.forEach((element) {
       if(element.amt > 0){
         var list = SubContractDailyWorkDets(
           id: saveButton.value == RequestConstant.RESUBMIT || saveButton.value == RequestConstant.APPROVAL ? element.reqDetId : 0,
-          subContractDailyWorkMasId: saveButton.value == RequestConstant.RESUBMIT || saveButton.value == RequestConstant.APPROVAL ? iid : 0,
+          subContractDailyWorkMasId: saveButton.value == RequestConstant.RESUBMIT || saveButton.value == RequestConstant.APPROVAL ? id : 0,
           subContarctWorkdetid: element.woDetId,
           headItemId: element.headItemId,
           subItemId: element.subItemId,
           level3ItemId: element.level3ItemId,
           cement: 0,
           itemDescription: element.itemDesc,
-          workType: "RAT",
+          workType: entryType,
           boqCode: element.boqCode,
           scaleId: element.scaleId,
           siteId: element.siteId,
           billStatus: "N",
-          avgLabRate: 0,
+          avgLabRate: element.rate,
           qty: element.qty,
           rate: element.rate,
           amount: element.amt,
         );
         getDprDetList.value.add(list);
-      } else {
-        checklist = 1;
       }
     });
     return getDprDetList.value;

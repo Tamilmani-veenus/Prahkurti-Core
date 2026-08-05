@@ -259,10 +259,21 @@ class CommonProvider {
     }
   }
 
-  static Future<DprHeadNameListModel?> dprNewHeadNameDropdown(siteId,type) async {
+  static Future<DprHeadNameListModel?> dprNewHeadNameDropdown(siteId,type,projectId) async {
     try {
-      final response = await ApiManager.getAPICall("${type=="DPRNEW"?ApiConstant.GETDPRNEWHEAD_LIST:ApiConstant.GETBOQHEAD_LIST}?siteId=$siteId");
-      print("response...$response");
+      String url;
+
+      if (type == "ManPower") {
+        url = "${ApiConstant.GETMANPOWERHEAD_LIST}?projectId=$projectId&siteId=$siteId";
+      } else if (type == "DPRNEW") {
+        url = "${ApiConstant.GETDPRNEWHEAD_LIST}?siteId=$siteId";
+      } else if (type == "WORKORDBOQ") {
+        url = "${ApiConstant.WORKORDERBOQ_HEADITEM}?projId=$projectId&siteId=$siteId";
+      }else {
+        url = "${ApiConstant.GETBOQHEAD_LIST}?siteId=$siteId";
+      }
+      final response = await ApiManager.getAPICall(url);
+      print("Response: $response");
       return dprHeadNameListModelFromJson(response);
     } catch (error, stackTrace) {
       print("Error == $error");
@@ -419,6 +430,10 @@ class CommonProvider {
             "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=ManPowerNo&tableName=ManPowerMas&formName=ManPower");
       }
       else if (Url == "WORK ORDER DIRECT") {
+        response = await ApiManager.getAPICall(
+            "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=WorkOrderNo&tableName=SubcontractWorkOrderMas&formName=SubcontractWorkOrderMas");
+      }
+      else if (Url == "WORK ORDER BOQ") {
         response = await ApiManager.getAPICall(
             "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=WorkOrderNo&tableName=SubcontractWorkOrderMas&formName=SubcontractWorkOrderMas");
       }

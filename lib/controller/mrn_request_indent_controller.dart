@@ -60,7 +60,6 @@ class MRN_Request_Controller extends GetxController {
       Get.put(PendingListController());
   SiteController siteController = Get.put(SiteController());
   RxInt selectedMaterialId = 0.obs;
-  RxInt createdById = 0.obs;
   RxString selectedMaterialName = "".obs;
   RxList Material_itemview_GetDbList = [].obs;
   late List<bool> isChecked;
@@ -112,8 +111,7 @@ class MRN_Request_Controller extends GetxController {
     }
   }
 
-  Future getMaterialList(
-      BuildContext context, String requestType, projectId, siteId) async {
+  Future getMaterialList(BuildContext context, String requestType, projectId, siteId) async {
     getmaterialvalue.value.clear();
     final value = await CommonProvider.getmaterial(
         requestType == "CP", projectId, siteId);

@@ -485,6 +485,8 @@ class _Staff_Voucher_EntryListScreenState
                                     flex: 1,
                                     child: IconButton(
                                         onPressed: () {
+                                          vocId = staffVoucher_Controller.StaffVocEtyList.value[index].id;
+
                                           showModalBottomSheet(
                                               context: context,
                                               shape: RoundedRectangleBorder(

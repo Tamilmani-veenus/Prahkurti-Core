@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -317,7 +319,15 @@ class _MrnfinalItemListState extends State<MrnfinalItemList> {
                                               mrnFinalApprovalController
                                                   .BalQty_ListController[
                                               index],
-                                              keyboardType: TextInputType.number,
+                                              keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                              inputFormatters: [
+                                                TextInputFormatter.withFunction((oldValue, newValue) {
+                                                  return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                      ? newValue
+                                                      : oldValue;
+                                                }),
+                                              ],
                                               decoration: InputDecoration(
                                                 contentPadding:
                                                 const EdgeInsets.fromLTRB(
@@ -373,7 +383,15 @@ class _MrnfinalItemListState extends State<MrnfinalItemList> {
                                             mrnFinalApprovalController
                                                 .ReqQty_ListController[
                                             index],
-                                            keyboardType: TextInputType.number,
+                                            keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                            inputFormatters: [
+                                              TextInputFormatter.withFunction((oldValue, newValue) {
+                                                return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                    ? newValue
+                                                    : oldValue;
+                                              }),
+                                            ],
                                             decoration: InputDecoration(
                                               contentPadding:
                                               const EdgeInsets.fromLTRB(

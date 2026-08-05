@@ -66,9 +66,9 @@ class _SiteVoucher_EntryScreenState extends State<SiteVoucher_EntryScreen> {
         siteVoucher_Controller.imageFiles.value = [];
         projectController.projectname.text = "--SELECT--";
         projectController.selectedProjectId.value = 0;
-        siteVoucher_Controller.sitevocDate.text =
-            BaseUtitiles.initiateCurrentDateFormat();
-        siteVoucher_Controller.type.value = "Direct Payment/Office";
+        siteVoucher_Controller.sitevocDate.text = BaseUtitiles.initiateCurrentDateFormat();
+        // siteVoucher_Controller.type.value =  (!AppClient.isAnusamm)?"Direct Payment/Office":"SiteWise Payment";
+        siteVoucher_Controller.type.value = "SiteWise Payment";
         siteVoucher_Controller.Amount.text = "0.0";
         commonVoucherController.AccountTypename.text = "--SELECT--";
         commonVoucherController.selectedAccnameId = 0.obs;
@@ -82,11 +82,11 @@ class _SiteVoucher_EntryScreenState extends State<SiteVoucher_EntryScreen> {
         commonVoucherController.Paymodename.text = "BY CASH";
         commonVoucherController.selectedPaymodeId.value = 1;
         siteVoucher_Controller.Remarks.text = "";
+        siteVoucher_Controller.createdById.value = 0;
         await autoYearWiseNoController.AutoYearWiseNo("SITE VOUCHER");
         siteVoucher_Controller.AutoYearwiseSiteVoc.text =
             autoYearWiseNoController.SiteVoucher_autoYrsWise.value;
-      } else if (siteVoucher_Controller.SaveButton.value ==
-          RequestConstant.RESUBMIT || siteVoucher_Controller.SaveButton.value == RequestConstant.APPROVAL) {
+      } else if (siteVoucher_Controller.SaveButton.value == RequestConstant.RESUBMIT || siteVoucher_Controller.SaveButton.value == RequestConstant.APPROVAL) {
         await siteVoucher_Controller.gettingImage();
         siteVoucher_Controller.Sitevoucher_EditListApiValue.forEach((element) {
           siteVoucher_Controller.VocID = element.id;
@@ -120,6 +120,7 @@ class _SiteVoucher_EntryScreenState extends State<SiteVoucher_EntryScreen> {
           commonVoucherController.AccPayforname.text =
               element.accountPayForName;
           commonVoucherController.Paymodename.text = element.payModeName;
+          siteVoucher_Controller.createdById.value = element.createdBy;
         });
       }
     });
@@ -835,12 +836,14 @@ class _SiteVoucher_EntryScreenState extends State<SiteVoucher_EntryScreen> {
                                           "SiteWise Payment"
                                       ? true
                                       : false,
-                                  keyboardType: TextInputType.numberWithOptions(
-                                      decimal: true),
+                                  keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                   inputFormatters: [
-                                    FilteringTextInputFormatter.allow(
-                                      RegExp(r'^\d+\.?\d{0,2}'),
-                                    ),
+                                    TextInputFormatter.withFunction((oldValue, newValue) {
+                                      return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                          ? newValue
+                                          : oldValue;
+                                    }),
                                   ],
                                   controller: siteVoucher_Controller.Amount,
                                   cursorColor: Colors.black,
@@ -933,31 +936,39 @@ class _SiteVoucher_EntryScreenState extends State<SiteVoucher_EntryScreen> {
                       () => Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Radio<String>(
-                            value: 'Direct Payment/Office',
-                            groupValue: siteVoucher_Controller.type.value,
-                            fillColor: MaterialStateColor.resolveWith(
-                                (states) => Theme.of(context).primaryColor),
-                            onChanged: (value) {
-                              setState(() {
-                                siteVoucher_Controller.type.value = value!;
-                                siteVoucher_Controller.Sitevoucher_itemview_GetDbList.value = [];
-                                siteVoucher_Controller.Amount.text = "0.0";
-                              });
-                            },
-                          ),
-                          Container(child: const Text('Direct Payment/Office')),
-                          Radio<String>(
-                            value: 'SiteWise Payment',
-                            groupValue: siteVoucher_Controller.type.value,
-                            fillColor: MaterialStateColor.resolveWith(
-                                (states) => Theme.of(context).primaryColor),
-                            onChanged: (value) {
-                              setState(() {
-                                siteVoucher_Controller.type.value = value!;
-                                siteVoucher_Controller.Amount.text = "0.0";
-                              });
-                            },
+                       // Row(
+                       //      children: [
+                       //        Radio<String>(
+                       //          value: 'Direct Payment/Office',
+                       //          groupValue: siteVoucher_Controller.type.value,
+                       //          fillColor: MaterialStateColor.resolveWith(
+                       //              (states) => Theme.of(context).primaryColor),
+                       //          onChanged: (value) {
+                       //            setState(() {
+                       //              siteVoucher_Controller.type.value = value!;
+                       //              siteVoucher_Controller.Sitevoucher_itemview_GetDbList.value = [];
+                       //              siteVoucher_Controller.Amount.text = "0.0";
+                       //            });
+                       //          },
+                       //        ),
+                       //        Container(child: const Text('Direct Payment/Office')),
+                       //      ],
+                       //    ),
+                          Row(
+                            children: [
+                              Radio<String>(
+                                value: 'SiteWise Payment',
+                                groupValue: siteVoucher_Controller.type.value,
+                                fillColor: MaterialStateColor.resolveWith(
+                                    (states) => Theme.of(context).primaryColor),
+                                onChanged: (value) {
+                                  setState(() {
+                                    siteVoucher_Controller.type.value = value!;
+                                    siteVoucher_Controller.Amount.text = "0.0";
+                                  });
+                                },
+                              ),
+                            ],
                           ),
                           Container(child: const Text('SiteWise Payment')),
                         ],
@@ -1004,139 +1015,6 @@ class _SiteVoucher_EntryScreenState extends State<SiteVoucher_EntryScreen> {
                             ),
                           ),
                         ),
-                        // Container(
-                        //   margin: const EdgeInsets.only(top: 5),
-                        //   child: Row(
-                        //     children: <Widget>[
-                        //       Expanded(
-                        //         flex: 1,
-                        //         child: InkWell(
-                        //           child: Container(
-                        //               margin: const EdgeInsets.only(right: 5, left: 5),
-                        //               alignment: Alignment.center,
-                        //               height: BaseUtitiles.getheightofPercentage(context, 4),
-                        //               decoration: BoxDecoration(
-                        //                 borderRadius: BorderRadius.circular(0),
-                        //                 color: Theme.of(context).primaryColor,
-                        //                 boxShadow: const [
-                        //                   BoxShadow(
-                        //                       offset: Offset(0, 10),
-                        //                       blurRadius: 50,
-                        //                       color: Color(0xffEEEEEE)),
-                        //                 ],
-                        //               ),
-                        //               child: Row(
-                        //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        //                 children: [
-                        //                   CircleAvatar(
-                        //                       backgroundColor: Theme.of(context).primaryColor,
-                        //                       child: const Icon(Icons.camera_alt, color: Colors.white)
-                        //                   ),
-                        //                   const Text("Camera", style: TextStyle(color: Colors.white)),
-                        //                 ],
-                        //               )
-                        //           ),
-                        //           onTap: () {
-                        //             if (_formKey.currentState!.validate()) {
-                        //               _formKey.currentState!.save();
-                        //               Navigator.push(
-                        //                 context,
-                        //                 MaterialPageRoute(
-                        //                     builder: (_) => CameraCapturePage(
-                        //                       fromScreen:
-                        //                       "Site Voucher",
-                        //                     )),
-                        //               );
-                        //             }
-                        //           },
-                        //         ),
-                        //       ),
-                        //       Expanded(
-                        //         flex: 1,
-                        //         child: InkWell(
-                        //           child: Container(
-                        //               margin: const EdgeInsets.only(right: 5),
-                        //               alignment: Alignment.center,
-                        //               height: BaseUtitiles.getheightofPercentage(
-                        //                   context, 4),
-                        //               decoration: BoxDecoration(
-                        //                 borderRadius: BorderRadius.circular(0),
-                        //                 color: Theme.of(context).primaryColor,
-                        //                 boxShadow: const [
-                        //                   BoxShadow(
-                        //                       offset: Offset(0, 10),
-                        //                       blurRadius: 50,
-                        //                       color: Color(0xffEEEEEE)),
-                        //                 ],
-                        //               ),
-                        //               child: Row(
-                        //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        //                 children: [
-                        //                   CircleAvatar(
-                        //                       backgroundColor: Theme.of(context).primaryColor,
-                        //                       child: const Icon(Icons.photo_library, color: Colors.white,)
-                        //                   ),
-                        //                   const Text("Gallery", style: TextStyle( color: Colors.white)),
-                        //                 ],
-                        //               )
-                        //           ),
-                        //           onTap: () async {
-                        //             if (_formKey.currentState!.validate()) {
-                        //               _formKey.currentState!.save();
-                        //               setState(() {
-                        //                 getImage(ImageSource.gallery);
-                        //               });
-                        //             }
-                        //           },
-                        //         ),
-                        //       ),
-                        //
-                        //       Obx(() => Visibility(
-                        //         visible: siteVoucher_Controller.type.value == "Direct Payment/Office" ? false : true,
-                        //         child: Expanded(
-                        //           flex: 1,
-                        //           child: InkWell(
-                        //             child: Container(
-                        //               margin: const EdgeInsets.only(right: 5),
-                        //               alignment: Alignment.center,
-                        //               height: BaseUtitiles.getheightofPercentage(
-                        //                   context, 4),
-                        //               decoration: BoxDecoration(
-                        //                 borderRadius: BorderRadius.circular(0),
-                        //                 color: Theme.of(context).primaryColor,
-                        //                 boxShadow: const [
-                        //                   BoxShadow(
-                        //                       offset: Offset(0, 10),
-                        //                       blurRadius: 50,
-                        //                       color: Color(0xffEEEEEE)),
-                        //                 ],
-                        //               ),
-                        //               child: const Row(
-                        //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        //                 children: [
-                        //                   Icon(Icons.add, color: Colors.white),
-                        //                   Text("Add List", style: TextStyle(color: Colors.white),
-                        //                   ),
-                        //                 ],
-                        //               ),
-                        //             ),
-                        //             onTap: () {
-                        //               if (_formKey.currentState!.validate()) {
-                        //                 _formKey.currentState!.save();
-                        //                 Navigator.push(
-                        //                     context,
-                        //                     MaterialPageRoute(
-                        //                         builder: (context) =>
-                        //                         const Site_Voucher_Sitewise()));
-                        //               }
-                        //             },
-                        //           ),
-                        //         ),
-                        //       )),
-                        //
-                        //     ],
-                        //   ),
-                        // ),
                         Padding(
                           padding: EdgeInsets.only(left: 16.0),
                           child: ElevatedButton(
@@ -1208,8 +1086,7 @@ class _SiteVoucher_EntryScreenState extends State<SiteVoucher_EntryScreen> {
                               itemCount: allImages.length,
                               itemBuilder: (context, index) {
                                 final image = allImages[index];
-                                final isNetwork = image
-                                    is String; // URL → network, File → local
+                                final isNetwork = image is String; // URL → network, File → local
 
                                 return Stack(
                                   children: [
@@ -1825,8 +1702,7 @@ class _SiteVoucher_EntryScreenState extends State<SiteVoucher_EntryScreen> {
                               // siteController.selectedsiteId = 0.obs;
                               // projectController.projectname.text = "--Select--";
                               // projectController.selectedProjectId.value = 0;
-                              siteVoucher_Controller.type.value =
-                                  "Direct Payment/Office";
+                              siteVoucher_Controller.type.value = "SiteWise Payment";
                               siteVoucher_Controller.Amount.text = "0.0";
                               commonVoucherController.Accountname.text =
                                   "--SELECT--";
@@ -1858,7 +1734,7 @@ class _SiteVoucher_EntryScreenState extends State<SiteVoucher_EntryScreen> {
                               commonVoucherController.selectedPaymodeId.value =
                                   1;
                               siteVoucher_Controller.Remarks.text = "";
-                              dailyEntriesController.imageFiles.value = [];
+                              siteVoucher_Controller.imageFiles.value = [];
                             });
                             Navigator.pop(context);
                           });

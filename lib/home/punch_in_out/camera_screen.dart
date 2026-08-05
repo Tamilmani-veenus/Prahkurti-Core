@@ -14,6 +14,8 @@ import '../../controller/dailywrk_done_dprnew_controller.dart';
 import '../../controller/inward_pending_controller.dart';
 import '../../controller/punch_in_controller.dart';
 import '../../controller/sitevoucher_controller.dart';
+import '../../controller/staffcontroller.dart';
+import '../../controller/staffvoucher_controller.dart';
 import '../../utilities/baseutitiles.dart';
 import 'package:image/image.dart' as img;
 
@@ -32,6 +34,8 @@ class _CameraCapturePageState extends State<CameraCapturePage> with WidgetsBindi
   DailyWrkDone_DPRNEW_Controller dailyWrkDone_DPRNEW_Controller=Get.put(DailyWrkDone_DPRNEW_Controller());
   SiteVoucher_Controller siteVoucher_Controller = Get.put(SiteVoucher_Controller());
   InwardPending_Controller inwardPendingcontroller = Get.put(InwardPending_Controller());
+  StaffVoucher_Controller staffVoucher_Controller =
+  Get.put(StaffVoucher_Controller());
   CameraController? _controller;
   Future<void>? _initializeControllerFuture;
   List<CameraDescription> cameras = [];
@@ -197,6 +201,10 @@ class _CameraCapturePageState extends State<CameraCapturePage> with WidgetsBindi
           siteVoucher_Controller.imageFiles.add(watermarkedFile);
           newlyAddedIndex = siteVoucher_Controller.imageFiles.length - 1;
         }
+        else if(widget.fromScreen=="Staff Voucher"){
+          staffVoucher_Controller.imageFiles.add(watermarkedFile);
+          newlyAddedIndex = staffVoucher_Controller.imageFiles.length - 1;
+        }
         else if(widget.fromScreen=="Inward"){
           inwardPendingcontroller.checkImgList.value = true;
           inwardPendingcontroller.imageFiles.add(watermarkedFile);
@@ -251,6 +259,10 @@ class _CameraCapturePageState extends State<CameraCapturePage> with WidgetsBindi
         }
         else if (widget.fromScreen == "Site Voucher" && newlyAddedIndex != null) {
           siteVoucher_Controller.imageFiles.removeAt(newlyAddedIndex!);
+          newlyAddedIndex = null;
+        }
+        else if (widget.fromScreen == "Staff Voucher" && newlyAddedIndex != null) {
+          staffVoucher_Controller.imageFiles.removeAt(newlyAddedIndex!);
           newlyAddedIndex = null;
         }
         else if (widget.fromScreen == "Inward"  && newlyAddedIndex != null ) {
@@ -360,7 +372,8 @@ class _CameraCapturePageState extends State<CameraCapturePage> with WidgetsBindi
                     (widget.fromScreen == "DPR" && dailyWrkDone_DPR_Controller.imageFiles.isNotEmpty) ||
                     (widget.fromScreen == "DPR-NEW" && dailyWrkDone_DPRNEW_Controller.imageFiles.isNotEmpty) ||
                     (widget.fromScreen == "Site Voucher" && siteVoucher_Controller.imageFiles.isNotEmpty) ||
-                    ((widget.fromScreen == "Inward" || widget.fromScreen == "InwardAddButton" ) && inwardPendingcontroller.imageFiles.isNotEmpty))
+                    (widget.fromScreen == "Staff Voucher" && staffVoucher_Controller.imageFiles.isNotEmpty) ||
+                   ((widget.fromScreen == "Inward" || widget.fromScreen == "InwardAddButton" ) && inwardPendingcontroller.imageFiles.isNotEmpty))
 
               Column(
                     children: [
@@ -391,6 +404,11 @@ class _CameraCapturePageState extends State<CameraCapturePage> with WidgetsBindi
                         else if(widget.fromScreen == "Site Voucher") {
                           if (siteVoucher_Controller.imageFiles.isNotEmpty) {
                             selectedImage = XFile(siteVoucher_Controller.imageFiles.last.path); // ✔ safe
+                          }
+                        }
+                        else if(widget.fromScreen == "Staff Voucher") {
+                          if (staffVoucher_Controller.imageFiles.isNotEmpty) {
+                            selectedImage = XFile(staffVoucher_Controller.imageFiles.last.path); // ✔ safe
                           }
                         }
                         else if(widget.fromScreen == "Inward" || widget.fromScreen == "InwardAddButton") {

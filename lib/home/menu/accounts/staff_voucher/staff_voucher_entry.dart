@@ -1,5 +1,5 @@
+import 'dart:io';
 import 'package:flutter/services.dart';
-
 import '../../../../home/menu/accounts/staff_voucher/staff_voucher_sitewise.dart';
 import '../../../../constants/ui_constant/icons_const.dart';
 import '../../../../controller/bottomsheet_Controllers.dart';
@@ -12,7 +12,9 @@ import '../../../../controller/sitecontroller.dart';
 import '../../../../controller/staffcontroller.dart';
 import '../../../../controller/staffvoucher_controller.dart';
 import '../../../../controller/subcontcontroller.dart';
+import '../../../../utilities/apiconstant.dart';
 import '../../../../utilities/baseutitiles.dart';
+import '../../../../utilities/image_view.dart';
 import '../../../../utilities/requestconstant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,8 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import '../../../../commonpopup/accountnameadd_alert.dart';
 import '../../../../commonpopup/vouchertype_alert.dart';
+import '../../../punch_in_out/Image_galleryScreen.dart';
+import '../../../punch_in_out/camera_screen.dart';
 
 class Staff_Voucher_EntryScreen extends StatefulWidget {
   final String heading;
@@ -52,7 +56,10 @@ class _Subcont_Nmr_EntryScreenState_Site
     var duration = Duration(seconds: 0);
     Future.delayed(duration, () async {
       if (staffVoucher_Controller.SaveButton.value == RequestConstant.SUBMIT) {
-        staffVoucher_Controller.type.value = "Direct Payment/Office";
+        // staffVoucher_Controller.type.value =  (!AppClient.isAnusamm)?"Direct Payment/Office":"SiteWise Payment";
+        staffVoucher_Controller.gettingNetworkImages.value = [];
+        staffVoucher_Controller.imageFiles.value = [];
+        staffVoucher_Controller.type.value = "SiteWise Payment";
         staffVoucher_Controller.staffvocDate.text =
             BaseUtitiles.initiateCurrentDateFormat();
         staffVoucher_Controller.ChequeDate.text =
@@ -78,6 +85,7 @@ class _Subcont_Nmr_EntryScreenState_Site
         staffVoucher_Controller.Remarks.text = "";
         commonVoucherController.namethrough.text = "";
         siteController.selectedsiteId.value = 0;
+        staffVoucher_Controller.createdById.value = 0;
         staffVoucher_Controller.ChequeNo.text = "";
         staffVoucher_Controller.BankName.text = "--SELECT--";
         staffVoucher_Controller.TotalAmount.text = "0.0";
@@ -88,6 +96,7 @@ class _Subcont_Nmr_EntryScreenState_Site
       }
 
       if (staffVoucher_Controller.SaveButton.value == RequestConstant.RESUBMIT) {
+        await staffVoucher_Controller.gettingImage();
         staffVoucher_Controller.Sitevoucher_EditListApiValue.forEach((element) {
           staffVoucher_Controller.AutoYearwisestaffVoc.text = element.staffVocNo;
           staffVoucher_Controller.staffvocDate.text = element.vocDate;
@@ -117,6 +126,7 @@ class _Subcont_Nmr_EntryScreenState_Site
           staffVoucher_Controller.type.value = element.payType == "SP"
               ? "SiteWise Payment"
               : "Direct Payment/Office";
+          staffVoucher_Controller.createdById.value = element.createdBy;
         });
       }
     });
@@ -839,12 +849,14 @@ class _Subcont_Nmr_EntryScreenState_Site
                                               "SiteWise Payment"
                                           ? true
                                           : false,
-                                  keyboardType: TextInputType.numberWithOptions(
-                                      decimal: true),
+                                  keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                   inputFormatters: [
-                                    FilteringTextInputFormatter.allow(
-                                      RegExp(r'^\d+\.?\d{0,2}'),
-                                    ),
+                                    TextInputFormatter.withFunction((oldValue, newValue) {
+                                      return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                          ? newValue
+                                          : oldValue;
+                                    }),
                                   ],
                                   controller:
                                       staffVoucher_Controller.TotalAmount,
@@ -961,11 +973,14 @@ class _Subcont_Nmr_EntryScreenState_Site
                                           top: 3, left: 10, bottom: 5),
                                       child: TextFormField(
                                           readOnly: true,
-                                          keyboardType: TextInputType.number,
+                                          keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                           inputFormatters: [
-                                            FilteringTextInputFormatter.allow(
-                                              RegExp(r'^\d+\.?\d{0,2}'),
-                                            ),
+                                            TextInputFormatter.withFunction((oldValue, newValue) {
+                                              return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                  ? newValue
+                                                  : oldValue;
+                                            }),
                                           ],
                                           controller: staffVoucher_Controller
                                               .ChequeDate,
@@ -1195,40 +1210,51 @@ class _Subcont_Nmr_EntryScreenState_Site
                       () => Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Radio<String>(
-                            value: 'Direct Payment/Office',
-                            groupValue: staffVoucher_Controller.type.value,
-                            fillColor: MaterialStateColor.resolveWith(
-                                (states) => Theme.of(context).primaryColor),
-                            onChanged: (value) {
-                              setState(() {
-                                staffVoucher_Controller.type.value = value!;
-                                staffVoucher_Controller.Staffvoucher_itemview_GetDbList.value = [];
-                                staffVoucher_Controller.TotalAmount.text = "0.0";
-                              });
-                            },
-                          ),
-                          Container(child: const Text('Direct Payment/Office')),
-                          Radio<String>(
-                            value: 'SiteWise Payment',
-                            groupValue: staffVoucher_Controller.type.value,
-                            fillColor: MaterialStateColor.resolveWith(
-                                (states) => Theme.of(context).primaryColor),
-                            onChanged: (value) {
-                              setState(() {
-                                staffVoucher_Controller.type.value = value!;
-                                staffVoucher_Controller.TotalAmount.text = "0.0";
-                              });
-                            },
+                          // if (!AppClient.isAnusamm)Row(
+                          //   children: [
+                          //     Radio<String>(
+                          //       value: 'Direct Payment/Office',
+                          //       groupValue: staffVoucher_Controller.type.value,
+                          //       fillColor: MaterialStateColor.resolveWith(
+                          //           (states) => Theme.of(context).primaryColor),
+                          //       onChanged: (value) {
+                          //         setState(() {
+                          //           staffVoucher_Controller.type.value = value!;
+                          //           staffVoucher_Controller.Staffvoucher_itemview_GetDbList.value = [];
+                          //           staffVoucher_Controller.TotalAmount.text = "0.0";
+                          //         });
+                          //       },
+                          //     ),
+                          //     Container(child: const Text('Direct Payment/Office')),
+                          //   ],
+                          // ),
+                          Row(
+                            children: [
+                              Radio<String>(
+                                value: 'SiteWise Payment',
+                                groupValue: staffVoucher_Controller.type.value,
+                                fillColor: MaterialStateColor.resolveWith(
+                                    (states) => Theme.of(context).primaryColor),
+                                onChanged: (value) {
+                                  setState(() {
+                                    staffVoucher_Controller.type.value = value!;
+                                    staffVoucher_Controller.TotalAmount.text = "0.0";
+                                  });
+                                },
+                              ),
+                            ],
                           ),
                           Container(child: const Text('SiteWise Payment')),
                         ],
                       ),
                     ),
                     SizedBox(height: 5),
-                    Obx(() => Visibility(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Obx(() => Visibility(
                           visible: staffVoucher_Controller.type.value ==
-                                  "Direct Payment/Office"
+                              "Direct Payment/Office"
                               ? false
                               : true,
                           child: Row(
@@ -1250,7 +1276,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                                   },
                                   child: Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                    MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Icon(
                                         Icons.add,
@@ -1261,16 +1287,158 @@ class _Subcont_Nmr_EntryScreenState_Site
                                         "Add List",
                                         style: TextStyle(
                                             color:
-                                                Theme.of(context).primaryColor),
+                                            Theme.of(context).primaryColor),
                                       ),
                                     ],
                                   )),
                             ],
                           ),
                         )),
-                    SizedBox(
-                        height:
-                            BaseUtitiles.getheightofPercentage(context, 10)),
+                        Padding(
+                          padding: EdgeInsets.only(left: 16.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Setmybackground),
+                            onPressed: () async {
+                              if (_formKey.currentState!.validate()) {
+                                _formKey.currentState!.save();
+                                if (!AppClient.isPrahkurti) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) =>
+                                            CameraCapturePage(
+                                              fromScreen: "Staff Voucher",
+                                            )),
+                                  );
+                                }else {
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return const ImageGalleryPopup_Alert(imageUrl: "STAFF VOUCHER");
+                                      });
+                                }
+
+                              }
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Icon(
+                                  Icons.add,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                const SizedBox(width: 5),
+                                Text(
+                                  "Add image",
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Obx(() {
+                      final allImages = [
+                        ...staffVoucher_Controller.gettingNetworkImages,
+                        ...staffVoucher_Controller.imageFiles,
+                      ];
+
+                      if (allImages.isEmpty) return SizedBox();
+                      return Container(
+                        height: BaseUtitiles.getheightofPercentage(context, 37),
+                        width: BaseUtitiles.getWidthtofPercentage(context, 95),
+                        child: Builder(
+                          builder: (context) {
+                            return GridView.builder(
+                              padding: const EdgeInsets.all(8),
+                              physics: const BouncingScrollPhysics(),
+                              gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 8,
+                                mainAxisSpacing: 8,
+                                childAspectRatio: 1,
+                              ),
+                              itemCount: allImages.length,
+                              itemBuilder: (context, index) {
+                                final image = allImages[index];
+                                final isNetwork = image is String; // URL → network, File → local
+
+                                return Stack(
+                                  children: [
+                                    GestureDetector(
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: AspectRatio(
+                                          aspectRatio: 1,
+                                          child: isNetwork
+                                              ? Image.network(
+                                            "$image?time=${DateTime.now().millisecondsSinceEpoch}",
+                                            fit: BoxFit.cover,
+                                            width: double.infinity,
+                                          )
+                                              : Image.file(
+                                            image
+                                            as File, // 👈 cast to File
+                                            fit: BoxFit.cover,
+                                            width: double.infinity,
+                                          ),
+                                        ),
+                                      ),
+                                      onTap: () {
+                                        if (image is String) {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ImageViewPage(
+                                                        imageUrl:
+                                                        "$image?time=${DateTime.now().millisecondsSinceEpoch}",
+                                                        netUrl: true,
+                                                      )));
+                                        } else if (image is File) {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ImageViewPage(
+                                                        imagePath: image,
+                                                        netUrl: false,
+                                                      )));
+                                        }
+                                      },
+                                    ),
+                                    Positioned(
+                                      top: 4,
+                                      right: 4,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          if (image is String) {
+                                            DeleteAlert(
+                                                context, index, "String");
+                                          } else if (image is File) {
+                                            DeleteAlert(context, index, "File");
+                                          }
+                                        },
+                                        child: const CircleAvatar(
+                                          backgroundColor: Colors.red,
+                                          radius: 12,
+                                          child: Icon(Icons.close,
+                                              color: Colors.white, size: 16),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      );
+                    }),
                     SizedBox(height: height),
                   ],
                 ),
@@ -1773,7 +1941,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                             if (await BaseUtitiles.checkNetworkAndShowLoader(
                                 context)) {
                               await staffVoucher_Controller
-                                  .SaveButtonSitevoucher_ItemlistScreen(
+                                  .SaveButtonStaffvoucher_ItemlistScreen(
                                       context,
                                   staffVoucher_Controller.SaveButton.value==RequestConstant.RESUBMIT?staffVoucher_Controller
                                           .Sitevoucher_EditListApiValue[0].id:0);
@@ -1837,8 +2005,8 @@ class _Subcont_Nmr_EntryScreenState_Site
                           Future.delayed(Duration(seconds: 0), () {
                             staffVoucher_Controller.SaveButton.value =
                                 RequestConstant.SUBMIT;
-                            staffVoucher_Controller.type.value =
-                                "SiteWise Payment";
+                            // staffVoucher_Controller.type.value =  (!AppClient.isAnusamm)?"Direct Payment/Office":"SiteWise Payment";
+                            staffVoucher_Controller.type.value = "SiteWise Payment";
                             staffVoucher_Controller
                                 .delete_Sitevoucher_itemlist_Table();
                             staffVoucher_Controller
@@ -1870,6 +2038,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                             staffVoucher_Controller.ChequeNo.text = "";
                             staffVoucher_Controller.ChequeDate.text = BaseUtitiles.initiateCurrentDateFormat();
                             staffVoucher_Controller.BankName.text = "--SELECT--";
+                            staffVoucher_Controller.imageFiles.value = [];
                             staffVoucher_Controller.payeeType.value = false;
                           });
                           Navigator.pop(context);
@@ -1888,4 +2057,79 @@ class _Subcont_Nmr_EntryScreenState_Site
       ),
     );
   }
+  Future DeleteAlert(BuildContext context, int index, itemType) async {
+    return await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Alert!'),
+        content: const Text('Do you want to Delete?'),
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(left: 20, right: 20),
+            child: IntrinsicHeight(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Cancel",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                                fontSize: RequestConstant.Lable_Font_SIZE))),
+                  ),
+                  VerticalDivider(
+                    color: Colors.grey.shade400, //color of divider
+                    width: 5, //width space of divider
+                    thickness: 2, //thickness of divier line
+                    indent: 15, //Spacing at the top of divider.
+                    endIndent: 15, //Spacing at the bottom of divider.
+                  ),
+                  Expanded(
+                    child: TextButton(
+                        onPressed: () async {
+                          if (itemType == "String") {
+                            final imageId =
+                            staffVoucher_Controller.imageId[index];
+
+                            final isDeleted = await staffVoucher_Controller
+                                .deletingImage(imageId);
+
+                            if (isDeleted) {
+                              staffVoucher_Controller.gettingNetworkImages
+                                  .removeAt(index);
+                            }
+                          } else if (itemType == "File") {
+                            int localIndex = index -
+                                staffVoucher_Controller
+                                    .gettingNetworkImages.length;
+                            if (localIndex >= 0 &&
+                                localIndex <
+                                    staffVoucher_Controller.imageFiles.length) {
+                              setState(() {
+                                staffVoucher_Controller.imageFiles
+                                    .removeAt(localIndex);
+                              });
+                            }
+                          }
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Delete",
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                                fontSize: RequestConstant.Lable_Font_SIZE))),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 }

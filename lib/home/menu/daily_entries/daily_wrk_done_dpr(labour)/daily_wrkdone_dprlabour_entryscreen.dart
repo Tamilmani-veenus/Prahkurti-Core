@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:flutter/services.dart';
+
 import '../../../../commonpopup/entry_type_alert.dart';
 import '../../../../controller/auto_yrwise_no_controller.dart';
 import '../../../../controller/dailywrk_done_dpr_controller.dart';
@@ -467,7 +471,15 @@ class _DailyWork_done_DPRLabour_EntryScreenState extends State<DailyWork_done_DP
                                 decoration: BoxDecoration(),
                                 child: TextField(
                                   readOnly:true,
-                                  keyboardType: TextInputType.number,
+                                  keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                  inputFormatters: [
+                                    TextInputFormatter.withFunction((oldValue, newValue) {
+                                      return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                          ? newValue
+                                          : oldValue;
+                                    }),
+                                  ],
                                   controller: dailyWrkDone_DPRLabour_Controller.dpr_lab_rateController,
                                   textAlign: TextAlign.center,
                                   decoration: InputDecoration(
@@ -490,7 +502,15 @@ class _DailyWork_done_DPRLabour_EntryScreenState extends State<DailyWork_done_DP
                                 decoration: BoxDecoration(),
                                 child: TextField(
                                   readOnly:true,
-                                  keyboardType: TextInputType.number,
+                                  keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                  inputFormatters: [
+                                    TextInputFormatter.withFunction((oldValue, newValue) {
+                                      return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                          ? newValue
+                                          : oldValue;
+                                    }),
+                                  ],
                                   controller:dailyWrkDone_DPRLabour_Controller.dpr_lab_unitsController,
                                   textAlign: TextAlign.center,
                                   decoration: InputDecoration(
@@ -511,7 +531,15 @@ class _DailyWork_done_DPRLabour_EntryScreenState extends State<DailyWork_done_DP
                                 decoration: BoxDecoration(),
                                 child: TextField(
                                   readOnly:true,
-                                  keyboardType: TextInputType.number,
+                                  keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                  inputFormatters: [
+                                    TextInputFormatter.withFunction((oldValue, newValue) {
+                                      return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                          ? newValue
+                                          : oldValue;
+                                    }),
+                                  ],
                                   controller:dailyWrkDone_DPRLabour_Controller.dpr_lab_boqQtyController,
                                   textAlign: TextAlign.center,
                                   decoration: InputDecoration(
@@ -532,7 +560,15 @@ class _DailyWork_done_DPRLabour_EntryScreenState extends State<DailyWork_done_DP
                                 margin: EdgeInsets.only(left: 10, right: 10),
                                 decoration: BoxDecoration(),
                                 child: TextField(
-                                  keyboardType: TextInputType.number,
+                                  keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                  inputFormatters: [
+                                    TextInputFormatter.withFunction((oldValue, newValue) {
+                                      return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                          ? newValue
+                                          : oldValue;
+                                    }),
+                                  ],
                                   controller:dailyWrkDone_DPRLabour_Controller.dpr_lab_currQtyController,
                                   textAlign: TextAlign.center,
                                   decoration: InputDecoration(

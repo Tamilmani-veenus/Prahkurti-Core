@@ -26,7 +26,7 @@ class WorkOrdDirectSaveModel {
   String? downloadStatus;
   String? active;
   int? createdBy;
-  String? createdDt;
+  // String? createdDt;
   int? verifyBy;
   String? verifyStatus;
   String? verifyDt;
@@ -64,7 +64,7 @@ class WorkOrdDirectSaveModel {
     this.downloadStatus,
     this.active,
     this.createdBy,
-    this.createdDt,
+    // this.createdDt,
     this.verifyBy,
     this.verifyStatus,
     this.verifyDt,
@@ -103,7 +103,7 @@ class WorkOrdDirectSaveModel {
     downloadStatus: json["downloadStatus"],
     active: json["active"],
     createdBy: json["createdBy"],
-    createdDt: json["createdDt"],
+    // createdDt: json["createdDt"],
     verifyBy: json["verifyBy"],
     verifyStatus: json["verifyStatus"],
     verifyDt: json["verifyDt"],
@@ -143,7 +143,7 @@ class WorkOrdDirectSaveModel {
       "downloadStatus": downloadStatus,
       "active": active,
       "createdBy": createdBy,
-      "createdDt": createdDt,
+      // "createdDt": createdDt,
       "verifyBy": verifyBy,
       "verifyStatus": verifyStatus,
       "verifyDt": verifyDt,

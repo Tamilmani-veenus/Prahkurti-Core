@@ -512,6 +512,40 @@ class _MainManusListState extends State<MainManusList> {
                                             //     width: 22),
                                           ],
                                         ),
+                                      ) :menuController.projPlanningList[index]
+                                          .menuName ==
+                                          "Work Order - BOQ"
+                                          ? Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .primaryColor,
+                                          borderRadius:
+                                          const BorderRadius.all(
+                                            Radius.circular(10),
+                                          ),
+                                          // gradient: LinearGradient(
+                                          //   begin:
+                                          //       Alignment.topLeft,
+                                          //   end: Alignment
+                                          //       .bottomRight,
+                                          //   colors: [
+                                          //     purple,
+                                          //     blue,
+                                          //   ],
+                                          // ),
+                                        ),
+                                        child:  Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.widgets,color: Colors.white,
+                                              size: 20,)
+                                            // Image.asset('assets/images/ic_wallet.png',
+                                            //     width: 22),
+                                          ],
+                                        ),
                                       )
                                           : SizedBox()
                                     ],

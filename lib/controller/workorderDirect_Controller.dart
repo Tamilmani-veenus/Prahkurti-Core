@@ -85,7 +85,7 @@ class WorkOrderDirectController extends GetxController{
   String oldRoundOffValue = "0.0";
   RxList workOrderDet_Calculation = [].obs;
   RxList workOrder_editListApiDatas = [].obs;
-
+  RxInt createdById = 0.obs;
 
   RxString saveButton = RequestConstant.SUBMIT.obs;
 
@@ -287,8 +287,8 @@ class WorkOrderDirectController extends GetxController{
       netAmount: double.tryParse(netpayamt.text)?? 0.0,
       termsCondition: "",
       remarks: RemarksController.text,
-      createdBy: int.parse(loginController.EmpId()),
-      createdDt: BaseUtitiles().convertToUtcIso(workOrdentryDateController.text),
+      createdBy: saveButton.value == RequestConstant.SUBMIT?int.parse(loginController.EmpId()):createdById.value,
+      // createdDt: BaseUtitiles().convertToUtcIso(workOrdentryDateController.text),
       verifyStatus: saveButton.value == RequestConstant.VERIFY ||
           saveButton.value == RequestConstant.APPROVAL
           ? "Y"
@@ -412,8 +412,8 @@ class WorkOrderDirectController extends GetxController{
         element.subcontractWorkOrderDetlink!.forEach((value) {
           ItemListTableModel = new WorkOrderItemListTableModel();
           ItemListTableModel.reqDetId = value.reqDetId;
-          ItemListTableModel.Name = value.itemDesc.toString();
-          ItemListTableModel.unit = value.unit.toString();
+          ItemListTableModel.Name = value.itemDesc == null ? "-" : value.itemDesc.toString();
+          ItemListTableModel.unit = value.unit == null ? "-" : value.unit.toString();
           ItemListTableModel.qty = value.qty;
           ItemListTableModel.rate = value.rate;
           ItemListTableModel.amount = value.amount;
@@ -447,8 +447,6 @@ class WorkOrderDirectController extends GetxController{
     workOrdamount.text = totalNetAmount.toStringAsFixed(2);
 
     double bill = double.tryParse(workOrdamount.text) ?? 0;
-
-    double rebateAmt = double.tryParse(rebateAmount.text) ?? 0;
 
     double round = double.tryParse(Roundoff.text) ?? 0;
 
@@ -647,6 +645,12 @@ class WorkOrderDirectController extends GetxController{
     // First load local DB rows
     await getWorkorderCalDatas();
 
+    for (var editItem in editAddLessList) {
+      print("ID: ${editItem.addLessId}");
+      print("Percent: ${editItem.percentValue}");
+      print("Amount: ${editItem.amount}");
+    }
+
     // Update local rows with edit API values
     for (var editItem in editAddLessList) {
       int index = workOrder_ItemReadList.indexWhere(
@@ -678,7 +682,6 @@ class WorkOrderDirectController extends GetxController{
 
   void updateNetPay() {
     double bill = double.tryParse(workOrdamount.text) ?? 0;
-    double rebateAmt = double.tryParse(rebateAmount.text) ?? 0;
     double round = double.tryParse(Roundoff.text) ?? 0;
 
     double addLessTotal = totalAddLess;

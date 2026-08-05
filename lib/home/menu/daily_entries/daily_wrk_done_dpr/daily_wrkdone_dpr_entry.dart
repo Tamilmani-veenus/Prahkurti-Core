@@ -78,6 +78,7 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
           projectController.selectedProjectId.value=element.projectId;
           siteController.selectedsiteId.value=element.siteId;
           dailyWrkDone_DPR_Controller.TypeSubcontId.value=element.subContractorId;
+          dailyWrkDone_DPR_Controller.createdById.value=element.CreatedBy;
           dailyWrkDone_DPR_Controller.entryType=element.entryType.toString();
         });
       }
@@ -96,6 +97,7 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
         dailyWrkDone_DPR_Controller.dpr_preparedbyController.text = loginController.EmpName();
         dailyWrkDone_DPR_Controller.dpr_remarksController.text="";
         dailyWrkDone_DPR_Controller.gettingNetworkImages.value = [];
+        dailyWrkDone_DPR_Controller.createdById.value=0;
         await autoYearWiseNoController.AutoYearWiseNo("DPR");
         dailyWrkDone_DPR_Controller.dpr_autoYearWiseNoController.text=autoYearWiseNoController.DPR_autoYrsWise.value;
       }
@@ -602,7 +604,6 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                                           return const ImageGalleryPopup_Alert(imageUrl: "DPR");
                                         });
                                   }
-
                                 },
                                 child: Row(
                                   mainAxisAlignment:
@@ -857,8 +858,32 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                          _formKey.currentState!.save();
                          if(dailyWrkDone_DPR_Controller.dpr_itemview_DbList.isEmpty){
                            Fluttertoast.showToast(msg: "Please add items");
-                         }else{
-                           SubmitAlert(context);
+                         }else {
+                           bool hasInvalid = false;
+                           for (int i = 0; i <
+                               dailyWrkDone_DPR_Controller.dpr_itemview_DbList
+                                   .length; i++) {
+                             final controller = dailyWrkDone_DPR_Controller
+                                 .Itemlist_CurrentQtyControllers[i];
+                             final text = controller.text.trim();
+
+                             if (text.isEmpty) {
+                               hasInvalid = true;
+                               break;
+                             }
+
+                             final value = double.tryParse(text);
+                             if (value == null || value <= 0) {
+                               hasInvalid = true;
+                               break;
+                             }
+                           }
+                           if (hasInvalid) {
+                             BaseUtitiles.showToast(
+                                 "Net.Qty Should Not be Zero or Empty");
+                           } else {
+                             SubmitAlert(context);
+                           }
                          }
                        }
                      },
@@ -1005,11 +1030,14 @@ Widget ListDetails(BuildContext context, ScrollController scrollController) {
                               cursorColor:Theme.of(context).primaryColor,
                               textAlign: TextAlign.center,
                               controller: dailyWrkDone_DPR_Controller.Itemlist_RateControllers[index],
-                              keyboardType: TextInputType.number,
+                              keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                               inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                  RegExp(r'^\d+\.?\d{0,2}'),
-                                ),
+                                TextInputFormatter.withFunction((oldValue, newValue) {
+                                  return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                      ? newValue
+                                      : oldValue;
+                                }),
                               ],
                               decoration: InputDecoration(
                                 contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
@@ -1087,11 +1115,14 @@ Widget ListDetails(BuildContext context, ScrollController scrollController) {
                             cursorColor:Theme.of(context).primaryColor,
                             textAlign: TextAlign.center,
                             controller: dailyWrkDone_DPR_Controller.Itemlist_CurrentQtyControllers[index],
-                            keyboardType: TextInputType.numberWithOptions(decimal: true),
+                            keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                             inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                RegExp(r'^\d+\.?\d{0,2}'),
-                              ),
+                              TextInputFormatter.withFunction((oldValue, newValue) {
+                                return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                    ? newValue
+                                    : oldValue;
+                              }),
                             ],
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),

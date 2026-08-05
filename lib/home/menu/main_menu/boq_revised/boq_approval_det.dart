@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -303,11 +305,14 @@ class _BOQ_Approve_Det_ListState extends State<BOQ_Approve_Det_List> {
                             padding: const EdgeInsets.only(
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
-                              keyboardType: TextInputType.number,
+                              keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                               inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                  RegExp(r'^\d+\.?\d{0,2}'),
-                                ),
+                                TextInputFormatter.withFunction((oldValue, newValue) {
+                                  return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                      ? newValue
+                                      : oldValue;
+                                }),
                               ],
                               autovalidateMode:
                               AutovalidateMode.always,

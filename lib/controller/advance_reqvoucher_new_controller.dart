@@ -55,6 +55,7 @@ class AdvanceReqVoucherController_new extends GetxController {
   RxList mainlist = [].obs;
   RxList editListApiDatas = [].obs;
   int vocId = 0;
+  RxInt createdById = 0.obs;
 
   RxString saveButton = RequestConstant.SUBMIT.obs;
   RxString listButton = "List".obs;
@@ -324,8 +325,8 @@ class AdvanceReqVoucherController_new extends GetxController {
       chequeDate: entryDateController.text,
       nameThrough: commonVoucherController.payfor.value=="SU" ?"-":commonVoucherController.Accountname.text,
       actualVoucherAmount: double.tryParse(entry_amount.text),
-      createdBy: int.tryParse(loginController.EmpId()),
-      createdDt: BaseUtitiles().convertToUtcIso(entryDateController.text),
+      createdBy: saveButton.value == RequestConstant.SUBMIT?int.tryParse(loginController.EmpId()):createdById.value,
+      // createdDt: BaseUtitiles().convertToUtcIso(entryDateController.text),
       verifyStatus: saveButton.value == RequestConstant.APPROVAL?"Y":"N",
       approveStatus: saveButton.value == RequestConstant.APPROVAL?"Y":"N",
       accountAdvanceReqVoucherSwPayments : commonVoucherController.VocType.value == "A" && commonVoucherController.payfor.value == "A"

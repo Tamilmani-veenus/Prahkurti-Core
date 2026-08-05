@@ -76,6 +76,7 @@ class DailyEntriesController extends GetxController {
   int attendId = 0;
   var total_Amount = 0.0;
   var total_Nos = 0.0;
+  RxInt createdById = 0.obs;
 
   RxString saveButton = RequestConstant.SUBMIT.obs;
   RxString Nmr_Rate = RequestConstant.N.obs;
@@ -326,14 +327,14 @@ class DailyEntriesController extends GetxController {
       totNos: total_Nos,
       totAmt: total_Amount,
       remarks: RemarksController.text,
-      createdBy: int.tryParse(loginController.EmpId()),
-      createdDt: BaseUtitiles().convertToUtcIso(AttendDateController.text),
+      createdBy: saveButton.value == RequestConstant.SUBMIT?int.tryParse(loginController.EmpId()):createdById.value,
+      // createdDt: BaseUtitiles().convertToUtcIso(AttendDateController.text),
       workType: Nmr_Rate.value.trim(),
       projectId: projectController.selectedProjectId.value,
       subContId: subcontractorController.selectedSubcontId.value,
       siteId: siteController.selectedsiteId.value,
       approveStatus: saveButton.value == RequestConstant.APPROVAL?"Y":"N",
-      approvedBy: saveButton.value == RequestConstant.APPROVAL?int.tryParse(loginController.EmpId()):0,
+      approvedBy: saveButton.value == RequestConstant.APPROVAL?int.tryParse(loginController.EmpId()):null,
       approvedDt: saveButton.value == RequestConstant.APPROVAL?BaseUtitiles().convertToUtcIso(AttendDateController.text):null,
       subContLabourAttendDetS: getAttendanceDetails(id),
     );

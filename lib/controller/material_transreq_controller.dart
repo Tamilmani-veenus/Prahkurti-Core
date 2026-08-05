@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -39,9 +38,11 @@ class MaterialTransferReqController extends GetxController {
 
   int matTansReqId = 0;
   int zeroTransferQtyCount = 0;
+  RxInt createdById = 0.obs;
 
   RxString saveButton = RequestConstant.SUBMIT.obs;
 
+  bool get isSubmit => saveButton.value == RequestConstant.SUBMIT;
   bool get isVerify => saveButton.value == RequestConstant.VERIFY;
   bool get isApprove => saveButton.value == RequestConstant.APPROVAL;
 
@@ -288,16 +289,14 @@ class MaterialTransferReqController extends GetxController {
       fromSiteId: fromsiteController.selectedsiteId.value,
       toProjectId: projectController.selectedProjectIdAll.value,
       remarks: remarksText.text,
-      createdBy: int.tryParse(loginController.EmpId()),
-      createdDate: BaseUtitiles().convertToUtcIso(entryDateText.text),
+      createdBy: isSubmit ? int.tryParse(loginController.EmpId()):createdById.value,
+      // createdDate:  isSubmit ? BaseUtitiles().convertToUtcIso(entryDateText.text):null,
       verifyStatus: isVerify ? true : null,
       verifyBy: isVerify ? int.tryParse(loginController.EmpId()) : null,
-      verifyDate:
-          isVerify ? BaseUtitiles().convertToUtcIso(entryDateText.text) : null,
+      // verifyDate: isVerify ? BaseUtitiles().convertToUtcIso(entryDateText.text) : null,
       approveStatus: isApprove ? true : null,
       approvedBy: isApprove ? int.tryParse(loginController.EmpId()) : null,
-      approveDate:
-          isApprove ? BaseUtitiles().convertToUtcIso(entryDateText.text) : null,
+      // approveDate: isApprove ? BaseUtitiles().convertToUtcIso(entryDateText.text) : null,
       materialTransferRequestDets: getTransfferbetDetList.value.length == 0
           ? getDetDetails(id)
           : getTransfferbetDetList.value,

@@ -33,23 +33,27 @@ class DprHeadNameListModel {
 
 class Result {
   int? id;
+  int? headItemId;
   String? headItemName;
   String? headName;
 
   Result({
     this.id,
+    this.headItemId,
     this.headItemName,
     this.headName,
   });
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
     id: json["id"],
+    headItemId: json["headId"],
     headItemName: json["headItemName"],
     headName: json["name"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
+    "headId": headItemId,
     "headItemName": headItemName,
     "name": headName,
   };

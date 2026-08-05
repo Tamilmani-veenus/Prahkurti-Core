@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -63,7 +65,7 @@ class SiteLocationController extends GetxController {
 
   /// Set Site Location .....
 
-  Future<void> setSiteLocation(String pId) async {
+  Future<void> setSiteLocation(String pId, String latitude, String longitude) async {
     final payload = SetSiteLocationPayload(
       id:0,
       projectid: int.tryParse(pId),
@@ -72,6 +74,7 @@ class SiteLocationController extends GetxController {
       address: punchInAddress,
       radius: int.tryParse(radius.text),
     );
+
     final value = await SiteLocationProvider.setSiteLocationAPI(payload);
     if (value != null) {
       if(value["success"] == true){
@@ -86,5 +89,4 @@ class SiteLocationController extends GetxController {
       BaseUtitiles.showToast( "Something went wrong..");
     }
   }
-
 }

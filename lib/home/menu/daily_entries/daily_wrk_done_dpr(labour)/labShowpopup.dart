@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:flutter/services.dart';
+
 import '../../../../controller/dailywrk_done_dprlabour_controller.dart';
 import '../../../../utilities/baseutitiles.dart';
 import '../../../../utilities/requestconstant.dart';
@@ -137,7 +141,15 @@ class _LabourShowPopupState extends State<LabourShowPopup> {
                                         context, 4),
                                     child: TextField(
                                       controller: dailyWrkDone_DPRLabour_Controller.ShowNosControllers[index],
-                                      keyboardType: TextInputType.number,
+                                      keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                      inputFormatters: [
+                                        TextInputFormatter.withFunction((oldValue, newValue) {
+                                          return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                              ? newValue
+                                              : oldValue;
+                                        }),
+                                      ],
                                       decoration: InputDecoration(
                                         border: OutlineInputBorder(
                                             borderRadius: BorderRadius.all(
@@ -154,7 +166,15 @@ class _LabourShowPopupState extends State<LabourShowPopup> {
                                     child: TextField(
                                       controller: dailyWrkDone_DPRLabour_Controller
                                           .ShowOtHrsController[index],
-                                      keyboardType: TextInputType.number,
+                                      keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                      inputFormatters: [
+                                        TextInputFormatter.withFunction((oldValue, newValue) {
+                                          return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                              ? newValue
+                                              : oldValue;
+                                        }),
+                                      ],
                                       decoration: InputDecoration(
                                         border: OutlineInputBorder(
                                             borderRadius: BorderRadius.all(

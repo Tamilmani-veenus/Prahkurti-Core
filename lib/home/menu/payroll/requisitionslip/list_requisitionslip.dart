@@ -482,7 +482,7 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                                       ),
                                     ],
                                   ):SizedBox(),
-                                  SizedBox(height: 5,),
+                                  // SizedBox(height: 5,),
 
                                   Column(
                                     children: [

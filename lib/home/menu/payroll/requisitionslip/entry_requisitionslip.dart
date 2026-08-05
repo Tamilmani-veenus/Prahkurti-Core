@@ -47,6 +47,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
        }
        reportsController.projectname.text  = "--SELECT--";
        reportsController.selectedProjectId.value = 0;
+       requisitionSlipController.createdById.value = 0;
        requisitionSlipController.LeaveReason.text = "";
        requisitionSlipController.Reason.text = "";
        requisitionSlipController.Fromdate.text = BaseUtitiles.initiateCurrentDateFormat();
@@ -80,6 +81,7 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
          requisitionSlipController.Reason.text=element.permissionReason;
          requisitionSlipController.LeaveReason.text = element.leaveReason;
          requisitionSlipController.Date.text = element.permissionFromDate;
+         requisitionSlipController.createdById.value = element.createdBy;
          requisitionSlipController.Totaldays.text=element.totalLeaveDays.toString();
          requisitionSlipController.Fromtime.text = element.permissionFromTime;
          requisitionSlipController.Totime.text = element.permissionToTime;

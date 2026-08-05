@@ -324,8 +324,8 @@ class _TransferBetweenSites_EntrylistState extends State<TransferBetweenSites_En
                   () => ListView.builder(
                   shrinkWrap: true,
                   physics: BouncingScrollPhysics(),
-                      padding: EdgeInsets.only(bottom: BaseUtitiles.getheightofPercentage(context, 10)),
-                      itemCount: transferBt_Site_Controller.entryList.value.length,
+                  padding: EdgeInsets.only(bottom: BaseUtitiles.getheightofPercentage(context, 10)),
+                  itemCount: transferBt_Site_Controller.entryList.value.length,
                   itemBuilder: (context, index) {
                     return Container(
                       margin: EdgeInsets.only(left: 3, right: 3),
@@ -378,13 +378,13 @@ class _TransferBetweenSites_EntrylistState extends State<TransferBetweenSites_En
                               Row(
                                 children: <Widget>[
                                   Container(
-                                    margin: EdgeInsets.only(top: 8, left: 10),
+                                    margin: EdgeInsets.only(top: 0, left: 10),
                                     child: Text(""),
                                   ),
                                   Expanded(
                                       flex: 3,
                                       child: Text(
-                                        "From Project",
+                                        "Project",
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black,),
@@ -400,12 +400,12 @@ class _TransferBetweenSites_EntrylistState extends State<TransferBetweenSites_En
                                 ],
                               ),
 
-                              SizedBox(height: 10),
+                              SizedBox(height: 8),
 
                               Row(
                                 children: <Widget>[
                                   Container(
-                                    margin: EdgeInsets.only(top: 8, left: 10),
+                                    margin: EdgeInsets.only(left: 10),
                                     child: Text(""),
                                   ),
                                   Expanded(
@@ -426,9 +426,34 @@ class _TransferBetweenSites_EntrylistState extends State<TransferBetweenSites_En
                                       )),
                                 ],
                               ),
+                              SizedBox(height: 8),
+
+                              Row(
+                                children: <Widget>[
+                                  Container(
+                                    margin: EdgeInsets.only( left: 10),
+                                    child: Text(""),
+                                  ),
+                                  Expanded(
+                                      flex: 3,
+                                      child: Text(
+                                        "To Site",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black),
+                                      )),
+                                  Expanded(
+                                      flex: 8,
+                                      child: Text(
+                                        transferBt_Site_Controller
+                                            .entryList.value[index].toSiteName
+                                            .toString(),
+                                        style: TextStyle(color: Colors.black),
+                                      )),
+                                ],
+                              ),
+                              SizedBox(height: 5),
                               Divider(thickness: 1),
-
-
                               Row(
                                 children: <Widget>[
                                   Container(
@@ -438,7 +463,7 @@ class _TransferBetweenSites_EntrylistState extends State<TransferBetweenSites_En
                                   Expanded(
                                       flex: 2,
                                       child: Text(
-                                        "To Site",
+                                        "Prepared By",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black),
@@ -447,7 +472,7 @@ class _TransferBetweenSites_EntrylistState extends State<TransferBetweenSites_En
                                       flex: 4,
                                       child: Text(
                                         transferBt_Site_Controller
-                                            .entryList.value[index].toSiteName
+                                            .entryList.value[index].createdName
                                             .toString(),
                                         style: TextStyle(color: Colors.black),
                                       )),
@@ -538,7 +563,7 @@ class _TransferBetweenSites_EntrylistState extends State<TransferBetweenSites_En
                                                                   transferBt_Site_Controller.editListApiDatas.value.clear();
                                                                   FocusScope.of(context).unfocus();
                                                                   await transferBt_Site_Controller.EntryList_EditApi(
-                                                                    transferBt_Site_Controller.entryList.value[index].fromProjectId,
+                                                                      transferBt_Site_Controller.entryList.value[index].fromProjectId,
                                                                       transferBt_Site_Controller.entryList.value[index].toSiteId,
                                                                       transferBt_Site_Controller.entryList.value[index].fromSiteid,
                                                                       transferBt_Site_Controller.entryList.value[index].id,widget.heading,context);
@@ -580,7 +605,7 @@ class _TransferBetweenSites_EntrylistState extends State<TransferBetweenSites_En
                                                                 ),
                                                                 onTap: () async {
                                                                   Navigator.pop(context);
-                                                                    transferBt_Site_Controller.DeleteAlert(context,index);
+                                                                  transferBt_Site_Controller.DeleteAlert(context,index);
                                                                 }),
                                                           ),
                                                           SizedBox(height: 20)

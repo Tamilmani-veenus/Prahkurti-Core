@@ -30,7 +30,7 @@ class BillDirectGenSaveApiReq {
     this.workOrderId,
     this.billno,
     this.createdBy,
-    this.createdDt,
+    // this.createdDt,
     this.materialDebitAmount,
     this.materialDebitRemarks,
     this.partRateStatus,
@@ -68,7 +68,7 @@ class BillDirectGenSaveApiReq {
   int? workOrderId;
   String? billno;
   int? createdBy;
-  String? createdDt;
+  // String? createdDt;
   double? materialDebitAmount;
   String? materialDebitRemarks;
   int? partRateStatus;
@@ -107,7 +107,7 @@ class BillDirectGenSaveApiReq {
     workOrderId: json["workOrderId"],
     billno: json["billNo"],
     createdBy: json["createdBy"],
-    createdDt: json["createdDt"],
+    // createdDt: json["createdDt"],
     materialDebitAmount: json["materialDebitAmount"],
     materialDebitRemarks: json["materialDebitRemarks"],
     partRateStatus: json["partRateStatus"],
@@ -147,7 +147,7 @@ class BillDirectGenSaveApiReq {
     "workOrderId": workOrderId,
     "billNo": billno,
     "createdBy": createdBy,
-    "createdDt": createdDt,
+    // "createdDt": createdDt,
     "finalBillAmount": finalBillAmount,
     "penaltyAmount": penaltyAmount,
     "paymentDate": paymentDate,

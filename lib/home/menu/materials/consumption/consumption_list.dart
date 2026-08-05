@@ -60,8 +60,7 @@ class _Consumption_ListState extends State<Consumption_List> {
                   visible: commanController.addMode.value == 1 ? true : false,
                   child: FloatingActionButton.extended(
                     onPressed: () {
-                      consumption_controller.saveButton.value =
-                          RequestConstant.SUBMIT;
+                      consumption_controller.saveButton.value = RequestConstant.SUBMIT;
                       Navigator.push(
                           context,
                           MaterialPageRoute(

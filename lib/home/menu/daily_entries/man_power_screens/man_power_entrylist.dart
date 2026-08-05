@@ -540,12 +540,11 @@ class _Man_Power_EntrylistState extends State<Man_Power_Entrylist> {
                                                                   ],
                                                                 ),
                                                                 onTap: () async {
-                                                                  // billGenerationBoqController.billgen_itemlistTable_Delete();
-                                                                  // billGenerationBoqController.ItemGetTableListdata.clear();
-                                                                  // billGenerationBoqController.bill_editListApiDatas.value.clear();
-                                                                  // FocusScope.of(context).unfocus();
-                                                                  // await billGenerationBoqController.directBillEntryList_EditApi(
-                                                                  //     billGenerationBoqController.bill_entryList.value[index].id,widget.heading,context,"ReSubmit",true);
+                                                                  manPowerController.readListdata.value=[];
+                                                                  manPowerController.deleteSubcontDetTableDatas();
+                                                                  FocusScope.of(context).unfocus();
+                                                                  await manPowerController.manPowerEditApi(
+                                                                      manPowerController.manpower_entryList[index].id,"Edit",widget.heading,context);
                                                                 }),
 
                                                             Container(

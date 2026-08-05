@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:flutter/services.dart';
+
 import '../../../../app_theme/app_colors.dart';
 import '../../../../constants/ui_constant/icons_const.dart';
 import '../../../../controller/dailywrk_done_dpr_controller.dart';
@@ -127,7 +131,15 @@ class _DailyWork_done_DPR_MeasurementState
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
-                                  keyboardType: TextInputType.number,
+                                  keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                  inputFormatters: [
+                                    TextInputFormatter.withFunction((oldValue, newValue) {
+                                      return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                          ? newValue
+                                          : oldValue;
+                                    }),
+                                  ],
                                   controller: dailyWrkDone_DPRNEW_Controller.dpr_new_Measur_NosController,
                                   cursorColor: Colors.black,
                                   style: const TextStyle(color: Colors.black),
@@ -173,7 +185,15 @@ class _DailyWork_done_DPR_MeasurementState
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
-                                  keyboardType: TextInputType.number,
+                                  keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                  inputFormatters: [
+                                    TextInputFormatter.withFunction((oldValue, newValue) {
+                                      return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                          ? newValue
+                                          : oldValue;
+                                    }),
+                                  ],
                                   controller: dailyWrkDone_DPRNEW_Controller.dpr_new_Measur_LengthController,
                                   cursorColor: Colors.black,
                                   style: const TextStyle(color: Colors.black),
@@ -226,7 +246,15 @@ class _DailyWork_done_DPR_MeasurementState
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
-                                  keyboardType: TextInputType.number,
+                                  keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                  inputFormatters: [
+                                    TextInputFormatter.withFunction((oldValue, newValue) {
+                                      return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                          ? newValue
+                                          : oldValue;
+                                    }),
+                                  ],
                                   controller: dailyWrkDone_DPRNEW_Controller.dpr_new_Measur_BreathController,
                                   cursorColor: Colors.black,
                                   style: const TextStyle(color: Colors.black),
@@ -272,7 +300,15 @@ class _DailyWork_done_DPR_MeasurementState
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
-                                  keyboardType: TextInputType.number,
+                                  keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                  inputFormatters: [
+                                    TextInputFormatter.withFunction((oldValue, newValue) {
+                                      return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                          ? newValue
+                                          : oldValue;
+                                    }),
+                                  ],
                                   controller: dailyWrkDone_DPRNEW_Controller.dpr_new_Measur_DepthController,
                                   cursorColor: Colors.black,
                                   style: const TextStyle(color: Colors.black),
@@ -615,7 +651,15 @@ class _DailyWork_done_DPR_MeasurementState
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(color: Colors.black),
                                 cursorColor: Colors.black,
-                                keyboardType: TextInputType.number,
+                                keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                inputFormatters: [
+                                  TextInputFormatter.withFunction((oldValue, newValue) {
+                                    return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                        ? newValue
+                                        : oldValue;
+                                  }),
+                                ],
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                                   focusedBorder: OutlineInputBorder(
@@ -656,7 +700,15 @@ class _DailyWork_done_DPR_MeasurementState
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(color: Colors.black),
                                 cursorColor: Colors.black,
-                                keyboardType: TextInputType.number,
+                                keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                inputFormatters: [
+                                  TextInputFormatter.withFunction((oldValue, newValue) {
+                                    return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                        ? newValue
+                                        : oldValue;
+                                  }),
+                                ],
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                                   focusedBorder: OutlineInputBorder(
@@ -702,7 +754,15 @@ class _DailyWork_done_DPR_MeasurementState
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(color: Colors.black),
                                 cursorColor: Colors.black,
-                                keyboardType: TextInputType.number,
+                                keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                inputFormatters: [
+                                  TextInputFormatter.withFunction((oldValue, newValue) {
+                                    return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                        ? newValue
+                                        : oldValue;
+                                  }),
+                                ],
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                                   focusedBorder: OutlineInputBorder(
@@ -745,7 +805,15 @@ class _DailyWork_done_DPR_MeasurementState
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(color: Colors.black),
                                 cursorColor: Colors.black,
-                                keyboardType: TextInputType.number,
+                                keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                inputFormatters: [
+                                  TextInputFormatter.withFunction((oldValue, newValue) {
+                                    return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                        ? newValue
+                                        : oldValue;
+                                  }),
+                                ],
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                                   focusedBorder: OutlineInputBorder(
@@ -785,7 +853,15 @@ class _DailyWork_done_DPR_MeasurementState
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(color: Colors.black),
                                 cursorColor: Colors.black,
-                                keyboardType: TextInputType.number,
+                                keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                inputFormatters: [
+                                  TextInputFormatter.withFunction((oldValue, newValue) {
+                                    return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                        ? newValue
+                                        : oldValue;
+                                  }),
+                                ],
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                                   focusedBorder: OutlineInputBorder(
