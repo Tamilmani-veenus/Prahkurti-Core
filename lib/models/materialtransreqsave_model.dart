@@ -21,12 +21,12 @@ class MaterialTransReqsave {
   String? remarks;
   bool? verifyStatus;
   int? verifyBy;
-  String? verifyDate;
+  // String? verifyDate;
   bool? approveStatus;
   int? approvedBy;
-  String? approveDate;
+  // String? approveDate;
   int? createdBy;
-  String? createdDate;
+  // String? createdDate;
   List<MaterialTransferRequestDet>? materialTransferRequestDets;
 
   MaterialTransReqsave({
@@ -40,12 +40,12 @@ class MaterialTransReqsave {
     this.remarks,
     this.verifyStatus,
     this.verifyBy,
-    this.verifyDate,
+    // this.verifyDate,
     this.approveStatus,
     this.approvedBy,
-    this.approveDate,
+    // this.approveDate,
     this.createdBy,
-    this.createdDate,
+    // this.createdDate,
     this.materialTransferRequestDets,
   });
 
@@ -61,12 +61,12 @@ class MaterialTransReqsave {
         remarks: json["remarks"],
         verifyStatus: json["verifyStatus"],
         verifyBy: json["verifyBy"],
-        verifyDate: json["verifyDate"],
+        // verifyDate: json["verifyDate"],
         approveStatus: json["approveStatus"],
         approvedBy: json["approvedBy"],
-        approveDate: json["approveDate"],
+        // approveDate: json["approveDate"],
         createdBy: json["createdBy"],
-        createdDate: json["createdDate"],
+        // createdDate: json["createdDate"],
         materialTransferRequestDets: List<MaterialTransferRequestDet>.from(
             json["materialTransferRequestDets"]
                 .map((x) => MaterialTransferRequestDet.fromJson(x))),
@@ -84,12 +84,12 @@ class MaterialTransReqsave {
       "remarks": remarks,
       "verifyStatus": verifyStatus,
       "verifyBy": verifyBy,
-      "verifyDate": verifyDate,
+      // "verifyDate": verifyDate,
       "approveStatus": approveStatus,
       "approvedBy": approvedBy,
-      "approveDate": approveDate,
+      // "approveDate": approveDate,
       "createdBy": createdBy,
-      "createdDate": createdDate,
+      // "createdDate": createdDate,
       "materialTransferRequestDets": List<dynamic>.from(
           materialTransferRequestDets!.map((x) => x.toJson())),
     };

@@ -39,6 +39,7 @@ class Boq_Revised_Controller extends GetxController {
   TextEditingController qtyController = TextEditingController();
   TextEditingController remarksController = TextEditingController();
   late List<bool> isChecked;
+  RxInt createdById = 0.obs;
 
   var itemTableModel = BoqItemlist();
   var boqItemlistService = BoqItemlistService();
@@ -329,8 +330,8 @@ class Boq_Revised_Controller extends GetxController {
       siteId: siteController.selectedsiteId.value,
       remarks: boq_remarksController.text,
       measureHeadItemId: siteController.selectedHeadId.value,
-      createdBy: int.tryParse(loginController.EmpId()),
-      createdDt: BaseUtitiles().convertToUtcIso(boq_dateController.text),
+      createdBy: saveButton.value == RequestConstant.SUBMIT?int.tryParse(loginController.EmpId()):createdById.value,
+      // createdDt: saveButton.value == RequestConstant.SUBMIT?BaseUtitiles().convertToUtcIso(boq_dateController.text):null,
       boqReviseDets: getBoqDet(id),
     ));
 
@@ -385,7 +386,7 @@ class Boq_Revised_Controller extends GetxController {
       remarks: data.remarks,
       measureHeadItemId: data.measureHeadItemId,
       createdBy: data.createdBy,
-      createdDt: data.createdDt,
+      // createdDt: data.createdDt,
       boqReviseDets: getBoqApproveDet(data.boqReviseDets),
     ));
     final decodedJson = jsonDecode(body);

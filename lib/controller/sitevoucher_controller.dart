@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:prahkurticore/controller/pendinglistcontroller.dart';
 import '../controller/commonvoucher_controller.dart';
 import '../controller/projectcontroller.dart';
 import '../controller/sitecontroller.dart';
@@ -41,6 +42,7 @@ class SiteVoucher_Controller extends GetxController {
   SiteController siteController = Get.put(SiteController());
   CommonVoucherController commonVoucherController =
   Get.put(CommonVoucherController());
+  PendingListController pendingListController = Get.put(PendingListController());
 
   var sitevoucherItemListTableModel = SitevoucherDetlist();
   late List<SitevoucherDetlist> sitevoucherTableList = <SitevoucherDetlist>[];
@@ -56,11 +58,11 @@ class SiteVoucher_Controller extends GetxController {
   RxString type = "Direct Payment/Office".obs;
   String edittype = "";
   RxString SaveButton = RequestConstant.SUBMIT.obs;
-  RxBool checkImgList = false.obs;
   var imageFiles = <File>[].obs;
   var gettingNetworkImages = <String>[].obs;
   List<int> imageId = [];
   RxInt pickedImageCount = 0.obs;
+  RxInt createdById = 0.obs;
 
   clearDatas() {
     SaveButton.value = RequestConstant.SUBMIT;
@@ -217,16 +219,16 @@ class SiteVoucher_Controller extends GetxController {
       paidFrom: commonVoucherController.vocPaidformId,
       paymentType: type.value == "Direct Payment/Office" ? "DP" : "SP",
       nameThrough: commonVoucherController.namethrough.text,
-      remarks: Remarks.text,
+      remarks: Remarks.text==""?"-":Remarks.text,
       companyBankId: 0,
       cheQueNo:"-",
       accountPayee: 0,
       cheQueDate: sitevocDate.text,
       requisitionId: 0,
-      createdBy: int.tryParse(loginController.EmpId()),
+      createdBy: SaveButton.value == RequestConstant.SUBMIT?int.tryParse(loginController.EmpId()):createdById.value,
       verifyStatus: SaveButton.value == RequestConstant.VERIFY || SaveButton.value == RequestConstant.APPROVAL? "Y":"N",
       approveStatus: SaveButton.value == RequestConstant.APPROVAL? "Y":"N",
-      createdDt: BaseUtitiles().convertToUtcIso(sitevocDate.text),
+      // createdDt: BaseUtitiles().convertToUtcIso(sitevocDate.text),
       accountSiteVoucherSwPayments: getSitevoucherDet(id),
 
     );
@@ -238,9 +240,13 @@ class SiteVoucher_Controller extends GetxController {
     if (list != null) {
       if (list["success"] == true) {
         BaseUtitiles.showToast(list["message"]);
-        await getSiteVoc_EntryList();
-        clearDatas();
+        if(SaveButton.value == RequestConstant.VERIFY || SaveButton.value == RequestConstant.APPROVAL){
+          await pendingListController.getPendingList();
+        }else{
+          await getSiteVoc_EntryList();
+        }
         BaseUtitiles.popMultiple(context, count: 3);
+        clearDatas();
       }
       else {
         BaseUtitiles.popMultiple(context, count: 2);
@@ -397,7 +403,6 @@ class SiteVoucher_Controller extends GetxController {
     );
   }
 
-
   /// Getting image.....
 
   Future<void> gettingImage() async {
@@ -418,7 +423,6 @@ class SiteVoucher_Controller extends GetxController {
   }
 
   /// Delete image.....
-
 
   Future<bool> deletingImage(int imageId) async {
     return await Inward_Pending_provider.deleteImageProvider(imageId,"siteVoucher");

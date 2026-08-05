@@ -14,7 +14,7 @@ import 'dart:io';
      this.totAmt,
      this.remarks,
      this.createdBy,
-     this.createdDt,
+     // this.createdDt,
      this.workType,
      this.projectId,
      this.approveStatus,
@@ -32,7 +32,7 @@ import 'dart:io';
    double? totAmt;
    String? remarks;
    int? createdBy;
-   String? createdDt;
+   // String? createdDt;
    String? workType;
    int? projectId;
    String? approveStatus;
@@ -50,7 +50,7 @@ import 'dart:io';
      totAmt: json["TotAmt"],
      remarks: json["Remarks"],
      createdBy: json["CreatedBy"],
-     createdDt: json["CreatedDt"],
+     // createdDt: json["CreatedDt"],
      workType: json["WorkType"],
      projectId: json["ProjectId"],
      approveStatus: json["ApproveStatus"],
@@ -69,7 +69,7 @@ import 'dart:io';
      "TotAmt": totAmt,
      "Remarks": remarks,
      "CreatedBy": createdBy,
-     "CreatedDt": createdDt,
+     // "CreatedDt": createdDt,
      "WorkType": workType,
      "ProjectId": projectId,
      "ApprovedDt": approvedDt,

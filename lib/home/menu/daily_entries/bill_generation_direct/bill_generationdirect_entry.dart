@@ -73,9 +73,9 @@ class _Subcont_Nmr_EntryScreenState_Site
               element.fromWorkDate.toString();
           billGenerationDirectController.TodateController.text =
               element.toWorkDate.toString();
-
           billGenerationDirectController.RemarksController.text =
               element.remarks.toString();
+          billGenerationDirectController.createdById.value=element.createdBy;
         });
       }
       await billGenerationDirectController.DirectBill_CalculationList();
@@ -115,6 +115,7 @@ class _Subcont_Nmr_EntryScreenState_Site
         billGenerationDirectController.Roundoff.text = "0";
         billGenerationDirectController.netpayamt.text = "0.0";
         billGenerationDirectController.tobededadv.text = billGenerationDirectController.to_be_dection_advance;
+        billGenerationDirectController.createdById.value=0;
       }
     });
     super.initState();

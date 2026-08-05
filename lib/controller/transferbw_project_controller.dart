@@ -74,6 +74,7 @@ class TransferBW_project_Controller extends GetxController {
   RxInt selectedFrProjectId = 0.obs;
   RxInt AgMRNAppreqMasid = 0.obs;
   RxInt AgTransReqMasid = 0.obs;
+  RxInt createdById = 0.obs;
   RxString selectedFrProjectName = "".obs;
 
   late List<TransferBetItemListTableModel> ItemListTableModelList =
@@ -519,8 +520,8 @@ class TransferBW_project_Controller extends GetxController {
       entryDate: entryDateText.text,
       dcNo: dcNoText.text,
       reqOrdNo: appNoText.text,
-      createdBy: int.parse(loginController.EmpId()),
-      createdDt: BaseUtitiles().convertToUtcIso(entryDateText.text),
+      createdBy: isSubmit?int.parse(loginController.EmpId()):createdById.value,
+      // createdDt: BaseUtitiles().convertToUtcIso(entryDateText.text),
       materialTransLinks: getTransfferbetDetList.value.isEmpty
           ? getDetDetails(id)
           : getTransfferbetDetList.value,

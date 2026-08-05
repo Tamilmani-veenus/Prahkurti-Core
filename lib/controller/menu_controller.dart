@@ -1,6 +1,7 @@
 import 'package:prahkurticore/controller/punch_in_controller.dart';
 import 'package:prahkurticore/controller/requisitionslip_controller_new.dart';
 import 'package:prahkurticore/controller/site_location_controller.dart';
+import 'package:prahkurticore/home/menu/main_menu/workOrder_BOQ/workOrder_BOQ_entrylist.dart';
 import '../controller/preapproval_controller.dart';
 import '../controller/billgenerationdirect_controller.dart';
 import '../controller/cashbook_site_controller.dart';
@@ -360,10 +361,16 @@ class Menu_Controller extends GetxController {
         MaterialPageRoute(builder: (context) => Boq_Revised_EntryList(heading: MenuName,)),
       );
     }
-    if (value == "Work Order - Direct") {
+    else if (value == "Work Order - Direct") {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => WorkOrderDirect_EntryList(heading: MenuName,)),
+      );
+    }
+    else if (value == "Work Order - BOQ") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => WorkOrderBoqEntrylist(heading: MenuName,)),
       );
     }
   }

@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import '../controller/projectcontroller.dart';
 import '../controller/sitecontroller.dart';
 import '../controller/staffcontroller.dart';
@@ -11,11 +14,14 @@ import '../db_services/staffvouchersitelist_service.dart';
 import '../home/menu/accounts/staff_voucher/staff_voucher_entry.dart';
 import '../home/menu/accounts/staff_voucher/staff_voucher_entrylist.dart';
 import '../models/staffvouchersiterequest_model.dart';
+import '../provider/inward_pending_provider.dart';
 import '../provider/staffvoucher_provider.dart';
 import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
 import 'commonvoucher_controller.dart';
 import 'logincontroller.dart';
+
+int? vocId;
 
 class StaffVoucher_Controller extends GetxController {
   final StaffVocEntrylistFrDate = TextEditingController();
@@ -39,6 +45,8 @@ class StaffVoucher_Controller extends GetxController {
   RxList getbankNameList = [].obs;
   RxList SearchBar_bankNameList = [].obs;
   RxInt selectedbankId = 0.obs;
+  RxInt createdById = 0.obs;
+
   RxString selectedbankdropdownName = "".obs;
 
   SiteController siteController = Get.put(SiteController());
@@ -60,6 +68,10 @@ class StaffVoucher_Controller extends GetxController {
   RxString type = "Direct Payment/Office".obs;
   RxBool payeeType = false.obs;
   RxString SaveButton = RequestConstant.SUBMIT.obs;
+  var imageFiles = <File>[].obs;
+  var gettingNetworkImages = <String>[].obs;
+  List<int> imageId = [];
+  RxInt pickedImageCount = 0.obs;
 
   clearDatas() {
     SaveButton.value = RequestConstant.SUBMIT;
@@ -222,9 +234,8 @@ class StaffVoucher_Controller extends GetxController {
   }
 
   //----- POST and PUT JSON Values----
-  Future SaveButtonSitevoucher_ItemlistScreen(
-      BuildContext context, int id) async {
-    String body = staffvouchersiteRequestToJson(StaffvouchersiteRequest(
+  Future SaveButtonStaffvoucher_ItemlistScreen(BuildContext context, int id) async {
+    StaffvouchersiteRequest formdata = StaffvouchersiteRequest(
       id: SaveButton.value == RequestConstant.RESUBMIT ? id : 0,
       staffVocNo: AutoYearwisestaffVoc.text,
       employeeId: staffController.selectedstaffId.value,
@@ -237,21 +248,23 @@ class StaffVoucher_Controller extends GetxController {
       vocAmount: double.tryParse(TotalAmount.text),
       paidBy: 0,
       companyId: 0,
-      remarks: Remarks.text,
+      remarks: Remarks.text==""?"-":Remarks.text,
       bankId: selectedbankId.value,
-      chequeNo: ChequeNo.text,
+      chequeNo: ChequeNo.text==""?"-":ChequeNo.text,
       chequeDate: ChequeDate.text,
       nameThrough: commonVoucherController.namethrough.text,
       requisitionId: 0,
       accountPayee: payeeType.value==true? 1 : 0,
       projectId: projectController.selectedProjectId.value,
-      createdBy: int.tryParse(loginController.EmpId()),
-      createdDate: BaseUtitiles().convertToUtcIso(staffvocDate.text),
+      createdBy: SaveButton.value == RequestConstant.SUBMIT ?int.tryParse(loginController.EmpId()):createdById.value,
+      // createdDate: BaseUtitiles().convertToUtcIso(staffvocDate.text),
       accountNameId: commonVoucherController.selectedAccnameId.value,
-      accStaffVocSWpaymentS: getSitevoucherDet(id),
-    ));
+      AccStaffVocSWpaymentS: getSitevoucherDet(id),
+    );
+    print(jsonEncode(formdata.toJson()));
 
-    final list = await StaffVoucher_provider.SaveSitevoucherScreenEntryAPI(body, id);
+    final list = await StaffVoucher_provider.SaveSitevoucherScreenEntryAPI(
+        formdata, imageFiles, SaveButton.value, id);
 
     if (list != null ) {
       if(list["success"] == true){
@@ -274,7 +287,7 @@ class StaffVoucher_Controller extends GetxController {
   List<AccStaffVocSWpayment>? getSitevoucherDet(id) {
     getSiteDetList.value=[];
     Staffvoucher_itemview_GetDbList.value.forEach((element) {
-      var list = new AccStaffVocSWpayment(
+      var list = AccStaffVocSWpayment(
           id: SaveButton.value == RequestConstant.RESUBMIT ?element.reqDetId:0,
           staffVocherId: SaveButton.value == RequestConstant.RESUBMIT ? id : 0,
           payType: element.paytype.toString(),
@@ -407,26 +420,33 @@ class StaffVoucher_Controller extends GetxController {
               ),
             ),
           ),
-
-          // ElevatedButton(
-          //   onPressed: () => Navigator.of(context).pop(),
-          //   child:Text('No'),
-          // ),
-          // ElevatedButton(
-          //   onPressed: () {
-          //     editcheck=0;
-          //     itemcheck=0;
-          //     Active=0;
-          //     delete_Sitevoucher_itemlist_Table();
-          //     Sitevoucher_itemview_GetDbList.value.clear();
-          //     SitevoucherList_DeleteApi(StaffVocEtyList[index].vocId,StaffVocEtyList[index].vocNo);
-          //     StaffVocEtyList.removeAt(index);
-          //     Navigator.of(context).pop();
-          //   },
-          //   child:Text('Yes'),
-          // ),
         ],
       ),
     );
+  }
+
+  /// Getting image.....
+
+  Future<void> gettingImage() async {
+    gettingNetworkImages.clear();
+    imageId.clear();
+    imageFiles.clear();
+    print("DDDDD...>${vocId}");
+    final value =
+    await Inward_Pending_provider.gettingImageProvider(vocId!, "staffVoucher");
+    if (value != null) {
+      for (int i = 0; i < value!.length; i++) {
+        gettingNetworkImages.add(value[i].url.toString());
+        imageId.add(value[i].id);
+      }
+    } else {
+      BaseUtitiles.showToast('Something went wrong..');
+    }
+  }
+
+  /// Delete image.....
+
+  Future<bool> deletingImage(int imageId) async {
+    return await Inward_Pending_provider.deleteImageProvider(imageId,"staffVoucher");
   }
 }

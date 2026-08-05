@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 
 import '../../../../controller/transfer_acknowledgment_pending_controller.dart';
@@ -631,11 +633,14 @@ class _TransferAcknow_EntryScreenState extends State<TransferAcknow_EntryScreen>
                                       style: const TextStyle(fontWeight: FontWeight.bold),
                                       controller:  transferAcknowController.ackQtyListController[index],
                                       cursorColor: Theme.of(context).primaryColor,
-                                      keyboardType: TextInputType.number,
+                                      keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                       inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                          RegExp(r'^\d+\.?\d{0,2}'),
-                                        ),
+                                        TextInputFormatter.withFunction((oldValue, newValue) {
+                                          return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                              ? newValue
+                                              : oldValue;
+                                        }),
                                       ],
                                       textAlign: TextAlign.center,
                                       decoration: InputDecoration(

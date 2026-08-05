@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:prahkurticore/controller/workorderDirect_Controller.dart';
 import 'package:prahkurticore/home/menu/main_menu/workOrder_Direct/workOrder_Direct_EntryScreen.dart';
-
 import '../../../../app_theme/app_colors.dart';
 import '../../../../constants/ui_constant/icons_const.dart';
 import '../../../../utilities/baseutitiles.dart';
@@ -44,14 +43,6 @@ class _WorkOrderDirect_EntryListState extends State<WorkOrderDirect_EntryList> {
           FocusManager.instance.primaryFocus?.unfocus();
         }
       },
-      child: GestureDetector(
-        onTap: () {
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus &&
-              currentFocus.focusedChild != null) {
-            FocusManager.instance.primaryFocus?.unfocus();
-          }
-        },
         child: SafeArea(
           top: false,
           child: Scaffold(
@@ -303,7 +294,6 @@ class _WorkOrderDirect_EntryListState extends State<WorkOrderDirect_EntryList> {
             ),
           ),
         ),
-      ),
     );
   }
 

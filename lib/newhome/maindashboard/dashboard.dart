@@ -3,6 +3,7 @@ import 'package:bottom_bar/bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:prahkurticore/newhome/maindashboard/labourDashboard.dart';
 import '../../constants/storage_constant.dart';
 import '../../constants/ui_constant/textfont_style.dart';
 import '../../controller/dashboard_controller.dart';
@@ -24,6 +25,7 @@ import '../../app_theme/app_colors.dart';
 import '../../utilities/baseutitiles.dart';
 import '../../utilities/requestconstant.dart';
 import '../menus/main_menuslist.dart';
+import 'admin_dashboard.dart';
 
 class Dashboard_screen extends StatefulWidget {
   const Dashboard_screen({Key? key}) : super(key: key);
@@ -41,6 +43,8 @@ class MyBehavior extends ScrollBehavior {
 }
 
 class _Dashboard_screenState extends State<Dashboard_screen> {
+  bool isLabour = false;
+  bool isAdmin = false;
   int _currentPage = 0;
   final _pageController = PageController();
   LoginController loginController = Get.put(LoginController());
@@ -98,6 +102,54 @@ class _Dashboard_screenState extends State<Dashboard_screen> {
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 20),
                           )),
+                      // if(_currentPage == 0)    SizedBox(
+                      //     width: 24,
+                      //     height: 24,
+                      //     child: PopupMenuButton<String>(
+                      //       padding: EdgeInsets.zero,
+                      //       constraints: const BoxConstraints(),
+                      //       icon: Container(
+                      //         margin:
+                      //         const EdgeInsets.only( right: 10),
+                      //         child: Icon(
+                      //           Icons.widgets_outlined,
+                      //           size: 24,
+                      //           color: Theme.of(context).primaryColor,
+                      //         ),
+                      //       ),
+                      //       offset: const Offset(70, 35),
+                      //       onSelected: (value) {
+                      //         setState(() {
+                      //           isLabour = value == "Labour";
+                      //           isAdmin = value == "Admin";
+                      //           // _currentPage = 0;
+                      //         });},
+                      //       itemBuilder: (context) => [
+                      //         PopupMenuItem(
+                      //           value: "Admin",
+                      //           child: Row(
+                      //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //             children: [
+                      //               Icon(Icons.person,size: 20,color: Theme.of(context).primaryColor,),
+                      //               Text(" Admin Dashboard",style: TextStyle(fontSize: 14),),
+                      //             ],
+                      //           ),
+                      //         ),
+                      //         PopupMenuItem(
+                      //           value: "Labour",
+                      //           child: Container(
+                      //             child: Row(
+                      //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //               children: [
+                      //                 Icon(Icons.group,size: 20,color: Theme.of(context).primaryColor,),
+                      //                 Text(" Labour Dashboard",style: TextStyle(fontSize: 14)),
+                      //               ],
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ],
+                      //     )
+                      // ),
                       Container(
                         child: InkWell(
                           child: Container(
@@ -138,7 +190,9 @@ class _Dashboard_screenState extends State<Dashboard_screen> {
                       children: [
                         Container(
                           alignment: Alignment.center,
-                          child: const Home_Dashboard(),
+                          child: isLabour
+                              ? const HomeScreen() : isAdmin ? const AdminHomeScreen()
+                              : const Home_Dashboard(),
                         ),
                         Container(
                           alignment: Alignment.center,
@@ -311,646 +365,586 @@ class _Home_DashboardState extends State<Home_Dashboard> {
       backgroundColor: Setmybackground,
       body: SingleChildScrollView(
         child: WillPopScope(
-            onWillPop: () => showExit_Popup(context),
-            child: Obx(
-              () {
-                return dashboard_controller.main_List.isEmpty
-                    ? SizedBox()
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        physics: BouncingScrollPhysics(),
-                        padding: EdgeInsets.only(
-                            bottom:
-                                BaseUtitiles.getheightofPercentage(context, 7)),
-                        // itemCount: dashboard_controller.main_List.value.length,
-                        itemCount: 1,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Column(
-                            children: [
-                              Stack(
+          onWillPop: () => showExit_Popup(context),
+          child:
+
+          Obx((){
+            return dashboard_controller.main_List.isEmpty ?
+            SizedBox() :
+            ListView.builder(
+                shrinkWrap: true,
+                physics: BouncingScrollPhysics(),
+                padding: EdgeInsets.only(
+                    bottom: BaseUtitiles.getheightofPercentage(context, 7)),
+                // itemCount: dashboard_controller.main_List.value.length,
+                itemCount: 1,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
+                    children: [
+                      Stack(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            height: BaseUtitiles.getheightofPercentage(context, 25),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(50),
+                              ),
+                              image: DecorationImage(
+                                image: AssetImage('assets/images/dashboard_img1.jpg'),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                          height: BaseUtitiles.getheightofPercentage(context, 2)),
+                      Container(
+                        margin: EdgeInsets.only(left: 15),
+                        child: Row(
+                          children: [
+                            Text(
+                              'Projects Summary',
+                              style: subHeader,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 12),
+                      Container(
+                        margin: EdgeInsets.only(left: 10, right: 10),
+                        child: Row(
+                          children: [
+                            Flexible(
+                              flex: 1,
+                              fit: FlexFit.tight,
+                              child: Container(
+                                width: double.infinity,
+                                height: 110,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(24),
+                                  ),
+                                  // gradient: LinearGradient(
+                                  //   begin: Alignment.topLeft,
+                                  //   end: Alignment.bottomRight,
+                                  //   colors: [
+                                  //     purple,
+                                  //     blue,
+                                  //   ],
+                                  // ),
+                                ),
+                                child: InkWell(
+                                  child: Column(
+                                    children: [
+                                      SizedBox(height: 16),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Expanded(child: Container()),
+                                          const Expanded(
+                                            flex: 3,
+                                            child: Icon(
+                                              Icons.import_export_outlined,
+                                              color: Colors.white,
+                                              size: 25,
+                                            ),
+                                          ),
+                                          const Expanded(
+                                            child: Icon(
+                                                Icons.arrow_circle_right_outlined,
+                                                color: Colors.white),
+                                          )
+                                        ],
+                                      ),
+                                      SizedBox(height: 14),
+                                      Container(
+                                        margin: EdgeInsets.only(left: 5, right: 5),
+                                        width: double.infinity,
+                                        child: Text(
+                                          dashboard_controller.main_List.value[index].totalProjects.toString(),
+                                          style: header,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                      SizedBox(height: 14),
+                                      Text(
+                                        'Project',
+                                        style: label,
+                                      ),
+                                    ],
+                                  ),
+                                  onTap: () async {
+                                    await projectController.getProjectListAll(context);
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return OverAllProjectsList();
+                                        });
+                                  },
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 14),
+                            Flexible(
+                              flex: 1,
+                              fit: FlexFit.tight,
+                              child: Container(
+                                width: double.infinity,
+                                height: 110,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .primaryColor,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(24),
+                                  ),
+                                  // gradient: LinearGradient(
+                                  //   begin: Alignment.topLeft,
+                                  //   end: Alignment.bottomRight,
+                                  //   colors: [
+                                  //     purple,
+                                  //     blue,
+                                  //   ],
+                                  // ),
+                                ),
+                                child: InkWell(
+                                  child: Column(
+                                    children: [
+                                      SizedBox(height: 16),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Expanded(child: Container()),
+                                          Expanded(
+                                            flex: 3,
+                                            child: Icon(
+                                              Icons.mobile_screen_share_rounded,
+                                              color: Colors.white,
+                                              size: 25,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Icon(
+                                                Icons.arrow_circle_right_outlined,
+                                                color: Colors.white),
+                                          )
+                                        ],
+                                      ),
+                                      SizedBox(height: 14),
+                                      Container(
+                                        margin: EdgeInsets.only(left: 5, right: 5),
+                                        width: double.infinity,
+                                        child: Text(
+                                          '\₹ ' + BaseUtitiles.amountFormat(dashboard_controller.main_List.value[index].expensesAmt),
+                                          style: header,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                      SizedBox(height: 14),
+                                      Text(
+                                        'Expenses',
+                                        style: label,
+                                      ),
+                                    ],
+                                  ),
+                                  onTap: () {
+                                    expensesController.reportExpensesList.value.clear();
+                                    expensesController.prjttotalamtcontroller.text = "0";
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => Expenses()),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Container(
+                        margin: EdgeInsets.only(left: 15),
+                        child: Row(
+                          children: [
+                            Text(
+                              'Business Transactions',
+                              style: subHeader,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 12),
+                      Container(
+                        margin: EdgeInsets.only(left: 15),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                                // gradient: LinearGradient(
+                                //   begin: Alignment.topLeft,
+                                //   end: Alignment.bottomRight,
+                                //   colors: [
+                                //     purple,
+                                //     blue,
+                                //   ],
+                                // ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Container(
-                                    width: double.infinity,
-                                    height: BaseUtitiles.getheightofPercentage(
-                                        context, 25),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(50),
-                                      ),
-                                      image: DecorationImage(
-                                        image: AssetImage(
-                                            'assets/images/dashboard_img1.jpg'),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
+                                  Icon(
+                                    Icons.wallet,
+                                    color: Colors.white,
+                                    size: 25,
+                                  )
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: 14,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Cash In Hand',
+                                  style: subHeader,
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  '\₹ ' + BaseUtitiles.amountFormat(dashboard_controller.main_List.value[index].cashinHand),
+                                  style: TextStyle(
+                                    fontSize: RequestConstant.Lable_Font_SIZE,
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        dashboard_controller.main_List.value[index].cashinHand > 0
+                                            ? Colors.lightGreen
+                                            :
+                                        Colors.red,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Spacer(),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 14),
+                      Container(
+                        margin: EdgeInsets.only(left: 15),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                                // gradient: LinearGradient(
+                                //   begin: Alignment.topLeft,
+                                //   end: Alignment.bottomRight,
+                                //   colors: [
+                                //     purple,
+                                //     blue,
+                                //   ],
+                                // ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.account_balance,
+                                    color: Colors.white,
+                                    size: 25,
                                   ),
                                 ],
                               ),
-                              SizedBox(
-                                  height: BaseUtitiles.getheightofPercentage(
-                                      context, 2)),
-                              Container(
-                                margin: EdgeInsets.only(left: 15),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      'Projects Summary',
-                                      style: subHeader,
-                                    ),
-                                  ],
+                            ),
+                            SizedBox(
+                              width: 14,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Bank A/C',
+                                  style: subHeader,
                                 ),
+                                SizedBox(height: 4),
+                                Text(
+                                  '\₹ ' + BaseUtitiles.amountFormat(dashboard_controller.main_List
+                                      .value[index].bankAmt),
+                                  style: TextStyle(
+                                    fontSize: RequestConstant.Lable_Font_SIZE,
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        dashboard_controller
+                                            .main_List
+                                            .value[index]
+                                            .bankAmt >
+                                            0
+                                            ? Colors.lightGreen :
+                                        Colors.red,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Spacer(),
+                            // IconButton(
+                            //   onPressed: () {},
+                            //   icon: Image.asset(
+                            //     'assets/images/ic_arrow.png',
+                            //     height: 24,
+                            //   ),
+                            // ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 14),
+                      Container(
+                        margin: EdgeInsets.only(left: 15),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                                // gradient: LinearGradient(
+                                //   begin: Alignment.topLeft,
+                                //   end: Alignment.bottomRight,
+                                //   colors: [
+                                //     purple,
+                                //     blue,
+                                //   ],
+                                // ),
                               ),
-                              SizedBox(height: 12),
-                              Container(
-                                margin: EdgeInsets.only(left: 10, right: 10),
-                                child: Row(
-                                  children: [
-                                    Flexible(
-                                      flex: 1,
-                                      fit: FlexFit.tight,
-                                      child: Container(
-                                        width: double.infinity,
-                                        height: 110,
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context).primaryColor,
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(24),
-                                          ),
-                                          // gradient: LinearGradient(
-                                          //   begin: Alignment.topLeft,
-                                          //   end: Alignment.bottomRight,
-                                          //   colors: [
-                                          //     purple,
-                                          //     blue,
-                                          //   ],
-                                          // ),
-                                        ),
-                                        child: InkWell(
-                                          child: Column(
-                                            children: [
-                                              SizedBox(height: 16),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                children: [
-                                                  Expanded(child: Container()),
-                                                  const Expanded(
-                                                    flex: 3,
-                                                    child: Icon(
-                                                      Icons
-                                                          .import_export_outlined,
-                                                      color: Colors.white,
-                                                      size: 25,
-                                                    ),
-                                                  ),
-                                                  const Expanded(
-                                                    child: Icon(
-                                                        Icons
-                                                            .arrow_circle_right_outlined,
-                                                        color: Colors.white),
-                                                  )
-                                                ],
-                                              ),
-                                              SizedBox(height: 14),
-                                              Container(
-                                                margin: EdgeInsets.only(
-                                                    left: 5, right: 5),
-                                                width: double.infinity,
-                                                child: Text(
-                                                  dashboard_controller
-                                                      .main_List
-                                                      .value[index]
-                                                      .totalProjects
-                                                      .toString(),
-                                                  style: header,
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ),
-                                              SizedBox(height: 14),
-                                              Text(
-                                                'Project',
-                                                style: label,
-                                              ),
-                                            ],
-                                          ),
-                                          onTap: () async {
-                                            await projectController
-                                                .getProjectListAll(context);
-                                            showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return OverAllProjectsList();
-                                                });
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 14),
-                                    Flexible(
-                                      flex: 1,
-                                      fit: FlexFit.tight,
-                                      child: Container(
-                                        width: double.infinity,
-                                        height: 110,
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context).primaryColor,
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(24),
-                                          ),
-                                          // gradient: LinearGradient(
-                                          //   begin: Alignment.topLeft,
-                                          //   end: Alignment.bottomRight,
-                                          //   colors: [
-                                          //     purple,
-                                          //     blue,
-                                          //   ],
-                                          // ),
-                                        ),
-                                        child: InkWell(
-                                          child: Column(
-                                            children: [
-                                              SizedBox(height: 16),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                children: [
-                                                  Expanded(child: Container()),
-                                                  Expanded(
-                                                    flex: 3,
-                                                    child: Icon(
-                                                      Icons
-                                                          .mobile_screen_share_rounded,
-                                                      color: Colors.white,
-                                                      size: 25,
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Icon(
-                                                        Icons
-                                                            .arrow_circle_right_outlined,
-                                                        color: Colors.white),
-                                                  )
-                                                ],
-                                              ),
-                                              SizedBox(height: 14),
-                                              Container(
-                                                margin: EdgeInsets.only(
-                                                    left: 5, right: 5),
-                                                width: double.infinity,
-                                                child: Text(
-                                                  '\₹ ' +
-                                                      BaseUtitiles.amountFormat(
-                                                          dashboard_controller
-                                                              .main_List
-                                                              .value[index]
-                                                              .expensesAmt),
-                                                  style: header,
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ),
-                                              SizedBox(height: 14),
-                                              Text(
-                                                'Expenses',
-                                                style: label,
-                                              ),
-                                            ],
-                                          ),
-                                          onTap: () {
-                                            expensesController
-                                                .reportExpensesList.value
-                                                .clear();
-                                            expensesController
-                                                .prjttotalamtcontroller
-                                                .text = "0";
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      Expenses()),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.supervised_user_circle_sharp,
+                                    color: Colors.white,
+                                    size: 25,
+                                  )
+                                ],
                               ),
-                              SizedBox(height: 20),
-                              Container(
-                                margin: EdgeInsets.only(left: 15),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      'Business Transactions',
-                                      style: subHeader,
-                                    ),
-                                  ],
+                            ),
+                            SizedBox(width: 14),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Suppliers',
+                                  style: subHeader,
                                 ),
+                                SizedBox(height: 4),
+                                Text(
+                                  '\₹ ' +
+                                      BaseUtitiles.amountFormat(
+                                          dashboard_controller
+                                              .main_List
+                                              .value[index]
+                                              .supplierAmt),
+                                  style: TextStyle(
+                                    fontSize: RequestConstant.Lable_Font_SIZE,
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        dashboard_controller
+                                            .main_List
+                                            .value[index]
+                                            .supplierAmt >
+                                            0
+                                            ? Theme.of(context)
+                                            .primaryColor :
+                                        Colors.red,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Spacer(),
+                            IconButton(
+                              onPressed: () {
+                                expensesController.supplierOSExpensesList.value.clear();
+                                expensesController.totalamtcontroller.text = "0";
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Supplieroutstanding()),
+                                );
+                              },
+                              icon: Image.asset(
+                                'assets/images/ic_arrow.png',
+                                height: 24,
                               ),
-                              SizedBox(height: 12),
-                              Container(
-                                margin: EdgeInsets.only(left: 15),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context).primaryColor,
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
-                                        ),
-                                        // gradient: LinearGradient(
-                                        //   begin: Alignment.topLeft,
-                                        //   end: Alignment.bottomRight,
-                                        //   colors: [
-                                        //     purple,
-                                        //     blue,
-                                        //   ],
-                                        // ),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.wallet,
-                                            color: Colors.white,
-                                            size: 25,
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 14,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Cash In Hand',
-                                          style: subHeader,
-                                        ),
-                                        SizedBox(height: 4),
-                                        Text(
-                                          '\₹ ' +
-                                              BaseUtitiles.amountFormat(
-                                                  dashboard_controller.main_List
-                                                      .value[index].cashinHand),
-                                          style: TextStyle(
-                                            fontSize:
-                                                RequestConstant.Lable_Font_SIZE,
-                                            fontWeight: FontWeight.bold,
-                                            color: dashboard_controller
-                                                        .main_List
-                                                        .value[index]
-                                                        .cashinHand >
-                                                    0
-                                                ? Colors.lightGreen
-                                                : Colors.red,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Spacer(),
-                                  ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      Container(
+                        margin: EdgeInsets.only(left: 15),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
                                 ),
+                                // gradient: LinearGradient(
+                                //   begin: Alignment.topLeft,
+                                //   end: Alignment.bottomRight,
+                                //   colors: [
+                                //     purple,
+                                //     blue,
+                                //   ],
+                                // ),
                               ),
-                              SizedBox(height: 14),
-                              Container(
-                                margin: EdgeInsets.only(left: 15),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context).primaryColor,
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
-                                        ),
-                                        // gradient: LinearGradient(
-                                        //   begin: Alignment.topLeft,
-                                        //   end: Alignment.bottomRight,
-                                        //   colors: [
-                                        //     purple,
-                                        //     blue,
-                                        //   ],
-                                        // ),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.account_balance,
-                                            color: Colors.white,
-                                            size: 25,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 14,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Bank A/C',
-                                          style: subHeader,
-                                        ),
-                                        SizedBox(height: 4),
-                                        Text(
-                                          '\₹ ' +
-                                              BaseUtitiles.amountFormat(
-                                                  dashboard_controller.main_List
-                                                      .value[index].bankAmt),
-                                          style: TextStyle(
-                                            fontSize:
-                                                RequestConstant.Lable_Font_SIZE,
-                                            fontWeight: FontWeight.bold,
-                                            color: dashboard_controller
-                                                        .main_List
-                                                        .value[index]
-                                                        .bankAmt >
-                                                    0
-                                                ? Colors.lightGreen
-                                                : Colors.red,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Spacer(),
-                                    // IconButton(
-                                    //   onPressed: () {},
-                                    //   icon: Image.asset(
-                                    //     'assets/images/ic_arrow.png',
-                                    //     height: 24,
-                                    //   ),
-                                    // ),
-                                  ],
-                                ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.safety_divider,
+                                    color: Colors.white,
+                                    size: 25,
+                                  )
+                                  // Image.asset('assets/images/ic_wallet.png',
+                                  //     width: 22),
+                                ],
                               ),
-                              SizedBox(height: 14),
-                              Container(
-                                margin: EdgeInsets.only(left: 15),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context).primaryColor,
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
-                                        ),
-                                        // gradient: LinearGradient(
-                                        //   begin: Alignment.topLeft,
-                                        //   end: Alignment.bottomRight,
-                                        //   colors: [
-                                        //     purple,
-                                        //     blue,
-                                        //   ],
-                                        // ),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.supervised_user_circle_sharp,
-                                            color: Colors.white,
-                                            size: 25,
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(width: 14),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Suppliers',
-                                          style: subHeader,
-                                        ),
-                                        SizedBox(height: 4),
-                                        Text(
-                                          '\₹ ' +
-                                              BaseUtitiles.amountFormat(
-                                                  dashboard_controller
-                                                      .main_List
-                                                      .value[index]
-                                                      .supplierAmt),
-                                          style: TextStyle(
-                                            fontSize:
-                                                RequestConstant.Lable_Font_SIZE,
-                                            fontWeight: FontWeight.bold,
-                                            color: dashboard_controller
-                                                        .main_List
-                                                        .value[index]
-                                                        .supplierAmt >
-                                                    0
-                                                ? Theme.of(context).primaryColor
-                                                : Colors.red,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Spacer(),
-                                    IconButton(
-                                      onPressed: () {
-                                        expensesController
-                                            .supplierOSExpensesList.value
-                                            .clear();
-                                        expensesController
-                                            .totalamtcontroller.text = "0";
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  Supplieroutstanding()),
-                                        );
-                                      },
-                                      icon: Image.asset(
-                                        'assets/images/ic_arrow.png',
-                                        height: 24,
-                                      ),
-                                    ),
-                                  ],
+                            ),
+                            SizedBox(width: 14),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'SubContractors',
+                                  style: subHeader,
                                 ),
+                                SizedBox(height: 4),
+                                Text(
+                                  '\₹ ' +
+                                      BaseUtitiles.amountFormat(
+                                          dashboard_controller
+                                              .main_List
+                                              .value[index]
+                                              .subContAmt),
+                                  style: TextStyle(
+                                    fontSize: RequestConstant.Lable_Font_SIZE,
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        dashboard_controller
+                                            .main_List
+                                            .value[index]
+                                            .subContAmt >
+                                            0
+                                            ? Theme.of(context)
+                                            .primaryColor:
+                                        Colors.red,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Spacer(),
+                            IconButton(
+                              onPressed: () {
+                                expensesController.subcontractorOSExpensesList.value.clear();
+                                expensesController.totalamtSubcontcontroller.text="0";
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => Subcontractoroutstanding()),);
+                              },
+                              icon: Image.asset(
+                                'assets/images/ic_arrow.png',
+                                height: 24,
                               ),
-                              const SizedBox(height: 14),
-                              Container(
-                                margin: EdgeInsets.only(left: 15),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context).primaryColor,
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
-                                        ),
-                                        // gradient: LinearGradient(
-                                        //   begin: Alignment.topLeft,
-                                        //   end: Alignment.bottomRight,
-                                        //   colors: [
-                                        //     purple,
-                                        //     blue,
-                                        //   ],
-                                        // ),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.safety_divider,
-                                            color: Colors.white,
-                                            size: 25,
-                                          )
-                                          // Image.asset('assets/images/ic_wallet.png',
-                                          //     width: 22),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(width: 14),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'SubContractors',
-                                          style: subHeader,
-                                        ),
-                                        SizedBox(height: 4),
-                                        Text(
-                                          '\₹ ' +
-                                              BaseUtitiles.amountFormat(
-                                                  dashboard_controller.main_List
-                                                      .value[index].subContAmt),
-                                          style: TextStyle(
-                                            fontSize:
-                                                RequestConstant.Lable_Font_SIZE,
-                                            fontWeight: FontWeight.bold,
-                                            color: dashboard_controller
-                                                        .main_List
-                                                        .value[index]
-                                                        .subContAmt >
-                                                    0
-                                                ? Theme.of(context).primaryColor
-                                                : Colors.red,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Spacer(),
-                                    IconButton(
-                                      onPressed: () {
-                                        expensesController
-                                            .subcontractorOSExpensesList.value
-                                            .clear();
-                                        expensesController
-                                            .totalamtSubcontcontroller
-                                            .text = "0";
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  Subcontractoroutstanding()),
-                                        );
-                                      },
-                                      icon: Image.asset(
-                                        'assets/images/ic_arrow.png',
-                                        height: 24,
-                                      ),
-                                    ),
-                                  ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      if (!AppClient.isPrahkurti)
+                      Container(
+                        margin: const EdgeInsets.only(left: 15),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(10),
                                 ),
+                                // gradient: LinearGradient(
+                                //   begin: Alignment.topLeft,
+                                //   end: Alignment.bottomRight,
+                                //   colors: [
+                                //     purple,
+                                //     blue,
+                                //   ],
+                                // ),
                               ),
-                              if (!AppClient.isPrahkurti)
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(height: 14),
-                                    Container(
-                                      margin: const EdgeInsets.only(left: 15),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            width: 40,
-                                            height: 40,
-                                            decoration: BoxDecoration(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                Radius.circular(10),
-                                              ),
-                                              // gradient: LinearGradient(
-                                              //   begin: Alignment.topLeft,
-                                              //   end: Alignment.bottomRight,
-                                              //   colors: [
-                                              //     purple,
-                                              //     blue,
-                                              //   ],
-                                              // ),
-                                            ),
-                                            child: const Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Icon(
-                                                  Icons.gps_fixed,
-                                                  color: Colors.white,
-                                                  size: 25,
-                                                )
-                                                // Image.asset('assets/images/ic_wallet.png',
-                                                //     width: 22),
-                                              ],
-                                            ),
-                                          ),
-                                          const SizedBox(width: 14),
-                                          Text(
-                                            'Pin Site Locations',
-                                            style: subHeader,
-                                          ),
-                                          const Spacer(),
-                                          IconButton(
-                                            onPressed: () async {
-                                              await siteLocationController
-                                                  .getProjectName("0", "1");
-                                              Get.to(
-                                                  () => const SiteLocationView(
-                                                        allotedStatus: "0",
-                                                        checkValue: "1",
-                                                      ));
-                                            },
-                                            icon: Image.asset(
-                                              'assets/images/ic_arrow.png',
-                                              height: 24,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              const SizedBox(height: 20),
-                            ],
-                          );
-                        },
-                      );
-              },
-            )),
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.gps_fixed,
+                                    color: Colors.white,
+                                    size: 25,
+                                  )
+                                  // Image.asset('assets/images/ic_wallet.png',
+                                  //     width: 22),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            Text(
+                              'Pin Site Locations',
+                              style: subHeader,
+                            ),
+                            const Spacer(),
+                            IconButton(
+                              onPressed: () async {
+                                await siteLocationController.getProjectName(
+                                    "0", "1");
+                                Get.to(() => const SiteLocationView(
+                                      allotedStatus: "0",
+                                      checkValue: "1",
+                                    ));
+                              },
+                              icon: Image.asset(
+                                'assets/images/ic_arrow.png',
+                                height: 24,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  );
+                },
+              );},
+          )
+
+        ),
       ),
     );
   }
@@ -966,6 +960,7 @@ class OverAllProjectsList extends StatefulWidget {
 class _OverAllProjectsListState extends State<OverAllProjectsList> {
   ProjectController projectController = Get.put(ProjectController());
 
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context);
@@ -979,13 +974,12 @@ class _OverAllProjectsListState extends State<OverAllProjectsList> {
       content: SizedBox(
         width: double.maxFinite,
         height: 300.h,
-        child: Obx(() {
+        child: Obx((){
           return Scrollbar(
             thumbVisibility: true,
             child: ListView.builder(
               scrollDirection: Axis.vertical,
-              itemCount: projectController
-                  .getdropDownvalueAll.value.length, // Set your item count
+              itemCount: projectController.getdropDownvalueAll.value.length, // Set your item count
               itemBuilder: (BuildContext context, int index) {
                 return Column(
                   children: [
@@ -1013,8 +1007,8 @@ class _OverAllProjectsListState extends State<OverAllProjectsList> {
                 );
               },
             ),
-          );
-        }),
+          );}
+        ),
       ),
     );
   }

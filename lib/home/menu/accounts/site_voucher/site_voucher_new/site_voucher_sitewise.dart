@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -248,11 +250,14 @@ class _Site_Voucher_SitewiseState extends State<Site_Voucher_Sitewise> {
                                 padding:
                                 const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
-                                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                  keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                   inputFormatters: [
-                                    FilteringTextInputFormatter.allow(
-                                      RegExp(r'^\d+\.?\d{0,2}'),
-                                    ),
+                                    TextInputFormatter.withFunction((oldValue, newValue) {
+                                      return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                          ? newValue
+                                          : oldValue;
+                                    }),
                                   ],
                                   controller: siteVoucher_Controller.DetAmount,
                                   autovalidateMode: AutovalidateMode.always,
@@ -311,11 +316,14 @@ class _Site_Voucher_SitewiseState extends State<Site_Voucher_Sitewise> {
                                 padding:
                                 const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                                 child: TextFormField(
-                                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                  keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                   inputFormatters: [
-                                    FilteringTextInputFormatter.allow(
-                                      RegExp(r'^\d+\.?\d{0,2}'),
-                                    ),
+                                    TextInputFormatter.withFunction((oldValue, newValue) {
+                                      return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                          ? newValue
+                                          : oldValue;
+                                    }),
                                   ],
                                   controller: siteVoucher_Controller.Tds,
                                   cursorColor: Colors.black,

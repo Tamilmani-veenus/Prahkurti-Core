@@ -16,7 +16,7 @@ class BoqRevisedSaveRequest {
   int? siteId;
   String? remarks;
   int? createdBy;
-  String? createdDt;
+  // String? createdDt;
   int? measureHeadItemId;
   List<BoqReviseDet>? boqReviseDets;
 
@@ -28,7 +28,7 @@ class BoqRevisedSaveRequest {
     this.siteId,
     this.remarks,
     this.createdBy,
-    this.createdDt,
+    // this.createdDt,
     this.measureHeadItemId,
     this.boqReviseDets,
   });
@@ -41,7 +41,7 @@ class BoqRevisedSaveRequest {
     siteId: json["siteId"],
     remarks: json["remarks"],
     createdBy: json["createdBy"],
-    createdDt: json["createdDt"],
+    // createdDt: json["createdDt"],
     measureHeadItemId: json["measureHeadItemId"],
     boqReviseDets: List<BoqReviseDet>.from(json["boqReviseDets"].map((x) => BoqReviseDet.fromJson(x))),
   );
@@ -54,7 +54,7 @@ class BoqRevisedSaveRequest {
     "siteId": siteId,
     "remarks": remarks,
     "createdBy": createdBy,
-    "createdDt": createdDt,
+    // "createdDt": createdDt,
     "measureHeadItemId": measureHeadItemId,
     "boqReviseDets": List<dynamic>.from(boqReviseDets!.map((x) => x.toJson())),
   };

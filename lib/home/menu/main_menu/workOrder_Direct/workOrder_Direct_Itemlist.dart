@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -90,18 +92,11 @@ class _WorkOrderDirectItemListState extends State<WorkOrderDirectItemList> {
                               padding: EdgeInsets.symmetric(
                                   vertical: 8, horizontal: 8),
                               child: ConstIcons.Description),
-                        ),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return '\u26A0 Enter user name';
-                          }
-                          return null;
-                        },
+                        )
                       ),
                     ),
                   ),
                 ),
-
                 Container(
                   margin: const EdgeInsets.only(top: 5),
                   child: Row(
@@ -121,6 +116,7 @@ class _WorkOrderDirectItemListState extends State<WorkOrderDirectItemList> {
                                   top: 3, left: 10, bottom: 5),
                               child: TextFormField(
                                 controller: workOrderDirectController.itemUnitController,
+                                textCapitalization: TextCapitalization.characters,
                                 cursorColor: Colors.black,
                                 style: const TextStyle(color: Colors.black),
                                 decoration: const InputDecoration(
@@ -138,12 +134,6 @@ class _WorkOrderDirectItemListState extends State<WorkOrderDirectItemList> {
                                           vertical: 8, horizontal: 8),
                                       child: ConstIcons.unit),
                                 ),
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '\u26A0 Enter user name';
-                                  }
-                                  return null;
-                                },
                               ),
                             ),
                           ),
@@ -163,11 +153,13 @@ class _WorkOrderDirectItemListState extends State<WorkOrderDirectItemList> {
                               padding: const EdgeInsets.only(
                                   top: 3, left: 10, bottom: 5),
                               child: TextFormField(
-                                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
                                 inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                    RegExp(r'^\d+\.?\d{0,2}'),
-                                  ),
+                                  TextInputFormatter.withFunction((oldValue, newValue) {
+                                    return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                        ? newValue
+                                        : oldValue;
+                                  }),
                                 ],
                                 controller: workOrderDirectController.itemQuantityController,
                                 cursorColor: Colors.black,
@@ -212,11 +204,14 @@ class _WorkOrderDirectItemListState extends State<WorkOrderDirectItemList> {
                               padding: const EdgeInsets.only(
                                   top: 3, left: 10, bottom: 5),
                               child: TextFormField(
-                                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                 inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                    RegExp(r'^\d+\.?\d{0,2}'),
-                                  ),
+                                  TextInputFormatter.withFunction((oldValue, newValue) {
+                                    return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                        ? newValue
+                                        : oldValue;
+                                  }),
                                 ],
                                 controller: workOrderDirectController
                                     .itemRateController,
@@ -549,11 +544,14 @@ class _WorkOrderDirectItemListState extends State<WorkOrderDirectItemList> {
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(color: Colors.black),
                                 cursorColor: Colors.black,
-                                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                 inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                    RegExp(r'^\d+\.?\d{0,2}'),
-                                  ),
+                                  TextInputFormatter.withFunction((oldValue, newValue) {
+                                    return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                        ? newValue
+                                        : oldValue;
+                                  }),
                                 ],
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
@@ -605,11 +603,14 @@ class _WorkOrderDirectItemListState extends State<WorkOrderDirectItemList> {
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(color: Colors.black),
                                 cursorColor: Colors.black,
-                                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                 inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                    RegExp(r'^\d+\.?\d{0,2}'),
-                                  ),
+                                  TextInputFormatter.withFunction((oldValue, newValue) {
+                                    return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                        ? newValue
+                                        : oldValue;
+                                  }),
                                 ],
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
@@ -646,7 +647,15 @@ class _WorkOrderDirectItemListState extends State<WorkOrderDirectItemList> {
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(color: Colors.black),
                                 cursorColor: Colors.black,
-                                keyboardType: TextInputType.number,
+                                keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                inputFormatters: [
+                                  TextInputFormatter.withFunction((oldValue, newValue) {
+                                    return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                        ? newValue
+                                        : oldValue;
+                                  }),
+                                ],
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
                                   focusedBorder: OutlineInputBorder(

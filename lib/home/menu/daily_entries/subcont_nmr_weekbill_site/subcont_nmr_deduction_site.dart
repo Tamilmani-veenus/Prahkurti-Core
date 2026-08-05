@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:prahkurticore/utilities/apiconstant.dart';
 
@@ -165,7 +167,15 @@ class _Subcont_NMR_DeductionState_Site
                             padding: const EdgeInsets.only(
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
-                              keyboardType: TextInputType.number,
+                              keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                              inputFormatters: [
+                                TextInputFormatter.withFunction((oldValue, newValue) {
+                                  return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                      ? newValue
+                                      : oldValue;
+                                }),
+                              ],
                               controller: nmrWklyController.foodDeduction,
                               cursorColor: Colors.black,
                               style: TextStyle(color: Colors.black),
@@ -254,7 +264,15 @@ class _Subcont_NMR_DeductionState_Site
                             padding: const EdgeInsets.only(
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
-                              keyboardType: TextInputType.number,
+                              keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                              inputFormatters: [
+                                TextInputFormatter.withFunction((oldValue, newValue) {
+                                  return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                      ? newValue
+                                      : oldValue;
+                                }),
+                              ],
                               controller: nmrWklyController.Creditamt,
                               cursorColor: Colors.black,
                               style: TextStyle(color: Colors.black),
@@ -380,7 +398,15 @@ class _Subcont_NMR_DeductionState_Site
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
                               // readOnly: true,
-                              keyboardType: TextInputType.number,
+                              keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                              inputFormatters: [
+                                TextInputFormatter.withFunction((oldValue, newValue) {
+                                  return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                      ? newValue
+                                      : oldValue;
+                                }),
+                              ],
                               controller: nmrWklyController.Debitamt,
                               cursorColor: Colors.black,
                               style: TextStyle(color: Colors.black),
@@ -544,7 +570,15 @@ class _Subcont_NMR_DeductionState_Site
                                 top: 3, left: 10, bottom: 5),
                             child: Obx(
                               () => TextFormField(
-                                keyboardType: TextInputType.number,
+                                keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                inputFormatters: [
+                                  TextInputFormatter.withFunction((oldValue, newValue) {
+                                    return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                        ? newValue
+                                        : oldValue;
+                                  }),
+                                ],
                                 readOnly:
                                     nmrWklyController.isAdvanceReadOnly.value,
                                 controller: nmrWklyController.Advded,
@@ -635,11 +669,14 @@ class _Subcont_NMR_DeductionState_Site
                       padding:
                           const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                       child: TextFormField(
-                        keyboardType: TextInputType.number,
+                        keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                            RegExp(r'^-?\d*\.?\d{0,2}$'),
-                          ),
+                          TextInputFormatter.withFunction((oldValue, newValue) {
+                            return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                ? newValue
+                                : oldValue;
+                          }),
                         ],
                         controller: nmrWklyController.Roundoff,
                         cursorColor: Colors.black,
@@ -742,12 +779,14 @@ class _Subcont_NMR_DeductionState_Site
                                   });
                                 }
                               },
-                              keyboardType: TextInputType.numberWithOptions(
-                                  decimal: true),
+                              keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                               inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                  RegExp(r'^\d+\.?\d{0,2}'),
-                                ),
+                                TextInputFormatter.withFunction((oldValue, newValue) {
+                                  return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                      ? newValue
+                                      : oldValue;
+                                }),
                               ],
                               controller: nmrWklyController.netBillAmt,
                               cursorColor: Colors.black,
@@ -902,8 +941,17 @@ class _Subcont_NMR_DeductionState_Site
                                   child: TextFormField(
                                     controller: nmrWklyController
                                         .percentControllers[index],
-                                    keyboardType: TextInputType.number,
+                                    keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                    inputFormatters: [
+                                      TextInputFormatter.withFunction((oldValue, newValue) {
+                                        return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                            ? newValue
+                                            : oldValue;
+                                      }),
+                                    ],
                                     cursorColor: Colors.black,
+
                                     textInputAction: TextInputAction.done,
                                     textAlign: TextAlign.center,
                                     decoration: InputDecoration(

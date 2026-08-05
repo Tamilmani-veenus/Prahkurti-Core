@@ -142,17 +142,13 @@ class PendingListProvider {
       } else if (formName == "INWARD PENDING - WO") {
         response = await ApiManager.getAPICall(ApiConstant.GET_INWARDWO_PENDINGLIST);
       }else if (formName == "TRANSFER PENDING") {
-        response =
-            await ApiManager.getAPICall(ApiConstant.GET_TRANSFER_PENDINGLIST);
+        response = await ApiManager.getAPICall(ApiConstant.GET_TRANSFER_PENDINGLIST);
       } else if (formName == "TRANSFER REQUEST PENDING VIEW") {
-        response = await ApiManager.getAPICall(
-            ApiConstant.GET_TRANSFERREQUEST_PENDINGLIST);
+        response = await ApiManager.getAPICall(ApiConstant.GET_TRANSFERREQUEST_PENDINGLIST);
       } else if (formName == "TRANSFER ACKNOWLEDGMENT PENDING") {
-        response = await ApiManager.getAPICall(
-            ApiConstant.GET_TRANSFER_ACKNOWLEGDEMENT_LIST);
+        response = await ApiManager.getAPICall(ApiConstant.GET_TRANSFER_ACKNOWLEGDEMENT_LIST);
       } else if (formName == "SUBCONTRACTOR ATTENDANCE APPROVAL") {
-        response =
-            await ApiManager.getAPICall(ApiConstant.GET_SUBCON_APPROVAL_LIST);
+        response = await ApiManager.getAPICall(ApiConstant.GET_SUBCON_APPROVAL_LIST);
       } else if (formName == "TRANSFER REQUEST VERIFICATION PENDING") {
         response = await ApiManager.getAPICall(
             ApiConstant.GET_TRANSFER_VERIFI_PEND_LIST);
@@ -228,6 +224,9 @@ class PendingListProvider {
       }
       else if (formName == "WORK ORDER APPROVAL PENDING") {
         response = await ApiManager.getAPICall(ApiConstant.GET_WORKORDERAPPROVALLIST);
+      }
+      else if (formName == "MAN POWER APPROVAL PENDING") {
+        response = await ApiManager.getAPICall(ApiConstant.GET_MANPOWERAPPROVALLIST);
       }
       else if (formName == "PENDING PO [AGENCY]" || formName == "PENDING PO [TRADER]" || formName == "PENDING PO [SUPPLIER]") {
         String supplierCategory = formName == "PENDING PO [SUPPLIER]"

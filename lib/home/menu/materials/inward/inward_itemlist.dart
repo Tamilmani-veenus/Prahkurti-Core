@@ -413,9 +413,15 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                                         controller: inwardPendingcontroller
                                                 .Itemlist_Inward_QtyListController[
                                             index],
-                                        keyboardType:
-                                            TextInputType.numberWithOptions(
-                                                decimal: true),
+                                        keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                        inputFormatters: [
+                                          TextInputFormatter.withFunction((oldValue, newValue) {
+                                            return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                ? newValue
+                                                : oldValue;
+                                          }),
+                                        ],
                                         decoration: InputDecoration(
                                           contentPadding:
                                               const EdgeInsets.fromLTRB(
@@ -477,11 +483,14 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                                         controller: inwardPendingcontroller
                                                 .Itemlist_Qty_PlusListController[
                                             index],
-                                        keyboardType: TextInputType.number,
+                                        keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                         inputFormatters: [
-                                          FilteringTextInputFormatter.allow(
-                                            RegExp(r'^\d+\.?\d{0,2}'),
-                                          ),
+                                          TextInputFormatter.withFunction((oldValue, newValue) {
+                                            return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                ? newValue
+                                                : oldValue;
+                                          }),
                                         ],
                                         decoration: InputDecoration(
                                           contentPadding:
@@ -528,11 +537,14 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                                         controller: inwardPendingcontroller
                                                 .Itemlist_Qty_MinusListController[
                                             index],
-                                        keyboardType: TextInputType.number,
+                                        keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                         inputFormatters: [
-                                          FilteringTextInputFormatter.allow(
-                                            RegExp(r'^\d+\.?\d{0,2}'),
-                                          ),
+                                          TextInputFormatter.withFunction((oldValue, newValue) {
+                                            return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                ? newValue
+                                                : oldValue;
+                                          }),
                                         ],
                                         decoration: InputDecoration(
                                           contentPadding:
@@ -950,7 +962,6 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                   return const ImageGalleryPopup_Alert(imageUrl: "InwardButton");
                 });
           }
-
         },
         child: CircleAvatar(
           radius: 25,

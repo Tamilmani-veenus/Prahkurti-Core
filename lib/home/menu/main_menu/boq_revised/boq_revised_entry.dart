@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../../../app_theme/app_colors.dart';
@@ -57,6 +59,7 @@ class _Boq_Revised_EntryScreenState extends State<Boq_Revised_EntryScreen> {
         siteController.selectedsiteId.value = 0;
         siteController.headNameController.text = RequestConstant.SELECT;
         siteController.selectedHeadId.value=0;
+        boq_revised_controller.createdById.value=0;
         boq_revised_controller.boq_preparedbyController.text = loginController.EmpName();
         boq_revised_controller.boq_remarksController.text = "";
         await autoYearWiseNoController.AutoYearWiseNo("BOQ REVISED");
@@ -74,6 +77,7 @@ class _Boq_Revised_EntryScreenState extends State<Boq_Revised_EntryScreen> {
           siteController.Sitename.text = element.siteName;
           siteController.selectedHeadId.value = element.measureHeadItemId;
           siteController.headNameController.text = element.measureHeadItemName;
+          boq_revised_controller.createdById.value = element.createdBy;
           boq_revised_controller.boq_preparedbyController.text = element.createdByName;
           boq_revised_controller.boq_remarksController.text = element.remarks;
         });
@@ -838,11 +842,14 @@ class _Boq_Revised_EntryScreenState extends State<Boq_Revised_EntryScreen> {
                                         cursorColor: Theme.of(context).primaryColor,
                                         textAlign: TextAlign.center,
                                         controller: boq_revised_controller.Addwork_qtyControllers[index],
-                                        keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                        keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                         inputFormatters: [
-                                          FilteringTextInputFormatter.allow(
-                                            RegExp(r'^\d+\.?\d{0,2}'),
-                                          ),
+                                          TextInputFormatter.withFunction((oldValue, newValue) {
+                                            return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                ? newValue
+                                                : oldValue;
+                                          }),
                                         ],
                                         decoration: InputDecoration(
                                           contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),

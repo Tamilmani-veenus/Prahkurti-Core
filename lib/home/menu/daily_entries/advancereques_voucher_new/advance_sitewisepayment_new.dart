@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../../../app_theme/app_colors.dart';
@@ -265,8 +268,15 @@ class _advance_sitewisepayment_newState
                               child: TextFormField(
                                 autovalidateMode:
                                 AutovalidateMode.always,
-                                keyboardType: TextInputType.numberWithOptions(
-                                    decimal: true),
+                                keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                inputFormatters: [
+                                  TextInputFormatter.withFunction((oldValue, newValue) {
+                                    return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                        ? newValue
+                                        : oldValue;
+                                  }),
+                                ],
                                 controller: advanceReqVoucherController_new
                                     .itemlistDetAmount,
                                 cursorColor: Colors.black,

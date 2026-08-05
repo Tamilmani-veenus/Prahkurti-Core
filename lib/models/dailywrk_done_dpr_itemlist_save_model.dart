@@ -23,7 +23,7 @@ class DailywrkDoneDprItemlistSaveModel {
     this.preparedby,
     this.approvedby,
     this.createdBy,
-    this.createdDate,
+    // this.createdDate,
     this.subContractDailyWorkDets,
     this.approveStatus,
     this.verifyStatus,
@@ -45,7 +45,7 @@ class DailywrkDoneDprItemlistSaveModel {
   String? preparedby;
   String? approvedby;
   int? createdBy;
-  String? createdDate;
+  // String? createdDate;
   String? approveStatus;
   String? verifyStatus;
   List<SubContractDailyWorkDets>? subContractDailyWorkDets;
@@ -67,7 +67,7 @@ class DailywrkDoneDprItemlistSaveModel {
     preparedby: json["Preparedby"],
     approvedby: json["Approvedby"],
     createdBy: json["CreatedBy"],
-    createdDate: json["CreatedDt"],
+    // createdDate: json["CreatedDt"],
     approveStatus: json["ApproveStatus"],
     verifyStatus: json["VerifyStatus"],
     subContractDailyWorkDets: List<SubContractDailyWorkDets>.from(json["DprDet"].map((x) => SubContractDailyWorkDets.fromJson(x))),
@@ -90,7 +90,7 @@ class DailywrkDoneDprItemlistSaveModel {
     "Preparedby": preparedby,
     "Approvedby": approvedby,
     "CreatedBy": createdBy,
-    "CreatedDt": createdDate,
+    // "CreatedDt": createdDate,
     "ApproveStatus": approveStatus,
     "VerifyStatus": verifyStatus,
     "SubContractDailyWorkDets": List<dynamic>.from(subContractDailyWorkDets!.map((x) => x.toJson())),
@@ -110,11 +110,11 @@ class SubContractDailyWorkDets {
   int? headItemId;
   int? subItemId;
   String? boqCode;
-  String? siteName;
+  // String? siteName;
   double? qty;
   double? amount;
   String? billStatus;
-  int? avgLabRate;
+  double? avgLabRate;
   int? id;
   int? level3ItemId;
   String? workRemarks;
@@ -132,7 +132,7 @@ class SubContractDailyWorkDets {
     this.headItemId,
     this.subItemId,
     this.boqCode,
-    this.siteName,
+    // this.siteName,
     this.qty,
     this.amount,
     this.billStatus,
@@ -155,7 +155,7 @@ class SubContractDailyWorkDets {
     headItemId: json["headItemId"],
     subItemId: json["subItemId"],
     boqCode: json["boqCode"],
-    siteName: json["siteName"],
+    // siteName: json["siteName"],
     qty: json["qty"],
     amount: json["amount"],
     billStatus: json["billStatus"],
@@ -178,7 +178,7 @@ class SubContractDailyWorkDets {
     "headItemId": headItemId,
     "subItemId": subItemId,
     "boqCode": boqCode,
-    "siteName": siteName,
+    // "siteName": siteName,
     "qty": qty,
     "amount": amount,
     "billStatus": billStatus,

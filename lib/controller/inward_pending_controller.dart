@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 import 'package:prahkurticore/controller/punch_in_controller.dart';
 import '../db_model/inwardpending_itemlist_table_model.dart';
@@ -90,6 +91,7 @@ class InwardPending_Controller extends GetxController
   RxInt netWorkImageCount = 0.obs;
   RxInt pickedImageCount = 0.obs;
   RxInt count = 0.obs;
+  RxInt createdById = 0.obs;
 
   int projectId = 0;
   int siteId = 0;
@@ -270,16 +272,10 @@ class InwardPending_Controller extends GetxController
         Itemlist_Qty_PlusListController[i].text = "0.0";
         Itemlist_Qty_MinusListController[i].text = "0.0";
       } else {
-        Itemlist_Qty_PlusListController[i].text = ItemGetTableListdata[i]
-                    .balQty <=
-                double.parse(
-                    Itemlist_Inward_QtyListController[i].value.text.toString())
-            ? (double.parse(Itemlist_Inward_QtyListController[i]
-                        .value
-                        .text
-                        .toString()) -
-                    ItemGetTableListdata[i].balQty)
-                .toString()
+        Itemlist_Qty_PlusListController[i].text = ItemGetTableListdata[i].balQty <=
+                double.parse(Itemlist_Inward_QtyListController[i].value.text.toString())
+            ? (double.parse(Itemlist_Inward_QtyListController[i].value.text.toString()) -
+                    ItemGetTableListdata[i].balQty).toStringAsFixed(2)
             : Itemlist_Qty_PlusListController[i].text = "0.0";
         Itemlist_Qty_MinusListController[i].text = ItemGetTableListdata[i]
                     .balQty >=
@@ -290,7 +286,7 @@ class InwardPending_Controller extends GetxController
                         .value
                         .text
                         .toString()))
-                .toString()
+                .toStringAsFixed(2)
             : Itemlist_Qty_MinusListController[i].text = "0.0";
         if (id == element.id) {
           if (ItemGetTableListdata[i].balQty <
@@ -463,8 +459,8 @@ class InwardPending_Controller extends GetxController
       vechileName: InwardVechileNoText.text,
       driverName: InwardDriverNameText.text,
       remarks: InwardRemarksText.text,
-      createdBy: int.tryParse(loginController.EmpId()),
-      createdDt: BaseUtitiles().convertToUtcIso(InwardEntryDateText.text),
+      createdBy: saveButton.value == RequestConstant.RESUBMIT?createdById.value:int.tryParse(loginController.EmpId()),
+      // createdDt: saveButton.value == RequestConstant.RESUBMIT?null:BaseUtitiles().convertToUtcIso(InwardEntryDateText.text),
       selectedNo: saveButton.value == RequestConstant.RESUBMIT
           ? editListApiDatas[0].selectedNo
           : type == "INWARD PENDING - WO"
@@ -705,13 +701,10 @@ class InwardPending_Controller extends GetxController
                     child: TextButton(
                       onPressed: () async {
                         bool result = await EntryList_DeleteApi(
-                            inwardEtyList.value[index].id);
+                            inwardEtyList[index].id);
                         if (result) {
                           itemlistTable_Delete();
-                          ItemGetTableListdata.value = [];
-                          inwardEtyList.value.removeAt(index);
-                          update();
-                          await getInward_EntryList();
+                          inwardEtyList.removeAt(index);
                           Navigator.of(context).pop();
                         } else {
                           Navigator.of(context).pop();

@@ -28,7 +28,7 @@ class InwardPendingSaveReq {
   String? driverName;
   String? remarks;
   int? createdBy;
-  String? createdDt;
+  // String? createdDt;
   String? selectedNo;
   List<InwardDet>? inwardDet;
 
@@ -52,7 +52,7 @@ class InwardPendingSaveReq {
     this.driverName,
     this.remarks,
     this.createdBy,
-    this.createdDt,
+    // this.createdDt,
     this.selectedNo,
     this.inwardDet,
   });
@@ -79,7 +79,7 @@ class InwardPendingSaveReq {
       driverName: json['DriverName'],
       remarks: json['Remarks'],
       createdBy: json['CreatedBy'],
-      createdDt: json['CreatedDt'],
+      // createdDt: json['CreatedDt'],
       selectedNo: json['SelectedNo'],
       inwardDet: json['MaterialInwardMasLink'] != null
           ? (json['MaterialInwardMasLink'] as List)
@@ -111,7 +111,7 @@ class InwardPendingSaveReq {
       "DriverName": driverName,
       "Remarks": remarks,
       "CreatedBy": createdBy,
-      "CreatedDt": createdDt,
+      // "CreatedDt": createdDt,
       "SelectedNo": selectedNo,
       "MaterialInwardMasLink": inwardDet != null
           ? inwardDet!.map((e) => e.toJson()).toList()

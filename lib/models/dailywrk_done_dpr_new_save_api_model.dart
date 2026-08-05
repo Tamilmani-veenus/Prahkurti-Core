@@ -22,7 +22,7 @@ class DprNewSaveReq {
   String? refNo;
   String? remarks;
   int? createdBy;
-  String? createdDt;
+  // String? createdDt;
   String? approveStatus;
   String? verifyStatus;
   List<SubContractDailyWorkDet>? subContractDailyWorkDets;
@@ -44,7 +44,7 @@ class DprNewSaveReq {
     this.refNo,
     this.remarks,
     this.createdBy,
-    this.createdDt,
+    // this.createdDt,
     this.approveStatus,
     this.verifyStatus,
     this.subContractDailyWorkDets,
@@ -67,7 +67,7 @@ class DprNewSaveReq {
     refNo: json["RefNo"],
     remarks: json["Remarks"],
     createdBy: json["CreatedBy"],
-    createdDt: json["CreatedDt"],
+    // createdDt: json["CreatedDt"],
     approveStatus: json["ApproveStatus"],
     verifyStatus: json["VerifyStatus"],
     subContractDailyWorkDets: List<SubContractDailyWorkDet>.from(json["SubContractDailyWorkDets"].map((x) => SubContractDailyWorkDet.fromJson(x))),
@@ -90,7 +90,7 @@ class DprNewSaveReq {
     "RefNo": refNo,
     "Remarks": remarks,
     "CreatedBy": createdBy,
-    "CreatedDt": createdDt,
+    // "CreatedDt": createdDt,
     "ApproveStatus": approveStatus,
     "VerifyStatus": verifyStatus,
     "SubContractDailyWorkDets": List<dynamic>.from(subContractDailyWorkDets!.map((x) => x.toJson())),

@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:flutter/services.dart';
+
 import '../commonpopup/sitewisepaymenttype_alert.dart';
 import '../controller/commonvoucher_controller.dart';
 
@@ -133,7 +137,15 @@ class _SitewisePaymentAlertState extends State<SitewisePaymentAlert> {
                         decoration: BoxDecoration(),
                         child: TextField(
                           style: TextStyle(fontSize: 10),
-                          keyboardType: TextInputType.number,
+                          keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                          inputFormatters: [
+                            TextInputFormatter.withFunction((oldValue, newValue) {
+                              return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                  ? newValue
+                                  : oldValue;
+                            }),
+                          ],
                           controller: siteVoucher_Controller.DetAmount,
                           textAlign: TextAlign.center,
                           decoration: InputDecoration(
@@ -171,7 +183,15 @@ class _SitewisePaymentAlertState extends State<SitewisePaymentAlert> {
                         decoration: BoxDecoration(),
                         child: TextField(
                           style: TextStyle(fontSize: 10),
-                          keyboardType: TextInputType.number,
+                          keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                          inputFormatters: [
+                            TextInputFormatter.withFunction((oldValue, newValue) {
+                              return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                  ? newValue
+                                  : oldValue;
+                            }),
+                          ],
                           controller: siteVoucher_Controller.Tds,
                           textAlign: TextAlign.center,
                           decoration: InputDecoration(
@@ -263,7 +283,15 @@ class _SitewisePaymentAlertState extends State<SitewisePaymentAlert> {
                         child: TextField(
                           readOnly: true,
                           style: TextStyle(fontSize: 13),
-                          keyboardType: TextInputType.number,
+                          keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                          inputFormatters: [
+                            TextInputFormatter.withFunction((oldValue, newValue) {
+                              return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                  ? newValue
+                                  : oldValue;
+                            }),
+                          ],
                           controller: siteVoucher_Controller.NetAmount,
                           textAlign: TextAlign.center,
                           decoration: InputDecoration(

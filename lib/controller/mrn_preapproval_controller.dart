@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -352,8 +351,7 @@ class MrnPreApprovalController extends GetxController {
         reqRemarks: mrnpre_ReqremarksText.text,
         requestType: mrn_request_controller.ReqType.value.toString(),
         preApproveBy: int.parse(loginController.EmpId()),
-        preApproveDate:
-            BaseUtitiles().convertToUtcIso(mrnpre_RequestDateText.text),
+        preApproveDate: BaseUtitiles().convertToUtcIso(mrnpre_RequestDateText.text),
         verifyStatus: "Y",
         preApproveStatus: "Y",
         approveStatus: "N",
@@ -361,7 +359,6 @@ class MrnPreApprovalController extends GetxController {
         mMatReqMasLink: getsaveDetList.value.isEmpty
             ? attendanceListDet(reqId)
             : getsaveDetList.value));
-    print("DDDDDD....${jsonEncode(body)}");
     final list = await Mrn_Req_provider.SaveMaterialScreenEntryAPI(
         body, reqId, mrn_request_controller.saveButton.value, context);
 

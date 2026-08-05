@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -19,6 +20,7 @@ import '../../controller/punch_in_controller.dart';
 import '../../newhome/maindashboard/dashboard_otheruser.dart';
 import '../../splash/internetissue.dart';
 import '../../splash/splash.dart';
+import '../../utilities/apiconstant.dart';
 import '../../utilities/baseutitiles.dart';
 import '../../utilities/print_logger.dart';
 import '../../utilities/requestconstant.dart';
@@ -151,31 +153,96 @@ class _PunchOutState extends State<PunchOut> {
   }
 
   void checkGeoFence(Position position) {
-    double lat = double.tryParse(widget.latitude!.trim()) ?? 0.0;
-    double lon = double.tryParse(widget.longitude!.trim()) ?? 0.0;
-    double radius = double.tryParse(widget.radius!.trim()) ?? 0.0;
+    if (AppClient.isIOSProjects) {
+      if (widget.latitude != null &&
+          widget.longitude != null &&
+          widget.latitude!.isNotEmpty &&
+          widget.longitude!.isNotEmpty) {
 
-    double distanceInMeters = Geolocator.distanceBetween(
-      position.latitude,
-      position.longitude,
-      lat,
-      lon,
-    );
+        List<String> latList = widget.latitude!.split(",");
+        List<String> lonList = widget.longitude!.split(",");
 
-    if (distanceInMeters <= radius) {
-      setState(() {
-        status = true;
-        loading = false;
-      });
-      Fluttertoast.showToast(msg: "You are inside the location");
-    } else {
-      setState(() {
-        status = false;
-        loading = false;
-      });
-      debugPrint("Status :: You are outside the location");
+        List<LatLng> polygon = [];
+
+        for (int i = 0; i < latList.length; i++) {
+          polygon.add(
+            LatLng(
+              double.parse(latList[i]),
+              double.parse(lonList[i]),
+            ),
+          );
+        }
+        bool inside = isPointInPolygon(
+          LatLng(position.latitude, position.longitude),
+          polygon,
+        );
+
+        if (inside) {
+          setState(() {
+            status = true;
+            loading = false;
+          });
+          Fluttertoast.showToast(msg: "✅ You are inside the polygon");
+        } else {
+          setState(() {
+            status = false;
+            loading = false;
+          });
+          Fluttertoast.showToast(msg: "❌ You are outside the polygon");
+        }
+
+        return;
+      }
+    }
+    else{
+      double lat = double.tryParse(widget.latitude!.trim()) ?? 0.0;
+      double lon = double.tryParse(widget.longitude!.trim()) ?? 0.0;
+      double radius = double.tryParse(widget.radius!.trim()) ?? 0.0;
+
+      double distanceInMeters = Geolocator.distanceBetween(
+        position.latitude,
+        position.longitude,
+        lat,
+        lon,
+      );
+
+      if (distanceInMeters <= radius) {
+        setState(() {
+          status = true;
+          loading = false;
+        });
+        Fluttertoast.showToast(msg: "You are inside the location");
+      } else {
+        setState(() {
+          status = false;
+          loading = false;
+        });
+        debugPrint("Status :: You are outside the location");
+      }
     }
   }
+
+  bool isPointInPolygon(LatLng point, List<LatLng> polygon) {
+    int intersections = 0;
+    for (int i = 0; i < polygon.length; i++) {
+      LatLng v1 = polygon[i];
+      LatLng v2 = polygon[(i + 1) % polygon.length];
+
+      // Check if the ray crosses the edge
+      if ((v1.latitude > point.latitude) != (v2.latitude > point.latitude)) {
+        double intersectLon = (v2.longitude - v1.longitude) *
+            (point.latitude - v1.latitude) /
+            (v2.latitude - v1.latitude) +
+            v1.longitude;
+
+        if (point.longitude < intersectLon) {
+          intersections++;
+        }
+      }
+    }
+    return (intersections % 2) == 1;
+  }
+
 
   @override
   Widget build(BuildContext context) {

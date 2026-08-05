@@ -61,6 +61,7 @@ class Result {
   String? workTypeDesc;
   String? entryTypeDesc;
   String? status;
+  int? CreatedBy;
   List<SubContractDailyWorkDet>? subContractDailyWorkDets;
 
   Result({
@@ -92,6 +93,7 @@ class Result {
     this.workTypeDesc,
     this.entryTypeDesc,
     this.status,
+    this.CreatedBy,
     this.subContractDailyWorkDets,
   });
 
@@ -124,6 +126,7 @@ class Result {
     workTypeDesc: json["workTypeDesc"],
     entryTypeDesc: json["entryTypeDesc"],
     status: json["Status"],
+    CreatedBy: json["CreatedBy"],
     subContractDailyWorkDets: List<SubContractDailyWorkDet>.from(json["subContractDailyWorkDets"].map((x) => SubContractDailyWorkDet.fromJson(x))),
   );
 
@@ -156,6 +159,7 @@ class Result {
     "workTypeDesc": workTypeDesc,
     "entryTypeDesc": entryTypeDesc,
     "Status": status,
+    "CreatedBy": CreatedBy,
     "subContractDailyWorkDets": List<dynamic>.from(subContractDailyWorkDets!.map((x) => x.toJson())),
   };
 }

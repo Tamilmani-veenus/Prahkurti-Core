@@ -129,7 +129,6 @@ class _Boq_AddItemsState extends State<Boq_AddItems> {
                   ],
                 ),
               ),
-
               SizedBox(height: 15),
               listDetails(),
 

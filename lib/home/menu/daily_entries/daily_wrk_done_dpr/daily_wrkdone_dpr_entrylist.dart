@@ -579,7 +579,6 @@ class _DailyWork_done_DPR_EntryListState extends State<DailyWork_done_DPR_EntryL
                                                                       dailyWrkDone_DPR_Controller.searchentryList.value[index].id,
                                                                       widget.heading,context,0);
                                                                   FocusScope.of(context).unfocus();
-                                                                  Navigator.pop(context);
                                                                 }),
                                                             Container(
                                                                 margin: EdgeInsets.only(right: 20),

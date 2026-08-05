@@ -141,6 +141,7 @@ class DailyWrkDone_DPRNEW_Controller extends GetxController {
 
   RxList dummyListData=[].obs;
   RxList list=[].obs;
+  RxInt createdById = 0.obs;
 
   Future getAddBoqDetails(BuildContext context) async {
     dprNew_BoqDetailsList.value=[];
@@ -598,8 +599,8 @@ class DailyWrkDone_DPRNEW_Controller extends GetxController {
       totalAmount: totalNetAmnt,
       refNo: "-",
       remarks: dpr_new_remarksController.text.isEmpty ? "-" : dpr_new_remarksController.text,
-      createdBy: int.tryParse(loginController.EmpId()),
-      createdDt: BaseUtitiles().convertToUtcIso(dateController.text),
+      createdBy: saveButton.value==RequestConstant.SUBMIT?int.tryParse(loginController.EmpId()):createdById.value,
+      // createdDt: BaseUtitiles().convertToUtcIso(dateController.text),
       approveStatus: saveButton.value==RequestConstant.APPROVAL?"Y":"N",
       verifyStatus: saveButton.value==RequestConstant.APPROVAL?"Y":"N",
       subContractDailyWorkDets: getDprNewDet(id),

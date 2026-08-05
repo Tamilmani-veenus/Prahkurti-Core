@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../controller/attendancecontroller.dart';
 import '../controller/dailyentries_controller.dart';
 import '../controller/dailywrk_done_dpr_controller.dart';
+import '../utilities/apiconstant.dart';
 import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
 
@@ -19,8 +20,7 @@ class _WorkTypeAlertState extends State<WorkTypeAlert> {
 
   DailyEntriesController dailyEntriesController = Get.put(DailyEntriesController());
 
-  // final list=["No Work","NMR","RATE"];
-  final list=["NMR","RATE"];
+  final list = (!AppClient.isAnusamm)?["NMR","RATE"]:["NMR","RATE","NO WORK"];
 
   @override
   Widget build(BuildContext context) {
@@ -43,26 +43,31 @@ class _WorkTypeAlertState extends State<WorkTypeAlert> {
               Container(
                 margin: const EdgeInsets.only(top: 20),
                 width: BaseUtitiles.getWidthtofPercentage(context, 80),
-                height: BaseUtitiles.getheightofPercentage(context,10),
+                height: BaseUtitiles.getheightofPercentage(context,12),
                 child: ListView.builder(
                     itemCount: list.length,
                     itemBuilder: (BuildContext context, int index) {
                       return InkWell(
                         onTap: ()  {
-                          // dailyEntriesController.deleteSubcontDetTableDatas();
-                          // dailyEntriesController.readListdata.value=[];
-                          // if(index==0){
-                          //   dailyEntriesController.WorkTypeTextController.text="No Work";
-                          //   dailyEntriesController.Nmr_Rate.value = RequestConstant.W;
-                          // }else
-                            if(index==0){
-                            dailyEntriesController.WorkTypeTextController.text="NMR";
-                            dailyEntriesController.Nmr_Rate.value = RequestConstant.N;
-                          }
-                          else {
-                            dailyEntriesController.WorkTypeTextController.text="RATE";
-                            dailyEntriesController.Nmr_Rate.value = RequestConstant.R;
+                          final selected = list[index];
 
+                          switch (selected) {
+                            case "NMR":
+                              dailyEntriesController.WorkTypeTextController.text = "NMR";
+                              dailyEntriesController.Nmr_Rate.value = RequestConstant.N;
+                              break;
+
+                            case "RATE":
+                              dailyEntriesController.WorkTypeTextController.text = "RATE";
+                              dailyEntriesController.Nmr_Rate.value = RequestConstant.R;
+                              break;
+
+                            case "NO WORK":
+                              dailyEntriesController.WorkTypeTextController.text = "NO WORK";
+                              dailyEntriesController.Nmr_Rate.value = RequestConstant.W;
+                              dailyEntriesController.deleteSubcontDetTableDatas();
+                              dailyEntriesController.readListdata.value=[];
+                              break;
                           }
                           Navigator.pop(context);
                         },
@@ -205,7 +210,8 @@ class WorkType_AttendRPT extends StatefulWidget {
 class _WorkType_AttendRPTState extends State<WorkType_AttendRPT> {
   AttendanceController attendanceController =Get.put(AttendanceController());
 
-  final list=["Nmr","Rate"];
+  final list = (!AppClient.isAnusamm)?["NMR","RATE"]:["NMR","RATE","NO WORK"];
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -232,13 +238,23 @@ class _WorkType_AttendRPTState extends State<WorkType_AttendRPT> {
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
                       onTap: ()  {
-                        if(index==0){
-                          attendanceController.workTypeController.text="Nmr";
-                          attendanceController.wrktype.value = RequestConstant.N;
-                        }
-                        else {
-                          attendanceController.workTypeController.text="Rate";
-                          attendanceController.wrktype.value= RequestConstant.R;
+                        final selected = list[index];
+
+                        switch (selected) {
+                          case "NMR":
+                            attendanceController.workTypeController.text = "NMR";
+                            attendanceController.wrktype.value = RequestConstant.N;
+                            break;
+
+                          case "RATE":
+                            attendanceController.workTypeController.text = "RATE";
+                            attendanceController.wrktype.value = RequestConstant.R;
+                            break;
+
+                          case "NO WORK":
+                            attendanceController.workTypeController.text = "NO WORK";
+                            attendanceController.wrktype.value = RequestConstant.W;
+                            break;
                         }
                         attendanceController.attendanceDatas.value=[];
                         Navigator.pop(context);
@@ -256,9 +272,8 @@ class _WorkType_AttendRPTState extends State<WorkType_AttendRPT> {
                                       context, 60),
                                   child: Text(list[index]
                                       .toString(), textAlign: TextAlign.center,style: TextStyle(fontSize: RequestConstant.ALERT_Font_SIZE,fontWeight: FontWeight.bold),)),
-                              Divider(
-                                color: Theme.of(context).primaryColorLight,
-                              )
+                              if (index < list.length - 1)
+                                Divider(color: Theme.of(context).primaryColorLight),
                             ],
                           ),
                         ],

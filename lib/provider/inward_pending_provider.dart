@@ -282,6 +282,7 @@ class Inward_Pending_provider {
       final value = await ApiManager.getAPICall(
           type=="inward"?"${ApiConstant.GET_INWARD_IMAGE_LIST}?id=$Id":
           type=="siteVoucher"?"${ApiConstant.GET_VOC_IMAGE_LIST}?id=$Id":
+          type=="staffVoucher"?"${ApiConstant.GET_STAFF_VOC_IMAGE_LIST}?id=$Id":
           type == "DPR" ? "${ApiConstant.GET_DPR_IMAGE_LIST}?id=$Id":
           "${ApiConstant.GET_DLR_IMAGE_LIST}?id=$Id");
       print('API Response: ${value}');
@@ -302,6 +303,7 @@ class Inward_Pending_provider {
       final response = await ApiManager.deleteAPICall(
           type=="inward"?"${ApiConstant.DELETE_INWARD_IMAGE_API }?inwId=$imageId":
           type=="siteVoucher"?"${ApiConstant.SITE_VOC_IMAGE_DELETE }?Id=$imageId":
+          type=="staffVoucher"?"${ApiConstant.STAFF_VOC_IMAGE_DELETE }?Id=$imageId":
           type=="DPR"?"${ApiConstant.DPR_IMAGE_DELETE }?id=$imageId":
           "${ApiConstant.DELETE_DLR_IMAGE_API }?imgId=$imageId");
 

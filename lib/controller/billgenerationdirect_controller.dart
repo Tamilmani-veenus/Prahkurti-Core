@@ -73,6 +73,7 @@ class BillGenerationDirectController extends GetxController {
   String oldRoundOffValue = "0.0";
   String oldmatDebitValue = "0.0";
   RxBool isAdvanceReadOnly = true.obs;
+  RxInt createdById = 0.obs;
 
   ProjectController projectController = Get.put(ProjectController());
   SiteController siteController = Get.put(SiteController());
@@ -451,8 +452,8 @@ class BillGenerationDirectController extends GetxController {
       penaltyAmount: 0,
       paymentDate: billPaymentWkDateController.text,
       partRateStatus: 0,
-      createdBy: int.parse(loginController.EmpId()),
-      createdDt: BaseUtitiles().convertToUtcIso(billentryDateController.text),
+      createdBy:  saveButton.value == RequestConstant.SUBMIT?int.parse(loginController.EmpId()):createdById.value,
+      // createdDt: BaseUtitiles().convertToUtcIso(billentryDateController.text),
       verifyStatus: saveButton.value == RequestConstant.VERIFY ||
               saveButton.value == RequestConstant.APPROVAL
           ? "Y"

@@ -432,6 +432,29 @@ class _Inward_ListScreenState extends State<Inward_ListScreen> {
                                     Expanded(
                                         flex: 3,
                                         child: Text(
+                                          "Site",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black),
+                                        )),
+                                    Expanded(
+                                        flex: 8,
+                                        child: Text(
+                                          inward_controller.inwardEtyList[index].siteName.toString(),
+                                          style: const TextStyle(color: Colors.black),
+                                        )),
+                                  ],
+                                ),
+                                const SizedBox(height: 5),
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      margin: EdgeInsets.only(top: 5, left: 10),
+                                      child: Text(""),
+                                    ),
+                                    Expanded(
+                                        flex: 3,
+                                        child: Text(
                                           "Type",
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
@@ -480,7 +503,7 @@ class _Inward_ListScreenState extends State<Inward_ListScreen> {
                                     const Expanded(
                                         flex: 2,
                                         child: Text(
-                                          "Site Name",
+                                          "Prepared By",
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               color: Colors.black),
@@ -488,7 +511,7 @@ class _Inward_ListScreenState extends State<Inward_ListScreen> {
                                     Expanded(
                                         flex: 4,
                                         child: Text(
-                                          inward_controller.inwardEtyList[index].siteName.toString(),
+                                          inward_controller.inwardEtyList[index].createdName.toString(),
                                           style: const TextStyle(color: Colors.black),
                                         )),
                                     Expanded(

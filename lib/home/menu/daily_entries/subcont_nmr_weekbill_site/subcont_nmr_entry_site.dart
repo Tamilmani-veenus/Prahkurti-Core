@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:prahkurticore/home/menu/daily_entries/subcont_nmr_weekbill_site/subcont_nmr_deduction_site.dart';
 import '../../../../app_theme/app_colors.dart';
@@ -47,6 +49,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
         subcontractorController.Subcontractorname.text="--SELECT--";
         subcontractorController.selectedSubcontId.value=0;
         subcontractorController.InvoiceNo.text = "";
+        nmrWklyController.createdById.value = 0;
         nmrWklyController.RemarksController.text = "";
         nmrWklyController.NmrentryDateController.text = BaseUtitiles.initiateCurrentDateFormat();
         nmrWklyController.FromdateController.text=BaseUtitiles.initiateCurrentDateFormat();
@@ -72,6 +75,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
           nmrWklyController.FromdateController.text=element.fromDate!;
           nmrWklyController.TodateController.text=element.toDate!;
           nmrWklyController.RemarksController.text=element.remarks!;
+          nmrWklyController.createdById.value = element.createdBy;
         });
       }
     });
@@ -993,11 +997,14 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                                             .TotalNosController[index],
                                         readOnly: true,
                                         cursorColor: Colors.black,
-                                        keyboardType: TextInputType.number,
+                                        keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                         inputFormatters: [
-                                          FilteringTextInputFormatter.allow(
-                                            RegExp(r'^\d+\.?\d{0,2}'),
-                                          ),
+                                          TextInputFormatter.withFunction((oldValue, newValue) {
+                                            return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                ? newValue
+                                                : oldValue;
+                                          }),
                                         ],
                                         textAlign: TextAlign.center,
                                         decoration: InputDecoration(
@@ -1082,11 +1089,14 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                                         controller: nmrWklyController.TotalOTController[index],
                                         style: TextStyle(color: Colors.black),
                                         cursorColor: Colors.black,
-                                        keyboardType: TextInputType.number,
+                                        keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                         inputFormatters: [
-                                          FilteringTextInputFormatter.allow(
-                                            RegExp(r'^\d+\.?\d{0,2}'),
-                                          ),
+                                          TextInputFormatter.withFunction((oldValue, newValue) {
+                                            return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                ? newValue
+                                                : oldValue;
+                                          }),
                                         ],
                                         textAlign: TextAlign.center,
                                         decoration: InputDecoration(
@@ -1139,11 +1149,14 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                                         controller: nmrWklyController.NetAmtController[index],
                                         style: TextStyle(color: Colors.black),
                                         cursorColor: Colors.black,
-                                        keyboardType: TextInputType.number,
+                                        keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                         inputFormatters: [
-                                          FilteringTextInputFormatter.allow(
-                                            RegExp(r'^\d+\.?\d{0,2}'),
-                                          ),
+                                          TextInputFormatter.withFunction((oldValue, newValue) {
+                                            return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                ? newValue
+                                                : oldValue;
+                                          }),
                                         ],
                                         textAlign: TextAlign.center,
                                         decoration: InputDecoration(

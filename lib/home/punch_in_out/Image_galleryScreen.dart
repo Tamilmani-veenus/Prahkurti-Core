@@ -11,6 +11,7 @@ import '../../controller/dailywrk_done_dpr_controller.dart';
 import '../../controller/dailywrk_done_dprnew_controller.dart';
 import '../../controller/inward_pending_controller.dart';
 import '../../controller/sitevoucher_controller.dart';
+import '../../controller/staffvoucher_controller.dart';
 import '../../utilities/baseutitiles.dart';
 import '../../utilities/requestconstant.dart';
 import 'camera_screen.dart';
@@ -31,6 +32,7 @@ class _ImageGalleryPopup_AlertState extends State<ImageGalleryPopup_Alert> {
   Get.put(DailyEntriesController());
   DailyWrkDone_DPR_Controller dailyWrkDone_DPR_Controller = Get.put(DailyWrkDone_DPR_Controller());
   DailyWrkDone_DPRNEW_Controller dailyWrkDone_DPRNEW_Controller=Get.put(DailyWrkDone_DPRNEW_Controller());
+  StaffVoucher_Controller staffVoucher_Controller = Get.put(StaffVoucher_Controller());
   InwardPending_Controller inwardPendingcontroller =
   Get.put(InwardPending_Controller());
 
@@ -101,6 +103,14 @@ class _ImageGalleryPopup_AlertState extends State<ImageGalleryPopup_Alert> {
 
                               Get.to(() => CameraCapturePage(
                                 fromScreen: "Site Voucher",
+                              ));
+                            }
+                            else if(widget.imageUrl == "STAFF VOUCHER")
+                            {
+                              Get.back();
+
+                              Get.to(() => CameraCapturePage(
+                                fromScreen: "Staff Voucher",
                               ));
                             }
                             else if(widget.imageUrl == "DLR")
@@ -229,6 +239,11 @@ class _ImageGalleryPopup_AlertState extends State<ImageGalleryPopup_Alert> {
           siteVoucher_Controller.imageFiles.addAll(compressedImages);
           siteVoucher_Controller.pickedImageCount.value += compressedImages.length;
         }
+      else if(widget.imageUrl == "STAFF VOUCHER")
+      {
+        staffVoucher_Controller.imageFiles.addAll(compressedImages);
+        staffVoucher_Controller.pickedImageCount.value += compressedImages.length;
+      }
         else if(widget.imageUrl == "DLR")
           {
             dailyEntriesController.imageFiles.addAll(compressedImages);

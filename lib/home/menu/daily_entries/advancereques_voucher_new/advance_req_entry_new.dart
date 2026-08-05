@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -62,6 +64,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
         advanceReqVoucherController_new.remarksController.text = "";
         advanceReqVoucherController_new.entry_amount.text = "0.0";
         advanceReqVoucherController_new.listButton.value = "List";
+        advanceReqVoucherController_new.createdById.value = 0;
         await autoYearWiseNoController.AutoYearWiseNo("ADVANCE REQ VOUCHER");
         advanceReqVoucherController_new.autoYearWiseNoController.text = autoYearWiseNoController.AdvReqautoYrsWise.value;
 
@@ -92,6 +95,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
               : "Sitewise List";
           advanceReqVoucherController_new.entry_amount.text =
               element.advanceReqVoucherAmount.toString();
+          advanceReqVoucherController_new.createdById.value = element.createdBy;
         });
       }
     });
@@ -647,11 +651,14 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                                         "P"
                                         ? false
                                         : true,
-                                    keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                    keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                     inputFormatters: [
-                                      FilteringTextInputFormatter.allow(
-                                        RegExp(r'^\d+\.?\d{0,2}'),
-                                      ),
+                                      TextInputFormatter.withFunction((oldValue, newValue) {
+                                        return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                            ? newValue
+                                            : oldValue;
+                                      }),
                                     ],
                                     controller: advanceReqVoucherController_new
                                         .entry_amount,
@@ -1659,11 +1666,14 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                                         advanceReqVoucherController_new
                                             .amount_ListControllers[
                                         index],
-                                        keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                        keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                         inputFormatters: [
-                                          FilteringTextInputFormatter.allow(
-                                            RegExp(r'^\d+\.?\d{0,2}'),
-                                          ),
+                                          TextInputFormatter.withFunction((oldValue, newValue) {
+                                            return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                ? newValue
+                                                : oldValue;
+                                          }),
                                         ],
                                         decoration: InputDecoration(
                                           contentPadding:

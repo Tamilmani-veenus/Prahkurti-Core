@@ -18,9 +18,9 @@ class ConumSaveRequest {
   int? subContractId;
   String? expenseType;
   int? createdBy;
-  String? createdDt;
-  int? updatedBy;
-  String? updatedDt;
+  // String? createdDt;
+  // int? updatedBy;
+  // String? updatedDt;
   List<ConsumptionDet>? consumptionDet;
 
   ConumSaveRequest({
@@ -33,9 +33,9 @@ class ConumSaveRequest {
     this.subContractId,
     this.expenseType,
     this.createdBy,
-    this.createdDt,
-    this.updatedBy,
-    this.updatedDt,
+    // this.createdDt,
+    // this.updatedBy,
+    // this.updatedDt,
     this.consumptionDet,
   });
 
@@ -50,9 +50,9 @@ class ConumSaveRequest {
         subContractId: json["subContractId"],
         expenseType: json["expenseType"],
         createdBy: json["createdBy"],
-        createdDt: json["createdDt"],
-        updatedBy: json["updatedBy"],
-        updatedDt: json["updatedDt"],
+        // createdDt: json["createdDt"],
+        // updatedBy: json["updatedBy"],
+        // updatedDt: json["updatedDt"],
         consumptionDet: List<ConsumptionDet>.from(
             json["materialExpensesLink"].map((x) =>
                 ConsumptionDet.fromJson(x))),
@@ -69,9 +69,9 @@ class ConumSaveRequest {
       "subContractId": subContractId,
       "expenseType": expenseType,
       "createdBy": createdBy,
-      "createdDt": createdDt,
-      "updatedBy": updatedBy,
-      "updatedDt": updatedDt,
+      // "createdDt": createdDt,
+      // "updatedBy": updatedBy,
+      // "updatedDt": updatedDt,
       "materialExpensesLink": List<dynamic>.from(
           consumptionDet!.map((x) => x!.toJson())),
     };

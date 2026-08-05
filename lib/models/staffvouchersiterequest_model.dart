@@ -30,9 +30,9 @@ class StaffvouchersiteRequest {
   int? accountPayee;
   int? projectId;
   int? createdBy;
-  String? createdDate;
+  // String? createdDate;
   int? accountNameId;
-  List<AccStaffVocSWpayment>? accStaffVocSWpaymentS;
+  List<AccStaffVocSWpayment>? AccStaffVocSWpaymentS;
 
   StaffvouchersiteRequest({
     this.id,
@@ -56,9 +56,9 @@ class StaffvouchersiteRequest {
     this.accountPayee,
     this.projectId,
     this.createdBy,
-    this.createdDate,
+    // this.createdDate,
     this.accountNameId,
-    this.accStaffVocSWpaymentS,
+    this.AccStaffVocSWpaymentS,
   });
 
   factory StaffvouchersiteRequest.fromJson(Map<String, dynamic> json) => StaffvouchersiteRequest(
@@ -83,9 +83,9 @@ class StaffvouchersiteRequest {
     accountPayee: json["accountPayee"],
     projectId: json["projectId"],
     createdBy: json["createdBy"],
-    createdDate: json["createdDate"],
+    // createdDate: json["createdDate"],
     accountNameId: json["accountNameId"],
-    accStaffVocSWpaymentS: List<AccStaffVocSWpayment>.from(json["accStaffVocSWpaymentS"].map((x) => AccStaffVocSWpayment.fromJson(x))),
+    AccStaffVocSWpaymentS: List<AccStaffVocSWpayment>.from(json["AccStaffVocSWpaymentS"].map((x) => AccStaffVocSWpayment.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -110,9 +110,9 @@ class StaffvouchersiteRequest {
     "accountPayee": accountPayee,
     "projectId": projectId,
     "createdBy": createdBy,
-    "createdDate": createdDate,
+    // "createdDate": createdDate,
     "accountNameId": accountNameId,
-    "accStaffVocSWpaymentS": List<dynamic>.from(accStaffVocSWpaymentS!.map((x) => x.toJson())),
+    "AccStaffVocSWpaymentS": List<dynamic>.from(AccStaffVocSWpaymentS!.map((x) => x.toJson())),
   };
 }
 

@@ -29,7 +29,7 @@ class AdvanceReqvoucherSaveApiReq {
   String? nameThrough;
   double? actualVoucherAmount;
   int? createdBy;
-  String? createdDt;
+  // String? createdDt;
   String? verifyStatus;
   String? approveStatus;
   List<AccountAdvanceReqVoucherSwPayment>? accountAdvanceReqVoucherSwPayments;
@@ -55,7 +55,7 @@ class AdvanceReqvoucherSaveApiReq {
     this.nameThrough,
     this.actualVoucherAmount,
     this.createdBy,
-    this.createdDt,
+    // this.createdDt,
     this.verifyStatus,
     this.approveStatus,
     this.accountAdvanceReqVoucherSwPayments,
@@ -82,7 +82,7 @@ class AdvanceReqvoucherSaveApiReq {
     nameThrough: json["nameThrough"],
     actualVoucherAmount: json["actualVoucherAmount"],
     createdBy: json["createdBy"],
-    createdDt: json["createdDt"],
+    // createdDt: json["createdDt"],
     verifyStatus: json["verifyStatus"],
     approveStatus: json["approveStatus"],
     accountAdvanceReqVoucherSwPayments: List<AccountAdvanceReqVoucherSwPayment>.from(json["accountAdvanceReqVoucherSWPayments"].map((x) => AccountAdvanceReqVoucherSwPayment.fromJson(x))),
@@ -109,7 +109,7 @@ class AdvanceReqvoucherSaveApiReq {
     "nameThrough": nameThrough,
     "actualVoucherAmount": actualVoucherAmount,
     "createdBy": createdBy,
-    "createdDt": createdDt,
+    // "createdDt": createdDt,
     "approveStatus": approveStatus,
     "verifyStatus": verifyStatus,
     "accountAdvanceReqVoucherSWPayments": List<dynamic>.from(accountAdvanceReqVoucherSwPayments!.map((x) => x.toJson())),

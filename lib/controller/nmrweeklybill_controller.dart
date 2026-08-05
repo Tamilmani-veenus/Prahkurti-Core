@@ -69,7 +69,7 @@ class NMRWklyController extends GetxController {
 
 
   RxString saveButton = RequestConstant.SUBMIT.obs;
-
+  RxInt createdById = 0.obs;
   double totalNetBillamount = 0.0;
   double totalNetPayAmt = 0.0;
   double baseNetPayAmt = 0.0;
@@ -257,8 +257,8 @@ class NMRWklyController extends GetxController {
       netPayAmount: double.tryParse(netpayamt.text) ?? 0.0,
       // balanceAmount: 0,
       remarks: RemarksController.text,
-      createdBy: int.tryParse(loginController.EmpId()),
-      createdDt: BaseUtitiles().convertToUtcIso(NmrentryDateController.text),
+      createdBy: saveButton.value == RequestConstant.SUBMIT?int.tryParse(loginController.EmpId()):createdById.value,
+      // createdDt: BaseUtitiles().convertToUtcIso(NmrentryDateController.text),
       verifyStatus: saveButton.value == RequestConstant.VERIFY || saveButton.value == RequestConstant.APPROVAL? "Y":"N",
       approveStatus: saveButton.value == RequestConstant.APPROVAL? "Y":"N",
       subContractorNmrBillDetS: getNmrBillDet(id),
@@ -298,7 +298,7 @@ class NMRWklyController extends GetxController {
     int i = 0;
     NmritemList.forEach((element) {
       var list = new SubContractorNmrBillDet(
-        id: reqDetIdNmrDet[i],
+        id: saveButton.value == RequestConstant.SUBMIT?0: reqDetIdNmrDet[i],
         subContractorNmrBillMasId: id,
         projectId: projectController.selectedProjectId.value,
         siteId: siteController.selectedsiteId.value,

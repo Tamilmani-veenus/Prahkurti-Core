@@ -1255,7 +1255,7 @@ class BottomsheetControllers {
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
                           child: Text(
-                            type == "DPRNEW"
+                            type == "DPRNEW" || type == "ManPower" || type == "WORKORDBOQ"
                                 ? list[index].headItemName
                                 : list[index].headName,
                             textAlign: TextAlign.center,
@@ -1266,10 +1266,10 @@ class BottomsheetControllers {
                         ),
                         onTap: () async {
                           siteController.headNameController.text =
-                              type == "DPRNEW"
+                              type == "DPRNEW" || type == "ManPower" || type == "WORKORDBOQ"
                                   ? list[index].headItemName
                                   : list[index].headName;
-                          siteController.selectedHeadId.value = list[index].id;
+                          siteController.selectedHeadId.value = type == "WORKORDBOQ" ? list[index].headItemId : list[index].id;
                           searchcontroller.text = "";
                           dailyWrkDone_DPRNEW_Controller.dprNew_DetTable_Delete();
                           dailyWrkDone_DPRNEW_Controller.dprNew_EntryDetReadList.value=[];
@@ -2691,13 +2691,11 @@ class BottomsheetControllers {
                     },
                     textInputAction: TextInputAction.search,
                     onChanged: (value) {
-                      dailyWrkDone_DPRNEW_Controller.mainlist.value =
+                      list =
                           BaseUtitiles.materialName_DPRNew(
                               value,
                               dailyWrkDone_DPRNEW_Controller
                                   .MaterialApiList.value);
-
-                      // dailyWrkDone_DPRNEW_Controller.MaterialApiLIst.value = BaseUtitiles.materialNamePopupAlert(value,dailyWrkDone_DPRNEW_Controller.mainlist.value);
                     },
                   ),
                 ),

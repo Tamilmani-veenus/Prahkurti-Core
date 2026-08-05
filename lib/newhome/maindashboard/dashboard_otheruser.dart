@@ -35,12 +35,12 @@ import '../menus/main_menuslist.dart';
 import '../pendinglist.dart';
 import '../reports/reports.dart';
 
+
 class DashboardScreen_OtherUser extends StatefulWidget {
   DashboardScreen_OtherUser({Key? key}) : super(key: key);
 
   @override
-  State<DashboardScreen_OtherUser> createState() =>
-      _DashboardScreen_OtherUserState();
+  State<DashboardScreen_OtherUser> createState() => _DashboardScreen_OtherUserState();
 }
 
 class MyBehavior extends ScrollBehavior {
@@ -52,10 +52,12 @@ class MyBehavior extends ScrollBehavior {
 }
 
 class _DashboardScreen_OtherUserState extends State<DashboardScreen_OtherUser> {
+
   int _currentPage = 0;
   final _pageController = PageController();
   LoginController loginController = Get.put(LoginController());
-  Menu_Controller menuController = Get.put(Menu_Controller());
+  Menu_Controller menuController=Get.put(Menu_Controller());
+
 
   @override
   Widget build(BuildContext context) {
@@ -112,24 +114,18 @@ class _DashboardScreen_OtherUserState extends State<DashboardScreen_OtherUser> {
                       Container(
                         child: InkWell(
                           child: Container(
-                              margin:
-                                  const EdgeInsets.only(left: 20, right: 10),
-                              child: Icon(Icons.settings,
-                                  color: Theme.of(context).primaryColor)),
+                              margin: const EdgeInsets.only(left: 20, right: 10),
+                              child: Icon(Icons.settings, color: Theme.of(context).primaryColor)),
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        const AccountSettings()));
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const AccountSettings()));
                           },
                         ),
                       ),
+
                       Container(
                         child: InkWell(
                           child: Container(
-                              margin:
-                                  const EdgeInsets.only(left: 20, right: 10),
+                              margin: const EdgeInsets.only(left: 20, right: 10),
                               child: Icon(Icons.logout,
                                   color: Theme.of(context).primaryColor)),
                           onTap: () {
@@ -148,8 +144,7 @@ class _DashboardScreen_OtherUserState extends State<DashboardScreen_OtherUser> {
                       children: [
                         Container(
                           alignment: Alignment.center,
-                          child: const HomeScreenOtherUser(),
-                        ),
+                          child: const HomeScreenOtherUser(),),
                         Container(
                           alignment: Alignment.center,
                           child: const MainManusList(),
@@ -166,7 +161,8 @@ class _DashboardScreen_OtherUserState extends State<DashboardScreen_OtherUser> {
                       onPageChanged: (index) {
                         setState(() {
                           _currentPage = index;
-                        });
+                        }
+                        );
                       },
                     ),
                   ),
@@ -176,7 +172,6 @@ class _DashboardScreen_OtherUserState extends State<DashboardScreen_OtherUser> {
           )),
     );
   }
-
   Future logoutPopup(BuildContext context) async {
     return await showDialog(
       context: context,
@@ -229,11 +224,12 @@ class _DashboardScreen_OtherUserState extends State<DashboardScreen_OtherUser> {
         ],
       ),
     );
-  }
-}
+  }}
+
 
 class HomeScreenOtherUser extends StatefulWidget {
-  const HomeScreenOtherUser({Key? key}) : super(key: key);
+  const
+  HomeScreenOtherUser({Key? key}) : super(key: key);
 
   @override
   State<HomeScreenOtherUser> createState() => _HomeScreenOtherUserState();
@@ -241,67 +237,66 @@ class HomeScreenOtherUser extends StatefulWidget {
 
 class _HomeScreenOtherUserState extends State<HomeScreenOtherUser> {
   LoginController loginController = Get.put(LoginController());
-  SiteLocationController siteLocationController =
-      Get.put(SiteLocationController());
+  SiteLocationController siteLocationController = Get.put(SiteLocationController());
   PunchInController punchInController = Get.put(PunchInController());
 
   Future<bool> showExitPopup(BuildContext context) async {
     return await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Exit App!'),
-            content: const Text('Do you want to exit an App?'),
-            actions: [
-              Container(
-                margin: const EdgeInsets.only(left: 20, right: 20),
-                child: IntrinsicHeight(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: TextButton(
-                          onPressed: () => Navigator.of(context).pop(false),
-                          child: const Text(
-                            "Cancel",
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
-                              fontSize: RequestConstant.Lable_Font_SIZE,
-                            ),
-                          ),
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Exit App!'),
+        content: const Text('Do you want to exit an App?'),
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(left: 20, right: 20),
+            child: IntrinsicHeight(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: const Text(
+                        "Cancel",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                          fontSize: RequestConstant.Lable_Font_SIZE,
                         ),
                       ),
-                      VerticalDivider(
-                        color: Colors.grey.shade400,
-                        width: 5,
-                        thickness: 2,
-                        indent: 15,
-                        endIndent: 15, //Spacing at the bottom of divider.
-                      ),
-                      Expanded(
-                        child: SizedBox(
-                          width:
-                              BaseUtitiles.getWidthtofPercentage(context, 15),
-                          child: TextButton(
-                              onPressed: () {
-                                exit(0);
-                              },
-                              // onPressed: () => Navigator.of(context).pop(true),
-                              child: const Text("Exit",
-                                  style: TextStyle(
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: RequestConstant.Lable_Font_SIZE,
-                                  ))),
-                        ),
-                      )
-                    ],
+                    ),
                   ),
-                ),
+                  VerticalDivider(
+                    color: Colors.grey.shade400,
+                    width: 5,
+                    thickness: 2,
+                    indent: 15,
+                    endIndent: 15, //Spacing at the bottom of divider.
+                  ),
+                  Expanded(
+                    child: SizedBox(
+                      width: BaseUtitiles.getWidthtofPercentage(context, 15),
+                      child: TextButton(
+                          onPressed: (){
+                            exit(0);
+                          },
+                          // onPressed: () => Navigator.of(context).pop(true),
+                          child: const Text("Exit",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                RequestConstant.Lable_Font_SIZE,
+                              ))),
+                    ),
+                  )
+                ],
               ),
-            ],
+            ),
           ),
-        ) ??
+        ],
+      ),
+    ) ??
         false;
   }
 
@@ -361,11 +356,10 @@ class _HomeScreenOtherUserState extends State<HomeScreenOtherUser> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                   SizedBox(height:!AppClient.isPrahkurti? 80:150),
+                  SizedBox(height:!AppClient.isPrahkurti? 80:150),
                   Column(
                     children: [
-                      FadeAnimation(
-                        1.2,
+                      FadeAnimation(1.2,
                         Transform(
                           alignment: FractionalOffset.center,
                           transform: Matrix4.rotationZ(
@@ -402,276 +396,202 @@ class _HomeScreenOtherUserState extends State<HomeScreenOtherUser> {
                           ),
                         ),
                       ),
-                      SizedBox(
-                          height:
-                              BaseUtitiles.getheightofPercentage(context, 5)),
-                      FadeAnimation(
-                          1.5,
-                          Column(
-                            children: <Widget>[
-                              FadeAnimation(
-                                  1.8,
-                                  Container(
-                                    alignment: Alignment.center,
-                                    width: BaseUtitiles.getWidthtofPercentage(
-                                        context, 100),
-                                    child: Text(
-                                      loginController.UserName().toString(),
-                                      style: const TextStyle(
-                                          color: Colors.indigo,
-                                          fontSize:
-                                              RequestConstant.Heading_Font_SIZE,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  )),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                            ],
+                      SizedBox(height: BaseUtitiles.getheightofPercentage(context, 5)),
+                      FadeAnimation(1.5, Column(
+                        children: <Widget>[
+                          FadeAnimation(1.8, Container(
+                            alignment: Alignment.center,
+                            width: BaseUtitiles.getWidthtofPercentage(context, 100),
+                            child: Text(loginController.UserName().toString(), style: const TextStyle(color: Colors.indigo,fontSize: RequestConstant.Heading_Font_SIZE, fontWeight: FontWeight.bold),),
                           )),
+                          const SizedBox(height: 20,),
+                        ],
+                      )),
                       if (!AppClient.isPrahkurti)
-                        Obx(() {
-                          return punchInController.punchTypeList.isNotEmpty
-                              ? FadeAnimation(
-                                  1.5,
-                                  Card(
-                                    elevation: 5,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(32),
-                                    ),
+                          Obx(() {
+                            return punchInController.punchTypeList.isNotEmpty
+                                ? FadeAnimation(
+                              1.5,
+                              Card(
+                                elevation: 5,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(32),
+                                ),
+                                child: Container(
+                                  decoration: kGradientBoxDecoration,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(2.0),
                                     child: Container(
-                                      decoration: kGradientBoxDecoration,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(2.0),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(32),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(32),
+                                      ),
+                                      width: BaseUtitiles.getWidthtofPercentage(context, 70),
+                                      child: Column(
+                                        children: [
+
+                                          SizedBox(
+                                            height: BaseUtitiles.getheightofPercentage(context, 1),
                                           ),
-                                          width: BaseUtitiles
-                                              .getWidthtofPercentage(
-                                                  context, 70),
-                                          child: Column(
-                                            children: [
-                                              SizedBox(
-                                                height: BaseUtitiles
-                                                    .getheightofPercentage(
-                                                        context, 1),
-                                              ),
 
-                                              /// ACTIVE LIST
-                                              Obx(() {
-                                                final activeList =
-                                                    punchInController
-                                                        .punchTypeList
-                                                        .where((item) =>
-                                                            item.active ==
-                                                                "Y" ||
-                                                            item.active == "y")
-                                                        .toList();
+                                          /// ACTIVE LIST
+                                          Obx(() {
+                                            final activeList = punchInController.punchTypeList
+                                                .where((item) => item.active == "Y" || item.active == "y")
+                                                .toList();
 
-                                                return activeList.length == 0
-                                                    ? SizedBox()
-                                                    : ListView.builder(
-                                                        shrinkWrap: true,
-                                                        padding:
-                                                            EdgeInsets.zero,
-                                                        physics:
-                                                            const NeverScrollableScrollPhysics(),
-                                                        itemCount:
-                                                            activeList.length,
-                                                        itemBuilder:
-                                                            (context, index) {
-                                                          final item =
-                                                              activeList[index];
+                                            return activeList.length==0?SizedBox():ListView.builder(
+                                              shrinkWrap: true,
+                                              padding: EdgeInsets.zero,
+                                              physics: const NeverScrollableScrollPhysics(),
+                                              itemCount: activeList.length,
+                                              itemBuilder: (context, index) {
+                                                final item = activeList[index];
 
-                                                          return FadeAnimation(
-                                                            1.5,
-                                                            Center(
-                                                              child: Container(
-                                                                width: BaseUtitiles
-                                                                    .getWidthtofPercentage(
-                                                                        context,
-                                                                        55),
-                                                                height: BaseUtitiles
-                                                                    .getheightofPercentage(
-                                                                        context,
-                                                                        5),
-                                                                child: Obx(
-                                                                  () =>
-                                                                      ListTile(
-                                                                    title:
-                                                                        GestureDetector(
-                                                                      onTap:
-                                                                          () {
-                                                                        _handleRadioValueChange(
-                                                                            item.id);
-                                                                      },
-                                                                      child:
-                                                                          Text(
-                                                                        item.punchinandOutType,
-                                                                        style:
-                                                                            const TextStyle(
-                                                                          color:
-                                                                              Colors.black,
-                                                                          fontSize:
-                                                                              15,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                    leading:
-                                                                        Radio<
-                                                                            int>(
-                                                                      activeColor:
-                                                                          Theme.of(context)
-                                                                              .primaryColor,
-                                                                      value: item
-                                                                          .id,
-                                                                      groupValue: punchInController
-                                                                          .selectedRadio
-                                                                          .value,
-                                                                      onChanged:
-                                                                          (value) {
-                                                                        _handleRadioValueChange(
-                                                                            value);
-                                                                      },
-                                                                    ),
-                                                                  ),
-                                                                ),
+                                                return FadeAnimation(
+                                                  1.5,
+                                                  Center(
+                                                    child: Container(
+                                                      width: BaseUtitiles.getWidthtofPercentage(
+                                                          context, 55),
+                                                      height: BaseUtitiles.getheightofPercentage(
+                                                          context, 5),
+                                                      child: Obx(()=>
+                                                        ListTile(
+                                                          title: GestureDetector(
+                                                            onTap: () {
+                                                              _handleRadioValueChange(item.id);
+                                                            },
+                                                            child: Text(
+                                                              item.punchinandOutType,
+                                                              style: const TextStyle(
+                                                                color: Colors.black,
+                                                                fontSize: 15,
+                                                                fontWeight: FontWeight.bold,
                                                               ),
                                                             ),
-                                                          );
-                                                        },
-                                                      );
-                                              }),
-
-                                              SizedBox(
-                                                height: BaseUtitiles
-                                                    .getheightofPercentage(
-                                                        context, 3),
-                                              ),
-
-                                              FadeAnimation(
-                                                1.5,
-                                                Padding(
-                                                  padding: EdgeInsets.only(
-                                                    bottom: 16.r,
-                                                    left: 16.r,
-                                                    right: 16.r,
+                                                          ),
+                                                          leading: Radio<int>(
+                                                            activeColor: Theme
+                                                                .of(context)
+                                                                .primaryColor,
+                                                            value: item.id,
+                                                            groupValue:
+                                                            punchInController.selectedRadio.value,
+                                                            onChanged: (value) {
+                                                              _handleRadioValueChange(value);
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
-                                                  child: PunchButtonWidget(
-                                                    maxHeight: 40.h,
-                                                    maxWidth: 150.w,
-                                                    color: Theme.of(context)
-                                                        .primaryColor,
-                                                    title: Obx(
-                                                      () => Text(
-                                                        punchInController
-                                                                    .resPunchSts
-                                                                    .value ==
-                                                                "TRUE"
+                                                );
+                                              },
+                                            );
+                                          }),
+
+                                          SizedBox(
+                                            height: BaseUtitiles.getheightofPercentage(context, 3),
+                                          ),
+
+                                          FadeAnimation(
+                                            1.5,
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                bottom: 16.r,
+                                                left: 16.r,
+                                                right: 16.r,
+                                              ),
+                                              child: PunchButtonWidget(
+                                                maxHeight: 40.h,
+                                                maxWidth: 150.w,
+                                                color: Theme
+                                                    .of(context)
+                                                    .primaryColor,
+                                                title: Obx(
+                                                      () =>
+                                                      Text(
+                                                        punchInController.resPunchSts.value == "TRUE"
                                                             ? "Punch Out"
                                                             : "Punch In",
                                                         style: const TextStyle(
                                                           color: Colors.white,
                                                           fontSize: 14.0,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          fontWeight: FontWeight.bold,
                                                         ),
-                                                        textAlign:
-                                                            TextAlign.center,
+                                                        textAlign: TextAlign.center,
                                                       ),
-                                                    ),
-                                                    onTap: () async {
-                                                      int selected =
-                                                          punchInController
-                                                              .selectedRadio
-                                                              .value;
+                                                ),
+                                                onTap: () async {
+                                                  int selected =
+                                                      punchInController.selectedRadio.value;
 
-                                                      final selectedItem =
-                                                          punchInController
-                                                              .punchTypeList
-                                                              .firstWhereOrNull(
-                                                        (item) =>
-                                                            item.id == selected,
+                                                  final selectedItem = punchInController.punchTypeList
+                                                      .firstWhereOrNull(
+                                                        (item) => item.id == selected,
+                                                  );
+
+                                                  if (selectedItem != null) {
+                                                    if (selectedItem.punchinandOutValues == "OD") {
+                                                      await punchInController.getProjectPunchInSts();
+
+                                                      if (punchInController.resPunchSts.value == "FALSE") {
+                                                        await Get.to(() =>
+                                                            PunchIn(
+                                                                latitude: "",
+                                                                longitude: "",
+                                                                radius: "",
+                                                            allotedStatus: selectedItem.punchinandOutValues));
+                                                      }
+                                                      else {
+                                                        await Get.to(() =>
+                                                            PunchOut(
+                                                                latitude: "",
+                                                                longitude: "",
+                                                                radius: "",
+                                                            allotedStatus: selectedItem.punchinandOutValues));
+                                                      }
+                                                    }
+                                                    else {
+                                                      await punchInController
+                                                          .getProjectPunchInSts();
+
+                                                      punchIn = punchInController
+                                                          .resPunchSts.value ==
+                                                          "FALSE";
+
+                                                      await siteLocationController
+                                                          .getProjectName(
+                                                        selectedItem
+                                                            .punchinandOutValues,
+                                                        "0",
                                                       );
 
-                                                      if (selectedItem !=
-                                                          null) {
-                                                        if (selectedItem
-                                                                .punchinandOutValues ==
-                                                            "OD") {
-                                                          await punchInController
-                                                              .getProjectPunchInSts();
-
-                                                          if (punchInController
-                                                                  .resPunchSts
-                                                                  .value ==
-                                                              "FALSE") {
-                                                            await Get.to(() => PunchIn(
-                                                                latitude: "",
-                                                                longitude: "",
-                                                                radius: "",
-                                                                allotedStatus:
-                                                                    selectedItem
-                                                                        .punchinandOutValues));
-                                                          } else {
-                                                            await Get.to(() => PunchOut(
-                                                                latitude: "",
-                                                                longitude: "",
-                                                                radius: "",
-                                                                allotedStatus:
-                                                                    selectedItem
-                                                                        .punchinandOutValues));
-                                                          }
-                                                        } else {
-                                                          await punchInController
-                                                              .getProjectPunchInSts();
-
-                                                          punchIn =
-                                                              punchInController
-                                                                      .resPunchSts
-                                                                      .value ==
-                                                                  "FALSE";
-
-                                                          await siteLocationController
-                                                              .getProjectName(
-                                                            selectedItem
-                                                                .punchinandOutValues,
-                                                            "0",
-                                                          );
-
-                                                          Get.to(
-                                                            () =>
-                                                                SiteLocationView(
-                                                              allotedStatus:
-                                                                  selectedItem
-                                                                      .punchinandOutValues,
-                                                              checkValue: "0",
-                                                            ),
-                                                          );
-                                                        }
-                                                      } else {
-                                                        BaseUtitiles.showToast(
-                                                          "Please select any one",
-                                                        );
-                                                      }
-                                                    },
-                                                  ),
-                                                ),
+                                                      Get.to(() =>
+                                                          SiteLocationView(
+                                                            allotedStatus: selectedItem.punchinandOutValues,
+                                                            checkValue: "0",
+                                                          ),
+                                                      );
+                                                    }
+                                                  } else {
+                                                    BaseUtitiles.showToast(
+                                                      "Please select any one",
+                                                    );
+                                                  }
+                                                },
                                               ),
-                                            ],
+                                            ),
                                           ),
-                                        ),
+                                        ],
                                       ),
                                     ),
                                   ),
-                                )
-                              : SizedBox();
-                        })
+                                ),
+                              ),
+                            ) : SizedBox();
+                          } )
                     ],
                   ),
                   const SizedBox(height: 150),

@@ -31,9 +31,7 @@ class SiteLocationProvider {
 
     try {
         final response = await ApiManager.postAPICall(ApiConstant.SET_SITE_LOCATION, jsonEncode(body.toJson()));
-
         return jsonDecode(response);
-
     }  catch (error) {
       print("Error == $error");
       return null;

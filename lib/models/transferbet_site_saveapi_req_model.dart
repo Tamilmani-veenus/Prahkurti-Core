@@ -20,9 +20,9 @@ class TransferbetSiteSaveApiReq {
   int? subContractId;
   int? transferType;
   int? createdBy;
-  String? createdDt;
-  String? updatedDate;
-  int? updatedBy;
+  // String? createdDt;
+  // String? updatedDate;
+  // int? updatedBy;
   List<MaterialSiteLink>? materialSiteLink;
 
   TransferbetSiteSaveApiReq({
@@ -37,9 +37,9 @@ class TransferbetSiteSaveApiReq {
     this.subContractId,
     this.transferType,
     this.createdBy,
-    this.createdDt,
-    this.updatedDate,
-    this.updatedBy,
+    // this.createdDt,
+    // this.updatedDate,
+    // this.updatedBy,
     this.materialSiteLink,
   });
 
@@ -55,9 +55,9 @@ class TransferbetSiteSaveApiReq {
     subContractId: json["subContractId"],
     transferType: json["transferType"],
     createdBy: json["createdBy"],
-    createdDt: json["createdDt"],
-    updatedBy: json["updatedBy"],
-    updatedDate: json["updatedDate"],
+    // createdDt: json["createdDt"],
+    // updatedBy: json["updatedBy"],
+    // updatedDate: json["updatedDate"],
     materialSiteLink: List<MaterialSiteLink>.from(json["materialSiteLink"].map((x) => MaterialSiteLink.fromJson(x))),
   );
 
@@ -74,9 +74,9 @@ class TransferbetSiteSaveApiReq {
     "subContractId": subContractId,
     "transferType": transferType,
     "createdBy": createdBy,
-    "createdDt": createdDt,
-    "updatedDate": updatedDate,
-    "updatedBy": updatedBy,
+    // "createdDt": createdDt,
+    // "updatedDate": updatedDate,
+    // "updatedBy": updatedBy,
     "materialSiteLink": List<dynamic>.from(
         materialSiteLink!.map((x) => x.toJson())),
 };

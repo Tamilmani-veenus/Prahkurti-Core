@@ -30,7 +30,7 @@ class SitevoucherSaveRequest {
   String? cheQueDate;
   int? requisitionId;
   int? createdBy;
-  String? createdDt;
+  // String? createdDt;
   String? verifyStatus;
   String? approveStatus;
   List<AccountSiteVoucherSwPayment>? accountSiteVoucherSwPayments;
@@ -57,7 +57,7 @@ class SitevoucherSaveRequest {
     this.cheQueDate,
     this.requisitionId,
     this.createdBy,
-    this.createdDt,
+    // this.createdDt,
     this.verifyStatus,
     this.approveStatus,
     this.accountSiteVoucherSwPayments,
@@ -85,7 +85,7 @@ class SitevoucherSaveRequest {
     cheQueDate: json["cheQueDate"],
     requisitionId: json["requisitionId"],
     createdBy: json["createdBy"],
-    createdDt: json["createdDt"],
+    // createdDt: json["createdDt"],
     verifyStatus: json["VerifyStatus"],
     approveStatus: json["ApproveStatus"],
     accountSiteVoucherSwPayments: List<AccountSiteVoucherSwPayment>.from(json["accountSiteVoucherSWPayments"].map((x) => AccountSiteVoucherSwPayment.fromJson(x))),
@@ -113,7 +113,7 @@ class SitevoucherSaveRequest {
     "cheQueDate": cheQueDate,
     "requisitionId": requisitionId,
     "createdBy": createdBy,
-    "createdDt": createdDt,
+    // "createdDt": createdDt,
     "VerifyStatus": verifyStatus,
     "ApproveStatus": approveStatus,
     "accountSiteVoucherSWPayments": List<dynamic>.from(accountSiteVoucherSwPayments!.map((x) => x.toJson())),

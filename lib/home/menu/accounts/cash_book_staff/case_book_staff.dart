@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 
 import '../../../../app_theme/app_colors.dart';
@@ -379,11 +381,14 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
                         cursorColor: Theme.of(context).primaryColor,
                         textAlign: TextAlign.center,
                         controller: cashBookStaffController.totalDebit,
-                        keyboardType: TextInputType.number,
+                        keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                            RegExp(r'^\d+\.?\d{0,2}'),
-                          ),
+                          TextInputFormatter.withFunction((oldValue, newValue) {
+                            return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                ? newValue
+                                : oldValue;
+                          }),
                         ],
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
@@ -409,11 +414,14 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
                         cursorColor: Theme.of(context).primaryColor,
                         textAlign: TextAlign.center,
                         controller: cashBookStaffController.totalCredit,
-                        keyboardType: TextInputType.number,
+                        keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                            RegExp(r'^\d+\.?\d{0,2}'),
-                          ),
+                          TextInputFormatter.withFunction((oldValue, newValue) {
+                            return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                ? newValue
+                                : oldValue;
+                          }),
                         ],
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
@@ -451,11 +459,14 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
                         cursorColor: Theme.of(context).primaryColor,
                         textAlign: TextAlign.center,
                         controller: cashBookStaffController.closingDebit,
-                        keyboardType: TextInputType.number,
+                        keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                            RegExp(r'^\d+\.?\d{0,2}'),
-                          ),
+                          TextInputFormatter.withFunction((oldValue, newValue) {
+                            return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                ? newValue
+                                : oldValue;
+                          }),
                         ],
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
@@ -481,11 +492,14 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
                         cursorColor: Theme.of(context).primaryColor,
                         textAlign: TextAlign.center,
                         controller: cashBookStaffController.closingCredit,
-                        keyboardType: TextInputType.number,
+                        keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                            RegExp(r'^\d+\.?\d{0,2}'),
-                          ),
+                          TextInputFormatter.withFunction((oldValue, newValue) {
+                            return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                ? newValue
+                                : oldValue;
+                          }),
                         ],
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),

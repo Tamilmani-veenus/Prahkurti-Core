@@ -57,7 +57,10 @@ class DatabaseConnection {
 
     String workOrderGSTItemlistTable = "CREATE TABLE workOrderGSTItemlistTable (id INTEGER PRIMARY KEY UNIQUE,reqDetId INTEGER,addLessId INTEGER,percentValue REAL,amount REAL,addLessName TEXT,addLessType TEXT)";
     await database.execute(workOrderGSTItemlistTable);
-    
+
+    String workOrderBOQGSTItemlistTable = "CREATE TABLE workOrderBOQGSTItemlistTable (id INTEGER PRIMARY KEY UNIQUE,reqDetId INTEGER,addLessId INTEGER,percentValue REAL,amount REAL,addLessName TEXT,addLessType TEXT)";
+    await database.execute(workOrderBOQGSTItemlistTable);
+
     String billBOQGenGSTItemlistTable = "CREATE TABLE billBOQGenGSTItemlistTable (id INTEGER PRIMARY KEY UNIQUE,reqDetId INTEGER,addLessId INTEGER,percentValue REAL,amount REAL,addLessName TEXT,addLessType TEXT)";
     await database.execute(billBOQGenGSTItemlistTable);
 
@@ -88,6 +91,9 @@ class DatabaseConnection {
 
     String consumItemListTable = "CREATE TABLE consumItemListTable (id INTEGER PRIMARY KEY UNIQUE,materialid INTEGER,material TEXT,scale TEXT,stockqty REAL,usageqty REAL,scaleId INTEGER,reqDetId INTEGER)";
     await database.execute(consumItemListTable);
+
+    String workOrderboqitemListTable = "CREATE TABLE workOrderboqitemListTable (id INTEGER PRIMARY KEY UNIQUE,reqDetId INTEGER,headItemId INTEGER,subItemId INTEGER,measureLevel3ItemId INTEGER,unit INTEGER,itemDesc TEXT,rate REAL,qty REAL,oldRate REAL,scaleName TEXT,amt REAL,balqty REAL,labrate REAL,boqcode TEXT,remarks TEXT,workOrderStatus INTEGER DEFAULT 1)";
+    await database.execute(workOrderboqitemListTable);
 
     String boqitemListTable = "CREATE TABLE boqitemListTable (id INTEGER PRIMARY KEY UNIQUE,reqDetId INTEGER,measureHeadItemId INTEGER,measureSubItemId INTEGER,measureLevel3ItemId INTEGER,scaleId INTEGER,level3ItemName TEXT,rate REAL,qty REAL,reviseQty REAL,scaleName TEXT,amt REAL)";
     await database.execute(boqitemListTable);

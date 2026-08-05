@@ -1,4 +1,8 @@
 
+import 'dart:io';
+
+import 'package:flutter/services.dart';
+
 import '../../../../controller/dailywrk_done_dpr_controller.dart';
 import '../../../../controller/dailywrk_done_dprlabour_controller.dart';
 import '../../../../controller/projectcontroller.dart';
@@ -274,7 +278,15 @@ class _DailyWork_done_DPRLabour_ItemListScreenState extends State<DailyWork_done
                                                       color: Colors.white),
                                                   controller: dailyWrkDone_DPRLabour_Controller.ListNosControllers[index],
                                                   cursorColor: Colors.red,
-                                                  keyboardType: TextInputType.number,
+                                                  keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                                  inputFormatters: [
+                                                    TextInputFormatter.withFunction((oldValue, newValue) {
+                                                      return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                          ? newValue
+                                                          : oldValue;
+                                                    }),
+                                                  ],
                                                   decoration: InputDecoration(
                                                     focusedBorder: OutlineInputBorder(
                                                         borderSide: BorderSide(color: Theme.of(context).primaryColor),
@@ -311,8 +323,15 @@ class _DailyWork_done_DPRLabour_ItemListScreenState extends State<DailyWork_done
                                                       color: Colors.white),
                                                   controller: dailyWrkDone_DPRLabour_Controller.ListOtHrsController[index],
                                                   cursorColor: Colors.white,
-                                                  keyboardType: TextInputType
-                                                      .number,
+                                                  keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                                  inputFormatters: [
+                                                    TextInputFormatter.withFunction((oldValue, newValue) {
+                                                      return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                          ? newValue
+                                                          : oldValue;
+                                                    }),
+                                                  ],
                                                   decoration: InputDecoration(
                                                     focusedBorder: OutlineInputBorder(
                                                         borderSide: BorderSide(color: Theme.of(context).primaryColor),
@@ -359,8 +378,15 @@ class _DailyWork_done_DPRLabour_ItemListScreenState extends State<DailyWork_done
                                                 style: TextStyle(
                                                     color: Colors.white),
                                                 cursorColor: Colors.red,
-                                                keyboardType: TextInputType
-                                                    .number,
+                                                keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                                inputFormatters: [
+                                                  TextInputFormatter.withFunction((oldValue, newValue) {
+                                                    return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                        ? newValue
+                                                        : oldValue;
+                                                  }),
+                                                ],
                                                 decoration: InputDecoration(
                                                   focusedBorder: OutlineInputBorder(
                                                       borderSide: BorderSide(color: Theme.of(context).primaryColor),
@@ -396,8 +422,15 @@ class _DailyWork_done_DPRLabour_ItemListScreenState extends State<DailyWork_done
                                                 style: TextStyle(
                                                     color: Colors.white),
                                                 cursorColor: Colors.red,
-                                                keyboardType: TextInputType
-                                                    .number,
+                                                keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                                inputFormatters: [
+                                                  TextInputFormatter.withFunction((oldValue, newValue) {
+                                                    return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                        ? newValue
+                                                        : oldValue;
+                                                  }),
+                                                ],
                                                 decoration: InputDecoration(
                                                   focusedBorder: OutlineInputBorder(
                                                       borderSide: BorderSide(color: Theme.of(context).primaryColor),

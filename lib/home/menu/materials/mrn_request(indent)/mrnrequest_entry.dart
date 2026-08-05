@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -76,7 +78,6 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
             loginController.EmpName();
         mrn_request_controller.ReqTypeController.text = "--SELECT--";
         mrn_request_controller.ReqType.value = "0";
-        mrn_request_controller.createdById.value = 0;
         siteController.selectedsiteId = 0.obs;
         siteController.selectedsitedropdownName = "--SELECT--".obs;
         siteController.getSiteDropdownvalue.value.clear();
@@ -96,7 +97,6 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
           projectController.projectname.text = element.projectName;
           siteController.Sitename.text = element.siteName;
           mrn_request_controller.preparedbyController.text = element.preparedbyName;
-          mrn_request_controller.createdById.value = element.preparedby;
           mrn_request_controller.ReqTypeController.text = element.purchaseType=="PO"?"General Items":"Asset Materials";
           mrn_request_controller.ReqType.value = element.purchaseVal.toString();
           mrn_request_controller.RemarksController.text = element.reqRemarks;
@@ -114,7 +114,6 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
           projectController.projectname.text = element.projectName;
           siteController.Sitename.text = element.siteName;
           mrn_request_controller.preparedbyController.text = element.preparedbyName;
-          mrn_request_controller.createdById.value = 0;
           mrn_request_controller.ReqTypeController.text = element.purchaseType == "PO" ? "General Items" : "Asset Materials";
           mrn_request_controller.ReqType.value = element.purchaseVal.toString();
           mrn_request_controller.RemarksController.text = element.reqRemarks;
@@ -1223,11 +1222,14 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                                         cursorColor: Theme.of(context).primaryColor,
                                         textAlign: TextAlign.center,
                                         controller: mrn_request_controller.Addwork_qtyControllers[index],
-                                        keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                        keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
                                         inputFormatters: [
-                                          FilteringTextInputFormatter.allow(
-                                            RegExp(r'^\d+\.?\d{0,2}'),
-                                          ),
+                                          TextInputFormatter.withFunction((oldValue, newValue) {
+                                            return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                ? newValue
+                                                : oldValue;
+                                          }),
                                         ],
 
                                         decoration: InputDecoration(contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
