@@ -10,6 +10,7 @@ import '../../../controller/mrn_request_indent_controller.dart';
 import '../../../controller/pendinglistcontroller.dart';
 import '../../../controller/projectcontroller.dart';
 import '../../../controller/sitecontroller.dart';
+import '../../../utilities/apiconstant.dart';
 import '../../../utilities/baseutitiles.dart';
 import '../../../utilities/requestconstant.dart';
 import 'mrnfinal_itemlist.dart';
@@ -67,6 +68,9 @@ class _MrnfinalEntryScreenState extends State<MrnfinalEntryScreen> {
       mrnFinalApprovalController.ApprovalremarksText.text =
       element.app_remarks.toString()=="null" ?"-":element.app_remarks.toString();
     });
+    if(AppClient.isAnusamm && mrn_request_controller.ReqType.value == "PO") {
+      mrn_request_controller.CheckBalQtyProAndSite();
+    }
     int i = 0;
     mrnFinalApprovalController.MaterialFinalAppr_itemview_GetDbList.forEach((
         element) {

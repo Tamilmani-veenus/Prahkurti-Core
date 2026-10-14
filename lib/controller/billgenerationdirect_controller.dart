@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:image_picker/image_picker.dart';
 import 'package:prahkurticore/controller/pendinglistcontroller.dart';
 import '../controller/logincontroller.dart';
 import '../controller/projectcontroller.dart';
@@ -894,6 +893,7 @@ class BillGenerationDirectController extends GetxController {
 
   Future directBillEntryList_EditApi(int workid, String MenuName, BuildContext context, Url,bool checksts) async {
     bill_editListApiDatas.value = [];
+    await ClickUtils.run(() async {
     final value =
         await DirectBillGenerateProvider.directBill_entryList_editAPI(workid,checksts);
     if (value != null) {
@@ -910,7 +910,7 @@ class BillGenerationDirectController extends GetxController {
           await billgen_DeleteApiRows();
           await billgen_EditTable_SaveTable("");
           await getItemlistTablesDatas();
-          return Navigator.pushReplacement(
+          await Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) => Bill_Generation_EntryScreen(heading: MenuName,)),
@@ -924,6 +924,7 @@ class BillGenerationDirectController extends GetxController {
     } else {
       BaseUtitiles.showToast("Something Went Wrong...");
     }
+    });
   }
 
   Future<bool> EntryList_DeleteApi(int WorkId,status) async {

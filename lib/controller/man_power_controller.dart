@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,9 +20,12 @@ import 'logincontroller.dart';
 class ManPowerController extends GetxController {
   final EntrylistFrDate = TextEditingController();
   final EntrylistToDate = TextEditingController();
-  final ManPowerDateController = TextEditingController();
+  final ManPowerEntryDateController = TextEditingController();
+  final ManPowerReqDateController = TextEditingController();
+  final ManPowerDueDateController = TextEditingController();
   final autoYearWiseNoController = TextEditingController();
   final RemarksController = TextEditingController();
+  final AppRemarksController = TextEditingController();
   final preparedbyController = TextEditingController();
   SiteController siteController = Get.put(SiteController());
   ProjectController projectController = Get.put(ProjectController());
@@ -32,10 +34,10 @@ class ManPowerController extends GetxController {
   PendingListController pendingListController = Get.put(PendingListController());
 
   List<TextEditingController> NosControllers = [];
+  List<TextEditingController> EntrySCreenNosControllers = [];
   List<TextEditingController> RemarksControllers = [];
   RxList<ManPowerDet> getManPowerDetList = <ManPowerDet>[].obs;
   RxInt createdById = 0.obs;
-  RxInt savedNos = 0.obs;
 
   RxList main_entryList = [].obs;
   RxList manpower_entryList = [].obs;
@@ -81,14 +83,15 @@ class ManPowerController extends GetxController {
 
   Future manPowerEditApi( id,type, menuName, BuildContext context) async {
     manpowerEditApiValue.value=[];
+    await ClickUtils.run(() async {
     final value = await ManPowerProvider.manPowerEditAPI(id,type=="Edit"?true:false);
     if (value != null) {
       if(value.success == true){
         saveButton.value = type=="Edit"?RequestConstant.RESUBMIT:RequestConstant.APPROVAL;
         selectedIds.clear();
-
-        if (value.result!.manPowerDets.isNotEmpty) {
-          final level3Ids = value.result!.manPowerDets.first.level3ItemId;
+        manpowerEditApiValue.value = [value.result!];
+        if (manpowerEditApiValue.isNotEmpty) {
+          final level3Ids = manpowerEditApiValue[0].level3ItemId!;
 
           if (level3Ids.isNotEmpty && level3Ids != "0") {
             selectedIds.assignAll(
@@ -99,10 +102,9 @@ class ManPowerController extends GetxController {
           }
         }
 
-        manpowerEditApiValue.value = [value.result!];
         await manPowerEditDetTable();
         await getDetTablesDatas();
-        return Navigator.pushReplacement(
+        await Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => ManPowerEntrySreen(heading: menuName)),
         );
@@ -113,6 +115,7 @@ class ManPowerController extends GetxController {
     else {
       BaseUtitiles.showToast("Something Went Wrong...");
     }
+    });
   }
 
   Future getShowClickPopList(BuildContext context) async {
@@ -139,7 +142,8 @@ class ManPowerController extends GetxController {
 
   Future getLevel3ItemList(context) async {
     manpowerLevel3ItemList.clear();
-
+    originalList.clear();
+    await ClickUtils.run(() async {
     final value = await ManPowerProvider.getManPowerLevel3ItemList(
         siteController.selectedHeadId.value);
 
@@ -157,7 +161,7 @@ class ManPowerController extends GetxController {
           // Move selected items to top
           sortSelectedItems();
 
-          return Navigator.push(
+          await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (_) => ManPowerAddBOQList(
@@ -174,6 +178,7 @@ class ManPowerController extends GetxController {
     } else {
       BaseUtitiles.showToast("Something Went Wrong...");
     }
+    });
   }
 
   void reorderList() {
@@ -245,11 +250,12 @@ class ManPowerController extends GetxController {
   }
 
   textControllersInitiate() {
+    EntrySCreenNosControllers.add(TextEditingController());
     NosControllers.add(TextEditingController());
     RemarksControllers.add(TextEditingController());
   }
 
-  nosAndothrsZerovalueset(List list) {
+  nosZerovalueset(List list) {
     int index = 0;
     list.forEach((element) {
       textControllersInitiate();
@@ -276,6 +282,7 @@ class ManPowerController extends GetxController {
             ? "0.0"
             : NosControllers[i].value.text;
         manPowerDetModel.remarks = RemarksControllers[i].value.text;
+        manPowerDetModel.savedNos = "0";
         readListdata.forEach((element) {
           if (element.catId == manPowerDetModel.catId) {
             j = 1;
@@ -302,7 +309,8 @@ class ManPowerController extends GetxController {
       manPowerDetModel.reqDetId = readListdata[n].reqDetId;
       manPowerDetModel.catId = readListdata[n].catId;
       manPowerDetModel.catName = readListdata[n].catName;
-      manPowerDetModel.nos = NosControllers[n].value.text.toString();
+      manPowerDetModel.nos = EntrySCreenNosControllers[n].value.text.toString();
+      manPowerDetModel.savedNos = readListdata[n].savedNos;
       manPowerDetModel.remarks = RemarksControllers[n].value.text;
       UpdateModelList.add(manPowerDetModel);
     }
@@ -331,6 +339,7 @@ class ManPowerController extends GetxController {
       manPowerDetModel.catId = user['catId'];
       manPowerDetModel.catName = user['catName'];
       manPowerDetModel.nos = user['nos'];
+      manPowerDetModel.savedNos = user['savedNos'];
       manPowerDetModel.remarks = user['remarks'];
       manPowerDetReadList.add(manPowerDetModel);
       readListdata.value = manPowerDetReadList;
@@ -341,12 +350,13 @@ class ManPowerController extends GetxController {
   Future manPowerEditDetTable() async {
     manPowerModelList.clear();
     for (var element in manpowerEditApiValue) {
-      for (var val in element.manPowerDets) {
+      for (var val in element.manPowerDets!) {
         manPowerDetModel = ManPowerDetModel();
         manPowerDetModel.reqDetId = val.id;
         manPowerDetModel.catId = val.categoryId;
         manPowerDetModel.catName = val.categoryName;
         manPowerDetModel.nos = val.nos.toString();
+        manPowerDetModel.savedNos = val.nos.toString();
         manPowerDetModel.remarks = val.remarks;
         manPowerModelList.add(manPowerDetModel);
       }
@@ -358,7 +368,7 @@ class ManPowerController extends GetxController {
   setTextControllersValue() async {
     for (var index = 0; index < readListdata.length; index++) {
       textControllersInitiate();
-      NosControllers[index].text = readListdata[index].nos;
+      EntrySCreenNosControllers[index].text = readListdata[index].nos;
       RemarksControllers[index].text = readListdata[index].remarks.toString();
     }
   }
@@ -368,11 +378,15 @@ class ManPowerController extends GetxController {
     String body = manPowerSaveModelToJson(ManPowerSaveModel(
       id: id,
       manPowerNo: autoYearWiseNoController.text,
-      entryDate: ManPowerDateController.text,
+      entryDate: ManPowerEntryDateController.text,
+      reqDate: ManPowerReqDateController.text,
+      dueDate: ManPowerDueDateController.text,
       projectId: projectController.selectedProjectId.value,
       siteId: siteController.selectedsiteId.value,
       headItemId: siteController.selectedHeadId.value,
       remarks: RemarksController.text==""?"-":RemarksController.text,
+      approveRemarks: AppRemarksController.text==""?"-":AppRemarksController.text,
+      level3ItemId: selectedIds.isEmpty?"0": selectedIds.join(','),
       createdBy: saveButton.value==RequestConstant.SUBMIT ? int.parse(loginController.EmpId()) : createdById.value,
       approveStatus: saveButton.value==RequestConstant.APPROVAL ?"Y" : "N",
       manPowerDets: getManPowerDet(id),
@@ -409,10 +423,10 @@ class ManPowerController extends GetxController {
         id : element.reqDetId,
         manPowerAllocationMasId: id,
         categoryId: element.catId,
-        level3ItemId: selectedIds.isEmpty?"0": selectedIds.join(','),
-        nos: saveButton.value==RequestConstant.APPROVAL ?savedNos.value:int.tryParse(element.nos),
-        appNos: int.tryParse(element.nos),
-        remarks: element.remarks
+        // level3ItemId: selectedIds.isEmpty?"0": selectedIds.join(','),
+        nos: saveButton.value==RequestConstant.APPROVAL ?int.tryParse(element.savedNos):int.tryParse(element.nos),
+        appNos: saveButton.value==RequestConstant.APPROVAL ?int.tryParse(element.nos):0,
+        // remarks: element.remarks
       );
       getManPowerDetList.add(list);
     }

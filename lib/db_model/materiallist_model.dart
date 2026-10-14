@@ -10,6 +10,7 @@ class Materiallist{
   String? remarks;
   String? desc;
   int? scaleId;
+  double? approxdays;
 
 
   Materiallistmodelmap(){
@@ -25,6 +26,7 @@ class Materiallist{
     mapping['remarks'] = remarks != null ? remarks : null;
     mapping['desc'] = desc != null ? desc : null;
     mapping['scaleId'] = scaleId != null ? scaleId : null;
+    mapping['approxdays'] = approxdays != null ? approxdays : null;
     return mapping;
   }
 }

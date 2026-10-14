@@ -99,7 +99,8 @@ import 'dart:io';
      this.extra,
      this.labourId,
      this.id,
-     this.totalAmount
+     this.totalAmount,
+     this.hrs
    });
 
    double? rate;
@@ -119,6 +120,7 @@ import 'dart:io';
    int? labourId;
    int? id;
    double? totalAmount;
+   double? hrs;
 
    factory SubContLabourAttendDetS.fromJson(Map<String, dynamic> json) => SubContLabourAttendDetS(
      rate: json["rate"],
@@ -138,6 +140,7 @@ import 'dart:io';
      id: json["id"],
      labourId: json["labourId"],
      totalAmount: json["totalAmount"],
+     hrs: json["Hrs"],
    );
 
    Map<String, dynamic> toJson() => {
@@ -158,6 +161,7 @@ import 'dart:io';
      "id": id,
      "labourId": labourId,
      "totalAmount": totalAmount,
+     "Hrs": hrs,
    };
  }
 

@@ -379,6 +379,13 @@ class _MrnPreapprovalItemlistState extends State<MrnPreapprovalItemlist> {
                                                       borderRadius: BorderRadius.all(Radius.circular(10))),
                                                 ),
                                                 style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16.0),
+                                                onTap: () {
+                                                  if (mrnPreApprovalController.mrnpre_ApprQty_ListController[index].text != "" && mrnPreApprovalController.mrnpre_ApprQty_ListController[index].text != "0" &&mrnPreApprovalController.mrnpre_ApprQty_ListController[index].text != "0.0") {
+                                                    return;
+                                                  } else {
+                                                    mrnPreApprovalController.mrnpre_ApprQty_ListController[index].text = "";
+                                                  }
+                                                },
                                                 onChanged: (value) {
                                                   // setState(() {
                                                   if(mrn_request_controller.activeType.value){
@@ -395,6 +402,59 @@ class _MrnPreapprovalItemlistState extends State<MrnPreapprovalItemlist> {
                                         ],
                                       ),
                                     ),
+                              Obx(()=>mrn_request_controller.ReqType.value=="CP"?Container(
+                                      margin: EdgeInsets.only(left: 3,right: 3,top: 3,bottom: 3),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                              flex: 3,
+                                              child: Text("Approx Days",style: TextStyle(color: Colors.black,fontSize: 14.0),)),
+                                          Expanded(
+                                            flex: 4,
+                                            child: Container(
+                                              margin: EdgeInsets.only(right: 11),
+                                              height: BaseUtitiles.getheightofPercentage(context, 4),
+                                              child:
+                                              TextField(
+                                                cursorColor:Theme.of(context).primaryColor,
+                                                textAlign: TextAlign.center,
+                                                controller: mrnPreApprovalController.mrnpre_ApproxDays_ListController[index],
+                                                keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+                                                  onTap: () {
+                                                    if (mrnPreApprovalController.mrnpre_ApproxDays_ListController[index].text != "" && mrnPreApprovalController.mrnpre_ApproxDays_ListController[index].text != "0" && mrnPreApprovalController.mrnpre_ApproxDays_ListController[index].text != "0.0") {
+                                                      return;
+                                                    } else {
+                                                      mrnPreApprovalController.mrnpre_ApproxDays_ListController[index].text = "";
+                                                    }
+                                                  },
+                                                inputFormatters: [
+                                                  TextInputFormatter.withFunction((oldValue, newValue) {
+                                                    return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                        ? newValue
+                                                        : oldValue;
+                                                  }),
+                                                ],
+                                                decoration: InputDecoration(
+                                                  contentPadding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0,0.0),
+                                                  focusedBorder: OutlineInputBorder(
+                                                      borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                                                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                                                  enabledBorder: OutlineInputBorder(
+                                                      borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                                                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                                                ),
+                                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16.0),
+                                                onChanged: (value) {
+                                                  mrnPreApprovalController
+                                                      .Approval_updateConsumTables();
+                                                }
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ):SizedBox()),
                                     Container(
                                       margin: const EdgeInsets.only(left: 3,right: 3,top: 3,bottom: 3),
                                       child: Row(

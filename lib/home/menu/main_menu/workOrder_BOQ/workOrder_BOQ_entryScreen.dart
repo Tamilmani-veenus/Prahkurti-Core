@@ -1,13 +1,11 @@
-
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:prahkurticore/controller/workOrderBoq_Controller.dart';
 import 'package:prahkurticore/home/menu/main_menu/workOrder_BOQ/workOrder_BOQ_Deduction.dart';
-
 import '../../../../app_theme/app_colors.dart';
 import '../../../../commonpopup/workorderActiveType.dart';
 import '../../../../constants/ui_constant/icons_const.dart';
@@ -44,22 +42,26 @@ class _WorkOrderBoqEntryScreenState extends State<WorkOrderBoqEntryScreen> {
     Future.delayed(duration, () async {
 
       if (workOrderBoqController.saveButton.value == RequestConstant.RESUBMIT || workOrderBoqController.saveButton.value == RequestConstant.VERIFY || workOrderBoqController.saveButton.value == RequestConstant.APPROVAL) {
-        // workOrderBoqController.workOrder_editListApiDatas.forEach((element) {
-        //   workOrderBoqController.workid = element.id!;
-        //   workOrderBoqController.autoYearWiseNoController.text = element.workOrderNo.toString();
-        //   workOrderBoqController.workOrdentryDateController.text = element.entryDate.toString();
-        //   projectController.projectname.text = element.projectName.toString();
-        //   projectController.selectedProjectId.value = element.projectId;
-        //   siteController.Sitename.text = element.siteName.toString();
-        //   siteController.selectedsiteId.value = element.siteId;
-        //   subcontractorController.Subcontractorname.text = element.subContractorName.toString();
-        //   subcontractorController.selectedSubcontId.value = element.subContractorId;
-        //   workOrderBoqController.WorkOrdActiveTypeText.text = element.active == "Y" ? "Active" : "Inactive";
-        //   workOrderBoqController.PreparedByController.text = element.createdName.toString();
-        //   workOrderBoqController.createdById.value = element.createdBy;
-        //   workOrderBoqController.RemarksController.text = element.remarks.toString();
-        // });
+        workOrderBoqController.workOrderBoq_editListApiDatas.forEach((element) {
+          workOrderBoqController.workid = element.id!;
+          workOrderBoqController.autoYearWiseNoController.text = element.workOrderNo.toString();
+          workOrderBoqController.workOrdentryDateController.text = element.entryDate.toString();
+          projectController.projectname.text = element.projectName.toString();
+          projectController.selectedProjectId.value = element.projectId;
+          siteController.Sitename.text = element.siteName.toString();
+          siteController.selectedsiteId.value = element.siteId;
+          subcontractorController.Subcontractorname.text = element.subContractorName.toString();
+          subcontractorController.selectedSubcontId.value = element.subContractorId;
+          workOrderBoqController.WorkOrdActiveTypeText.text = element.active == "Y" ? "Active" : "Inactive";
+          workOrderBoqController.workOrdActTypeID.value = element.active.toString();
+          siteController.headNameController.text = element.headName.toString();
+          workOrderBoqController.PreparedByController.text = element.createdName.toString();
+          workOrderBoqController.createdById.value = element.createdBy;
+          workOrderBoqController.RemarksController.text = element.remarks.toString();
+        });
       }
+
+
       if (workOrderBoqController.saveButton.value == RequestConstant.SUBMIT) {
         await autoYearWiseNoController.AutoYearWiseNo("WORK ORDER BOQ");
         workOrderBoqController.autoYearWiseNoController.text = autoYearWiseNoController.WorkOrdBoq_autoYrWise.value;
@@ -74,14 +76,19 @@ class _WorkOrderBoqEntryScreenState extends State<WorkOrderBoqEntryScreen> {
         subcontractorController.selectedSubcontId.value=0;
         workOrderBoqController.WorkOrdActiveTypeText.text = "--SELECT--";
         workOrderBoqController.workOrdActTypeID.value = "0";
+        siteController.headNameController.text = "--SELECT--";
+        siteController.selectedHeadId.value = 0;
         workOrderBoqController.PreparedByController.text = loginController.EmpName();
         workOrderBoqController.RemarksController.text = "";
+        workOrderBoqController.termsAndCondition.clear();
+        workOrderBoqController.filteredTermsAndCondition.clear();
+        workOrderBoqController.selectedTerms.clear();
         // workOrderBoqController.createdById.value=0;
-        // workOrderBoqController.workOrder_itemlistTable_Delete();
-        // workOrderBoqController.ItemGetTableListdata.value.clear();
-        // workOrderBoqController.workOrdamount.text = "0.0";
-        // workOrderBoqController.Roundoff.text = "0";
-        // workOrderBoqController.netpayamt.text = "0.0";
+        workOrderBoqController.delete_WorkOrderBoq_itemlist_Table();
+        workOrderBoqController.WorkOrdBoq_ItemList.value.clear();
+        workOrderBoqController.workOrdamount.text = "0.0";
+        workOrderBoqController.rebateAmount.text = "0.0";
+        workOrderBoqController.Roundoff.text = "0.0";
       }
     });
     super.initState();
@@ -425,7 +432,7 @@ class _WorkOrderBoqEntryScreenState extends State<WorkOrderBoqEntryScreen> {
                               return null;
                             },
                             onTap: () async {
-                              if(workOrderBoqController.saveButton.value == RequestConstant.RESUBMIT || workOrderBoqController.saveButton.value == RequestConstant.VERIFY || workOrderBoqController.saveButton.value == RequestConstant.APPROVAL)
+                              if(workOrderBoqController.saveButton.value == RequestConstant.VERIFY || workOrderBoqController.saveButton.value == RequestConstant.APPROVAL)
                               {}
                               else{
                                 showDialog(
@@ -470,7 +477,7 @@ class _WorkOrderBoqEntryScreenState extends State<WorkOrderBoqEntryScreen> {
                                   child: ConstIcons.dcNo),
                             ),
                             onTap: () async {
-                              if(workOrderBoqController.saveButton.value == RequestConstant.RESUBMIT || workOrderBoqController.saveButton.value == RequestConstant.VERIFY || workOrderBoqController.saveButton.value == RequestConstant.APPROVAL)
+                              if(workOrderBoqController.saveButton.value == RequestConstant.VERIFY || workOrderBoqController.saveButton.value == RequestConstant.APPROVAL)
                               {}
                               else{
                                 await siteController.headNameList("WORKORDBOQ");
@@ -695,10 +702,16 @@ class _WorkOrderBoqEntryScreenState extends State<WorkOrderBoqEntryScreen> {
                       setState(() {
                         if(_formKey.currentState!.validate()){
                           _formKey.currentState!.save();
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => WorkOrderBoqDeduction()));
+                          if(workOrderBoqController.WorkOrdBoqitem_itemview_GetDbList.isEmpty){
+                            Fluttertoast.showToast(msg: "Please add items");
+                          }
+                          else{
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => WorkOrderBoqDeduction()));
+                          }
+
                         }
                       });
                     },
@@ -2060,13 +2073,14 @@ class _WorkOrderBoqEntryScreenState extends State<WorkOrderBoqEntryScreen> {
                                   Checkbox(
                                     value: workOrderBoqController.remarksCheckList[index],
                                     activeColor: Theme.of(context).primaryColor,
-                                    onChanged: (value) {
+                                    onChanged: (value) async {
                                       setState(() {
-                                        workOrderBoqController.remarksCheckList[index] = value!;
+                                        workOrderBoqController.remarksCheckList[index] = value ?? true;
                                         workOrderBoqController
                                             .WorkOrdBoqitem_itemview_GetDbList[index]
-                                            .workOrderStatus = value;
+                                            .workOrderStatus = value ?? true;
                                       });
+                                      await workOrderBoqController.updateItemlistTable();
                                     },
                                   ),
                                 ],

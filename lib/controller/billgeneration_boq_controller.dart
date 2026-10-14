@@ -272,7 +272,6 @@ class BillGenerationBoqController extends GetxController {
       ItemListTextInitiate();
 
       ItemListTableModel = BillGenBoqItemListTableModel();
-
       ItemListTableModel.reqDetId = value['reqDetId'];
       ItemListTableModel.Name = value['Name'];
       ItemListTableModel.unit = value['unit'];
@@ -285,13 +284,13 @@ class BillGenerationBoqController extends GetxController {
       ItemListTableModel.headItemid = value['headItemid'];
       ItemListTableModel.subItemid = value['subItemid'];
       ItemListTableModel.amount = value['amount'];
-
-
       ItemListTableModelReadList.add(ItemListTableModel);
     }
     ItemGetTableListdata.value = ItemListTableModelReadList;
     setItemListListTextValue(ItemGetTableListdata.value);
   }
+
+
   ItemListTextInitiate() {
     itemlist_ListDescController.add(new TextEditingController());
     itemlist_ListUnitsController.add(new TextEditingController());
@@ -574,6 +573,7 @@ class BillGenerationBoqController extends GetxController {
   }
 
   Future<bool> deductionPaymentCalculation() async {
+    await getItemlistTablesDatas();
 
     double advLimit = double.tryParse(tobededadv.text) ?? 0;
     double advDed = double.tryParse(Advded.text) ?? 0;
@@ -994,6 +994,7 @@ class BillGenerationBoqController extends GetxController {
 
   Future directBillEntryList_EditApi(int workid, String MenuName,BuildContext context,Url,status) async {
     bill_editListApiDatas.value=[];
+    await ClickUtils.run(() async {
     final value = await BillGenerateBoqProvider.directBill_entryList_editAPI(workid,status);
     if (value != null) {
       if(value.success==true){
@@ -1010,7 +1011,7 @@ class BillGenerationBoqController extends GetxController {
           }
           await billgen_EditTable_SaveTable("");
           await getItemlistTablesDatas();
-          return Navigator.pushReplacement(
+          await Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) => Bill_Generation_Boq_EntryScreen(heading: MenuName,)),
@@ -1026,6 +1027,7 @@ class BillGenerationBoqController extends GetxController {
     } else {
       BaseUtitiles.showToast("Something Went Wrong...");
     }
+    });
   }
 
 

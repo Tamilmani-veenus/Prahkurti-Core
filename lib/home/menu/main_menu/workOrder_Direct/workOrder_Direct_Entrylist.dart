@@ -6,6 +6,7 @@ import 'package:prahkurticore/controller/workorderDirect_Controller.dart';
 import 'package:prahkurticore/home/menu/main_menu/workOrder_Direct/workOrder_Direct_EntryScreen.dart';
 import '../../../../app_theme/app_colors.dart';
 import '../../../../constants/ui_constant/icons_const.dart';
+import '../../../../controller/mrn_request_indent_controller.dart';
 import '../../../../utilities/baseutitiles.dart';
 import '../../../../utilities/requestconstant.dart';
 
@@ -21,6 +22,7 @@ class _WorkOrderDirect_EntryListState extends State<WorkOrderDirect_EntryList> {
 
   TextEditingController editingController = TextEditingController();
   WorkOrderDirectController workOrderDirectController=Get.put(WorkOrderDirectController());
+  MRN_Request_Controller mrn_request_controller = Get.put(MRN_Request_Controller());
 
 
   @override
@@ -31,6 +33,8 @@ class _WorkOrderDirect_EntryListState extends State<WorkOrderDirect_EntryList> {
     workOrderDirectController.EntrylistFrDate.text = lastDayOfMonth.toString().substring(0, 10);
     workOrderDirectController.EntrylistToDate.text = currentDate.toString().substring(0, 10);
     workOrderDirectController.WorkOrdDirect_EntryList();
+    mrn_request_controller.getCheckApprovalLevel();
+
   }
 
   @override
@@ -312,6 +316,17 @@ class _WorkOrderDirect_EntryListState extends State<WorkOrderDirect_EntryList> {
                     itemCount: workOrderDirectController.workOrderDir_entryList.value.length,
 
                     itemBuilder: (context, index) {
+                      final approvalConfig = mrn_request_controller
+                          .checkApprovalLevelData
+                          .firstWhere(
+                            (e) => e["screenName"] == "WorkOrderDirect",
+                        orElse: () => <String, dynamic>{},
+                      );
+
+                      final bool isVerification =
+                          approvalConfig["isVerification"] ?? false;
+                      final bool isApproval =
+                          approvalConfig["isApproval"] ?? false;
                       return Container(
                         margin: EdgeInsets.only(left: 10, right: 10),
                         child: Card(
@@ -510,9 +525,34 @@ class _WorkOrderDirect_EntryListState extends State<WorkOrderDirect_EntryList> {
                                     Expanded(
                                         flex: 5,
                                         child: Text(
-                                            workOrderDirectController.workOrderDir_entryList.value[index].verifyStatus == "Y" &&
-                                                workOrderDirectController.workOrderDir_entryList.value[index].approveStatus == "Y" ? "Approved" :
-                                            workOrderDirectController.workOrderDir_entryList.value[index].verifyStatus == "Y" ? "Verified" : "In-Progress".toString() ,
+                                          workOrderDirectController
+                                              .workOrderDir_entryList
+                                              .value[index]
+                                              .approveStatus ==
+                                              "Y"
+                                              ? "Approved"
+                                              : isApproval
+                                              ? (isVerification
+                                              ? (workOrderDirectController
+                                              .workOrderDir_entryList
+                                              .value[index]
+                                              .verifyStatus ==
+                                              "Y"
+                                              ? "Verified"
+                                              : "In-Progress")
+                                              : "In-Progress")
+                                              : (isVerification
+                                              ? (workOrderDirectController
+                                              .workOrderDir_entryList
+                                              .value[index]
+                                              .verifyStatus ==
+                                              "Y"
+                                              ? "Verified"
+                                              : "In-Progress")
+                                              : "In-Progress"),
+                                            // workOrderDirectController.workOrderDir_entryList.value[index].verifyStatus == "Y" &&
+                                            //     workOrderDirectController.workOrderDir_entryList.value[index].approveStatus == "Y" ? "Approved" :
+                                            // workOrderDirectController.workOrderDir_entryList.value[index].verifyStatus == "Y" ? "Verified" : "In-Progress".toString() ,
                                           style: TextStyle(color: workOrderDirectController.workOrderDir_entryList.value[index].approveStatus== "Y" ? Colors.green:Colors.black),
                                         )),
                                     Expanded(

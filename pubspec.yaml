@@ -99,6 +99,8 @@ dependencies:
   percent_indicator: ^4.2.3
   flutter_switch: ^0.3.2
   auto_size_text: ^3.0.0
+  flutter_svg: ^2.0.10+1
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -126,6 +128,8 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/admin_dashboard_card/
+    - assets/svg_files/
 
 flutter_icons:
   android: true

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 import 'package:prahkurticore/controller/punch_in_controller.dart';
 import '../db_model/inwardpending_itemlist_table_model.dart';
@@ -489,7 +488,8 @@ class InwardPending_Controller extends GetxController
         BaseUtitiles.popMultiple(context, count: 1);
         BaseUtitiles.showToast(list["message"] ?? 'Something went wrong..');
       }
-    } else {
+    }
+    else {
       BaseUtitiles.showToast("Something went wrong..");
       BaseUtitiles.popMultiple(context, count: 1);
     }
@@ -501,7 +501,7 @@ class InwardPending_Controller extends GetxController
     for (int i = 0; i < ItemGetTableListdata.length; i++) {
       final element = ItemGetTableListdata[i];
 
-      // if (element.inwQty > 0) {
+      if (element.inwQty > 0) {
         var list = InwardDet(
             id: saveButton.value == RequestConstant.RESUBMIT
                 ? (i < editListApiDatas.length
@@ -528,7 +528,7 @@ class InwardPending_Controller extends GetxController
                 : "N".toString().trim());
 
         getInwardDetList.add(list);
-      // }
+      }
     }
 
     return getInwardDetList;
@@ -591,6 +591,7 @@ class InwardPending_Controller extends GetxController
   Future EntryList_EditApi(
       int workid, String type, String MenuName, BuildContext context) async {
     editListApiDatas.value = [];
+    await ClickUtils.run(() async {
     await Inward_Pending_provider.entryList_editAPI(workid, type)
         .then((value) async {
       if (value != null) {
@@ -600,7 +601,7 @@ class InwardPending_Controller extends GetxController
             saveButton.value = RequestConstant.RESUBMIT;
             EditTable_SaveTable();
             getItemlistTablesDatas();
-            Navigator.pushReplacement(
+            await Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
@@ -617,6 +618,7 @@ class InwardPending_Controller extends GetxController
       } else {
         BaseUtitiles.showToast('Something went wrong..');
       }
+    });
     });
   }
 

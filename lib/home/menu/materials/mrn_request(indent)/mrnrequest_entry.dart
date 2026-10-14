@@ -21,6 +21,7 @@ import '../../../../../utilities/baseutitiles.dart';
 import '../../../../../utilities/requestconstant.dart';
 import '../../../../commonpopup/requesttype_alert.dart';
 import '../../../../controller/menu_controller.dart';
+import '../../../../utilities/apiconstant.dart';
 
 class MRNRequest_Indent_Entry extends StatefulWidget {
   final String heading;
@@ -100,6 +101,9 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
           mrn_request_controller.ReqTypeController.text = element.purchaseType=="PO"?"General Items":"Asset Materials";
           mrn_request_controller.ReqType.value = element.purchaseVal.toString();
           mrn_request_controller.RemarksController.text = element.reqRemarks;
+          if(AppClient.isAnusamm && mrn_request_controller.ReqType.value == "PO") {
+            mrn_request_controller.CheckBalQtyProAndSite();
+          }
         });
       }
 
@@ -117,6 +121,9 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
           mrn_request_controller.ReqTypeController.text = element.purchaseType == "PO" ? "General Items" : "Asset Materials";
           mrn_request_controller.ReqType.value = element.purchaseVal.toString();
           mrn_request_controller.RemarksController.text = element.reqRemarks;
+          if(AppClient.isAnusamm && mrn_request_controller.ReqType.value == "PO") {
+            mrn_request_controller.CheckBalQtyProAndSite();
+          }
         });
       }
 
@@ -1024,30 +1031,128 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                         Container(
                           margin:
                           const EdgeInsets.only(left: 10, top: 10, right: 10),
-                          child: Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment
-                                .spaceBetween,
-                            children: <Widget>[
-                              Expanded(
-                                flex: 5,
-                                child: Text(
-                                  "${mrn_request_controller.Material_itemview_GetDbList.value[index].material} (${mrn_request_controller.Material_itemview_GetDbList.value[index].scale})",
-                                  style: TextStyle(
-                                      fontWeight:
-                                      FontWeight
-                                          .bold,
-                                      fontSize:
-                                      RequestConstant
-                                          .ALERT_Font_SIZE,
-                                      color: Theme.of(context)
-                                          .primaryColor),
-                                ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment
+                                    .spaceBetween,
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 5,
+                                    child: Text(
+                                      "${mrn_request_controller.Material_itemview_GetDbList.value[index].material} (${mrn_request_controller.Material_itemview_GetDbList.value[index].scale})",
+                                      style: TextStyle(
+                                          fontWeight:
+                                          FontWeight
+                                              .bold,
+                                          fontSize:
+                                          RequestConstant
+                                              .ALERT_Font_SIZE,
+                                          color: Theme.of(context)
+                                              .primaryColor),
+                                    ),
+                                  ),
+                                  // Obx((){
+                                  //   return mrn_request_controller.activeType.value ?
+                                  //    Expanded(
+                                  //     flex: 3,
+                                  //     child: Text(
+                                  //       "( BalQty: ${mrn_request_controller.Material_itemview_GetDbList.value[index].balqty.toString()} )",
+                                  //       style: TextStyle(
+                                  //           fontWeight:
+                                  //           FontWeight
+                                  //               .bold,
+                                  //           fontSize:
+                                  //           RequestConstant
+                                  //               .ALERT_Font_SIZE,
+                                  //           color: Theme.of(context)
+                                  //               .primaryColor),
+                                  //     ),
+                                  //   ) : SizedBox();
+                                  //   },
+                                  // ),
+                                  Visibility(
+                                    visible: mrn_request_controller.saveButton.value != RequestConstant.VERIFY
+                                        ? true:false,
+                                    child: SizedBox(
+                                      child:
+                                      InkWell(
+                                        onTap: () {
+                                          showDialog(
+                                            context:
+                                            context,
+                                            builder:
+                                                (context) =>
+                                                AlertDialog(
+                                                  title:
+                                                  const Text(
+                                                    RequestConstant.DO_YOU_WANT_DELETE,
+                                                    style:
+                                                    TextStyle(color: Colors.black),
+                                                  ),
+                                                  actions: <Widget>[
+                                                    Container(
+                                                      margin: const EdgeInsets.only(left: 20, right: 20),
+                                                      child: IntrinsicHeight(
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Expanded(
+                                                              child: TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(context);
+                                                                },
+                                                                child: const Text(
+                                                                  "Cancel",
+                                                                  style: TextStyle(
+                                                                    color: Colors.grey,
+                                                                    fontWeight: FontWeight.bold,
+                                                                    fontSize: RequestConstant.Lable_Font_SIZE,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            VerticalDivider(
+                                                              color: Colors.grey.shade400,
+                                                              width: 5,
+                                                              thickness: 2,
+                                                              indent: 15,
+                                                              endIndent: 15,
+                                                            ),
+                                                            Expanded(
+                                                              child: TextButton(
+                                                                  onPressed: () async{
+                                                                    mrn_request_controller.deleteParticularList(mrn_request_controller.Material_itemview_GetDbList[index]);
+                                                                    mrn_request_controller.Material_itemview_GetDbList.remove(mrn_request_controller.Material_itemview_GetDbList[index]);
+                                                                    mrn_request_controller.getMaterialTablesDatas();
+                                                                    Navigator.pop(context);
+                                                                  },
+                                                                  child: const Text("Delete", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE))),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                          );
+                                        },
+                                        child: const Icon(
+                                            Icons
+                                                .remove_circle,
+                                            color: Colors
+                                                .red),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                               Obx((){
                                 return mrn_request_controller.activeType.value ?
-                                 Expanded(
-                                  flex: 3,
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4),
                                   child: Text(
                                     "( BalQty: ${mrn_request_controller.Material_itemview_GetDbList.value[index].balqty.toString()} )",
                                     style: TextStyle(
@@ -1057,85 +1162,10 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                                         fontSize:
                                         RequestConstant
                                             .ALERT_Font_SIZE,
-                                        color: Theme.of(context)
-                                            .primaryColor),
+                                        color: Colors.red),
                                   ),
                                 ) : SizedBox();
-                                },
-                              ),
-                              Visibility(
-                                visible: mrn_request_controller.saveButton.value != RequestConstant.VERIFY
-                                    ? true:false,
-                                child: SizedBox(
-                                  child:
-                                  InkWell(
-                                    onTap: () {
-                                      showDialog(
-                                        context:
-                                        context,
-                                        builder:
-                                            (context) =>
-                                            AlertDialog(
-                                              title:
-                                              const Text(
-                                                RequestConstant.DO_YOU_WANT_DELETE,
-                                                style:
-                                                TextStyle(color: Colors.black),
-                                              ),
-                                              actions: <Widget>[
-                                                Container(
-                                                  margin: const EdgeInsets.only(left: 20, right: 20),
-                                                  child: IntrinsicHeight(
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        Expanded(
-                                                          child: TextButton(
-                                                            onPressed: () {
-                                                              Navigator.pop(context);
-                                                            },
-                                                            child: const Text(
-                                                              "Cancel",
-                                                              style: TextStyle(
-                                                                color: Colors.grey,
-                                                                fontWeight: FontWeight.bold,
-                                                                fontSize: RequestConstant.Lable_Font_SIZE,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        VerticalDivider(
-                                                          color: Colors.grey.shade400,
-                                                          width: 5,
-                                                          thickness: 2,
-                                                          indent: 15,
-                                                          endIndent: 15,
-                                                        ),
-                                                        Expanded(
-                                                          child: TextButton(
-                                                              onPressed: () async{
-                                                                mrn_request_controller.deleteParticularList(mrn_request_controller.Material_itemview_GetDbList[index]);
-                                                                mrn_request_controller.Material_itemview_GetDbList.remove(mrn_request_controller.Material_itemview_GetDbList[index]);
-                                                                mrn_request_controller.getMaterialTablesDatas();
-                                                                Navigator.pop(context);
-                                                              },
-                                                              child: const Text("Delete", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE))),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                      );
-                                    },
-                                    child: const Icon(
-                                        Icons
-                                            .remove_circle,
-                                        color: Colors
-                                            .red),
-                                  ),
-                                ),
+                              },
                               ),
                             ],
                           ),
@@ -1267,6 +1297,92 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                                   ),
                                 ],
                               ),
+                               Obx(()=>mrn_request_controller.ReqType.value=="CP"?
+                               Row(crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(flex: 4,child: SizedBox()),
+                                  Expanded(flex: 4,child: SizedBox()),
+                                  Expanded(
+                                    flex: 4,
+                                    child:
+                                    Container(
+                                      margin: const EdgeInsets.only(left: 10,bottom: 10),
+                                      child:
+                                      RichText(
+                                        text: TextSpan(
+                                            style: const TextStyle(
+                                              fontSize: 12.0,
+                                              fontWeight: FontWeight.normal,
+                                              color: Colors.black,
+                                            ),
+                                            children: <TextSpan>[
+                                              const TextSpan(
+                                                text: "Approx Days",
+                                              ),
+                                            ]),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 5,
+                                    child:
+                                    Container(
+                                      margin: const EdgeInsets.only(top: 0, right: 10,bottom: 10),
+                                      height: BaseUtitiles.getheightofPercentage(context, 3),
+                                      width: BaseUtitiles.getWidthtofPercentage(context, 20),
+                                      child:
+                                      TextFormField(
+                                        autovalidateMode: AutovalidateMode.always,
+                                        onTap: () {
+                                          if (mrn_request_controller.AddApprox_daysControllers[index].text != "" && mrn_request_controller.AddApprox_daysControllers[index].text != "0" && mrn_request_controller.AddApprox_daysControllers[index].text != "0.0") {
+                                            return;
+                                          } else {
+                                            mrn_request_controller.AddApprox_daysControllers[index].text = "";
+                                          }
+                                        },
+                                        cursorColor: Theme.of(context).primaryColor,
+                                        textAlign: TextAlign.center,
+                                        controller: mrn_request_controller.AddApprox_daysControllers[index],
+                                        keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                        inputFormatters: [
+                                          TextInputFormatter.withFunction((oldValue, newValue) {
+                                            return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                ? newValue
+                                                : oldValue;
+                                          }),
+                                        ],
+
+                                        decoration: InputDecoration(contentPadding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
+                                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).primaryColor), borderRadius: const BorderRadius.all(Radius.circular(5))),
+                                          enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.grey), borderRadius: BorderRadius.all(Radius.circular(5))),
+                                          errorStyle: const TextStyle(
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.normal,
+                                            fontSize: 10.0,
+                                          ),
+                                          errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(2.0),
+                                            borderSide: const BorderSide(
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                          focusedErrorBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(2.0),
+                                            borderSide: const BorderSide(
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        ),
+                                        style: const TextStyle(color: Colors.black),
+                                        onChanged: (value) {
+                                            mrn_request_controller.updateConsumTables();
+                                        },
+
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ):SizedBox()),
                               Container(
                                 margin:
                                 const EdgeInsets

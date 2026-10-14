@@ -1,28 +1,22 @@
 import 'dart:convert';
-import 'package:prahkurticore/constants/ui_constant/textfont_style.dart';
 import '../apimanager/apimanager.dart';
 import '../models/accountname_model.dart';
 import '../models/accounttype_model.dart';
 import '../models/companydropdownlist_model.dart';
-import '../models/companywiseprojectname_model.dart';
 import '../models/dpr_headname_model.dart';
 import '../models/invoiceno_billdir_model.dart';
 import '../models/materiallist_model.dart';
 import '../models/materialsubitem_dropdown_model.dart';
 import '../models/materialwise_materialdropdown_model.dart';
 import '../models/materialwise_subhead_dropdown_model.dart';
-import '../models/nmr_billno_model.dart';
-import '../models/nmrwklybill_deduction_save_model.dart';
 import '../models/payfor_model.dart';
 import '../models/paymenttype_model.dart';
 import '../models/paymode_model.dart';
 import '../models/project_dropdownlist_model.dart';
 import '../models/sitedropdownresponse_model.dart';
 import '../models/staffname_responsemodel.dart';
-import '../models/staffresponse_model.dart';
 import '../models/subcont_entrylist_rights_model.dart';
 import '../models/subcontract_dropdown_model.dart';
-import '../models/supplierdropwon_model.dart';
 import '../models/workorderno_dropdown_model.dart';
 import '../utilities/apiconstant.dart';
 import '../utilities/baseutitiles.dart';
@@ -427,7 +421,7 @@ class CommonProvider {
                 .GETAUTONO_YEAR_WISE}?fieldName=RequisitionNo&tableName=StaffRequisitionSlip&formName=StaffRequisitionSlip");
       } else if (Url == "MANPOWER") {
         response = await ApiManager.getAPICall(
-            "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=ManPowerNo&tableName=ManPowerMas&formName=ManPower");
+            "${ApiConstant.GETAUTONO_YEAR_WISE}?projectId=0&fieldName=ManPowerNo&tableName=ManPowerReqMas&formName=ManPower");
       }
       else if (Url == "WORK ORDER DIRECT") {
         response = await ApiManager.getAPICall(
@@ -571,6 +565,18 @@ class CommonProvider {
   static Future<dynamic> checkMaterialBalqty() async {
     try {
       final value = await ApiManager.getAPICall(ApiConstant.CHECKMATERIALLISTBALQTY);
+      print('API Response: ${value}');
+      return jsonDecode(value);
+
+    } catch (error) {
+      print("Error == $error");
+      return null;
+    }
+  }
+
+  static Future<dynamic> checkBalQtyForProAndSite(proId,siteId) async {
+    try {
+      final value = await ApiManager.getAPICall(ApiConstant.CHECKBALQTYPROSITE + "?proid=$proId&siteid=$siteId");
       print('API Response: ${value}');
       return jsonDecode(value);
 

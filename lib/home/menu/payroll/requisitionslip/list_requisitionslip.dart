@@ -451,6 +451,36 @@ class _Requisitionslip_EntryListState extends State<Requisitionslip_EntryList> {
                                           )),
                                     ],
                                   ),
+                                  requisitionSlipController.ReqSlipEtyList.value[index].requisitionType=="L" || requisitionSlipController.ReqSlipEtyList.value[index].requisitionType=="C" ?
+                                  Column(
+                                    children: [
+                                      SizedBox(height: 5,),
+                                      Row(
+                                        children: <Widget>[
+                                          Container(
+                                            margin: EdgeInsets.only(top: 5, left: 10),
+                                            child: Text(""),
+                                          ),
+                                          Expanded(
+                                              flex: 3,
+                                              child: Text(
+                                                "Leave Type",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,),
+                                              )),
+                                          Expanded(
+                                              flex: 9,
+                                              child: Text(
+                                                requisitionSlipController.ReqSlipEtyList.value[index].leaveTypeDesc ?? "-",
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                ),
+                                              )),
+                                        ],
+                                      ),
+                                    ],
+                                  ):SizedBox(),
                                   requisitionSlipController.ReqSlipEtyList.value[index].requisitionType=="P" || requisitionSlipController.ReqSlipEtyList.value[index].requisitionType=="O" ?
                                   Column(
                                     children: [

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:prahkurticore/controller/fromproject_ccontroller.dart';
 import 'package:prahkurticore/controller/fromsite_controller.dart';
@@ -11,7 +10,6 @@ import '../db_model/mattransreqdet_model.dart';
 import '../db_services/materialtransreq_services.dart';
 import '../home/menu/materials/materialTransferRequest/materialTransReq_Entry.dart';
 import '../home/menu/materials/materialTransferRequest/materialTransReq_addItems.dart';
-import '../home/menu/materials/materialTransferRequest/materialTransReq_list.dart';
 import '../models/materialtransreqsave_model.dart';
 import '../provider/consumption_provider.dart';
 import '../provider/materialTransReq_provider.dart';
@@ -82,13 +80,14 @@ class MaterialTransferReqController extends GetxController {
   Future getItemList(int prid, int siteId, BuildContext context) async {
     mainItemList.value.clear();
     mattransreqItemList.value.clear();
+    await ClickUtils.run(() async {
     final value = await Consumption_provider.getStockmaterial(prid, siteId);
     if (value != null) {
       if (value.success == true) {
         if (value.result!.isNotEmpty) {
           mainListAddItems.value = value.result!;
           mattransreqItemList.value = mainListAddItems.value;
-          Navigator.push(
+          await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) =>
@@ -102,6 +101,7 @@ class MaterialTransferReqController extends GetxController {
     } else {
       BaseUtitiles.showToast("Something Went Wrong...");
     }
+    });
   }
 
   setCheck(int id, bool value) {
@@ -349,6 +349,7 @@ class MaterialTransferReqController extends GetxController {
   }
 
   Future matTransReqEdit(int transId,String MenuName, BuildContext context) async {
+    await ClickUtils.run(() async {
     final value = await MaterialTransReqProvider.matTransReqeditAPI(transId);
     if (value != null) {
       if (value.success == true) {
@@ -357,7 +358,7 @@ class MaterialTransferReqController extends GetxController {
         if (mattranReqEditListValue.isNotEmpty) {
           matTransReqeditSaveDetTable();
           getItemlistTablesDatas();
-          return Navigator.pushReplacement(context,
+          await Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => MaterialTransReqEntry(heading: MenuName,)));
         } else {
           BaseUtitiles.showToast("No Data Found");
@@ -368,6 +369,7 @@ class MaterialTransferReqController extends GetxController {
     } else {
       BaseUtitiles.showToast('Something went wrong..');
     }
+    });
   }
 
   ///----------Det Table Edit-----------

@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:prahkurticore/controller/pendinglistcontroller.dart';
 import 'package:prahkurticore/controller/projectcontroller.dart';
 import 'package:prahkurticore/controller/sitecontroller.dart';
 import 'package:prahkurticore/controller/subcontcontroller.dart';
+import 'package:prahkurticore/home/menu/main_menu/workOrder_BOQ/workOrder_BOQ_entryScreen.dart';
 import 'package:prahkurticore/provider/workOrderBoq_provider.dart';
 import '../db_model/workOrderBoqGST_Cal_model.dart';
 import '../db_model/workOrderBoqItemlist_model.dart';
@@ -14,12 +17,17 @@ import '../models/termsandCondition_model.dart';
 import '../models/workOrderBoqheaditems_model.dart';
 import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
+import '../models/workOrderDirectSave_model.dart';
+import 'logincontroller.dart';
+
 
 class WorkOrderBoqController extends GetxController{
 
   ProjectController projectController = Get.put(ProjectController());
   SiteController siteController = Get.put(SiteController());
   SubcontractorController subcontractorController = Get.put(SubcontractorController());
+  PendingListController pendingListController = Get.put(PendingListController());
+  LoginController loginController = Get.put(LoginController());
 
   final EntrylistFrDate = TextEditingController();
   final EntrylistToDate = TextEditingController();
@@ -38,6 +46,9 @@ class WorkOrderBoqController extends GetxController{
   RxList<WorkOrderBoqGSTCalTable> workOrder_ItemReadList = <WorkOrderBoqGSTCalTable>[].obs;
   late List<WorkOrderBoqGSTCalTable> updateBillGen_ItemReadList = <WorkOrderBoqGSTCalTable>[];
   late List<WorkOrderBoqGSTCalTable> workOrderTableModelList = <WorkOrderBoqGSTCalTable>[];
+
+  RxList<SubcontractWorkOrderDetlink> getDetList = <SubcontractWorkOrderDetlink>[].obs;
+  RxList<SubcontractWorkOrderAddLessSetuplink> getDetAddLessList = <SubcontractWorkOrderAddLessSetuplink>[].obs;
 
 
   var itemTableModel = WorkOrderBoqItemlist();
@@ -75,6 +86,8 @@ class WorkOrderBoqController extends GetxController{
   RxList<Message> WorkOrdBoq_ItemList = <Message>[].obs;
   RxList<Message> WorkOrdBoq_MainItemList = <Message>[].obs;
   RxList workOrderBoq_editListApiDatas = [].obs;
+  RxInt createdById = 0.obs;
+
 
 
   RxString saveButton = RequestConstant.SUBMIT.obs;
@@ -83,6 +96,7 @@ class WorkOrderBoqController extends GetxController{
   bool selectAll = false;
   RxList<Result> selectedTerms = <Result>[].obs;
   RxList<Result> termsAndCondition = <Result>[].obs;
+  RxList<Result> filteredTermsAndCondition = <Result>[].obs;
   List<Result> tempTerms = [];
 
 
@@ -109,18 +123,21 @@ class WorkOrderBoqController extends GetxController{
   }
 
   Future WorkOrdBoq_TermsCondition() async {
-    termsAndCondition.value = [];
+    termsAndCondition.clear();
+    filteredTermsAndCondition.clear();
+    // selected.clear();
     final value = await WorkOrderBoqProvider.getWorkOrdBoqTermsandCondition();
     if (value != null) {
       if (value.success == true) {
         if (value.result!.isNotEmpty) {
-          termsAndCondition.value = value.result!;
+          termsAndCondition.assignAll(value.result!);
+
+          filteredTermsAndCondition.assignAll(value.result!);
+
+          selected = List<bool>.filled(value.result!.length, false);
           termsAndCondition.addAll(
             value.result!.where((e) => !termsAndCondition.any(
                     (x) => x.id == e.id)), // Replace id with your unique field
-          );
-          selected.addAll(
-            List.generate(value.result!.length, (_) => false),
           );
         } else {
           BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
@@ -171,8 +188,8 @@ class WorkOrderBoqController extends GetxController{
               itemTableModel = new WorkOrderBoqItemlist();
               itemTableModel.reqDetId = 0;
               itemTableModel.headItemId = subItem.headItemid;
-              itemTableModel.subItemId = subItem.subItemid;
-              itemTableModel.measureLevel3ItemId = level3.id;
+              itemTableModel.subItemId = level3.subItemid;
+              itemTableModel.measureLevel3ItemId = level3.measureid;
               itemTableModel.itemDesc = level3.level3Item;
               itemTableModel.unit = level3.scaleId;
               itemTableModel.scaleName = level3.scaleName;
@@ -182,7 +199,7 @@ class WorkOrderBoqController extends GetxController{
               itemTableModel.labrate = level3.labourrate;
               itemTableModel.boqcode = level3.seqNo;
               itemTableModel.remarks = "";
-              itemTableModel.workOrderStatus = j < remarksCheckList.length ? remarksCheckList[j] : true;
+              itemTableModel.workOrderStatus = true;
               itemTableModel.amt = itemTableModel.rate! * itemTableModel.qty!;
               int i = 0;
               WorkOrdBoqitem_itemview_GetDbList.forEach((element) {
@@ -233,11 +250,11 @@ class WorkOrderBoqController extends GetxController{
   }
 
   setTextControllersValue() async {
+    remarksCheckList.clear();
     for (var index = 0; index < WorkOrdBoqitem_itemview_GetDbList.length; index++) {
       Item_itemlist_textControllersInitiate();
       remarksCheckList.add(
-        WorkOrdBoqitem_itemview_GetDbList[index].workOrderStatus ?? true,
-      );
+        WorkOrdBoqitem_itemview_GetDbList[index].workOrderStatus);
       Itemlist_boqCodeControllers[index].text = WorkOrdBoqitem_itemview_GetDbList.value[index].boqcode.toString();
       Itemlist_boqBalQtyControllers[index].text = WorkOrdBoqitem_itemview_GetDbList.value[index].balqty.toString();
       Itemlist_labRateControllers[index].text = WorkOrdBoqitem_itemview_GetDbList.value[index].labrate.toString();
@@ -308,6 +325,139 @@ class WorkOrderBoqController extends GetxController{
     updateItemlistTable();
   }
 
+  clearDatas() {
+    saveButton.value = RequestConstant.SUBMIT;
+    workid = 0;
+    projectController.projectname.text = "--Select--";
+    projectController.selectedProjectId.value = 0;
+    subcontractorController.Subcontractorname.text = "--Select--";
+    subcontractorController.selectedSubcontId.value = 0;
+    workOrdentryDateController.text = BaseUtitiles.initiateCurrentDateFormat();
+    siteController.selectedsiteId = 0.obs;
+    siteController.selectedsitedropdownName = "--Select--".obs;
+    siteController.getSiteDropdownvalue.value.clear();
+    siteController.Sitename.text = RequestConstant.SELECT;
+    siteController.siteDropdownName.clear();
+    WorkOrdActiveTypeText.text = "";
+    workOrdActTypeID.value = "";
+    delete_WorkOrderBoq_itemlist_Table();
+    WorkOrdBoqitem_itemview_GetDbList.value.clear();
+    workOrdamount.text = "0.0";
+    Roundoff.text = "0";
+    netpayamt.text = "0.0";
+    rebateAmount.text = "0.0";
+  }
+
+  Future SaveButton_DeductionScreen(
+      BuildContext context, int id, int workOrderId, status) async {
+    getDetList.value.clear();
+    await Future.delayed(const Duration(seconds: 0));
+    String termsConditionIds = selectedTerms
+        .map((e) => e.id.toString())
+        .join(",");
+    String body = workOrdDirectSaveModelToJson(WorkOrdDirectSaveModel(
+      id:id != 0 ? id : 0,
+      workOrderNo: autoYearWiseNoController.text,
+      entryDate: workOrdentryDateController.text,
+      entryType: "B",
+      projectId: projectController.selectedProjectId.value,
+      siteId: siteController.selectedsiteId.value,
+      subContractorId: subcontractorController.selectedSubcontId.value,
+      workStatus: "N",
+      active: workOrdActTypeID.value,
+      roundOff: double.tryParse(Roundoff.text) ?? 0.0,
+      workOrderAmount: double.tryParse(workOrdamount.text)?? 0.0,
+      netAmount: double.tryParse(netpayamt.text)?? 0.0,
+      termsCondition:termsConditionIds,
+      mailStatus: "N",
+      downloadStatus: "N",
+      remarks: RemarksController.text,
+      createdBy: saveButton.value == RequestConstant.SUBMIT?int.parse(loginController.EmpId()):createdById.value,
+      // createdDt: BaseUtitiles().convertToUtcIso(workOrdentryDateController.text),
+      verifyStatus: saveButton.value == RequestConstant.VERIFY ||
+          saveButton.value == RequestConstant.APPROVAL
+          ? "Y"
+          : "N",
+      approveStatus: saveButton.value == RequestConstant.APPROVAL ? "Y" : "N",
+      subcontractWorkOrderDetlink: getWorkOrderDet(id),
+      subcontractWorkOrderAddLessSetuplink:
+      getWorkOrderDetAddLess(id, autoYearWiseNoController.text),
+    ));
+    final decodedJson = jsonDecode(body);
+
+    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+    final prettyJson = encoder.convert(decodedJson);
+
+    debugPrint(prettyJson, wrapWidth: 1024);
+
+    final list = await WorkOrderBoqProvider.SaveWorkOrderScreenEntryAPI(
+        body, id, context,status);
+
+    if (list != null) {
+      if (list["success"] == true) {
+        clearDatas();
+        BaseUtitiles.showToast(list["message"]);
+        if (saveButton.value == RequestConstant.VERIFY ||
+            saveButton.value == RequestConstant.APPROVAL) {
+          await pendingListController.getPendingList();
+        } else {
+          await WorkOrdBoq_EntryList();
+          delete_WorkOrderBoq_itemlist_Table();
+        }
+        BaseUtitiles.popMultiple(context, count: 5);
+      } else {
+        BaseUtitiles.showToast(list["message"] ?? 'Something went wrong..');
+        BaseUtitiles.popMultiple(context, count: 2);
+      }
+    } else {
+      BaseUtitiles.showToast("Something went wrong..");
+      BaseUtitiles.popMultiple(context, count: 2);
+    }
+  }
+
+  List<SubcontractWorkOrderDetlink>? getWorkOrderDet(id) {
+    getDetList.value.clear();
+    WorkOrdBoqitem_itemview_GetDbList.value.forEach((element) {
+      var list = SubcontractWorkOrderDetlink(
+          id: saveButton.value == RequestConstant.SUBMIT ? 0 : element.reqDetId,
+          subcontractWorkOrderMasId: id != 0 ? id : 0,
+          headItemId: element.headItemId,
+          subItemId: element.subItemId,
+          level3ItemId: element.measureLevel3ItemId,
+          itemDes: element.itemDesc.toString(),
+          unit: element.unit.toString(),
+          qty: element.qty,
+          rate: element.rate,
+          oldRate: 0,
+          amount: element.amt,
+          siteId: siteController.selectedsiteId.value,
+          boqCode: element.boqcode,
+          workOrderStatus: element.workOrderStatus,
+          workRemarks: element.remarks.toString()
+      );
+      getDetList.value.add(list);
+    });
+    return getDetList.value;
+  }
+
+  List<SubcontractWorkOrderAddLessSetuplink>? getWorkOrderDetAddLess(int id, workNo) {
+    getDetAddLessList.value.clear();
+    workOrder_ItemReadList.value.forEach((element) {
+      if (element.percentValue! > 0) {
+        var list = SubcontractWorkOrderAddLessSetuplink(
+          id: element.reqDetId,
+          subcontractWorkOrderMasId: id,
+          workOrderNo: autoYearWiseNoController.text,
+          addLessId: element.addLessId,
+          percentValue: element.percentValue,
+          amount: element.amount,
+        );
+        getDetAddLessList.value.add(list);
+      }
+    });
+    return getDetAddLessList.value;
+  }
+
   updateItemlistTable() async {
     int i = 0;
     updateListDatas.clear();
@@ -328,9 +478,7 @@ class WorkOrderBoqController extends GetxController{
 
       itemTableModel.remarks = RemarksControllers[i].text;
 
-      itemTableModel.workOrderStatus =
-      i < remarksCheckList.length ? remarksCheckList[i] : true;
-      // itemTableModel.oldRate = element.reviseQty;
+      itemTableModel.workOrderStatus =  remarksCheckList[i];
       itemTableModel.amt = double.tryParse(Addwork_AmountControllers[i].text)??0;
       updateListDatas.add(itemTableModel);
       i++;
@@ -370,7 +518,7 @@ class WorkOrderBoqController extends GetxController{
   Future getWorkOrdItemList(BuildContext context) async {
     WorkOrdBoq_MainItemList.value = [];
     WorkOrdBoq_ItemList.value = [];
-
+    await ClickUtils.run(() async {
     var response = await WorkOrderBoqProvider.getWorkOrderBoqHeadItem(
       subcontractorController.selectedSubcontId.value,
       siteController.selectedHeadId.value,
@@ -383,7 +531,7 @@ class WorkOrderBoqController extends GetxController{
           WorkOrdBoq_ItemList.value = response.message!;
           WorkOrdBoq_MainItemList.value = response.message!;
 
-          Navigator.push(
+          await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => WorkOrderBoqItemList(),
@@ -398,17 +546,83 @@ class WorkOrderBoqController extends GetxController{
     } else {
       BaseUtitiles.showToast("Something Went Wrong...");
     }
+    });
   }
 
   setCheck(int mainIndex, int id, bool value,) {
     WorkOrdBoq_MainItemList[mainIndex]
         .measureLevel3ItemS?.forEach((element) {
 
-      if (element.id == id) {
+      if (element.measureid == id) {
         element.isCheck = value;
       }
     });
     WorkOrdBoq_MainItemList.refresh();
+  }
+
+  Future workOrderEntryList_EditApi(int workId, status,String MenuName, BuildContext context,{String? type}) async {
+    await ClickUtils.run(() async {
+    var response = await WorkOrderBoqProvider.workOrder_entryList_editAPI(workId,status);
+    if (response != null) {
+      if (response.success == true) {
+        workOrderBoq_editListApiDatas.value = [response.result];
+        if (workOrderBoq_editListApiDatas.isNotEmpty) {
+          saveButton.value = type == "Approve"? RequestConstant.APPROVAL: type == "Verify" ? RequestConstant.VERIFY : RequestConstant.RESUBMIT;
+          workOrder_EditTable_SaveTable("");
+          getItemTablesDatas();
+          await Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => WorkOrderBoqEntryScreen(heading: MenuName,)));
+        } else {
+          BaseUtitiles.showToast("No Data Found");
+        }
+      } else {
+        BaseUtitiles.showToast(response.message ?? 'Something went wrong..');
+      }
+    } else {
+      BaseUtitiles.showToast("Something Went Wrong...");
+    }
+    });
+  }
+
+  workOrder_EditTable_SaveTable(name) async {
+    workOrdboqitemTableList.clear();
+    workOrderBoq_editListApiDatas.value.forEach((element) {
+      if (name == "ItemListDet") {
+        itemTableModel = new WorkOrderBoqItemlist();
+        itemTableModel.itemDesc = element.itemDesc.toString();
+        itemTableModel.unit = element.unit;
+        itemTableModel.qty = element.qty;
+        itemTableModel.rate = element.rate;
+        itemTableModel.amt = element.amount;
+        workOrdboqitemTableList.add(itemTableModel);
+      } else {
+        element.subcontractWorkOrderDetlink!.forEach((value) {
+          itemTableModel = new WorkOrderBoqItemlist();
+          itemTableModel.reqDetId = value.reqDetId;
+          itemTableModel.headItemId = value.headItemId;
+          itemTableModel.subItemId = value.subItemId;
+          itemTableModel.measureLevel3ItemId = value.level3ItemId;
+          itemTableModel.itemDesc = value.itemDesc == null ? "-" : value.itemDesc.toString();
+          itemTableModel.unit = value.unit;
+          itemTableModel.scaleName = value.scaleName == null ? "-" : value.scaleName;
+          itemTableModel.boqcode = value.boqCode;
+          itemTableModel.labrate = value.labourRate;
+          itemTableModel.balqty = value.balQty;
+          itemTableModel.qty = value.qty;
+          itemTableModel.rate = value.rate;
+          itemTableModel.amt = value.amount;
+          itemTableModel.remarks = value.remarks;
+          itemTableModel.workOrderStatus = value.workOrderStatus;
+          workOrdboqitemTableList.add(itemTableModel);
+        });
+      }
+    });
+    var savedatas =
+    await workOrdboqItemlistService.WorkOrdBoqItem_table_Save(
+        workOrdboqitemTableList);
+    return savedatas;
   }
 
   Future<bool> deductionPaymentCalculation() async {
@@ -423,7 +637,7 @@ class WorkOrderBoqController extends GetxController{
       totalNetAmount += (saveButton.value == RequestConstant.RESUBMIT ||
           saveButton.value == RequestConstant.VERIFY ||
           saveButton.value == RequestConstant.APPROVAL)
-          ? (item.amount ?? 0)
+          ? (item.amt ?? 0)
           : (item.amt ?? 0);
     }
 
@@ -722,11 +936,11 @@ class WorkOrderBoqController extends GetxController{
                             Navigator.of(context).pop();
                           }}
                           else {
-                            bool result = await Delete_termsAndCondition(
-                                termsAndCondition[index].id!);
+                            bool result = await Delete_termsAndCondition(index);
 
                             if (result) {
-                              termsAndCondition.removeAt(index);
+                              termsAndCondition.removeWhere((e) => e.id == index);
+                              filteredTermsAndCondition.removeWhere((e) => e.id == index);
 
                               // Optional: Refresh from API
                               await WorkOrdBoq_TermsCondition();
@@ -760,6 +974,10 @@ class WorkOrderBoqController extends GetxController{
     return WorkOrderBoqProvider.delete_TermsAndCondition(WorkId);
   }
 
+  workOrder_itemlistTable_Delete() async {
+    await workOrdboqItemlistService.WorkOrdBoqItemlist_table_delete();
+  }
+
   delete_WorkOrderBoq_itemlist_Table() async {
     await workOrdboqItemlistService.WorkOrdBoqItemlist_table_delete();
   }
@@ -772,6 +990,18 @@ class WorkOrderBoqController extends GetxController{
     await workOrdboqItemlistService.itemdeleteById(deleteModelList);
   }
 
-
+  void searchTerms(String value) {
+    if (value.trim().isEmpty) {
+      filteredTermsAndCondition.assignAll(termsAndCondition);
+    } else {
+      filteredTermsAndCondition.assignAll(
+        termsAndCondition.where(
+              (e) => (e.termsAndCondition ?? "")
+              .toLowerCase()
+              .contains(value.toLowerCase()),
+        ),
+      );
+    }
+  }
 
 }

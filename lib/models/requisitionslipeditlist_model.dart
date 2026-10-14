@@ -61,6 +61,10 @@ class Result {
   String? createdName;
   String? staffNo;
   String? requisitionTypeDesc;
+  String? leaveTypeDesc;
+  String? hrRemarks;
+  String? leaveType;
+  bool? isHalfDay;
 
   Result({
     this.id,
@@ -91,6 +95,10 @@ class Result {
     this.createdName,
     this.staffNo,
     this.requisitionTypeDesc,
+    this.leaveTypeDesc,
+    this.hrRemarks,
+    this.leaveType,
+    this.isHalfDay,
   });
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
@@ -122,6 +130,10 @@ class Result {
     createdName: json["createdName"],
     staffNo: json["staffNo"],
     requisitionTypeDesc: json["requisitionTypeDesc"],
+    leaveTypeDesc: json["leaveTypeDesc"],
+    hrRemarks: json["hrRemarks"],
+    leaveType: json["leaveType"],
+    isHalfDay: json["isHalfDay"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -153,5 +165,9 @@ class Result {
     "createdName": createdName,
     "staffNo": staffNo,
     "requisitionTypeDesc": requisitionTypeDesc,
+    "leaveTypeDesc": leaveTypeDesc,
+    "hrRemarks": hrRemarks,
+    "leaveType": leaveType,
+    "isHalfDay": isHalfDay,
   };
 }

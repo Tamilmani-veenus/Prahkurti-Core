@@ -34,7 +34,6 @@ class ApiConfig {
   }
 }
 
-
 class AppClient {
   static late String packageName;
 
@@ -47,7 +46,6 @@ class AppClient {
   static bool get isVrindhavana => packageName == "com.veenus.vrindhavana";
   static bool get isRKCPL => packageName == "com.veenus.rkcpl";
   static bool get isPrahkurti => packageName == "com.veenus.prahkurti";
-  static bool get isIOSProjects => packageName == "com.veenus.iosprojects";
 }
 
 class ApiConstant{
@@ -66,10 +64,19 @@ class ApiConstant{
   static String DASHBOARD_API = BASE_URL_CORE + "api/DashBoard/GetMobileDashBoardView";
   static String LABOURDASHBOARD_API = BASE_URL_CORE + "api/DashBoard/LabourDashBoard";
   static String ADMINDASHBOARD_API = BASE_URL_CORE + "api/DashBoard/AdminDashBoard";
-
+  static String MATERIALDASHPROJWISE_API = BASE_URL_CORE + "api/DashBoard/DashBoardProjectWiseFilter";
+  static String MATERIALDASHMATHEAD_API = BASE_URL_CORE + "api/DashBoard/DashBoardMaterialHeadWise";
+  static String HRDASHBOARD_API = BASE_URL_CORE + "api/DashBoard/HRDashBoard";
+  static String HRDASHBOARDCARDS_API = BASE_URL_CORE + "api/DashBoard/HRDashBoardEmployeeName";
+  static String MATERIALDASHSUPWISE_API = BASE_URL_CORE + "api/DashBoard/DashBoardMaterialSupplierWise";
+  static String PUT_PLANNING_CALENDAR_API = BASE_URL_CORE + "api/DashBoard/UpdateMeetingScheduler";
+  static String HRDASHBOARD_PLANNINGCALEN_API = BASE_URL_CORE + "api/DashBoard/GetAllMeetingScheduler";
 
   static String PENDINGLISTAPI = BASE_URL_CORE + "api/Menu/GetMobilePendingList";
   static String REQNOLISTAPI = BASE_URL_CORE + "api/MaterialPurOrdMas/GetReqMasDataByPO";
+  static String NMRLISTAPPROVEAPI = BASE_URL_CORE + "api/SubContractorNMRBill/VerifyOrApproveNMRBill";
+  static String DIRECTLISTAPPROVEAPI = BASE_URL_CORE + "api/SubContractorWorkQty/VerifyOrApproveBillDirect";
+  static String WOLISTAPPROVEAPI = BASE_URL_CORE + "api/SubcontractWorkOrderMas/VerifyOrApproveWOBill";
   static String REQNORENTALWORKLISTAPI = BASE_URL_CORE + "api/MaterialRentalWork/GetReqMasByWoId";
 
   static String GETMRNFINALAPROVALAPI = BASE_URL_CORE + "api/MaterialPreApprovalRequest/GetFinalApproveMasById";
@@ -151,10 +158,12 @@ class ApiConstant{
   static String EDIT_DIRECTBILL_API = BASE_URL_CORE + "api/SubContractorWorkQty/GetSubContractorWorkQtyById";
   static String EDIT_WORKORDERDIRECT_API = BASE_URL_CORE + "api/SubcontractWorkOrderMas/GetlSubcontractWorkOrderById";
 
+
   static String EDIT_BILLBOQ_API = BASE_URL_CORE + "api/SubContractorWorkQtyBOQ/GetSubContractorWorkQtyById";
   static String EDIT_INWARDPENDING_API = BASE_URL_CORE + "api/MaterialInward/GetInwardDetById";
   static String EDIT_TRANSFERBET_API = BASE_URL_CORE + "api/MaterialTransfer/GetMaterialTransferbtnProById";
-  static String EDIT_TRANSFERBET_SITE_API = BASE_URL_CORE + "api/StoreTransferPending/loadTransferBetweensiteDet";
+  // static String EDIT_TRANSFERBET_SITE_API = BASE_URL_CORE + "api/StoreTransferPending/loadTransferBetweensiteDet";
+  static String EDIT_TRANSFERBET_SITE_API = BASE_URL_CORE + "api/MaterialSitetosite/GetMaterialTransferById";
   static String EDIT_ADVANCEREQ_API = BASE_URL_CORE + "api/AdvanceReqVoucher/GetAdvanceReqVoucherById";
   static String GETINWARD_ENTRY_LIST = BASE_URL_CORE + "api/MaterialInward/GetAllMaterialInward";
   static String GETMATERIALINWARD_ALLDATAS = BASE_URL_CORE + "api/MaterialInward/GetInwardPendingById";
@@ -190,6 +199,7 @@ class ApiConstant{
   static String GET_APPTYPE_API = BASE_URL_CORE + "api/MaterialReqOrdMas/ApprovalType";
   static String GETMATERIALLIST = BASE_URL_CORE + "api/MaterialReqOrdMas/GetMRNMatByReqTypeProNdSite";
   static String CHECKMATERIALLISTBALQTY = BASE_URL_CORE + "api/Admin/Getmaterialcheckingbalqty";
+  static String CHECKBALQTYPROSITE = BASE_URL_CORE + "api/MaterialQtyFixingMas/CheckBalQtyForProAndSite";
   static String GETCONSUMPTION_ENTRY_LIST = BASE_URL_CORE + "api/MaterialExpenseMas/GetAllMaterialExpenses";
   static String GETSTOCKMATERIALLIST = BASE_URL_CORE + "api/MaterialExpenseMas/GetMaterialBasedOnProjAndSite";
   static String GETCONSTYPELIST = BASE_URL_CORE + "api/MaterialExpenseMas/GetExpenseTypeAll";
@@ -257,6 +267,8 @@ class ApiConstant{
   static String GET_ONDUTY_PUNCHINOUT_APPRLIST = BASE_URL_CORE + "api/PunchInandOut/GetAllOnDutyApprovepending";
   static String GET_NONALLOT_PUNCHINOUT_APPRLIST = BASE_URL_CORE + "api/PunchInandOut/GetAllPunchinandoutApprovepending";
   static String GET_WORKORDERVERIFYLIST = BASE_URL_CORE + "api/SubcontractWorkOrderMas/GetAllSubcontractWorkOrderToBeVerifyData";
+  static String GET_WORKORDERBOQ_VERIFYLIST = BASE_URL_CORE + "api/SubcontractWorkOrderMas/GetWorkOrderVerificationPendingBOQ";
+
   static String GET_WORKORDERAPPROVALLIST = BASE_URL_CORE + "api/SubcontractWorkOrderMas/GetAllSubcontractWorkOrderVerifyData";
   static String GET_MANPOWERAPPROVALLIST = BASE_URL_CORE + "api/ManPower/GetManPowerApprovalPending";
 

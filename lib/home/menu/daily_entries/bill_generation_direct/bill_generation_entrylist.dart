@@ -2,6 +2,7 @@ import '../../../../app_theme/app_colors.dart';
 import '../../../../constants/ui_constant/icons_const.dart';
 import '../../../../controller/billgenerationdirect_controller.dart';
 import '../../../../controller/comman_controller.dart';
+import '../../../../controller/mrn_request_indent_controller.dart';
 import '../../../../utilities/requestconstant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,6 +24,8 @@ class _Subcont_NMR_EntryListScreenState_Site
   TextEditingController editingController = TextEditingController();
   BillGenerationDirectController billGenerationDirectController=Get.put(BillGenerationDirectController());
   CommanController commanController = Get.put(CommanController());
+  MRN_Request_Controller mrn_request_controller =
+  Get.put(MRN_Request_Controller());
 
   @override
   void initState() {
@@ -31,6 +34,8 @@ class _Subcont_NMR_EntryListScreenState_Site
     billGenerationDirectController.EntrylistFrDate.text = lastDayOfMonth.toString().substring(0, 10);
     billGenerationDirectController.EntrylistToDate.text = currentDate.toString().substring(0, 10);
     billGenerationDirectController.DirectBill_EntryList();
+    mrn_request_controller.getCheckApprovalLevel();
+
     super.initState();
   }
 
@@ -322,6 +327,17 @@ class _Subcont_NMR_EntryListScreenState_Site
                     itemCount: billGenerationDirectController.bill_entryList.value.length,
 
                     itemBuilder: (context, index) {
+                      final approvalConfig = mrn_request_controller
+                          .checkApprovalLevelData
+                          .firstWhere(
+                            (e) => e["screenName"] == "BillGenerationDirect",
+                        orElse: () => <String, dynamic>{},
+                      );
+
+                      final bool isVerification =
+                          approvalConfig["isVerification"] ?? false;
+                      final bool isApproval =
+                          approvalConfig["isApproval"] ?? false;
                       return Container(
                         margin: EdgeInsets.only(left: 10, right: 10),
                         child: Card(
@@ -551,7 +567,32 @@ class _Subcont_NMR_EntryListScreenState_Site
                                     Expanded(
                                         flex: 5,
                                         child: Text(
-                                          billGenerationDirectController.bill_entryList.value[index].status.toString(),
+                                          billGenerationDirectController
+                                              .bill_entryList
+                                              .value[index]
+                                              .approveStatus ==
+                                              "Y"
+                                              ? "Approved"
+                                              : isApproval
+                                              ? (isVerification
+                                              ? (billGenerationDirectController
+                                              .bill_entryList
+                                              .value[index]
+                                              .verifyStatus ==
+                                              "Y"
+                                              ? "Verified"
+                                              : "In-Progress")
+                                              : "In-Progress")
+                                              : (isVerification
+                                              ? (billGenerationDirectController
+                                              .bill_entryList
+                                              .value[index]
+                                              .verifyStatus ==
+                                              "Y"
+                                              ? "Verified"
+                                              : "In-Progress")
+                                              : "In-Progress"),
+                                          // billGenerationDirectController.bill_entryList.value[index].status.toString(),
                                           style: TextStyle(color: billGenerationDirectController.bill_entryList.value[index].status== "Approved"?Colors.green:Colors.black),
                                         )),
                                     Expanded(

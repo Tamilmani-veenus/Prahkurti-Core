@@ -25,6 +25,8 @@ class LabourDashboardController extends GetxController{
   RxList<SubContractorWiseLabourTradeChart> subcontWiseLabourSummaryList = <SubContractorWiseLabourTradeChart>[].obs;
   RxList<SubContractorWiseLabourTradeChart> subcontractorfilteredProjects = <SubContractorWiseLabourTradeChart>[].obs;
   RxList<SubContractorWiseLabour> subContractorWiseLabour = <SubContractorWiseLabour>[].obs;
+  RxList<ProjectWiseAttendance> projectWiseAttendanceList =
+      <ProjectWiseAttendance>[].obs;
 
 /// -------Category-wise
   final RxBool showAllLabours = false.obs;
@@ -33,14 +35,26 @@ class LabourDashboardController extends GetxController{
 
   Future<void> getLabourDashboardDetails() async {
 
+    todayAttendanceList.value = [];
+    allTodayAttendanceList.value = [];
+    projectList.value = [];
+    filteredProjects.value = [];
+    projectWiseLabourList.value = [];
+    subcontractorfilteredProjects.value = [];
+    subcontWiseLabourSummaryList.value = [];
+    subContractorWiseLabour.value = [];
     try {
       isLoading.value = true;
       final response = await LabourDashboardProvider.getLabourDashboard(labourEntryFromDate.text,labourEntryToDate.text);
       if (response != null && response.success == true) {
+        dashboardResponse.value = null;
+        labourCategoryList.value = [];
+        await Future.delayed(const Duration(milliseconds: 100));
         dashboardResponse.value = response;
         labourCategoryList.assignAll(response.labourCategoryWise ?? []);
         todayAttendanceList.assignAll(response.todayAttendance ?? [],);
         allTodayAttendanceList.assignAll(response.todayAttendance ?? []);
+        calculateProjectWiseAttendance();
         projectList.assignAll(
           allTodayAttendanceList
               .map((e) => e.projectName ?? "")
@@ -53,7 +67,8 @@ class LabourDashboardController extends GetxController{
         subcontractorfilteredProjects.assignAll(response.subContractorWiseLabourTradeChart ?? []);
         subcontWiseLabourSummaryList.assignAll(response.subContractorWiseLabourTradeChart ?? []);
         subContractorWiseLabour.assignAll(response.subContractorWiseLabour ?? []);
-
+        // await Future.delayed(const Duration(milliseconds: 100));
+        // animateDashboardValues.value = true;
       } else {
         dashboardResponse.value = null;
       }
@@ -64,6 +79,8 @@ class LabourDashboardController extends GetxController{
       isLoading.value = false;
     }
   }
+
+
 
   Color getCategoryColor(int index) {
     const colors = [
@@ -169,6 +186,34 @@ class LabourDashboardController extends GetxController{
             (e) => e.projectName == project,
       ),
     );
+  }
+
+  void calculateProjectWiseAttendance() {
+    final Map<String, ProjectWiseAttendance> projectMap = {};
+
+    for (final item in todayAttendanceList) {
+      final projectName = (item.projectName ?? '').trim();
+
+      if (projectName.isEmpty) continue;
+
+      if (!projectMap.containsKey(projectName)) {
+        projectMap[projectName] = ProjectWiseAttendance(
+          projectName: projectName,
+        );
+      }
+
+      final project = projectMap[projectName]!;
+
+      final workType = (item.workTypName ?? '').toLowerCase();
+
+      if (workType == 'nmr') {
+        project.nmrCount += (item.totNos ?? 0).toInt();
+      } else if (workType == 'rate') {
+        project.rateCount += (item.totNos ?? 0).toInt();
+      }
+    }
+
+    projectWiseAttendanceList.assignAll(projectMap.values.toList());
   }
 }
 

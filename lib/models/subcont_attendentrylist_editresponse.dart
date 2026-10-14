@@ -162,6 +162,7 @@ class SubContLabourAttendDet {
   double? totalAmount;
   String? remarks;
   double? extra;
+  double? hrs;
   String? shift;
   String? billStatus;
   double? morotHrs;
@@ -186,6 +187,7 @@ class SubContLabourAttendDet {
     this.totalAmount,
     this.remarks,
     this.extra,
+    this.hrs,
     this.shift,
     this.billStatus,
     this.morotHrs,
@@ -208,6 +210,7 @@ class SubContLabourAttendDet {
     rate: json["rate"],
     otNos: json["otNos"],
     otHrs: json["otHrs"],
+    hrs: json["hrs"],
     totalAmount: json["totalAmount"],
     remarks: json["remarks"],
     extra: json["extra"],
@@ -231,6 +234,7 @@ class SubContLabourAttendDet {
     "labourCategoryId": labourCategoryId,
     "nos": nos,
     "rate": rate,
+    "hrs": hrs,
     "otNos": otNos,
     "otHrs": otHrs,
     "totalAmount": totalAmount,

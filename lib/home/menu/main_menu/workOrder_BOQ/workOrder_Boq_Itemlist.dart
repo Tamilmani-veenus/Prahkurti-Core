@@ -227,7 +227,7 @@ class _WorkOrderBoqItemListState extends State<WorkOrderBoqItemList> {
 
                                         workOrderBoqController.setCheck(
                                           mainIndex,
-                                          level3!.id!,
+                                          level3!.measureid!,
                                           value!,
                                         );
                                       });

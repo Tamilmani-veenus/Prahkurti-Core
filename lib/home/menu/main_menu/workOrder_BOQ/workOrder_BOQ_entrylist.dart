@@ -4,33 +4,39 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:prahkurticore/controller/workOrderBoq_Controller.dart';
 import 'package:prahkurticore/home/menu/main_menu/workOrder_BOQ/workOrder_BOQ_entryScreen.dart';
-
 import '../../../../app_theme/app_colors.dart';
 import '../../../../constants/ui_constant/icons_const.dart';
+import '../../../../controller/mrn_request_indent_controller.dart';
 import '../../../../utilities/baseutitiles.dart';
 import '../../../../utilities/requestconstant.dart';
 
 class WorkOrderBoqEntrylist extends StatefulWidget {
   final String heading;
-  const WorkOrderBoqEntrylist({super.key,required this.heading});
+  const WorkOrderBoqEntrylist({super.key, required this.heading});
 
   @override
   State<WorkOrderBoqEntrylist> createState() => _WorkOrderBoqEntrylistState();
 }
 
 class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
-
   TextEditingController editingController = TextEditingController();
-  WorkOrderBoqController workOrderBoqController = Get.put(WorkOrderBoqController());
+  WorkOrderBoqController workOrderBoqController =
+      Get.put(WorkOrderBoqController());
+  MRN_Request_Controller mrn_request_controller =
+      Get.put(MRN_Request_Controller());
 
   @override
   void initState() {
     super.initState();
     DateTime currentDate = DateTime.now();
-    DateTime lastDayOfMonth = new DateTime(currentDate.year, currentDate.month - 1, 0);
-    workOrderBoqController.EntrylistFrDate.text = lastDayOfMonth.toString().substring(0, 10);
-    workOrderBoqController.EntrylistToDate.text = currentDate.toString().substring(0, 10);
+    DateTime lastDayOfMonth =
+        new DateTime(currentDate.year, currentDate.month - 1, 0);
+    workOrderBoqController.EntrylistFrDate.text =
+        lastDayOfMonth.toString().substring(0, 10);
+    workOrderBoqController.EntrylistToDate.text =
+        currentDate.toString().substring(0, 10);
     workOrderBoqController.WorkOrdBoq_EntryList();
+    mrn_request_controller.getCheckApprovalLevel();
   }
 
   @override
@@ -48,14 +54,31 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
         child: Scaffold(
           backgroundColor: Setmybackground,
           floatingActionButton: FloatingActionButton.extended(
-            onPressed: (){
+            onPressed: () {
               workOrderBoqController.saveButton.value = RequestConstant.SUBMIT;
               workOrderBoqController.delete_WorkOrderBoq_itemlist_Table();
-              workOrderBoqController.WorkOrdBoqitem_itemview_GetDbList.value=[];
-              Navigator.push(context, MaterialPageRoute(builder: (context) => WorkOrderBoqEntryScreen(heading: widget.heading,)));
+              workOrderBoqController.WorkOrdBoqitem_itemview_GetDbList.value =
+                  [];
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => WorkOrderBoqEntryScreen(
+                            heading: widget.heading,
+                          )));
             },
-            label: Text("Add", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: RequestConstant.Lable_Font_SIZE,),),
-            icon: Icon(Icons.add, color: Colors.white, size: RequestConstant.Heading_Font_SIZE, ),
+            label: Text(
+              "Add",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: RequestConstant.Lable_Font_SIZE,
+              ),
+            ),
+            icon: Icon(
+              Icons.add,
+              color: Colors.white,
+              size: RequestConstant.Heading_Font_SIZE,
+            ),
             backgroundColor: Theme.of(context).primaryColor,
           ),
           body: SingleChildScrollView(
@@ -103,7 +126,8 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
                             padding: const EdgeInsets.only(top: 3),
                             child: TextFormField(
                               readOnly: true,
-                              controller: workOrderBoqController.EntrylistFrDate,
+                              controller:
+                                  workOrderBoqController.EntrylistFrDate,
                               cursorColor: Colors.black,
                               style: TextStyle(color: Colors.black),
                               decoration: const InputDecoration(
@@ -114,35 +138,43 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
                                     color: Colors.grey,
                                     fontSize: RequestConstant.Lable_Font_SIZE),
                                 prefixIconConstraints:
-                                BoxConstraints(minWidth: 0, minHeight: 0),
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
                                 prefixIcon: Padding(
                                     padding: EdgeInsets.symmetric(
                                         vertical: 8, horizontal: 8),
                                     child: ConstIcons.date),
                               ),
                               onTap: () async {
-                                workOrderBoqController.workOrderBoq_entryList.clear();
+                                workOrderBoqController.workOrderBoq_entryList
+                                    .clear();
                                 var Frdate = await showDatePicker(
                                     context: context,
                                     initialDate: DateTime.now(),
                                     firstDate: DateTime(1900),
-                                    lastDate: DateTime.now(),builder: (context, child) {
-                                  return Theme(data: Theme.of(context).copyWith(
-                                    colorScheme: ColorScheme.light(
-                                      primary: Theme.of(context).primaryColor, // header background color
-                                      onPrimary: Colors.white, // header text color
-                                      onSurface: Colors.black, // body text color
-                                    ),
-                                    textButtonTheme: TextButtonThemeData(
-                                      style: TextButton.styleFrom(
-                                        primary: Colors.black, // button text color
-                                      ),
-                                    ),
-                                  ),
-                                    child: child!,
-                                  );
-                                });
-                                workOrderBoqController.EntrylistFrDate.text = Frdate.toString().substring(0, 10);
+                                    lastDate: DateTime.now(),
+                                    builder: (context, child) {
+                                      return Theme(
+                                        data: Theme.of(context).copyWith(
+                                          colorScheme: ColorScheme.light(
+                                            primary: Theme.of(context)
+                                                .primaryColor, // header background color
+                                            onPrimary: Colors
+                                                .white, // header text color
+                                            onSurface:
+                                                Colors.black, // body text color
+                                          ),
+                                          textButtonTheme: TextButtonThemeData(
+                                            style: TextButton.styleFrom(
+                                              primary: Colors
+                                                  .black, // button text color
+                                            ),
+                                          ),
+                                        ),
+                                        child: child!,
+                                      );
+                                    });
+                                workOrderBoqController.EntrylistFrDate.text =
+                                    Frdate.toString().substring(0, 10);
                               },
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -166,7 +198,8 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
                             padding: const EdgeInsets.only(top: 3),
                             child: TextFormField(
                               readOnly: true,
-                              controller: workOrderBoqController.EntrylistToDate,
+                              controller:
+                                  workOrderBoqController.EntrylistToDate,
                               cursorColor: Colors.black,
                               style: TextStyle(color: Colors.black),
                               decoration: InputDecoration(
@@ -177,32 +210,38 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
                                     color: Colors.grey,
                                     fontSize: RequestConstant.Lable_Font_SIZE),
                                 prefixIconConstraints:
-                                BoxConstraints(minWidth: 0, minHeight: 0),
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
                                 prefixIcon: Padding(
                                     padding: EdgeInsets.symmetric(
                                         vertical: 8, horizontal: 8),
                                     child: ConstIcons.date),
                               ),
                               onTap: () async {
-                                workOrderBoqController.workOrderBoq_entryList.clear();
+                                workOrderBoqController.workOrderBoq_entryList
+                                    .clear();
                                 var Todate = await showDatePicker(
                                     context: context,
                                     initialDate: DateTime.now(),
                                     firstDate: DateTime(1900),
                                     lastDate: DateTime(2100),
                                     builder: (context, child) {
-                                      return Theme(data: Theme.of(context).copyWith(
-                                        colorScheme: ColorScheme.light(
-                                          primary: Theme.of(context).primaryColor, // header background color
-                                          onPrimary: Colors.white, // header text color
-                                          onSurface: Colors.black, // body text color
-                                        ),
-                                        textButtonTheme: TextButtonThemeData(
-                                          style: TextButton.styleFrom(
-                                            primary: Colors.black, // button text color
+                                      return Theme(
+                                        data: Theme.of(context).copyWith(
+                                          colorScheme: ColorScheme.light(
+                                            primary: Theme.of(context)
+                                                .primaryColor, // header background color
+                                            onPrimary: Colors
+                                                .white, // header text color
+                                            onSurface:
+                                                Colors.black, // body text color
+                                          ),
+                                          textButtonTheme: TextButtonThemeData(
+                                            style: TextButton.styleFrom(
+                                              primary: Colors
+                                                  .black, // button text color
+                                            ),
                                           ),
                                         ),
-                                      ),
                                         child: child!,
                                       );
                                     });
@@ -231,19 +270,18 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
                             },
                             child: Center(
                                 child: Padding(
-                                  padding: const EdgeInsets.only(top: 13, bottom: 13),
-                                  child: Text("SHOW",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: RequestConstant.App_Font_SIZE,
-                                          fontWeight: FontWeight.bold)),
-                                ))),
+                              padding:
+                                  const EdgeInsets.only(top: 13, bottom: 13),
+                              child: Text("SHOW",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: RequestConstant.App_Font_SIZE,
+                                      fontWeight: FontWeight.bold)),
+                            ))),
                       ),
                     ],
                   ),
                 ),
-
-
                 SizedBox(height: 10),
                 SingleChildScrollView(
                   physics: BouncingScrollPhysics(),
@@ -279,14 +317,18 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
                             textInputAction: TextInputAction.search,
                             onChanged: (value) {
                               setState(() {
-                                workOrderBoqController.workOrderBoq_entryList.value= BaseUtitiles.filterSearchResults_workOrderDirect(value,workOrderBoqController.main_entryList);
+                                workOrderBoqController
+                                        .workOrderBoq_entryList.value =
+                                    BaseUtitiles
+                                        .filterSearchResults_workOrderDirect(
+                                            value,
+                                            workOrderBoqController
+                                                .main_entryList);
                               });
                             },
                           ),
                         ),
-
                         ListDetails(),
-
                       ],
                     ),
                   ),
@@ -308,12 +350,25 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
             child: Container(
               height: BaseUtitiles.getheightofPercentage(context, 68),
               child: Obx(
-                    () => ListView.builder(
-                    padding: EdgeInsets.only(bottom: BaseUtitiles.getheightofPercentage(context, 10)),
+                () => ListView.builder(
+                    padding: EdgeInsets.only(
+                        bottom:
+                            BaseUtitiles.getheightofPercentage(context, 10)),
                     physics: BouncingScrollPhysics(),
-                    itemCount: workOrderBoqController.workOrderBoq_entryList.value.length,
-
+                    itemCount: workOrderBoqController
+                        .workOrderBoq_entryList.value.length,
                     itemBuilder: (context, index) {
+                      final approvalConfig = mrn_request_controller
+                          .checkApprovalLevelData
+                          .firstWhere(
+                        (e) => e["screenName"] == "WorkOrderBOQ",
+                        orElse: () => <String, dynamic>{},
+                      );
+
+                      final bool isVerification =
+                          approvalConfig["isVerification"] ?? false;
+                      final bool isApproval =
+                          approvalConfig["isApproval"] ?? false;
                       return Container(
                         margin: EdgeInsets.only(left: 10, right: 10),
                         child: Card(
@@ -329,14 +384,14 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
                               children: <Widget>[
                                 Row(
                                   mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Row(
                                       children: [
                                         Container(
                                           width: BaseUtitiles
                                               .getWidthtofPercentage(
-                                              context, 50),
+                                                  context, 50),
                                           child: Row(
                                             children: [
                                               Container(
@@ -345,12 +400,16 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
                                                 child: ConstIcons.list_date,
                                               ),
                                               Text(
-                                                workOrderBoqController.workOrderBoq_entryList.value[index].entryDate.toString(),
+                                                workOrderBoqController
+                                                    .workOrderBoq_entryList
+                                                    .value[index]
+                                                    .entryDate
+                                                    .toString(),
                                                 style: TextStyle(
                                                     color: Theme.of(context)
                                                         .primaryColor,
                                                     fontWeight:
-                                                    FontWeight.bold),
+                                                        FontWeight.bold),
                                               ),
                                             ],
                                           ),
@@ -360,16 +419,18 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
                                     Container(
                                       margin: EdgeInsets.only(right: 10),
                                       child: Text(
-                                        workOrderBoqController.workOrderBoq_entryList.value[index].workOrderNo.toString(),
+                                        workOrderBoqController
+                                            .workOrderBoq_entryList
+                                            .value[index]
+                                            .workOrderNo
+                                            .toString(),
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
                                     )
                                   ],
                                 ),
-
                                 SizedBox(height: 8),
-
                                 Row(
                                   children: <Widget>[
                                     Container(
@@ -382,19 +443,24 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
                                           "Project",
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.black,),
+                                            color: Colors.black,
+                                          ),
                                         )),
                                     Expanded(
                                         flex: 8,
                                         child: Text(
-                                          workOrderBoqController.workOrderBoq_entryList.value[index].projectName.toString(),
+                                          workOrderBoqController
+                                              .workOrderBoq_entryList
+                                              .value[index]
+                                              .projectName
+                                              .toString(),
                                           style: TextStyle(
-                                            color: Colors.black,),
+                                            color: Colors.black,
+                                          ),
                                         )),
                                   ],
                                 ),
                                 SizedBox(height: 5),
-
                                 Row(
                                   children: <Widget>[
                                     Container(
@@ -407,14 +473,20 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
                                           "Site Name",
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.black,),
+                                            color: Colors.black,
+                                          ),
                                         )),
                                     Expanded(
                                         flex: 8,
                                         child: Text(
-                                          workOrderBoqController.workOrderBoq_entryList.value[index].siteName.toString(),
+                                          workOrderBoqController
+                                              .workOrderBoq_entryList
+                                              .value[index]
+                                              .siteName
+                                              .toString(),
                                           style: TextStyle(
-                                            color: Colors.black,),
+                                            color: Colors.black,
+                                          ),
                                         )),
                                   ],
                                 ),
@@ -431,12 +503,17 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
                                           "Subcontractor",
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.black,),
+                                            color: Colors.black,
+                                          ),
                                         )),
                                     Expanded(
                                         flex: 8,
                                         child: Text(
-                                          workOrderBoqController.workOrderBoq_entryList.value[index].subContractorName.toString(),
+                                          workOrderBoqController
+                                              .workOrderBoq_entryList
+                                              .value[index]
+                                              .subContractorName
+                                              .toString(),
                                           style: TextStyle(
                                             color: Colors.black,
                                           ),
@@ -456,19 +533,24 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
                                           "Net Amount",
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.black,),
+                                            color: Colors.black,
+                                          ),
                                         )),
                                     Expanded(
                                         flex: 8,
                                         child: Text(
-                                          workOrderBoqController.workOrderBoq_entryList.value[index].netAmount.toString(),
+                                          workOrderBoqController
+                                              .workOrderBoq_entryList
+                                              .value[index]
+                                              .netAmount
+                                              .toString(),
                                           style: TextStyle(
-                                            color: Colors.black,),
+                                            color: Colors.black,
+                                          ),
                                         )),
                                   ],
                                 ),
                                 SizedBox(height: 5),
-
                                 Row(
                                   children: <Widget>[
                                     Container(
@@ -481,20 +563,24 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
                                           "Preparedby",
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.black,),
+                                            color: Colors.black,
+                                          ),
                                         )),
                                     Expanded(
                                         flex: 8,
                                         child: Text(
-                                          workOrderBoqController.workOrderBoq_entryList.value[index].createdName.toString(),
+                                          workOrderBoqController
+                                              .workOrderBoq_entryList
+                                              .value[index]
+                                              .createdName
+                                              .toString(),
                                           style: TextStyle(
-                                            color: Colors.black,),
+                                            color: Colors.black,
+                                          ),
                                         )),
                                   ],
                                 ),
-
                                 Divider(thickness: 1),
-
                                 Row(
                                   children: <Widget>[
                                     Container(
@@ -512,11 +598,48 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
                                     Expanded(
                                         flex: 5,
                                         child: Text(
-                                          workOrderBoqController.workOrderBoq_entryList.value[index].verifyStatus == "Y" &&
-                                              workOrderBoqController.workOrderBoq_entryList.value[index].approveStatus == "Y" ? "Approved" :
-                                          workOrderBoqController.workOrderBoq_entryList.value[index].verifyStatus == "Y" ? "Verified" : "In-Progress".toString() ,
-                                          style: TextStyle(color:  workOrderBoqController.workOrderBoq_entryList.value[index].approveStatus== "Y" ? Colors.green:Colors.black),
+                                          workOrderBoqController
+                                                      .workOrderBoq_entryList
+                                                      .value[index]
+                                                      .approveStatus ==
+                                                  "Y"
+                                              ? "Approved"
+                                              : isApproval
+                                                  ? (isVerification
+                                                      ? (workOrderBoqController
+                                                                  .workOrderBoq_entryList
+                                                                  .value[index]
+                                                                  .verifyStatus ==
+                                                              "Y"
+                                                          ? "Verified"
+                                                          : "In-Progress")
+                                                      : "In-Progress")
+                                                  : (isVerification
+                                                      ? (workOrderBoqController
+                                                                  .workOrderBoq_entryList
+                                                                  .value[index]
+                                                                  .verifyStatus ==
+                                                              "Y"
+                                                          ? "Verified"
+                                                          : "In-Progress")
+                                                      : "In-Progress"),
+                                          style: TextStyle(
+                                              color: workOrderBoqController
+                                                          .workOrderBoq_entryList
+                                                          .value[index]
+                                                          .approveStatus ==
+                                                      "Y"
+                                                  ? Colors.green
+                                                  : Colors.black),
                                         )),
+                                    // Expanded(
+                                    //     flex: 5,
+                                    //     child: Text(
+                                    //       workOrderBoqController.workOrderBoq_entryList.value[index].verifyStatus == "Y" &&
+                                    //           workOrderBoqController.workOrderBoq_entryList.value[index].approveStatus == "Y" ? "Approved" :
+                                    //       workOrderBoqController.workOrderBoq_entryList.value[index].verifyStatus == "Y" ? "Verified" : "In-Progress".toString(),
+                                    //       style: TextStyle(color:  workOrderBoqController.workOrderBoq_entryList.value[index].approveStatus== "Y" ? Colors.green:Colors.black),
+                                    //     )),
                                     Expanded(
                                         flex: 1,
                                         child: IconButton(
@@ -525,8 +648,11 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
                                                   context: context,
                                                   shape: RoundedRectangleBorder(
                                                     // <-- SEE HERE
-                                                    borderRadius: BorderRadius.vertical(
-                                                        top: Radius.circular(25.0)),
+                                                    borderRadius:
+                                                        BorderRadius.vertical(
+                                                            top:
+                                                                Radius.circular(
+                                                                    25.0)),
                                                   ),
                                                   builder: (context) {
                                                     return SafeArea(
@@ -537,113 +663,157 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
                                                         ),
                                                         height: BaseUtitiles
                                                             .getheightofPercentage(
-                                                            context, 25),
+                                                                context, 25),
                                                         child: Column(
                                                           mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
                                                           children: [
                                                             Row(
                                                               mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
                                                               children: [
                                                                 Container(
-                                                                  margin: EdgeInsets.only(
-                                                                      right: 10),
+                                                                  margin: EdgeInsets
+                                                                      .only(
+                                                                          right:
+                                                                              10),
                                                                   child: Text(
-                                                                    workOrderBoqController.workOrderBoq_entryList.value[index].workOrderNo.toString(),
+                                                                    workOrderBoqController
+                                                                        .workOrderBoq_entryList
+                                                                        .value[
+                                                                            index]
+                                                                        .workOrderNo
+                                                                        .toString(),
                                                                     style: TextStyle(
                                                                         fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                        color: Theme.of(
-                                                                            context)
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: Theme.of(context)
                                                                             .primaryColor),
                                                                   ),
                                                                 ),
                                                                 IconButton(
-                                                                    onPressed: () {
+                                                                    onPressed:
+                                                                        () {
                                                                       Navigator.pop(
                                                                           context);
                                                                     },
-                                                                    icon: ConstIcons.cancle)
+                                                                    icon: ConstIcons
+                                                                        .cancle)
                                                               ],
                                                             ),
-
                                                             InkWell(
                                                                 child: Row(
                                                                   children: [
                                                                     Card(
                                                                       color: Colors
                                                                           .lightGreen,
-                                                                      child: Padding(
-                                                                        padding:
-                                                                        const EdgeInsets
-                                                                            .all(8),
-                                                                        child: Icon(
-                                                                          Icons.edit,
-                                                                          color: Colors
-                                                                              .white,
+                                                                      child:
+                                                                          Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .all(
+                                                                            8),
+                                                                        child:
+                                                                            Icon(
+                                                                          Icons
+                                                                              .edit,
+                                                                          color:
+                                                                              Colors.white,
                                                                         ),
                                                                       ),
                                                                     ),
-                                                                    SizedBox(width: 5),
+                                                                    SizedBox(
+                                                                        width:
+                                                                            5),
                                                                     Text(
                                                                       "Edit",
                                                                       style: TextStyle(
-                                                                          color:
-                                                                          Colors.grey,
-                                                                          fontSize: 15),
+                                                                          color: Colors
+                                                                              .grey,
+                                                                          fontSize:
+                                                                              15),
                                                                     )
                                                                   ],
                                                                 ),
-                                                                onTap: () async {
-                                                                  // workOrderBoqController.workOrder_itemlistTable_Delete();
-                                                                  // workOrderBoqController.ItemGetTableListdata.clear();
-                                                                  // workOrderBoqController.workOrder_editListApiDatas.value.clear();
-                                                                  // FocusScope.of(context).unfocus();
-                                                                  // await workOrderBoqController.workOrderEntryList_EditApi(
-                                                                  //     workOrderBoqController.workOrderDir_entryList.value[index].id,true,
-                                                                  //     widget.heading,
-                                                                  //     context,type:"ReSubmit");
+                                                                onTap:
+                                                                    () async {
+                                                                  workOrderBoqController
+                                                                      .delete_WorkOrderBoq_itemlist_Table();
+                                                                  workOrderBoqController
+                                                                          .WorkOrdBoqitem_itemview_GetDbList
+                                                                      .clear();
+                                                                  workOrderBoqController
+                                                                      .workOrderBoq_editListApiDatas
+                                                                      .value
+                                                                      .clear();
+                                                                  FocusScope.of(
+                                                                          context)
+                                                                      .unfocus();
+                                                                  await workOrderBoqController.workOrderEntryList_EditApi(
+                                                                      workOrderBoqController
+                                                                          .workOrderBoq_entryList
+                                                                          .value[
+                                                                              index]
+                                                                          .id,
+                                                                      true,
+                                                                      widget
+                                                                          .heading,
+                                                                      context,
+                                                                      type:
+                                                                          "ReSubmit");
                                                                 }),
-
                                                             Container(
-                                                                margin: EdgeInsets.only(right: 20),
-                                                                child: Divider(thickness: 1)),
-
+                                                                margin: EdgeInsets
+                                                                    .only(
+                                                                        right:
+                                                                            20),
+                                                                child: Divider(
+                                                                    thickness:
+                                                                        1)),
                                                             InkWell(
                                                                 child: Row(
                                                                   children: [
                                                                     Card(
-                                                                      color: Colors.red,
-                                                                      child: Padding(
-                                                                        padding:
-                                                                        const EdgeInsets
-                                                                            .all(8),
-                                                                        child: Icon(
+                                                                      color: Colors
+                                                                          .red,
+                                                                      child:
+                                                                          Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .all(
+                                                                            8),
+                                                                        child:
+                                                                            Icon(
                                                                           Icons
                                                                               .delete_forever,
-                                                                          color: Colors
-                                                                              .white,
+                                                                          color:
+                                                                              Colors.white,
                                                                         ),
                                                                       ),
                                                                     ),
-                                                                    SizedBox(width: 5),
+                                                                    SizedBox(
+                                                                        width:
+                                                                            5),
                                                                     Text(
                                                                       "Delete",
                                                                       style: TextStyle(
-                                                                          color:
-                                                                          Colors.grey,
-                                                                          fontSize: 15),
+                                                                          color: Colors
+                                                                              .grey,
+                                                                          fontSize:
+                                                                              15),
                                                                     )
                                                                   ],
                                                                 ),
-                                                                onTap: () async {
-                                                                  Navigator.pop(context);
+                                                                onTap:
+                                                                    () async {
+                                                                  Navigator.pop(
+                                                                      context);
                                                                   setState(() {
-                                                                    workOrderBoqController.DeleteAlert(context,index,"EntryList");
+                                                                    workOrderBoqController.DeleteAlert(
+                                                                        context,
+                                                                        index,
+                                                                        "EntryList");
                                                                   });
                                                                 }),
                                                             SizedBox(height: 20)
@@ -654,8 +824,10 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
                                                   });
                                             },
                                             icon: Icon(
-                                              Icons.arrow_drop_down_circle_outlined,
-                                              color: Theme.of(context).primaryColor,
+                                              Icons
+                                                  .arrow_drop_down_circle_outlined,
+                                              color: Theme.of(context)
+                                                  .primaryColor,
                                             )))
                                   ],
                                 ),
@@ -664,7 +836,6 @@ class _WorkOrderBoqEntrylistState extends State<WorkOrderBoqEntrylist> {
                           ),
                         ),
                       );
-
                     }),
               ),
             ),

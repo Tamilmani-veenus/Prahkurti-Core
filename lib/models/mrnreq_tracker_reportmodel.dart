@@ -74,6 +74,7 @@ class ReqTrackResult {
   String? inwardBy;
   int? supplierQuoteMasId;
   String? quoteNo;
+  String? mrnApproveType;
   String? quoteDate;
   int? quoteDetId;
   int? materialReqOrdDetId;
@@ -84,9 +85,13 @@ class ReqTrackResult {
   String? quoteCreatedTime;
   String? quoteVerifyStatus;
   String? quoteVerifyDate;
+  String? quoteVerifyTime;
   int? quoteVerifyBy;
+  String? quoteVerifyByName;
   String? quoteApproveStatus;
   String? quoteApproveDate;
+  String? quoteApprovedTime;
+  String? quoteApprovedByName;
   int? quoteApproveBy;
   String? mrnVerifyStatus;
   String? mrnPreApproveStatus;
@@ -112,6 +117,7 @@ class ReqTrackResult {
     this.preApprovedTime,
     this.preApprovedBy,
     this.approveDate,
+    this.mrnApproveType,
     this.approvedTime,
     this.approvedBy,
     this.appQty,
@@ -144,12 +150,16 @@ class ReqTrackResult {
     this.quoteCreatedByName,
     this.quoteCreatedDate,
     this.quoteCreatedTime,
+    this.quoteVerifyTime,
     this.quoteVerifyStatus,
     this.quoteVerifyDate,
     this.quoteVerifyBy,
+    this.quoteVerifyByName,
     this.quoteApproveStatus,
     this.quoteApproveDate,
     this.quoteApproveBy,
+    this.quoteApprovedTime,
+    this.quoteApprovedByName,
     this.mrnVerifyStatus,
     this.mrnPreApproveStatus,
     this.mrnApproveStatus,
@@ -168,6 +178,7 @@ class ReqTrackResult {
     mrnDate: json["mrnDate"],
     mrnTime: json["mrnTime"],
     mrnPreparedBy: json["mrnPreparedBy"],
+    mrnApproveType: json["mrnApproveType"],
     verifyDate: json["verifyDate"],
     verifyTime: json["verifyTime"],
     verifyBy: json["verifyBy"],
@@ -209,9 +220,13 @@ class ReqTrackResult {
     quoteCreatedTime: json["quoteCreatedTime"],
     quoteVerifyStatus: json["quoteVerifyStatus"],
     quoteVerifyDate: json["quoteVerifyDate"],
+    quoteVerifyByName: json["quoteVerifyByName"],
     quoteVerifyBy: json["quoteVerifyBy"],
+    quoteVerifyTime: json["quoteVerifyTime"],
     quoteApproveStatus: json["quoteApproveStatus"],
     quoteApproveDate: json["quoteApproveDate"],
+    quoteApprovedTime: json["quoteApprovedTime"],
+    quoteApprovedByName: json["quoteApprovedByName"],
     quoteApproveBy: json["quoteApproveBy"],
     mrnVerifyStatus: json["mrnVerifyStatus"],
     mrnPreApproveStatus: json["mrnPreApproveStatus"],
@@ -236,6 +251,7 @@ class ReqTrackResult {
     "verifyBy": verifyBy,
     "preAppovedDate": preAppovedDate,
     "preApprovedTime": preApprovedTime,
+    "mrnApproveType": mrnApproveType,
     "preApprovedBy": preApprovedBy,
     "poApprovedTime": poApprovedTime,
     "approveDate": approveDate,
@@ -271,7 +287,11 @@ class ReqTrackResult {
     "quoteCreatedDate": quoteCreatedDate,
     "quoteCreatedTime": quoteCreatedTime,
     "quoteVerifyStatus": quoteVerifyStatus,
+    "quoteVerifyByName": quoteVerifyByName,
+    "quoteApprovedTime": quoteApprovedTime,
+    "quoteApprovedByName": quoteApprovedByName,
     "quoteVerifyDate": quoteVerifyDate,
+    "quoteVerifyTime": quoteVerifyTime,
     "quoteVerifyBy": quoteVerifyBy,
     "quoteApproveStatus": quoteApproveStatus,
     "quoteApproveDate": quoteApproveDate,

@@ -145,6 +145,7 @@ class DailyWrkDone_DPRNEW_Controller extends GetxController {
 
   Future getAddBoqDetails(BuildContext context) async {
     dprNew_BoqDetailsList.value=[];
+    await ClickUtils.run(() async {
     var response = await DPR_New_Provider.dprNew_getBoqDetails(
         projectController.selectedProjectId.value,
         siteController.selectedsiteId.value,
@@ -156,7 +157,7 @@ class DailyWrkDone_DPRNEW_Controller extends GetxController {
         if (response.result!.isNotEmpty) {
           dprNew_BoqDetailsList.value = response.result!;
           dprNew_mainList.value = dprNew_BoqDetailsList.value;
-          return showDialog(
+          await showDialog(
               context: context,
               builder: (BuildContext context) {
                 return AddBoqPopup(list: dprNew_BoqDetailsList.value);
@@ -170,6 +171,7 @@ class DailyWrkDone_DPRNEW_Controller extends GetxController {
     } else {
       BaseUtitiles.showToast("Something went wrong..");
     }
+    });
   }
 
   dprNew_DetTable_Delete() async {
@@ -819,6 +821,7 @@ class DailyWrkDone_DPRNEW_Controller extends GetxController {
 
   Future Dpr_New_EntryList_EditApi(int workid,String MenuName,BuildContext context) async {
     dprNew_EditApiList.value=[];
+    await ClickUtils.run(() async {
     var response = await DPR_New_Provider.dpr_New_entryList_editAPI(workid);
     if (response != null) {
       if (response.success == true) {
@@ -832,7 +835,7 @@ class DailyWrkDone_DPRNEW_Controller extends GetxController {
           await getLabourTablesDatas();
           await dprNew_EditMesurmentTableSave();
           await getMesurmentTablesDatas();
-          return Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DailyWork_done_DPR_Entry_New(heading: MenuName,)),);
+          await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DailyWork_done_DPR_Entry_New(heading: MenuName,)),);
         } else {
           BaseUtitiles.showToast("No Data Found");
         }
@@ -842,6 +845,7 @@ class DailyWrkDone_DPRNEW_Controller extends GetxController {
     } else {
       BaseUtitiles.showToast("Something went wrong..");
     }
+    });
   }
 
   Future Dpr_New_EntryList_DetEditApi(int workid) async {

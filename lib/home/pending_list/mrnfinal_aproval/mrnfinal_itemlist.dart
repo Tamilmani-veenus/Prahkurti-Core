@@ -450,8 +450,7 @@ class _MrnfinalItemListState extends State<MrnfinalItemList> {
                                             Theme.of(context).primaryColor,
                                             textAlign: TextAlign.center,
                                             controller:
-                                            mrnFinalApprovalController
-                                                .ApprQty_ListController[
+                                            mrnFinalApprovalController.ApprQty_ListController[
                                             index],
                                             keyboardType:
                                             TextInputType.numberWithOptions(
@@ -484,6 +483,13 @@ class _MrnfinalItemListState extends State<MrnfinalItemList> {
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 16.0),
+                                            onTap: () {
+                                              if (mrnFinalApprovalController.ApprQty_ListController[index].text != "" &&mrnFinalApprovalController.ApprQty_ListController[index].text != "0" &&mrnFinalApprovalController.ApprQty_ListController[index].text != "0.0") {
+                                                return;
+                                              } else {
+                                                mrnFinalApprovalController.ApprQty_ListController[index].text = "";
+                                              }
+                                            },
                                             onChanged: (value) {
                                               if(mrn_request_controller.activeType.value)
                                                 {
@@ -499,6 +505,59 @@ class _MrnfinalItemListState extends State<MrnfinalItemList> {
                                     ],
                                   ),
                                 ),
+                                Obx(()=>mrn_request_controller.ReqType.value=="CP"?Container(
+                                  margin: EdgeInsets.only(left: 3,right: 3,top: 3,bottom: 3),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                          flex: 3,
+                                          child: Text("Approx Days",style: TextStyle(color: Colors.black,fontSize: 14.0),)),
+                                      Expanded(
+                                        flex: 4,
+                                        child: Container(
+                                          margin: EdgeInsets.only(right: 11),
+                                          height: BaseUtitiles.getheightofPercentage(context, 4),
+                                          child:
+                                          TextField(
+                                              cursorColor:Theme.of(context).primaryColor,
+                                              textAlign: TextAlign.center,
+                                              controller: mrnFinalApprovalController.ApproxDays_ListController[index],
+                                              keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+                                              onTap: () {
+                                                if (mrnFinalApprovalController.ApproxDays_ListController[index].text != "" && mrnFinalApprovalController.ApproxDays_ListController[index].text != "0" && mrnFinalApprovalController.ApproxDays_ListController[index].text != "0.0") {
+                                                  return;
+                                                } else {
+                                                  mrnFinalApprovalController.ApproxDays_ListController[index].text = "";
+                                                }
+                                              },
+                                              inputFormatters: [
+                                                TextInputFormatter.withFunction((oldValue, newValue) {
+                                                  return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                      ? newValue
+                                                      : oldValue;
+                                                }),
+                                              ],
+                                              decoration: InputDecoration(
+                                                contentPadding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0,0.0),
+                                                focusedBorder: OutlineInputBorder(
+                                                    borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                                                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                                                enabledBorder: OutlineInputBorder(
+                                                    borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                                                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                                              ),
+                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16.0),
+                                              onChanged: (value) {
+                                                mrnFinalApprovalController
+                                                    .finalApproval_updateConsumTables();
+                                              }
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ):SizedBox()),
                                 Container(
                                   margin: const EdgeInsets.only(
                                       left: 3, right: 3, top: 3, bottom: 3),

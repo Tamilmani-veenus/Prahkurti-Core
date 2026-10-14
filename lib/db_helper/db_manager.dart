@@ -19,10 +19,10 @@ class DBManager {
     }
   }
 
-    insertData(table, data) async {
-      var connection =  _database;
-      return await connection?.insert(table, data);
-    }
+  insertData(table, data) async {
+    var connection =  _database;
+    return await connection?.insert(table, data);
+  }
 
   readData(table) async {
     var connection =  _database;
@@ -48,6 +48,11 @@ class DBManager {
   deleteDataByCatId(table, data) async {
     var connection =  _database;
     return await connection?.rawDelete('delete from $table where catId=?',[data['catId']]);
+  }
+  deleteDataId(table, data) async {
+    var connection =  _database;
+    print("Delete SQL ID: ${data['id']}");
+    return await connection?.rawDelete('delete from $table where id=?',[data['id']]);
   }
 
   deleteDataById(table, data) async {
@@ -112,6 +117,27 @@ class DBManager {
   UpdateTableIdwise(table, data) async {
     var connection =  _database;
     return await connection?.update(table, data, where: 'id=?', whereArgs: [data['id']]);
+  }
+  UpdateTableIdSubcontwise(String table, Map<String, dynamic> data) async {
+    final connection = _database;
+
+    if ((data['reqDetId'] ?? 0) != 0) {
+      // Edit
+      return await connection!.update(
+        table,
+        data,
+        where: 'reqDetId = ?',
+        whereArgs: [data['reqDetId']],
+      );
+    } else {
+      // Add
+      return await connection!.update(
+        table,
+        data,
+        where: 'id = ?',
+        whereArgs: [data['id']],
+      );
+    }
   }
 
   TransAckUpdateTableIdwise(table, data) async {

@@ -97,6 +97,7 @@ class Consumption_Controller extends GetxController {
 //---------StockMaterial List--------
   Future getStock_Material(context) async {
     Stock_List.value.clear();
+    await ClickUtils.run(() async {
     final value = await Consumption_provider.getStockmaterial(
         projectController.selectedProjectId.value,
         siteController.selectedsiteId.value);
@@ -104,9 +105,8 @@ class Consumption_Controller extends GetxController {
       if( value.success == true){
       if (value.result!.isNotEmpty) {
         Stock_List.value = value.result!;
-        Navigator.push(context, MaterialPageRoute(builder: (context) =>
+        await Navigator.push(context, MaterialPageRoute(builder: (context) =>
             Consumption_AddItems(list: Stock_List.value)));
-        return Stock_List.value;
       }
       else {
         BaseUtitiles.showToast("No Data Found");
@@ -119,6 +119,7 @@ class Consumption_Controller extends GetxController {
     else {
       BaseUtitiles.showToast("Something Went Wrong...");
     }
+    });
   }
 
 
@@ -436,6 +437,7 @@ class Consumption_Controller extends GetxController {
   }
 
   Future ConsumEntryList_EditApi(int expenseId,String MenuName, BuildContext context) async {
+    await ClickUtils.run(() async {
     final value =
         await Consumption_provider.Consum_entryList_editAPI(expenseId);
     if (value != null) {
@@ -445,7 +447,7 @@ class Consumption_Controller extends GetxController {
       Consum_EditListApiValue.value = [value.result!];
       Consum_entrylist_editSaveDetTable();
       getConumTablesDatas();
-      return Navigator.pushReplacement(
+      await Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => Consumption_Entry(heading: MenuName,)),
       );
@@ -456,6 +458,7 @@ class Consumption_Controller extends GetxController {
       else {
       BaseUtitiles.showToast("Something Went Wrong...");
     }
+    });
   }
 
 // ----------Delete call API --------------

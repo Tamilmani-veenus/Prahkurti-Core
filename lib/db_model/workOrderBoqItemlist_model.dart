@@ -37,17 +37,3 @@ class WorkOrderBoqItemlist{
     return mapping;
   }
 }
-
-// {
-// "id": 0,
-// "headItemId": 0,
-// "subItemId": 0,
-// "level3ItemId": 0,
-// "boqCode": "string",
-// "itemDescription": "string",
-// "qty": 0,
-// "unit": "string",
-// "rate": 0,
-// "oldRate": 0,
-// "amount": 0,
-// }

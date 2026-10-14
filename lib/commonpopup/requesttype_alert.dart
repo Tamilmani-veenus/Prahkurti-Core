@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controller/mrn_request_indent_controller.dart';
 import '../controller/mrnrequest_preIndent_controller.dart';
+import '../controller/projectcontroller.dart';
+import '../controller/sitecontroller.dart';
 import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
 
@@ -16,7 +18,8 @@ class _RequestType_AlertState extends State<RequestType_Alert> {
 
   MRN_Request_Controller mrn_request_controller = Get.put(MRN_Request_Controller());
   MRNRequest_PreIndent_Controller mrnRequest_PreIndent_Controller = Get.put(MRNRequest_PreIndent_Controller());
-
+  ProjectController projectcontroller = Get.put(ProjectController());
+  SiteController siteController = Get.put(SiteController());
 
   final list=["General Items","Asset Materials"];
 
@@ -48,6 +51,10 @@ class _RequestType_AlertState extends State<RequestType_Alert> {
                         onTap: ()  async {
                           await mrn_request_controller.delete_MaterialIntent_itemlist_Table();
                           mrn_request_controller.Material_itemview_GetDbList.value=[];
+                          projectcontroller.projectname.text = "--SELECT--";
+                          projectcontroller.selectedProjectId.value = 0;
+                          siteController.Sitename.text = "--SELECT--";
+                          siteController.selectedsiteId.value = 0;
 
                           await mrnRequest_PreIndent_Controller.delete_MaterialIntent_itemlist_Table();
                           mrnRequest_PreIndent_Controller.Material_itemview_GetDbList.value = [];

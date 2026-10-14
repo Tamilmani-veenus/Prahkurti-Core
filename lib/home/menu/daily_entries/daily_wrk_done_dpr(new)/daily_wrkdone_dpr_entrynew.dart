@@ -642,7 +642,7 @@ class _DailyWork_done_DPR_New_EntryState extends State<DailyWork_done_DPR_Entry_
                                 primary: Setmybackground,
                               ),
                               onPressed: () async {
-                                if (!AppClient.isPrahkurti) {
+                                if (!AppClient.isPrahkurti && !AppClient.isVrindhavana) {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(

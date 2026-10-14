@@ -270,6 +270,7 @@ class MMatReqMasLink {
   int? materialReqOrdMasid;
   int? materialId;
   double? qty;
+  double? approxDays;
   int? scaleId;
   int? siteId;
   String? approveStatus;
@@ -289,6 +290,7 @@ class MMatReqMasLink {
     this.materialReqOrdMasid,
     this.materialId,
     this.qty,
+    this.approxDays,
     this.scaleId,
     this.siteId,
     this.approveStatus,
@@ -309,6 +311,7 @@ class MMatReqMasLink {
     materialReqOrdMasid: json["materialReqOrdMasid"],
     materialId: json["materialID"],
     qty: json["qty"],
+    approxDays: json["approxDays"],
     scaleId: json["scaleID"],
     siteId: json["siteID"],
     approveStatus: json["approveStatus"],
@@ -330,6 +333,7 @@ class MMatReqMasLink {
       "materialReqOrdMasid": materialReqOrdMasid,
       "materialID": materialId,
       "qty": qty,
+      "approxDays": approxDays,
       "scaleID": scaleId,
       "siteID": siteId,
       "approveStatus": approveStatus,

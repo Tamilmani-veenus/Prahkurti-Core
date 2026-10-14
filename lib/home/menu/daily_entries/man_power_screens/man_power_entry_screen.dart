@@ -52,31 +52,31 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
         manPowerController.manpowerLevel3ItemList.value=[];
         await autoYearWiseNoController.AutoYearWiseNo("MANPOWER");
         manPowerController.autoYearWiseNoController.text = autoYearWiseNoController.ManPower_autoYrsWise.value;
-        manPowerController.ManPowerDateController.text = BaseUtitiles.initiateCurrentDateFormat();
+        manPowerController.ManPowerEntryDateController.text = BaseUtitiles.initiateCurrentDateFormat();
+        manPowerController.ManPowerReqDateController.text = BaseUtitiles.initiateCurrentDateFormat();
+        manPowerController.ManPowerDueDateController.text = BaseUtitiles.initiateCurrentDateFormat();
         manPowerController.preparedbyController.text = loginController.EmpName();
         manPowerController.createdById.value = 0;
-        manPowerController.savedNos.value = 0;
         manPowerController.RemarksController.text = "";
+        manPowerController.AppRemarksController.text = "";
       }
       else {
         for (int j = 0; j < manPowerController.manpowerEditApiValue.length; j++) {
           final element = manPowerController.manpowerEditApiValue[j];
 
-          projectController.projectname.text = element.projectName;
-          projectController.selectedProjectId.value = element.projectId;
-          siteController.Sitename.text = element.siteName;
-          siteController.selectedsiteId.value = element.siteId;
-          siteController.headNameController.text = element.materialHeadName;
-          siteController.selectedHeadId.value = element.headItemId;
-          manPowerController.autoYearWiseNoController.text = element.manPowerNo;
-          manPowerController.ManPowerDateController.text = element.entryDate;
-          manPowerController.preparedbyController.text = element.createdByName;
-          manPowerController.createdById.value = element.createdBy;
-          manPowerController.RemarksController.text = element.remarks;
-
-          for (int i = 0; i < element.manPowerDets.length; i++) {
-            manPowerController.savedNos.value = element.manPowerDets[i].nos;
-          }
+          projectController.projectname.text = element.projectName!;
+          projectController.selectedProjectId.value = element.projectId!;
+          siteController.Sitename.text = element.siteName!;
+          siteController.selectedsiteId.value = element.siteId!;
+          siteController.headNameController.text = element.materialHeadName!;
+          siteController.selectedHeadId.value = element.headItemId!;
+          manPowerController.autoYearWiseNoController.text = element.manPowerNo!;
+          manPowerController.ManPowerEntryDateController.text = element.entryDate!;
+          manPowerController.ManPowerReqDateController.text = element.reqDate!;
+          manPowerController.ManPowerDueDateController.text = element.dueDate!;
+          manPowerController.preparedbyController.text = element.createdByName!;
+          manPowerController.createdById.value = element.createdBy!;
+          manPowerController.RemarksController.text = element.remarks!;
         }
       }
     });
@@ -98,7 +98,7 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
             children: [
               SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                child: Column(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 40),
                     Container(
@@ -186,13 +186,13 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
                                 child: TextFormField(
                                     readOnly: true,
                                     controller: manPowerController
-                                        .ManPowerDateController,
+                                        .ManPowerEntryDateController,
                                     cursorColor: Colors.black,
                                     style: const TextStyle(color: Colors.black),
                                     decoration: const InputDecoration(
                                       contentPadding: EdgeInsets.zero,
                                       border: InputBorder.none,
-                                      labelText: "Date",
+                                      labelText: "Entry Date",
                                       labelStyle: TextStyle(
                                           color: Colors.grey,
                                           fontSize:
@@ -238,10 +238,155 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
                                               );
                                             });
                                         manPowerController
-                                            .ManPowerDateController.text =
+                                            .ManPowerEntryDateController.text =
                                             BaseUtitiles.selectDateFormat(
                                                 Entrydate!);
                                       }
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.only(
+                                top: 2, left: 10, right: 10),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(
+                                    color: Colors.white70, width: 1),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              elevation: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 3, left: 10, bottom: 5),
+                                child: TextFormField(
+                                    readOnly: true,
+                                    controller: manPowerController
+                                        .ManPowerReqDateController,
+                                    cursorColor: Colors.black,
+                                    style: const TextStyle(color: Colors.black),
+                                    decoration: const InputDecoration(
+                                      contentPadding: EdgeInsets.zero,
+                                      border: InputBorder.none,
+                                      labelText: "Req Date",
+                                      labelStyle: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize:
+                                          RequestConstant.Lable_Font_SIZE),
+                                      prefixIconConstraints: BoxConstraints(
+                                          minWidth: 0, minHeight: 0),
+                                      prefixIcon: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 8, horizontal: 8),
+                                          child: ConstIcons.date),
+                                    ),
+                                    onTap: () async {
+                                      DateTime? entryDate = await showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime(2000), // Earliest selectable date
+                                        lastDate: DateTime(2100),  // Latest selectable date
+                                        builder: (context, child) {
+                                          return Theme(
+                                            data: Theme.of(context).copyWith(
+                                              colorScheme: ColorScheme.light(
+                                                primary: Theme.of(context).primaryColor,
+                                                onPrimary: Colors.white,
+                                                onSurface: Colors.black,
+                                              ),
+                                            ),
+                                            child: child!,
+                                          );
+                                        },
+                                      );
+
+                                      if (entryDate != null) {
+                                        manPowerController.ManPowerReqDateController.text =
+                                            BaseUtitiles.selectDateFormat(entryDate);
+
+                                        if (manPowerController.ManPowerDueDateController.text.isNotEmpty) {
+                                          final dueDate = DateTime.parse(
+                                            manPowerController.ManPowerDueDateController.text,
+                                          );
+
+                                          if (dueDate.isBefore(entryDate)) {
+                                            manPowerController.ManPowerDueDateController.text =
+                                                BaseUtitiles.selectDateFormat(entryDate);
+                                          }
+                                        }
+                                      }
+                                    }
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.only(
+                                top: 2, left: 10, right: 10),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(
+                                    color: Colors.white70, width: 1),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              elevation: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 3, left: 10, bottom: 5),
+                                child: TextFormField(
+                                    readOnly: true,
+                                    controller: manPowerController
+                                        .ManPowerDueDateController,
+                                    cursorColor: Colors.black,
+                                    style: const TextStyle(color: Colors.black),
+                                    decoration: const InputDecoration(
+                                      contentPadding: EdgeInsets.zero,
+                                      border: InputBorder.none,
+                                      labelText: "Req Due Date",
+                                      labelStyle: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize:
+                                          RequestConstant.Lable_Font_SIZE),
+                                      prefixIconConstraints: BoxConstraints(
+                                          minWidth: 0, minHeight: 0),
+                                      prefixIcon: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 8, horizontal: 8),
+                                          child: ConstIcons.date),
+                                    ),
+                                    onTap: () async {
+                                      DateTime? entryDate = await showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.parse(manPowerController.ManPowerReqDateController.text),
+                                        firstDate:DateTime.parse(manPowerController.ManPowerReqDateController.text),
+                                        lastDate: DateTime(2100),  // Latest selectable date
+                                        builder: (context, child) {
+                                          return Theme(
+                                            data: Theme.of(context).copyWith(
+                                              colorScheme: ColorScheme.light(
+                                                primary: Theme.of(context).primaryColor,
+                                                onPrimary: Colors.white,
+                                                onSurface: Colors.black,
+                                              ),
+                                            ),
+                                            child: child!,
+                                          );
+                                        },
+                                      );
+
+                                      if (entryDate != null) {
+                                        manPowerController.ManPowerDueDateController.text =
+                                            BaseUtitiles.selectDateFormat(entryDate);
+                                      }
+                                    }
                                 ),
                               ),
                             ),
@@ -485,6 +630,51 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
                         ),
                       ),
                     ),
+                    if(manPowerController.saveButton.value == RequestConstant.APPROVAL)Container(
+                      margin:
+                      const EdgeInsets.only(top: 2, left: 10, right: 10),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          side: const BorderSide(
+                              color: Colors.white70, width: 1),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        elevation: 3,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 3, left: 10, bottom: 5),
+                          child: TextFormField(
+                            autovalidateMode:
+                            AutovalidateMode.always,
+                            readOnly: false,
+                            controller:
+                            manPowerController.AppRemarksController,
+                            cursorColor: Colors.black,
+                            style: const TextStyle(color: Colors.black),
+                            decoration: const InputDecoration(
+                              contentPadding: EdgeInsets.zero,
+                              border: InputBorder.none,
+                              labelText: "Approve Remarks",
+                              labelStyle: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: RequestConstant.Lable_Font_SIZE),
+                              prefixIconConstraints:
+                              BoxConstraints(minWidth: 0, minHeight: 0),
+                              prefixIcon: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 8),
+                                  child: ConstIcons.remarks),
+                            ),
+                            // validator: (value) {
+                            //   if (value!.isEmpty) {
+                            //     return '\u26A0 ${RequestConstant.VALIDATE}';
+                            //   }
+                            //   return null;
+                            // },
+                          ),
+                        ),
+                      ),
+                    ),
                     SizedBox(height: BaseUtitiles.getheightofPercentage(context, 1)),
                     Padding(
                       padding: const EdgeInsets.only(left: 10, right: 10),
@@ -512,7 +702,7 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
                                     Flexible(
                                       child: Obx(()=>
                                          Text(
-                                           manPowerController.selectedIds.isEmpty?"Add BOQ Items":"Add BOQ Items (${manPowerController.selectedIds.length})",
+                                           manPowerController.selectedIds.isEmpty?" Level 3 Items":" Level 3 Items (${manPowerController.selectedIds.length})",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               color:
@@ -546,7 +736,7 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
                                   ),
                                   Flexible(
                                     child: Text(
-                                      "Add Labour Details",
+                                      " Labour Details",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: Theme.of(context).primaryColor,
@@ -561,6 +751,17 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
 
                         ],
                       ),
+                    ),
+                    Obx(() => manPowerController.selectedIds.isNotEmpty
+                        ? const Text(
+                      "   ⓘ Note: Tap again to view selected",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF2E7D32),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )
+                        : const SizedBox(),
                     ),
 
                     SizedBox(height: height),
@@ -700,7 +901,7 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
                         }else{
                           bool hasInvalid = false;
                           for (int i = 0; i < manPowerController.readListdata.length; i++) {
-                            final controller = manPowerController.NosControllers[i];
+                            final controller = manPowerController.EntrySCreenNosControllers[i];
                             final text = controller.text.trim();
 
                             if (text.isEmpty) {
@@ -753,26 +954,189 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
                   ),
                   elevation: 5,
                   color: Colors.white,
-                  // margin: EdgeInsets.only(left: 10, right: 10,bottom: 10),
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            flex: 6,
-                            child: Container(
-                              margin: const EdgeInsets.only(
-                                  top: 5, left: 10, right: 25),
-                              child: Text(
-                                '${manPowerController.readListdata.value[index].catName}',
-                                style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontWeight: FontWeight.bold),
+                  child: Container(padding: EdgeInsets.only(bottom: 10),
+                    child: Stack(
+                      children:[
+                        Column(
+                          children: [
+                            SizedBox(height: 10,),
+                            Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const SizedBox(width: 15),
+                              Container(
+                                width: 45,
+                                height: 45,
+                                decoration: BoxDecoration(
+                                  color:  Theme.of(context)
+                                      .primaryColor.withOpacity(0.1), // Light blue background
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.groups_outlined,
+                                  color: Theme.of(context)
+                                      .primaryColor, // Dark navy
+                                  size: 25,
+                                ),
                               ),
-                            ),
-                          ),
-                          InkWell(
+                              const SizedBox(width: 10),
+                              Expanded(
+                                flex: 1,
+                                child: Center(
+                                  child: Text(
+                                    '${manPowerController.readListdata.value[index].catName}',
+                                    softWrap: true,
+                                    maxLines: null,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 5,),
+                              Expanded(
+                                flex: 2,
+                                child: Column(
+                                  children: [
+                                    Text("Nos",
+                                      style: TextStyle(
+                                        fontSize: 13.0,
+                                        fontWeight: FontWeight.normal,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    SizedBox(height: 5,),
+                                    Container(
+                                      height: BaseUtitiles.getheightofPercentage(
+                                          context, 4),
+                                      child: TextFormField(
+                                          onTap: () {
+                                            if (manPowerController
+                                                .EntrySCreenNosControllers[
+                                            index]
+                                                .text !=
+                                                "" &&
+                                                manPowerController
+                                                    .EntrySCreenNosControllers[
+                                                index]
+                                                    .text !=
+                                                    "0" &&
+                                                manPowerController
+                                                    .EntrySCreenNosControllers[
+                                                index]
+                                                    .text !=
+                                                    "0.0") {
+                                              return;
+                                            } else {
+                                              manPowerController
+                                                  .EntrySCreenNosControllers[
+                                              index]
+                                                  .text = "";
+                                            }
+                                          },
+                                          style:
+                                          const TextStyle(color: Colors.black),
+                                          controller: manPowerController
+                                              .EntrySCreenNosControllers[index],
+                                          cursorColor: Colors.black,
+                                          keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+
+                                          inputFormatters: [
+                                            TextInputFormatter.withFunction((oldValue, newValue) {
+                                              return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                                  ? newValue
+                                                  : oldValue;
+                                            }),
+                                          ],
+                                          textAlign: TextAlign.center,
+                                          decoration: InputDecoration(
+                                            contentPadding:
+                                            const EdgeInsets.fromLTRB(
+                                                8.0, 0.0, 8.0, 0.0),
+                                            focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Theme.of(context)
+                                                        .primaryColor),
+                                                borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(10))),
+                                            enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Theme.of(context)
+                                                        .primaryColor),
+                                                borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(10))),
+                                          ),
+                                          onChanged: (value) async {
+                                            await manPowerController.updateManPowerDetValue();
+                                          }),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(width: 50,),
+                              // Container(
+                              //   margin: const EdgeInsets.only(
+                              //       top: 10, left: 10, right: 3, bottom: 8),
+                              //   child: Row(
+                              //     children: <Widget>[
+                              //       Expanded(
+                              //         flex: 2,
+                              //         child: Text("Remarks",
+                              //               style: TextStyle(
+                              //                 fontSize: 13.0,
+                              //                 fontWeight: FontWeight.normal,
+                              //                 color: Colors.black,
+                              //               ),
+                              //         ),
+                              //       ),
+                              //       Expanded(
+                              //           flex: 3,
+                              //           child: Container(
+                              //             margin: const EdgeInsets.only(right: 11),
+                              //             height: BaseUtitiles.getheightofPercentage(
+                              //                 context, 4),
+                              //             child: TextFormField(
+                              //               textAlign: TextAlign.center,
+                              //               controller: manPowerController
+                              //                   .RemarksControllers[index],
+                              //               style: const TextStyle(color: Colors.black),
+                              //               cursorColor: Colors.black,
+                              //               keyboardType: TextInputType.name,
+                              //               decoration: InputDecoration(
+                              //                 contentPadding: const EdgeInsets.fromLTRB(
+                              //                     8.0, 0.0, 8.0, 0.0),
+                              //                 focusedBorder: OutlineInputBorder(
+                              //                     borderSide: BorderSide(
+                              //                         color: Theme.of(context)
+                              //                             .primaryColor),
+                              //                     borderRadius: const BorderRadius.all(
+                              //                         Radius.circular(10))),
+                              //                 enabledBorder: OutlineInputBorder(
+                              //                     borderSide: BorderSide(
+                              //                         color: Theme.of(context)
+                              //                             .primaryColor),
+                              //                     borderRadius: const BorderRadius.all(
+                              //                         Radius.circular(10))),
+                              //               ),
+                              //                 onChanged: (value) async {
+                              //                   await manPowerController
+                              //                       .updateManPowerDetValue();
+                              //                 }),
+                              //           )),
+                              //     ],
+                              //   ),
+                              // ),
+                            ],
+                                                  ),
+                          ],
+                        ),
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: InkWell(
                               onTap: () {
                                 showDialog(
                                   context: context,
@@ -840,150 +1204,10 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
                               child: Container(
                                   margin:
                                   const EdgeInsets.only(right: 5, top: 5),
-                                  child: ConstIcons.cancle))
-                        ],
-                      ),
-                      Container(
-                        margin:
-                        const EdgeInsets.only(top: 5, left: 10, right: 3),
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              flex: 2,
-                              child: Text("Nos",
-                                style: TextStyle(
-                                  fontSize: 13.0,
-                                  fontWeight: FontWeight.normal,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                                flex: 3,
-                                child: Container(
-                                  margin: const EdgeInsets.only(right: 11),
-                                  height: BaseUtitiles.getheightofPercentage(
-                                      context, 4),
-                                  child: TextFormField(
-                                      onTap: () {
-                                        if (manPowerController
-                                            .NosControllers[
-                                        index]
-                                            .text !=
-                                            "" &&
-                                            manPowerController
-                                                .NosControllers[
-                                            index]
-                                                .text !=
-                                                "0" &&
-                                            manPowerController
-                                                .NosControllers[
-                                            index]
-                                                .text !=
-                                                "0.0") {
-                                          return;
-                                        } else {
-                                            manPowerController
-                                                .NosControllers[
-                                            index]
-                                                .text = "";
-                                        }
-                                      },
-                                      style:
-                                      const TextStyle(color: Colors.black),
-                                      controller: manPowerController
-                                          .NosControllers[index],
-                                      cursorColor: Colors.black,
-                                      keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-
-                                      inputFormatters: [
-                                        TextInputFormatter.withFunction((oldValue, newValue) {
-                                          return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
-                                              ? newValue
-                                              : oldValue;
-                                        }),
-                                      ],
-                                      textAlign: TextAlign.center,
-                                      decoration: InputDecoration(
-                                        contentPadding:
-                                        const EdgeInsets.fromLTRB(
-                                            8.0, 0.0, 8.0, 0.0),
-                                        focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Theme.of(context)
-                                                    .primaryColor),
-                                            borderRadius:
-                                            const BorderRadius.all(
-                                                Radius.circular(10))),
-                                        enabledBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Theme.of(context)
-                                                    .primaryColor),
-                                            borderRadius:
-                                            const BorderRadius.all(
-                                                Radius.circular(10))),
-                                      ),
-                                      onChanged: (value) async {
-                                        await manPowerController.updateManPowerDetValue();
-                                      }),
-                                )),
-
-                          ],
+                                  child: ConstIcons.cancle)),
                         ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(
-                            top: 10, left: 10, right: 3, bottom: 8),
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              flex: 2,
-                              child: Text("Remarks",
-                                    style: TextStyle(
-                                      fontSize: 13.0,
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.black,
-                                    ),
-                              ),
-                            ),
-                            Expanded(
-                                flex: 3,
-                                child: Container(
-                                  margin: const EdgeInsets.only(right: 11),
-                                  height: BaseUtitiles.getheightofPercentage(
-                                      context, 4),
-                                  child: TextFormField(
-                                    textAlign: TextAlign.center,
-                                    controller: manPowerController
-                                        .RemarksControllers[index],
-                                    style: const TextStyle(color: Colors.black),
-                                    cursorColor: Colors.black,
-                                    keyboardType: TextInputType.name,
-                                    decoration: InputDecoration(
-                                      contentPadding: const EdgeInsets.fromLTRB(
-                                          8.0, 0.0, 8.0, 0.0),
-                                      focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Theme.of(context)
-                                                  .primaryColor),
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(10))),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Theme.of(context)
-                                                  .primaryColor),
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(10))),
-                                    ),
-                                      onChanged: (value) async {
-                                        await manPowerController
-                                            .updateManPowerDetValue();
-                                      }),
-                                )),
-                          ],
-                        ),
-                      ),
-                    ],
+                                        ]
+                    ),
                   ),
                 ),
               );
@@ -1047,7 +1271,7 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
                                 manPowerController.manpowerLevel3ItemList.value=[];
                                 await autoYearWiseNoController.AutoYearWiseNo("MANPOWER");
                                 manPowerController.autoYearWiseNoController.text = autoYearWiseNoController.ManPower_autoYrsWise.value;
-                                manPowerController.ManPowerDateController.text = BaseUtitiles.initiateCurrentDateFormat();
+                                manPowerController.ManPowerEntryDateController.text = BaseUtitiles.initiateCurrentDateFormat();
                                 manPowerController.preparedbyController.text = loginController.EmpName();
                                 manPowerController.createdById.value = 0;
                                 manPowerController.RemarksController.text = "";
@@ -1112,7 +1336,7 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
                             await manPowerController.getDetTablesDatas();
                             await manPowerController.SaveEntryScreen(
                                 context,
-                                manPowerController.saveButton.value==RequestConstant.SUBMIT?0:manPowerController.manpowerEditApiValue[0].id
+                                manPowerController.saveButton.value==RequestConstant.SUBMIT?0:manPowerController.manpowerEditApiValue[0].id!
                             );
                           }
                         },

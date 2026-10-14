@@ -40,7 +40,7 @@ class SignalRService {
   // ── SIGNALR CONNECTION ───────────────────────
   Future<void> startConnection() async {
     hubConnection = HubConnectionBuilder()
-        .withUrl("${ApiConfig.BASE_URL_CORE}maintenanceHub")
+        .withUrl("${ApiConfig.APIURL_CORE}maintenanceHub")
         .build();
 
     hubConnection!.on("MaintenanceStatus", (arguments) {

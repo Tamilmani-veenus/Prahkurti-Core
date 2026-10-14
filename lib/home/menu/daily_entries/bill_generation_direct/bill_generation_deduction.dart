@@ -59,18 +59,18 @@ class _Bill_Generation_direct_deductionState
       }
 
       if (billGenerationDirectController.saveButton.value == RequestConstant.SUBMIT) {
-        billGenerationDirectController.workid = 0;
-        billGenerationDirectController.materialDebitamt.text = "0.0";
-        billGenerationDirectController.Creditamt.text = "0.0";
-        billGenerationDirectController.Debitamt.text = "0.0";
-        billGenerationDirectController.Advded.text = "0.0";
-        billGenerationDirectController.Roundoff.text = "0.0";
-        billGenerationDirectController.netBillAmt.text = "0.0";
-        billGenerationDirectController.finalBillAmt.text = "0.0";
-        billGenerationDirectController.tobededadv.text = billGenerationDirectController.to_be_dection_advance;
-        billGenerationDirectController.CreditRemarksController.text = "-";
-        billGenerationDirectController.DebitRemarksController.text = "-";
-        billGenerationDirectController.materialDebitRemarks.text = "-";
+        // billGenerationDirectController.workid = 0;
+        // billGenerationDirectController.materialDebitamt.text = "0.0";
+        // billGenerationDirectController.Creditamt.text = "0.0";
+        // billGenerationDirectController.Debitamt.text = "0.0";
+        // billGenerationDirectController.Advded.text = "0.0";
+        // billGenerationDirectController.Roundoff.text = "0.0";
+        // billGenerationDirectController.netBillAmt.text = "0.0";
+        // billGenerationDirectController.finalBillAmt.text = "0.0";
+        // billGenerationDirectController.tobededadv.text = billGenerationDirectController.to_be_dection_advance;
+        // billGenerationDirectController.CreditRemarksController.text = "-";
+        // billGenerationDirectController.DebitRemarksController.text = "-";
+        // billGenerationDirectController.materialDebitRemarks.text = "-";
         await billGenerationDirectController.deductionPaymentCalculation();
       }
     });
@@ -963,15 +963,18 @@ class _Bill_Generation_direct_deductionState
                                     });
                                   }
                                 },
-                                keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-
-                                inputFormatters: [
-                                  TextInputFormatter.withFunction((oldValue, newValue) {
-                                    return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
-                                        ? newValue
-                                        : oldValue;
-                                  }),
-                                ],
+                                keyboardType: Platform.isAndroid
+                                    ? const TextInputType.numberWithOptions(
+                                  signed: true,
+                                  decimal: true,
+                                ) : TextInputType.text,
+                                // inputFormatters: [
+                                //   TextInputFormatter.withFunction((oldValue, newValue) {
+                                //     return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                //         ? newValue
+                                //         : oldValue;
+                                //   }),
+                                // ],
                                 controller:
                                 billGenerationDirectController.Roundoff,
                                 cursorColor: Colors.black,
@@ -1359,7 +1362,9 @@ class _Bill_Generation_direct_deductionState
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Expanded(
+                    if(billGenerationDirectController.saveButton.value == RequestConstant.SUBMIT)
+
+                      Expanded(
                       child: InkWell(
                         child: Container(
                           margin: const EdgeInsets.only(left: 20, right: 20),
@@ -1603,67 +1608,95 @@ class _Bill_Generation_direct_deductionState
                   ),
                   Expanded(
                     child: TextButton(
-                        onPressed: () async {
-                          billGenerationDirectController.to_be_dection_advance =
-                              "0";
-                          billGenerationDirectController.saveButton.value =
-                              RequestConstant.SUBMIT;
-                          billGenerationDirectController.workid = 0;
-                          projectController.projectname.text = "--SELECT--";
-                          projectController.selectedProjectId.value = 0;
-                          subcontractorController.Subcontractorname.text =
-                              "--SELECT--";
-                          subcontractorController.selectedSubcontId.value = 0;
-                          billGenerationDirectController.RemarksController
-                              .clear();
-                          billGenerationDirectController.billentryDateController
-                              .text = BaseUtitiles.initiateCurrentDateFormat();
-                          billGenerationDirectController.FromdateController
-                              .text = BaseUtitiles.initiateCurrentDateFormat();
-                          billGenerationDirectController.TodateController.text =
-                              BaseUtitiles.initiateCurrentDateFormat();
-                          billGenerationDirectController
-                                  .autoYearWiseNoController.text =
-                              autoYearWiseNoController
-                                  .DirectBillautoYrsWise.value;
-                          siteController.selectedsiteId = 0.obs;
-                          siteController.selectedsitedropdownName =
-                              "--SELECT--".obs;
-                          siteController.getSiteDropdownvalue.value.clear();
-                          siteController.Sitename.text = RequestConstant.SELECT;
-                          siteController.siteDropdownName.clear();
+                      onPressed: () async {
+                        // Generate new BOQ number
+                        await autoYearWiseNoController.AutoYearWiseNo("DIRECT BILL");
 
-                          billGenerationDirectController
-                              .billgen_itemlistTable_Delete();
-                          billGenerationDirectController
-                              .ItemGetTableListdata.value
-                              .clear();
+                        billGenerationDirectController.autoYearWiseNoController.text =
+                            autoYearWiseNoController.DirectBillautoYrsWise.value;
 
-                          billGenerationDirectController.billamount.text =
-                              "0.0";
-                          billGenerationDirectController.Creditamt.text = "0.0";
-                          billGenerationDirectController.Debitamt.text = "0.0";
-                          billGenerationDirectController
-                              .CreditRemarksController.text = "";
-                          billGenerationDirectController
-                              .DebitRemarksController.text = "";
-                          billGenerationDirectController.Advded.text =
-                              billGenerationDirectController.tobededadv.text;
-                          billGenerationDirectController.Roundoff.text = "0";
-                          billGenerationDirectController.netpayamt.text = "0.0";
-                          billGenerationDirectController.netBillAmt.text = "0.0";
-                          billGenerationDirectController.finalBillAmt.text = "0.0";
-                          billGenerationDirectController.tobededadv.text =
-                              billGenerationDirectController
-                                  .to_be_dection_advance;
+                        // Current date
+                        final currentDate = BaseUtitiles.initiateCurrentDateFormat();
+
+                        // -----------------------------
+                        // Reset Bill Header
+                        // -----------------------------
+                        billGenerationDirectController.billentryDateController.text = currentDate;
+                        billGenerationDirectController.workid = 0;
+
+                        // Project
+                        projectController.projectname.text = "--SELECT--";
+                        projectController.selectedProjectId.value = 0;
+
+                        // Site
+                        siteController.Sitename.text = "--SELECT--";
+                        siteController.selectedsiteId.value = 0;
+
+                        // Subcontractor
+                        subcontractorController.Subcontractorname.text = "--SELECT--";
+                        subcontractorController.selectedSubcontId.value = 0;
+
+                        // Work Order
+                        subcontractorController.WorkOrderNo.text = "--SELECT--";
+                        subcontractorController.selectedWorkOrderId.value = 0;
+
+                        billGenerationDirectController.FromdateController.text = currentDate;
+                        billGenerationDirectController.TodateController.text = currentDate;
+                        billGenerationDirectController.billInvoiceDateController.text = currentDate;
+                        billGenerationDirectController.billPaymentWkDateController.text = currentDate;
+
+                        subcontractorController.InvoiceNo.clear();
+
+                        billGenerationDirectController.RemarksController.clear();
+
+                        billGenerationDirectController.to_be_dection_advance = "0.0";
+
+                        await billGenerationDirectController.billgen_itemlistTable_Delete();
+
+                        billGenerationDirectController.ItemGetTableListdata.clear();
+
+                        billGenerationDirectController.billamount.text = "0.0";
+                        billGenerationDirectController.Creditamt.text = "0.0";
+                        billGenerationDirectController.Debitamt.text = "0.0";
+                        billGenerationDirectController.materialDebitamt.text = "0.0";
+                        billGenerationDirectController.netBillAmt.text = "0.0";
+                        billGenerationDirectController.finalBillAmt.text = "0.0";
+                        billGenerationDirectController.netpayamt.text = "0.0";
+                        billGenerationDirectController.materialDebitRemarks.text = "-";
+                        billGenerationDirectController.CreditRemarksController.text = "-";
+                        billGenerationDirectController.DebitRemarksController.text = "-";
+                        billGenerationDirectController.tobededadv.text =
+                            billGenerationDirectController.to_be_dection_advance;
+
+                        billGenerationDirectController.Advded.text =
+                            billGenerationDirectController.to_be_dection_advance;
+                        billGenerationDirectController.Roundoff.text = "0.0";
+                        for (final controller
+                        in billGenerationDirectController.percentControllers) {
+                          controller.clear();
+                        }
+                        for (final item
+                        in billGenerationDirectController.directBillGen_ItemReadList) {
+                          item.percentValue = 0.0;
+                          item.amount = 0.0;
+                        }
+                        billGenerationDirectController.directBillGen_ItemReadList.refresh();
+                        await billGenerationDirectController.deductionPaymentCalculation();
+                        if (context.mounted) {
                           Navigator.pop(context);
-                        },
-                        child: Text("Reset",
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: RequestConstant.Lable_Font_SIZE))),
-                  )
+                        }
+                      },
+                      child: Text(
+                        "Reset",
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: RequestConstant.Lable_Font_SIZE,
+                        ),
+                      ),
+                    ),
+                  ),
+
                 ],
               ),
             ),

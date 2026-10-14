@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../app_theme/app_colors.dart';
+import '../../../../controller/mrn_request_indent_controller.dart';
 import '../../../../controller/mrnrequest_preIndent_controller.dart';
 import '../../../../controller/projectcontroller.dart';
 import '../../../../controller/sitecontroller.dart';
@@ -21,6 +22,8 @@ class _MRNRequest_PreIndent_MAterialsAddState extends State<MRNRequest_PreIndent
   final ProjectController projectController = Get.put(ProjectController());
   final SiteController siteController = Get.put(SiteController());
   MRNRequest_PreIndent_Controller mrnRequest_PreIndent_Controller = Get.put(MRNRequest_PreIndent_Controller());
+  final MRN_Request_Controller mrn_request_controller = Get.put(MRN_Request_Controller());
+
 
   String datas = "";
 
@@ -196,6 +199,7 @@ class _MRNRequest_PreIndent_MAterialsAddState extends State<MRNRequest_PreIndent
                                                 fontSize:
                                                 RequestConstant.Lable_Font_SIZE),
                                             children: <TextSpan>[
+                                              if (mrn_request_controller.activeType.value)
                                               TextSpan(
                                                 text: "( " + "Balqty: " + mrnRequest_PreIndent_Controller.getmaterialvalue[index].balqty.toString() + " ) ",
                                                 style: TextStyle(

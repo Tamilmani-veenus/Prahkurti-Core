@@ -47,6 +47,17 @@ class PendingListProvider {
     }
   }
 
+  static Future putListApproval(body,type) async {
+    try {
+      final response = await ApiManager.putUpdateAPIButton(
+          type=="NMR" ?ApiConstant.NMRLISTAPPROVEAPI : type=="WO"?ApiConstant.WOLISTAPPROVEAPI : ApiConstant.DIRECTLISTAPPROVEAPI, body);
+      return jsonDecode(response);
+    } catch (error) {
+      print("Error == $error");
+      return null;
+    }
+  }
+
   static Future<MrnPreApprovalResponse?> getMRNPreApprovalPendingList() async {
     try {
       final response = await ApiManager.getAPICall(
@@ -227,6 +238,9 @@ class PendingListProvider {
       }
       else if (formName == "MAN POWER APPROVAL PENDING") {
         response = await ApiManager.getAPICall(ApiConstant.GET_MANPOWERAPPROVALLIST);
+      }
+      else if (formName == "WORK ORDER VERIFICATION PENDING - BOQ") {
+        response = await ApiManager.getAPICall(ApiConstant.GET_WORKORDERBOQ_VERIFYLIST);
       }
       else if (formName == "PENDING PO [AGENCY]" || formName == "PENDING PO [TRADER]" || formName == "PENDING PO [SUPPLIER]") {
         String supplierCategory = formName == "PENDING PO [SUPPLIER]"
@@ -414,6 +428,8 @@ class PendingListProvider {
       BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
     });
   }
+
+
 
   static Future BillGenAprovalAPI(body, context) async {
     var ratingRes = null;

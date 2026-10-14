@@ -1,13 +1,10 @@
 import 'dart:convert';
-
 import 'package:prahkurticore/controller/pendinglistcontroller.dart';
-
 import '../controller/projectcontroller.dart';
 import '../controller/sitecontroller.dart';
 import '../home/menu/main_menu/boq_revised/boq_additems.dart';
 import '../home/menu/main_menu/boq_revised/boq_approval_det.dart';
 import '../home/menu/main_menu/boq_revised/boq_revised_entry.dart';
-import '../home/menu/main_menu/boq_revised/boq_revised_entrylist.dart';
 import '../provider/boq_revised_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -138,7 +135,7 @@ class Boq_Revised_Controller extends GetxController {
   Future getItemList(BuildContext context) async {
     Boq_MainItemList.value = [];
     Boq_ItemList.value = [];
-
+    await ClickUtils.run(() async {
     var response = await BoqRevised_Provider.getRevisedItemlist(
       reviseId,
       projectController.selectedProjectId.value,
@@ -164,7 +161,7 @@ class Boq_Revised_Controller extends GetxController {
           Boq_ItemList.value = response.result!;
           Boq_MainItemList.value = response.result!;
 
-          Navigator.push(
+          await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => Boq_AddItems(),
@@ -179,6 +176,7 @@ class Boq_Revised_Controller extends GetxController {
     } else {
       BaseUtitiles.showToast("Something Went Wrong...");
     }
+    });
   }
 
   calculatelist() {
@@ -468,6 +466,7 @@ class Boq_Revised_Controller extends GetxController {
 
   Future BoqrevisedList_EditApi(int reviseId,String MenuName, BuildContext context,status) async {
     BoqRevised_EditListApiValue.value=[];
+    await ClickUtils.run(() async {
     var response = await BoqRevised_Provider.Boq_RevisedList_editAPI(reviseId,status);
     if (response != null) {
       if (response.success == true) {
@@ -476,7 +475,7 @@ class Boq_Revised_Controller extends GetxController {
           saveButton.value = RequestConstant.RESUBMIT;
           BoqRevised_list_editSaveDetTable();
           getItemTablesDatas();
-          return Navigator.pushReplacement(
+          await Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => Boq_Revised_EntryScreen(heading: MenuName,)),
           );
@@ -490,6 +489,7 @@ class Boq_Revised_Controller extends GetxController {
     } else {
       BaseUtitiles.showToast("Something Went Wrong...");
     }
+    });
   }
 
   //--Entrylist Delete--

@@ -4,10 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:prahkurticore/home/dashboard/title_providers.dart';
 import 'package:prahkurticore/utilities/baseutitiles.dart';
 import '../../controller/site_location_controller.dart';
 import 'app_bar.dart';
@@ -552,7 +550,12 @@ class _SetMapViewState extends State<SetMapView> {
                   textAlign: TextAlign.center,
                 ),
                 onTap: () async {
-                  await siteLocationController.setSiteLocation(widget.ProjectId.toString(),widget.latitude!,widget.longitude!);
+                  // await siteLocationController.setSiteLocation(widget.ProjectId.toString(),widget.latitude!,widget.longitude!);
+                  await siteLocationController.setSiteLocation(
+                    widget.ProjectId.toString(),
+                    siteLocationController.latitude!,
+                    siteLocationController.longitude!,
+                  );
                 },
               ),
             ),

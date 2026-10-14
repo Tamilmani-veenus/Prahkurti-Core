@@ -8,9 +8,9 @@ import '../utilities/baseutitiles.dart';
 class CashBookProvider {
 
 
-  static Future<Casebooksite?> getcashbooksiteList(int? pId, String FrDate,String ToDate) async {
+  static Future<Casebooksite?> getcashbooksiteList(int? pId, String FrDate,String ToDate,int? companyId) async {
     try {
-      var value = await ApiManager.getAPICall("${ApiConstant.GETCASHBOOK_SITE}?fromDate=$FrDate&toDate=$ToDate&projectId=$pId&PaidFromType=0");
+      var value = await ApiManager.getAPICall("${ApiConstant.GETCASHBOOK_SITE}?CompanyId=$companyId&fromDate=$FrDate&toDate=$ToDate&projectId=$pId&PaidFromType=0");
       return casebooksiteFromJson(value);
     } catch (error, e) {
       print(error);

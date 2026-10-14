@@ -30,7 +30,8 @@ import '../../../punch_in_out/camera_screen.dart';
 
 class SubattendanceSiteEntry extends StatefulWidget {
   final String heading;
-  const SubattendanceSiteEntry({Key? key,required this.heading}) : super(key: key);
+  const SubattendanceSiteEntry({Key? key, required this.heading})
+      : super(key: key);
 
   @override
   State<SubattendanceSiteEntry> createState() => _SubAttendanceSiteEntryState();
@@ -50,7 +51,6 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
       Get.put(BottomsheetControllers());
   LoginController loginController = Get.put(LoginController());
 
-
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   @override
@@ -58,13 +58,14 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
     super.initState();
     var duration = const Duration(seconds: 0);
     Future.delayed(duration, () async {
-
       if (dailyEntriesController.saveButton.value == RequestConstant.SUBMIT) {
-        await autoYearWiseNoController.AutoYearWiseNo("SUBCONTRACTOR ATTENDANCE");
+        await autoYearWiseNoController.AutoYearWiseNo(
+            "SUBCONTRACTOR ATTENDANCE");
         await projectController.getProjectList();
         dailyEntriesController.deleteSubcontDetTableDatas();
-        dailyEntriesController.readListdata.value=[];
-        dailyEntriesController.autoYearWiseNoController.text = autoYearWiseNoController.SubcontAttendance_autoYrsWise.value;
+        dailyEntriesController.readListdata.value = [];
+        dailyEntriesController.autoYearWiseNoController.text =
+            autoYearWiseNoController.SubcontAttendance_autoYrsWise.value;
         projectController.projectname.text = "--SELECT--";
         projectController.selectedProjectId = 0.obs;
         siteController.Sitename.text = "--SELECT--";
@@ -73,34 +74,47 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
         subcontractorController.selectedSubcontId.value = 0;
         dailyEntriesController.attendId = 0;
         dailyEntriesController.createdById.value = 0;
-        dailyEntriesController.AttendDateController.text = BaseUtitiles.initiateCurrentDateFormat();
+        dailyEntriesController.AttendDateController.text =
+            BaseUtitiles.initiateCurrentDateFormat();
         dailyEntriesController.RemarksController.text = "";
         dailyEntriesController.WorkTypeTextController.text = "NMR";
         dailyEntriesController.Nmr_Rate.value = RequestConstant.N;
       }
 
-      if (dailyEntriesController.saveButton.value == RequestConstant.RESUBMIT || dailyEntriesController.saveButton.value == RequestConstant.APPROVAL ) {
+      if (dailyEntriesController.saveButton.value == RequestConstant.RESUBMIT ||
+          dailyEntriesController.saveButton.value == RequestConstant.APPROVAL) {
         dailyEntriesController.EditListResDatas.forEach((element) async {
           DLRId = element.id;
           dailyEntriesController.attendId = element.id!;
-          dailyEntriesController.AttendDateController.text = element.labourAttendanceDate;
-          dailyEntriesController.autoYearWiseNoController.text = element.labourAttendanceNo;
+          dailyEntriesController.AttendDateController.text =
+              element.labourAttendanceDate;
+          dailyEntriesController.autoYearWiseNoController.text =
+              element.labourAttendanceNo;
           projectController.projectname.text = element.projectName;
           projectController.selectedProjectId.value = element.projectId;
-          subcontractorController.Subcontractorname.text = element.subContractorName;
-          subcontractorController.selectedSubcontId.value = element.subcontractorId;
+          subcontractorController.Subcontractorname.text =
+              element.subContractorName;
+          subcontractorController.selectedSubcontId.value =
+              element.subcontractorId;
           siteController.Sitename.text = element.siteName;
           siteController.selectedsiteId.value = element.siteId;
           dailyEntriesController.createdById.value = element.createdBy;
-          dailyEntriesController.WorkTypeTextController.text = element.workType! == "N" ? "NMR" : element.workType! == "R" ? "RATE" : element.workType! == "W" ? "NO WORK":"".toUpperCase();
+          dailyEntriesController.WorkTypeTextController.text =
+              element.workType! == "N"
+                  ? "NMR"
+                  : element.workType! == "R"
+                      ? "RATE"
+                      : element.workType! == "W"
+                          ? "NO WORK"
+                          : "".toUpperCase();
           dailyEntriesController.Nmr_Rate.value = element.workType!;
-          dailyEntriesController.RemarksController.text = element.remarks==null?"-":element.remarks;
+          dailyEntriesController.RemarksController.text =
+              element.remarks ?? "-";
         });
         await dailyEntriesController.gettingImage();
       }
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -132,15 +146,19 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                             Expanded(
-                               child: Text(
+                            Expanded(
+                              child: Text(
                                 widget.heading,
                                 style: TextStyle(
-                                  fontSize: dailyEntriesController.saveButton.value == RequestConstant.APPROVAL ? 16 : RequestConstant.Heading_Font_SIZE,
+                                  fontSize:
+                                      dailyEntriesController.saveButton.value ==
+                                              RequestConstant.APPROVAL
+                                          ? 16
+                                          : RequestConstant.Heading_Font_SIZE,
                                   fontWeight: FontWeight.bold,
                                 ),
-                               ),
-                             ),
+                              ),
+                            ),
                             TextButton(
                                 onPressed: () async {
                                   await subcontractorController
@@ -211,73 +229,77 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                   padding: const EdgeInsets.only(
                                       top: 3, left: 10, bottom: 5),
                                   child: TextFormField(
-                                    readOnly: true,
-                                    controller: dailyEntriesController
-                                        .AttendDateController,
-                                    cursorColor: Colors.black,
-                                    style: const TextStyle(color: Colors.black),
-                                    decoration: const InputDecoration(
-                                      contentPadding: EdgeInsets.zero,
-                                      border: InputBorder.none,
-                                      labelText: "Date",
-                                      labelStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize:
-                                              RequestConstant.Lable_Font_SIZE),
-                                      prefixIconConstraints: BoxConstraints(
-                                          minWidth: 0, minHeight: 0),
-                                      prefixIcon: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 8, horizontal: 8),
-                                          child: ConstIcons.date),
-                                    ),
-                                    validator: (value) {
-                                      if (value!.isEmpty) {
-                                        return '\u26A0 Enter user name';
-                                      }
-                                      return null;
-                                    },
-                                    onTap: () async {
-                                      if(loginController.user.value.userType == "S"){}
-                                      else{
-                                        var Entrydate = await showDatePicker(
-                                            context: context,
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime(2010),
-                                                // .subtract(
-                                                // const Duration(days: 1)),
-                                            lastDate: DateTime.now(),
-                                            builder: (context, child) {
-                                              return Theme(
-                                                data:
-                                                    Theme.of(context).copyWith(
-                                                  colorScheme:
-                                                      ColorScheme.light(
-                                                    primary: Theme.of(context)
-                                                        .primaryColor,
-                                                    // header background color
-                                                    onPrimary: Colors.white,
-                                                    // header text color
-                                                    onSurface: Colors
-                                                        .black, // body text color
-                                                  ),
-                                                  textButtonTheme:
-                                                      TextButtonThemeData(
-                                                    style: TextButton.styleFrom(
-                                                      primary: Colors
-                                                          .black, // button text color
+                                      readOnly: true,
+                                      controller: dailyEntriesController
+                                          .AttendDateController,
+                                      cursorColor: Colors.black,
+                                      style:
+                                          const TextStyle(color: Colors.black),
+                                      decoration: const InputDecoration(
+                                        contentPadding: EdgeInsets.zero,
+                                        border: InputBorder.none,
+                                        labelText: "Date",
+                                        labelStyle: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: RequestConstant
+                                                .Lable_Font_SIZE),
+                                        prefixIconConstraints: BoxConstraints(
+                                            minWidth: 0, minHeight: 0),
+                                        prefixIcon: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 8, horizontal: 8),
+                                            child: ConstIcons.date),
+                                      ),
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return '\u26A0 Enter user name';
+                                        }
+                                        return null;
+                                      },
+                                      onTap: () async {
+                                        if (loginController
+                                                .user.value.userType ==
+                                            "S") {
+                                        } else {
+                                          var Entrydate = await showDatePicker(
+                                              context: context,
+                                              initialDate: DateTime.now(),
+                                              firstDate: DateTime(2010),
+                                              // .subtract(
+                                              // const Duration(days: 1)),
+                                              lastDate: DateTime.now(),
+                                              builder: (context, child) {
+                                                return Theme(
+                                                  data: Theme.of(context)
+                                                      .copyWith(
+                                                    colorScheme:
+                                                        ColorScheme.light(
+                                                      primary: Theme.of(context)
+                                                          .primaryColor,
+                                                      // header background color
+                                                      onPrimary: Colors.white,
+                                                      // header text color
+                                                      onSurface: Colors
+                                                          .black, // body text color
+                                                    ),
+                                                    textButtonTheme:
+                                                        TextButtonThemeData(
+                                                      style:
+                                                          TextButton.styleFrom(
+                                                        primary: Colors
+                                                            .black, // button text color
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                                child: child!,
-                                              );
-                                            });
-                                        dailyEntriesController
-                                                .AttendDateController.text =
-                                            BaseUtitiles.selectDateFormat(
-                                                Entrydate!);
-                                      }}
-                                  ),
+                                                  child: child!,
+                                                );
+                                              });
+                                          dailyEntriesController
+                                                  .AttendDateController.text =
+                                              BaseUtitiles.selectDateFormat(
+                                                  Entrydate!);
+                                        }
+                                      }),
                                 ),
                               ),
                             ),
@@ -286,7 +308,7 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                       ),
                       Container(
                         margin:
-                            const EdgeInsets.only(top: 2, left: 10, right: 10),
+                        const EdgeInsets.only(top: 2, left: 10, right: 10),
                         child: Card(
                           shape: RoundedRectangleBorder(
                             side: const BorderSide(
@@ -298,174 +320,10 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                             padding: const EdgeInsets.only(
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
-                              autovalidateMode:
-                                  AutovalidateMode.always,
                               readOnly: true,
-                              controller: projectController.projectname,
-                              cursorColor: Colors.black,
-                              style: const TextStyle(color: Colors.black),
-                              decoration: const InputDecoration(
-                                contentPadding: EdgeInsets.zero,
-                                border: InputBorder.none,
-                                labelText: "Project Name",
-                                labelStyle: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: RequestConstant.Lable_Font_SIZE),
-                                prefixIconConstraints:
-                                    BoxConstraints(minWidth: 0, minHeight: 0),
-                                prefixIcon: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 8),
-                                    child: ConstIcons.projectName),
-                              ),
-                              onTap: () {
-                                if (dailyEntriesController.saveButton.value == RequestConstant.SUBMIT ){
-                                    bottomsheetControllers.ProjectName(
-                                        context,
-                                        projectController
-                                            .getdropDownvalue.value);
-                                }
-                              },
-                              validator: (value) {
-                                if (value!.isEmpty ||
-                                    value == "--Select--" ||
-                                    value == "--SELECT--") {
-                                  return '\u26A0 ${RequestConstant.VALIDATE}';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin:
-                            const EdgeInsets.only(top: 2, left: 10, right: 10),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            side: const BorderSide(
-                                color: Colors.white70, width: 1),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          elevation: 3,
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 3, left: 10, bottom: 5),
-                            child: TextFormField(
-                              autovalidateMode:
-                                  AutovalidateMode.always,
-                              readOnly: true,
-                              controller: siteController.Sitename,
-                              cursorColor: Colors.black,
-                              style: const TextStyle(color: Colors.black),
-                              decoration: const InputDecoration(
-                                contentPadding: EdgeInsets.zero,
-                                border: InputBorder.none,
-                                labelText: "Site Name",
-                                labelStyle: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: RequestConstant.Lable_Font_SIZE),
-                                prefixIconConstraints:
-                                    BoxConstraints(minWidth: 0, minHeight: 0),
-                                prefixIcon: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 8),
-                                    child: ConstIcons.siteName),
-                              ),
-                              onTap: () async {
-                                if (dailyEntriesController.saveButton.value == RequestConstant.SUBMIT ){
-                                    bottomsheetControllers.SiteName(
-                                        context,
-                                        siteController
-                                            .getSiteDropdownvalue.value);
-                                }
-                              },
-                              validator: (value) {
-                                if (value!.isEmpty ||
-                                    value == "--Select--" ||
-                                    value == "--SELECT--") {
-                                  return '\u26A0 ${RequestConstant.VALIDATE}';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin:
-                            const EdgeInsets.only(top: 2, left: 10, right: 10),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            side: const BorderSide(
-                                color: Colors.white70, width: 1),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          elevation: 3,
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 3, left: 10, bottom: 5),
-                            child: TextFormField(
-                              autovalidateMode:
-                                  AutovalidateMode.always,
-                              readOnly: true,
+                              autovalidateMode: AutovalidateMode.always,
                               controller:
-                                  subcontractorController.Subcontractorname,
-                              cursorColor: Colors.black,
-                              style: const TextStyle(color: Colors.black),
-                              decoration: const InputDecoration(
-                                contentPadding: EdgeInsets.zero,
-                                border: InputBorder.none,
-                                labelText: "SubContractor Name",
-                                labelStyle: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: RequestConstant.Lable_Font_SIZE),
-                                prefixIconConstraints:
-                                    BoxConstraints(minWidth: 0, minHeight: 0),
-                                prefixIcon: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 8),
-                                    child: ConstIcons.subcontractorName),
-                              ),
-                              onTap: () {
-                                if (dailyEntriesController.saveButton.value == RequestConstant.SUBMIT ){
-                                  bottomsheetControllers.SubcontractorName(
-                                      context,
-                                      subcontractorController
-                                          .getdropDownvalue.value);
-                                }
-                              },
-                              validator: (value) {
-                                if (value!.isEmpty ||
-                                    value == "--Select--" ||
-                                    value == "--SELECT--") {
-                                  return '\u26A0 ${RequestConstant.VALIDATE}';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin:
-                            const EdgeInsets.only(top: 2, left: 10, right: 10),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            side: const BorderSide(
-                                color: Colors.white70, width: 1),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          elevation: 3,
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 3, left: 10, bottom: 5),
-                            child: TextFormField(
-                              readOnly: true,
-                              autovalidateMode:
-                                  AutovalidateMode.always,
-                              controller:
-                                  dailyEntriesController.WorkTypeTextController,
+                              dailyEntriesController.WorkTypeTextController,
                               cursorColor: Colors.black,
                               style: const TextStyle(color: Colors.black),
                               decoration: const InputDecoration(
@@ -476,7 +334,7 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                     color: Colors.grey,
                                     fontSize: RequestConstant.Lable_Font_SIZE),
                                 prefixIconConstraints:
-                                    BoxConstraints(minWidth: 0, minHeight: 0),
+                                BoxConstraints(minWidth: 0, minHeight: 0),
                                 prefixIcon: Padding(
                                     padding: EdgeInsets.symmetric(
                                         vertical: 8, horizontal: 8),
@@ -492,11 +350,11 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                               },
                               onTap: () {
                                 // if (dailyEntriesController.saveButton.value == RequestConstant.SUBMIT ){
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return const WorkTypeAlert();
-                                      });
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return const WorkTypeAlert();
+                                    });
                                 // }
                               },
                             ),
@@ -517,8 +375,165 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                             padding: const EdgeInsets.only(
                                 top: 3, left: 10, bottom: 5),
                             child: TextFormField(
-                              autovalidateMode:
-                                  AutovalidateMode.always,
+                              autovalidateMode: AutovalidateMode.always,
+                              readOnly: true,
+                              controller: projectController.projectname,
+                              cursorColor: Colors.black,
+                              style: const TextStyle(color: Colors.black),
+                              decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.zero,
+                                border: InputBorder.none,
+                                labelText: "Project Name",
+                                labelStyle: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: RequestConstant.Lable_Font_SIZE),
+                                prefixIconConstraints:
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
+                                prefixIcon: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 8),
+                                    child: ConstIcons.projectName),
+                              ),
+                              onTap: () {
+                                if (dailyEntriesController.saveButton.value ==
+                                    RequestConstant.SUBMIT) {
+                                  bottomsheetControllers.ProjectName(context,
+                                      projectController.getdropDownvalue.value);
+                                }
+                              },
+                              validator: (value) {
+                                if (value!.isEmpty ||
+                                    value == "--Select--" ||
+                                    value == "--SELECT--") {
+                                  return '\u26A0 ${RequestConstant.VALIDATE}';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin:
+                            const EdgeInsets.only(top: 2, left: 10, right: 10),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                                color: Colors.white70, width: 1),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          elevation: 3,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 3, left: 10, bottom: 5),
+                            child: TextFormField(
+                              autovalidateMode: AutovalidateMode.always,
+                              readOnly: true,
+                              controller: siteController.Sitename,
+                              cursorColor: Colors.black,
+                              style: const TextStyle(color: Colors.black),
+                              decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.zero,
+                                border: InputBorder.none,
+                                labelText: "Site Name",
+                                labelStyle: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: RequestConstant.Lable_Font_SIZE),
+                                prefixIconConstraints:
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
+                                prefixIcon: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 8),
+                                    child: ConstIcons.siteName),
+                              ),
+                              onTap: () async {
+                                if (dailyEntriesController.saveButton.value ==
+                                    RequestConstant.SUBMIT) {
+                                  bottomsheetControllers.SiteName(
+                                      context,
+                                      siteController
+                                          .getSiteDropdownvalue.value);
+                                }
+                              },
+                              validator: (value) {
+                                if (value!.isEmpty ||
+                                    value == "--Select--" ||
+                                    value == "--SELECT--") {
+                                  return '\u26A0 ${RequestConstant.VALIDATE}';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin:
+                            const EdgeInsets.only(top: 2, left: 10, right: 10),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                                color: Colors.white70, width: 1),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          elevation: 3,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 3, left: 10, bottom: 5),
+                            child: TextFormField(
+                              autovalidateMode: AutovalidateMode.always,
+                              readOnly: true,
+                              controller: subcontractorController.Subcontractorname,
+                              cursorColor: Colors.black,
+                              style: const TextStyle(color: Colors.black),
+                              decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.zero,
+                                border: InputBorder.none,
+                                labelText: "SubContractor Name",
+                                labelStyle: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: RequestConstant.Lable_Font_SIZE),
+                                prefixIconConstraints:
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
+                                prefixIcon: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 8),
+                                    child: ConstIcons.subcontractorName),
+                              ),
+                              onTap: () {
+                                if (dailyEntriesController.saveButton.value ==
+                                    RequestConstant.SUBMIT) {
+                                  bottomsheetControllers.SubcontractorName(
+                                      context,
+                                      subcontractorController
+                                          .getdropDownvalue.value);
+                                }
+                              },
+                              validator: (value) {
+                                if ((value!.isEmpty || value == "--Select--" || value == "--SELECT--") && dailyEntriesController.WorkTypeTextController.text != "NO WORK") {
+                                  return '\u26A0 ${RequestConstant.VALIDATE}';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin:
+                            const EdgeInsets.only(top: 2, left: 10, right: 10),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                                color: Colors.white70, width: 1),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          elevation: 3,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 3, left: 10, bottom: 5),
+                            child: TextFormField(
+                              autovalidateMode: AutovalidateMode.always,
                               readOnly: false,
                               controller:
                                   dailyEntriesController.RemarksController,
@@ -539,7 +554,7 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                     child: ConstIcons.remarks),
                               ),
                               validator: (value) {
-                                if (value!.isEmpty && dailyEntriesController.WorkTypeTextController.text == "NO WORK") {
+                                if (value!.isEmpty ) {
                                   return '\u26A0 ${RequestConstant.VALIDATE}';
                                 }
                                 return null;
@@ -564,9 +579,13 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                   onPressed: () async {
                                     if (_formkey.currentState!.validate()) {
                                       _formkey.currentState!.save();
-                                      if(dailyEntriesController.WorkTypeTextController.text == "NO WORK"){
-                                        Fluttertoast.showToast(msg: "Labour Details cannot be added for 'NO WORK'.");
-                                      }else {
+                                      if (dailyEntriesController
+                                              .WorkTypeTextController.text ==
+                                          "NO WORK") {
+                                        Fluttertoast.showToast(
+                                            msg:
+                                                "Labour Details cannot be added for 'NO WORK'.");
+                                      } else {
                                         dailyEntriesController
                                             .getShowClickPopList(context);
                                       }
@@ -605,8 +624,9 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                     primary: Setmybackground,
                                   ),
                                   onPressed: () async {
-
-                                    if (dailyEntriesController.saveButton.value == RequestConstant.APPROVAL) {
+                                    if (dailyEntriesController
+                                            .saveButton.value ==
+                                        RequestConstant.APPROVAL) {
                                       Fluttertoast.showToast(
                                           msg:
                                               "Image can't add in approve stage");
@@ -614,22 +634,24 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                             .WorkTypeTextController.text ==
                                         "NO WORK") {
                                       Fluttertoast.showToast(
-                                          msg: "Image cannot be added for 'NO WORK'.");
+                                          msg:
+                                              "Image cannot be added for 'NO WORK'.");
                                     } else {
-                                      if (!AppClient.isPrahkurti) {
+                                      if (!AppClient.isPrahkurti && !AppClient.isVrindhavana) {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (_) => CameraCapturePage(
-                                                fromScreen:
-                                                "Subcontractor Attendance",
-                                              )),
+                                                    fromScreen:
+                                                        "Subcontractor Attendance",
+                                                  )),
                                         );
-                                      }else {
+                                      } else {
                                         showDialog(
                                             context: context,
                                             builder: (BuildContext context) {
-                                              return const ImageGalleryPopup_Alert(imageUrl: "DLR");
+                                              return const ImageGalleryPopup_Alert(
+                                                  imageUrl: "DLR");
                                             });
                                       }
                                     }
@@ -655,7 +677,6 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                         ),
                       ),
                       SizedBox(height: height * 0.05),
-
                       Obx(() {
                         final allImages = [
                           ...dailyEntriesController.gettingNetworkImages,
@@ -669,7 +690,7 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                           width:
                               BaseUtitiles.getWidthtofPercentage(context, 95),
                           child: Builder(
-                            builder: (context){
+                            builder: (context) {
                               return GridView.builder(
                                 padding: const EdgeInsets.all(8),
                                 physics: const BouncingScrollPhysics(),
@@ -696,7 +717,7 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                             aspectRatio: 1,
                                             child: isNetwork
                                                 ? Image.network(
-                                              "$image?time=${DateTime.now().millisecondsSinceEpoch}",
+                                                    "$image?time=${DateTime.now().millisecondsSinceEpoch}",
                                                     fit: BoxFit.cover,
                                                     width: double.infinity,
                                                   )
@@ -715,7 +736,8 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         ImageViewPage(
-                                                          imageUrl: "$image?time=${DateTime.now().millisecondsSinceEpoch}",
+                                                          imageUrl:
+                                                              "$image?time=${DateTime.now().millisecondsSinceEpoch}",
                                                           netUrl: true,
                                                         )));
                                           } else if (image is File) {
@@ -735,13 +757,13 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                         right: 4,
                                         child: GestureDetector(
                                           onTap: () {
-                                              if (image is String) {
-                                                DeleteAlert(
-                                                    context, index, "String");
-                                              } else if (image is File) {
-                                                DeleteAlert(
-                                                    context, index, "File");
-                                              }
+                                            if (image is String) {
+                                              DeleteAlert(
+                                                  context, index, "String");
+                                            } else if (image is File) {
+                                              DeleteAlert(
+                                                  context, index, "File");
+                                            }
                                           },
                                           child: const CircleAvatar(
                                             backgroundColor: Colors.red,
@@ -759,7 +781,6 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                           ),
                         );
                       }),
-
                       SizedBox(height: height),
                     ],
                   ),
@@ -797,9 +818,18 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                         child: Column(
                                           children: [
                                             const SizedBox(height: 10),
-                                            !AppClient.isRKCPL
-                                                ? ListDetails(context, scrollController)
-                                                : RKCPLListDetails(context, scrollController),
+                                            AppClient.isRKCPL
+                                                ? RKCPLListDetails(
+                                                    context, scrollController)
+                                                : AppClient.isVrindhavana
+                                                    ? VrindhavanaListDetails(
+                                                        context,
+                                                        scrollController)
+                                                    : ListDetails(
+                                                        context,
+                                                        scrollController)
+                                            // : ListDetails(context,
+                                            //     scrollController),
                                           ],
                                         ),
                                       )),
@@ -851,17 +881,16 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                         margin: const EdgeInsets.only(left: 20, right: 20),
                         height: BaseUtitiles.getheightofPercentage(context, 4),
                         decoration: BoxDecoration(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                          color:  Colors.white
-                        ),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                            color: Colors.white),
                         alignment: Alignment.center,
                         child: Text(
                           "Reset",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: RequestConstant.Lable_Font_SIZE,
-                              color:  Theme.of(context).primaryColor),
+                              color: Theme.of(context).primaryColor),
                         ),
                       ),
                       onTap: () {
@@ -876,10 +905,9 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                           height:
                               BaseUtitiles.getheightofPercentage(context, 4),
                           decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10)),
-                            color:  Theme.of(context).primaryColor
-                          ),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(10)),
+                              color: Theme.of(context).primaryColor),
                           alignment: Alignment.center,
                           child: Obx(
                             () => Text(
@@ -887,49 +915,57 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: RequestConstant.Lable_Font_SIZE,
-                                  color:  Colors.white
-                              ),
+                                  color: Colors.white),
                             ),
                           )),
                       onTap: () {
                         if (_formkey.currentState!.validate()) {
                           _formkey.currentState!.save();
-                          if (dailyEntriesController.readListdata.isEmpty && dailyEntriesController.WorkTypeTextController.text != "NO WORK") {
-                            Fluttertoast.showToast(msg: "Please add labour details");
+                          if (dailyEntriesController.readListdata.isEmpty &&
+                              dailyEntriesController
+                                      .WorkTypeTextController.text !=
+                                  "NO WORK") {
+                            Fluttertoast.showToast(
+                                msg: "Please add labour details");
                           } else {
                             bool hasInvalid = false;
                             bool isWageNotSet = false;
+                            bool hasInvalidHrs = false;
 
                             for (int i = 0; i < dailyEntriesController.readListdata.length; i++) {
-                              final nosText = dailyEntriesController
-                                  .EntrySCreenNosControllers[i]
-                                  .text
-                                  .trim();
+                              final nosText =
+                              dailyEntriesController.EntrySCreenNosControllers[i].text.trim();
 
-                              final morOtText = dailyEntriesController
-                                  .MrngOtHrsControllers[i]
-                                  .text
-                                  .trim();
+                              final morOtText =
+                              dailyEntriesController.MrngOtHrsControllers[i].text.trim();
 
-                              final eveOtText = dailyEntriesController
-                                  .EvgOtHrsControllers[i]
-                                  .text
-                                  .trim();
+                              final eveOtText =
+                              dailyEntriesController.EvgOtHrsControllers[i].text.trim();
 
-                              final amtText = dailyEntriesController
-                                  .NetAmtController[i]
-                                  .text
-                                  .trim();
+                              final amtText =
+                              dailyEntriesController.NetAmtController[i].text.trim();
+
+                              final hrsText =
+                              dailyEntriesController.hrsControllers[i].text.trim();
 
                               final double nosValue = double.tryParse(nosText) ?? 0;
                               final double morOtValue = double.tryParse(morOtText) ?? 0;
                               final double eveOtValue = double.tryParse(eveOtText) ?? 0;
                               final double amtValue = double.tryParse(amtText) ?? 0;
+                              final double hrsValue = double.tryParse(hrsText) ?? 0;
 
                               if (amtValue <= 0) {
                                 isWageNotSet = true;
                               }
 
+                              if (AppClient.isVrindhavana && hrsValue <= 0) {
+                                hasInvalidHrs = true;
+                              }
+
+                              // if (nosValue <= 0) {
+                              //   hasInvalid = true;
+                              //   break;
+                              // }
                               if (nosValue <= 0 && morOtValue <= 0 && eveOtValue <= 0) {
                                 hasInvalid = true;
                                 break;
@@ -940,11 +976,15 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                               BaseUtitiles.showToast(
                                 "Please enter either Nos, MOR OT Hrs, or EVE OT Hrs.",
                               );
+                            } else if (hasInvalidHrs) {
+                              BaseUtitiles.showToast(
+                                "Please enter Hrs.",
+                              );
                             } else if (isWageNotSet) {
                               BaseUtitiles.showToast(
                                 "Please set the wages for the subcontractor category.",
                               );
-                            } else {
+                            }  else {
                               SubmitAlert(context);
                             }
                           }
@@ -1219,11 +1259,15 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                       controller: dailyEntriesController
                                           .EntrySCreenNosControllers[index],
                                       cursorColor: Colors.black,
-                                      keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-
+                                      keyboardType: Platform.isAndroid
+                                          ? TextInputType.numberWithOptions(
+                                              decimal: true)
+                                          : TextInputType.text,
                                       inputFormatters: [
-                                        TextInputFormatter.withFunction((oldValue, newValue) {
-                                          return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                        TextInputFormatter.withFunction(
+                                            (oldValue, newValue) {
+                                          return RegExp(r'^\d*\.?\d{0,2}$')
+                                                  .hasMatch(newValue.text)
                                               ? newValue
                                               : oldValue;
                                         }),
@@ -1317,11 +1361,15 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                       controller: dailyEntriesController
                                           .ExtrasControllers[index],
                                       cursorColor: Colors.black,
-                                      keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-
+                                      keyboardType: Platform.isAndroid
+                                          ? TextInputType.numberWithOptions(
+                                              decimal: true)
+                                          : TextInputType.text,
                                       inputFormatters: [
-                                        TextInputFormatter.withFunction((oldValue, newValue) {
-                                          return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                        TextInputFormatter.withFunction(
+                                            (oldValue, newValue) {
+                                          return RegExp(r'^\d*\.?\d{0,2}$')
+                                                  .hasMatch(newValue.text)
                                               ? newValue
                                               : oldValue;
                                         }),
@@ -1424,11 +1472,15 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                       controller: dailyEntriesController
                                           .MrngOtHrsControllers[index],
                                       cursorColor: Colors.black,
-                                      keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-
+                                      keyboardType: Platform.isAndroid
+                                          ? TextInputType.numberWithOptions(
+                                              decimal: true)
+                                          : TextInputType.text,
                                       inputFormatters: [
-                                        TextInputFormatter.withFunction((oldValue, newValue) {
-                                          return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                        TextInputFormatter.withFunction(
+                                            (oldValue, newValue) {
+                                          return RegExp(r'^\d*\.?\d{0,2}$')
+                                                  .hasMatch(newValue.text)
                                               ? newValue
                                               : oldValue;
                                         }),
@@ -1501,11 +1553,15 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                       controller: dailyEntriesController
                                           .MrngOtAmtControllers[index],
                                       cursorColor: Colors.black,
-                                      keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-
+                                      keyboardType: Platform.isAndroid
+                                          ? TextInputType.numberWithOptions(
+                                              decimal: true)
+                                          : TextInputType.text,
                                       inputFormatters: [
-                                        TextInputFormatter.withFunction((oldValue, newValue) {
-                                          return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                        TextInputFormatter.withFunction(
+                                            (oldValue, newValue) {
+                                          return RegExp(r'^\d*\.?\d{0,2}$')
+                                                  .hasMatch(newValue.text)
                                               ? newValue
                                               : oldValue;
                                         }),
@@ -1607,11 +1663,15 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                       style:
                                           const TextStyle(color: Colors.black),
                                       cursorColor: Colors.black,
-                                      keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-
+                                      keyboardType: Platform.isAndroid
+                                          ? TextInputType.numberWithOptions(
+                                              decimal: true)
+                                          : TextInputType.text,
                                       inputFormatters: [
-                                        TextInputFormatter.withFunction((oldValue, newValue) {
-                                          return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                        TextInputFormatter.withFunction(
+                                            (oldValue, newValue) {
+                                          return RegExp(r'^\d*\.?\d{0,2}$')
+                                                  .hasMatch(newValue.text)
                                               ? newValue
                                               : oldValue;
                                         }),
@@ -1682,11 +1742,15 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                         .EvgOtAmtControllers[index],
                                     style: const TextStyle(color: Colors.black),
                                     cursorColor: Colors.black,
-                                    keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-
+                                    keyboardType: Platform.isAndroid
+                                        ? TextInputType.numberWithOptions(
+                                            decimal: true)
+                                        : TextInputType.text,
                                     inputFormatters: [
-                                      TextInputFormatter.withFunction((oldValue, newValue) {
-                                        return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                      TextInputFormatter.withFunction(
+                                          (oldValue, newValue) {
+                                        return RegExp(r'^\d*\.?\d{0,2}$')
+                                                .hasMatch(newValue.text)
                                             ? newValue
                                             : oldValue;
                                       }),
@@ -1784,11 +1848,15 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                       style:
                                           const TextStyle(color: Colors.black),
                                       cursorColor: Colors.black,
-                                      keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-
+                                      keyboardType: Platform.isAndroid
+                                          ? TextInputType.numberWithOptions(
+                                              decimal: true)
+                                          : TextInputType.text,
                                       inputFormatters: [
-                                        TextInputFormatter.withFunction((oldValue, newValue) {
-                                          return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                        TextInputFormatter.withFunction(
+                                            (oldValue, newValue) {
+                                          return RegExp(r'^\d*\.?\d{0,2}$')
+                                                  .hasMatch(newValue.text)
                                               ? newValue
                                               : oldValue;
                                         }),
@@ -1860,11 +1928,15 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                         .NetAmtController[index],
                                     style: const TextStyle(color: Colors.black),
                                     cursorColor: Colors.black,
-                                    keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-
+                                    keyboardType: Platform.isAndroid
+                                        ? TextInputType.numberWithOptions(
+                                            decimal: true)
+                                        : TextInputType.text,
                                     inputFormatters: [
-                                      TextInputFormatter.withFunction((oldValue, newValue) {
-                                        return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                      TextInputFormatter.withFunction(
+                                          (oldValue, newValue) {
+                                        return RegExp(r'^\d*\.?\d{0,2}$')
+                                                .hasMatch(newValue.text)
                                             ? newValue
                                             : oldValue;
                                       }),
@@ -1981,7 +2053,8 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
     );
   }
 
-  Widget RKCPLListDetails(BuildContext context, ScrollController scrollController) {
+  Widget RKCPLListDetails(
+      BuildContext context, ScrollController scrollController) {
     return Column(
       children: [
         SizedBox(height: MediaQuery.of(context).size.height * 5 / 100),
@@ -1994,6 +2067,844 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
             itemCount: dailyEntriesController.readListdata.value.length,
             itemBuilder: (BuildContext context, int index) {
               dailyEntriesController.textControllersInitiate();
+              return SingleChildScrollView(
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  elevation: 5,
+                  color: Colors.white,
+                  // margin: EdgeInsets.only(left: 10, right: 10,bottom: 10),
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            flex: 6,
+                            child: Container(
+                              margin: const EdgeInsets.only(
+                                  top: 5, left: 10, right: 25),
+                              child: Text(
+                                '${dailyEntriesController.readListdata.value[index].siteName}',
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text(
+                                      RequestConstant.DO_YOU_WANT_DELETE,
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    actions: <Widget>[
+                                      Container(
+                                        margin: const EdgeInsets.only(
+                                            left: 20, right: 20),
+                                        child: IntrinsicHeight(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text("Cancel",
+                                                        style: TextStyle(
+                                                            color: Colors.grey,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize:
+                                                                RequestConstant
+                                                                    .Lable_Font_SIZE))),
+                                              ),
+                                              VerticalDivider(
+                                                color: Colors.grey.shade400,
+                                                width: 5,
+                                                thickness: 2,
+                                                indent: 15,
+                                                endIndent:
+                                                    15, //Spacing at the bottom of divider.
+                                              ),
+                                              Expanded(
+                                                child: TextButton(
+                                                    onPressed: () {
+                                                      dailyEntriesController
+                                                          .deleteParticularList(
+                                                              dailyEntriesController
+                                                                      .readListdata[
+                                                                  index]);
+                                                      dailyEntriesController
+                                                          .getDetTablesDatas();
+                                                      dailyEntriesController
+                                                          .readListdata
+                                                          .remove(dailyEntriesController
+                                                                  .readListdata[
+                                                              index]);
+                                                      Navigator.pop(
+                                                          context,
+                                                          dailyEntriesController
+                                                              .readListdata);
+                                                    },
+                                                    child: const Text("Delete",
+                                                        style: TextStyle(
+                                                            color: Colors.red,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize:
+                                                                RequestConstant
+                                                                    .Lable_Font_SIZE))),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                  margin:
+                                      const EdgeInsets.only(right: 5, top: 5),
+                                  child: ConstIcons.cancle))
+                        ],
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 10, left: 5),
+                        child: Row(
+                          children: <Widget>[
+                            RichText(
+                              text: TextSpan(
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: RequestConstant.Lable_Font_SIZE),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: dailyEntriesController
+                                            .readListdata.value[index].catName +
+                                        "  ",
+                                    style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        "( ${RequestConstant.CURRENCY_SYMBOL}${dailyEntriesController.readListdata.value[index].wages} )",
+                                    style: const TextStyle(
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin:
+                            const EdgeInsets.only(top: 10, left: 5, right: 3),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              flex: 2,
+                              child: RichText(
+                                text: TextSpan(
+                                    style: const TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black,
+                                    ),
+                                    children: <TextSpan>[
+                                      const TextSpan(
+                                        text: "Nos",
+                                      ),
+                                      TextSpan(
+                                        text: dailyEntriesController
+                                                        .EntrySCreenNosControllers[
+                                                            index]
+                                                        .text !=
+                                                    "" &&
+                                                dailyEntriesController
+                                                        .EntrySCreenNosControllers[
+                                                            index]
+                                                        .text !=
+                                                    "0" &&
+                                                dailyEntriesController
+                                                        .EntrySCreenNosControllers[
+                                                            index]
+                                                        .text !=
+                                                    "0.0"
+                                            ? ""
+                                            : "",
+                                        style: TextStyle(
+                                          color: dailyEntriesController
+                                                          .EntrySCreenNosControllers[
+                                                              index]
+                                                          .text !=
+                                                      "" &&
+                                                  dailyEntriesController
+                                                          .EntrySCreenNosControllers[
+                                                              index]
+                                                          .text !=
+                                                      "0" &&
+                                                  dailyEntriesController
+                                                          .EntrySCreenNosControllers[
+                                                              index]
+                                                          .text !=
+                                                      "0.0"
+                                              ? Colors.white
+                                              : Colors.red,
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+
+                              // Text(
+                              //   RequestConstant.NOS,
+                              //   style: TextStyle(color: Colors.black),
+                              // ),
+                            ),
+                            Expanded(
+                                flex: 4,
+                                child: Container(
+                                  margin: const EdgeInsets.only(right: 11),
+                                  height: BaseUtitiles.getheightofPercentage(
+                                      context, 4),
+                                  child: TextFormField(
+                                      onTap: () {
+                                        if (dailyEntriesController
+                                                    .EntrySCreenNosControllers[
+                                                        index]
+                                                    .text !=
+                                                "" &&
+                                            dailyEntriesController
+                                                    .EntrySCreenNosControllers[
+                                                        index]
+                                                    .text !=
+                                                "0" &&
+                                            dailyEntriesController
+                                                    .EntrySCreenNosControllers[
+                                                        index]
+                                                    .text !=
+                                                "0.0") {
+                                          return;
+                                        } else {
+                                          setState(() {
+                                            dailyEntriesController
+                                                .EntrySCreenNosControllers[
+                                                    index]
+                                                .text = "";
+                                            dailyEntriesController.clickEdit();
+                                          });
+                                        }
+                                      },
+                                      style:
+                                          const TextStyle(color: Colors.black),
+                                      controller: dailyEntriesController
+                                          .EntrySCreenNosControllers[index],
+                                      cursorColor: Colors.black,
+                                      keyboardType: Platform.isAndroid
+                                          ? TextInputType.numberWithOptions(
+                                              decimal: true)
+                                          : TextInputType.text,
+                                      inputFormatters: [
+                                        TextInputFormatter.withFunction(
+                                            (oldValue, newValue) {
+                                          return RegExp(r'^\d*\.?\d{0,2}$')
+                                                  .hasMatch(newValue.text)
+                                              ? newValue
+                                              : oldValue;
+                                        }),
+                                      ],
+                                      textAlign: TextAlign.center,
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.fromLTRB(
+                                                8.0, 0.0, 8.0, 0.0),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(10))),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(10))),
+                                      ),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          dailyEntriesController.clickEdit();
+                                        });
+                                      }),
+                                )),
+                            Expanded(
+                              flex: 2,
+                              child: RichText(
+                                text: const TextSpan(
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "Morning OT Hrs",
+                                      ),
+                                      TextSpan(
+                                        text: "",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+
+                              // Text(
+                              //   "Mrng OT Nos",
+                              //   style: TextStyle(color: Colors.black),
+                              // ),
+                            ),
+                            Expanded(
+                                flex: 4,
+                                child: Container(
+                                  margin: const EdgeInsets.only(right: 11),
+                                  height: BaseUtitiles.getheightofPercentage(
+                                      context, 4),
+                                  child: TextFormField(
+                                      onTap: () {
+                                        if (dailyEntriesController
+                                                    .MrngOtHrsControllers[index]
+                                                    .text !=
+                                                "" &&
+                                            dailyEntriesController
+                                                    .MrngOtHrsControllers[index]
+                                                    .text !=
+                                                "0" &&
+                                            dailyEntriesController
+                                                    .MrngOtHrsControllers[index]
+                                                    .text !=
+                                                "0.0") {
+                                          return;
+                                        } else {
+                                          setState(() {
+                                            dailyEntriesController
+                                                .MrngOtHrsControllers[index]
+                                                .text = "";
+                                            dailyEntriesController.clickEdit();
+                                          });
+                                        }
+                                      },
+                                      style:
+                                          const TextStyle(color: Colors.black),
+                                      controller: dailyEntriesController
+                                          .MrngOtHrsControllers[index],
+                                      cursorColor: Colors.black,
+                                      keyboardType: Platform.isAndroid
+                                          ? TextInputType.numberWithOptions(
+                                              decimal: true)
+                                          : TextInputType.text,
+                                      inputFormatters: [
+                                        TextInputFormatter.withFunction(
+                                            (oldValue, newValue) {
+                                          return RegExp(r'^\d*\.?\d{0,2}$')
+                                                  .hasMatch(newValue.text)
+                                              ? newValue
+                                              : oldValue;
+                                        }),
+                                      ],
+                                      textAlign: TextAlign.center,
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.fromLTRB(
+                                                8.0, 0.0, 8.0, 0.0),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(10))),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(10))),
+                                      ),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          dailyEntriesController.clickEdit();
+                                        });
+                                      }),
+                                )),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin:
+                            const EdgeInsets.only(top: 10, left: 5, right: 3),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              flex: 2,
+                              child: RichText(
+                                text: const TextSpan(
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "Evening OT Hrs",
+                                      ),
+                                      TextSpan(
+                                        text: "",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+                              // Text(
+                              //   "Evg OT Hrs",
+                              //   style: TextStyle(color: Colors.black),
+                              // ),
+                            ),
+                            Expanded(
+                                flex: 4,
+                                child: Container(
+                                  margin: const EdgeInsets.only(right: 11),
+                                  height: BaseUtitiles.getheightofPercentage(
+                                      context, 4),
+                                  child: TextFormField(
+                                      onTap: () {
+                                        if (dailyEntriesController
+                                                    .EvgOtHrsControllers[index]
+                                                    .text !=
+                                                "" &&
+                                            dailyEntriesController
+                                                    .EvgOtHrsControllers[index]
+                                                    .text !=
+                                                "0" &&
+                                            dailyEntriesController
+                                                    .EvgOtHrsControllers[index]
+                                                    .text !=
+                                                "0.0") {
+                                          return;
+                                        } else {
+                                          setState(() {
+                                            dailyEntriesController
+                                                .EvgOtHrsControllers[index]
+                                                .text = "";
+                                            dailyEntriesController.clickEdit();
+                                          });
+                                        }
+                                      },
+                                      controller: dailyEntriesController
+                                          .EvgOtHrsControllers[index],
+                                      style:
+                                          const TextStyle(color: Colors.black),
+                                      cursorColor: Colors.black,
+                                      keyboardType: Platform.isAndroid
+                                          ? TextInputType.numberWithOptions(
+                                              decimal: true)
+                                          : TextInputType.text,
+                                      inputFormatters: [
+                                        TextInputFormatter.withFunction(
+                                            (oldValue, newValue) {
+                                          return RegExp(r'^\d*\.?\d{0,2}$')
+                                                  .hasMatch(newValue.text)
+                                              ? newValue
+                                              : oldValue;
+                                        }),
+                                      ],
+                                      textAlign: TextAlign.center,
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.fromLTRB(
+                                                8.0, 0.0, 8.0, 0.0),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(10))),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(10))),
+                                      ),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          dailyEntriesController.clickEdit();
+                                        });
+                                      }),
+                                )),
+                            Expanded(
+                              flex: 2,
+                              child: RichText(
+                                text: const TextSpan(
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "Morning OT Amt",
+                                      ),
+                                      TextSpan(
+                                        text: "",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+
+                              // Text(
+                              //   "Mrg OT Amt",
+                              //   style: TextStyle(color: Colors.black),
+                              // ),
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: Container(
+                                  margin: const EdgeInsets.only(right: 11),
+                                  height: BaseUtitiles.getheightofPercentage(
+                                      context, 4),
+                                  child: TextField(
+                                      readOnly: true,
+                                      style:
+                                          const TextStyle(color: Colors.black),
+                                      controller: dailyEntriesController
+                                          .MrngOtAmtControllers[index],
+                                      cursorColor: Colors.black,
+                                      keyboardType: Platform.isAndroid
+                                          ? TextInputType.numberWithOptions(
+                                              decimal: true)
+                                          : TextInputType.text,
+                                      inputFormatters: [
+                                        TextInputFormatter.withFunction(
+                                            (oldValue, newValue) {
+                                          return RegExp(r'^\d*\.?\d{0,2}$')
+                                                  .hasMatch(newValue.text)
+                                              ? newValue
+                                              : oldValue;
+                                        }),
+                                      ],
+                                      textAlign: TextAlign.center,
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.fromLTRB(
+                                                8.0, 0.0, 8.0, 0.0),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(10))),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(10))),
+                                      ),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          dailyEntriesController.clickEdit();
+                                        });
+                                      })),
+                            )
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin:
+                            const EdgeInsets.only(top: 10, left: 5, right: 3),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              flex: 2,
+                              child: RichText(
+                                text: const TextSpan(
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "Evening OT Amt",
+                                      ),
+                                      TextSpan(
+                                        text: "",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+                              // Text(
+                              //   "Evg OT Amt",
+                              //   style: TextStyle(color: Colors.black),
+                              // ),
+                            ),
+                            Expanded(
+                                flex: 4,
+                                child: Container(
+                                  margin: const EdgeInsets.only(right: 11),
+                                  height: BaseUtitiles.getheightofPercentage(
+                                      context, 4),
+                                  child: TextField(
+                                    readOnly: true,
+                                    controller: dailyEntriesController
+                                        .EvgOtAmtControllers[index],
+                                    style: const TextStyle(color: Colors.black),
+                                    cursorColor: Colors.black,
+                                    keyboardType: Platform.isAndroid
+                                        ? TextInputType.numberWithOptions(
+                                            decimal: true)
+                                        : TextInputType.text,
+                                    inputFormatters: [
+                                      TextInputFormatter.withFunction(
+                                          (oldValue, newValue) {
+                                        return RegExp(r'^\d*\.?\d{0,2}$')
+                                                .hasMatch(newValue.text)
+                                            ? newValue
+                                            : oldValue;
+                                      }),
+                                    ],
+                                    textAlign: TextAlign.center,
+                                    decoration: InputDecoration(
+                                      contentPadding: const EdgeInsets.fromLTRB(
+                                          8.0, 0.0, 8.0, 0.0),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10))),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10))),
+                                    ),
+                                  ),
+                                )),
+                            Expanded(
+                              flex: 2,
+                              child: RichText(
+                                text: const TextSpan(
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "Net Amt",
+                                      ),
+                                      TextSpan(
+                                        text: "",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+
+                              // Text(
+                              //   "Net Amt",
+                              //   style: TextStyle(color: Colors.black),
+                              // ),
+                            ),
+                            Expanded(
+                                flex: 4,
+                                child: Container(
+                                  margin: const EdgeInsets.only(right: 11),
+                                  height: BaseUtitiles.getheightofPercentage(
+                                      context, 4),
+                                  child: TextField(
+                                    readOnly: true,
+                                    controller: dailyEntriesController
+                                        .NetAmtController[index],
+                                    style: const TextStyle(color: Colors.black),
+                                    cursorColor: Colors.black,
+                                    keyboardType: Platform.isAndroid
+                                        ? TextInputType.numberWithOptions(
+                                            decimal: true)
+                                        : TextInputType.text,
+                                    inputFormatters: [
+                                      TextInputFormatter.withFunction(
+                                          (oldValue, newValue) {
+                                        return RegExp(r'^\d*\.?\d{0,2}$')
+                                                .hasMatch(newValue.text)
+                                            ? newValue
+                                            : oldValue;
+                                      }),
+                                    ],
+                                    textAlign: TextAlign.center,
+                                    decoration: InputDecoration(
+                                      contentPadding: const EdgeInsets.fromLTRB(
+                                          8.0, 0.0, 8.0, 0.0),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10))),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10))),
+                                    ),
+                                  ),
+                                )),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(
+                            top: 10, left: 5, right: 3, bottom: 8),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              flex: 2,
+                              child: RichText(
+                                text: const TextSpan(
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "Remarks",
+                                      ),
+                                      TextSpan(
+                                        text: "",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+
+                              // Text(
+                              //   "Remarks",
+                              //   style: TextStyle(color: Colors.black),
+                              // ),
+                            ),
+                            Expanded(
+                                flex: 10,
+                                child: Container(
+                                  margin: const EdgeInsets.only(left: 0),
+                                  height: BaseUtitiles.getheightofPercentage(
+                                      context, 4),
+                                  child: TextFormField(
+                                    onTap: () {
+                                      dailyEntriesController
+                                          .RemarksControllers[index].text = "";
+                                    },
+                                    textAlign: TextAlign.center,
+                                    controller: dailyEntriesController
+                                        .RemarksControllers[index],
+                                    style: const TextStyle(color: Colors.black),
+                                    cursorColor: Colors.black,
+                                    keyboardType: TextInputType.name,
+                                    decoration: InputDecoration(
+                                      contentPadding: const EdgeInsets.fromLTRB(
+                                          8.0, 0.0, 8.0, 0.0),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10))),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10))),
+                                    ),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        dailyEntriesController
+                                            .updateSubcontDetValue();
+                                      });
+                                    },
+                                  ),
+                                )),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        SizedBox(height: BaseUtitiles.getheightofPercentage(context, 4)),
+      ],
+    );
+  }
+
+  Widget VrindhavanaListDetails(
+      BuildContext context, ScrollController scrollController) {
+    return Column(
+      children: [
+        SizedBox(height: MediaQuery.of(context).size.height * 5 / 100),
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 75 / 100,
+          child: ListView.builder(
+            shrinkWrap: true,
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.zero,
+            itemCount: dailyEntriesController.readListdata.value.length,
+            itemBuilder: (BuildContext context, int index) {
+              // dailyEntriesController.textControllersInitiate();
               return SingleChildScrollView(
                 child: Card(
                   shape: RoundedRectangleBorder(
@@ -2062,23 +2973,30 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                               ),
                                               Expanded(
                                                 child: TextButton(
-                                                    onPressed: () {
+                                                    onPressed: () async {
+                                                      final item =
                                                       dailyEntriesController
+                                                          .readListdata[
+                                                      index];
+                                                      await dailyEntriesController
                                                           .deleteParticularList(
-                                                          dailyEntriesController
-                                                              .readListdata[
-                                                          index]);
-                                                      dailyEntriesController
-                                                          .getDetTablesDatas();
+                                                          item);
                                                       dailyEntriesController
                                                           .readListdata
-                                                          .remove(dailyEntriesController
-                                                          .readListdata[
-                                                      index]);
+                                                          .removeWhere((e) =>
+                                                      e.id == item.id);
+                                                      dailyEntriesController
+                                                          .readListdata
+                                                          .refresh(); // If using RxList
+
+                                                      await dailyEntriesController
+                                                          .getDetTablesDatas();
+
                                                       Navigator.pop(
-                                                          context,
-                                                          dailyEntriesController
-                                                              .readListdata);
+                                                        context,
+                                                        dailyEntriesController
+                                                            .readListdata,
+                                                      );
                                                     },
                                                     child: const Text("Delete",
                                                         style: TextStyle(
@@ -2239,14 +3157,18 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                       controller: dailyEntriesController
                                           .EntrySCreenNosControllers[index],
                                       cursorColor: Colors.black,
-                                      keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-
+                                      keyboardType: Platform.isAndroid
+                                          ? TextInputType.numberWithOptions(
+                                          decimal: true)
+                                          : TextInputType.text,
                                       inputFormatters: [
-                                        TextInputFormatter.withFunction((oldValue, newValue) {
-                                          return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
-                                              ? newValue
-                                              : oldValue;
-                                        }),
+                                        TextInputFormatter.withFunction(
+                                                (oldValue, newValue) {
+                                              return RegExp(r'^\d*\.?\d{0,2}$')
+                                                  .hasMatch(newValue.text)
+                                                  ? newValue
+                                                  : oldValue;
+                                            }),
                                       ],
                                       textAlign: TextAlign.center,
                                       decoration: InputDecoration(
@@ -2274,6 +3196,215 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                         });
                                       }),
                                 )),
+                            Expanded(
+                              flex: 2,
+                              child: RichText(
+                                text: const TextSpan(
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "Hrs",
+                                      ),
+                                      TextSpan(
+                                        text: "",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+
+                              // Text(
+                              //   "Net Amt",
+                              //   style: TextStyle(color: Colors.black),
+                              // ),
+                            ),
+                            Expanded(
+                                flex: 4,
+                                child: Container(
+                                  margin: const EdgeInsets.only(left: 8),
+                                  height: BaseUtitiles.getheightofPercentage(
+                                      context, 4),
+                                  child: TextField(
+                                      controller: dailyEntriesController
+                                          .hrsControllers[index],
+                                      style:
+                                      const TextStyle(color: Colors.black),
+                                      cursorColor: Colors.black,
+                                      onTap: () {
+                                        if (dailyEntriesController
+                                            .hrsControllers[index]
+                                            .text !=
+                                            "" &&
+                                            dailyEntriesController
+                                                .hrsControllers[index]
+                                                .text !=
+                                                "0" &&
+                                            dailyEntriesController
+                                                .hrsControllers[index]
+                                                .text !=
+                                                "0.0") {
+                                          return;
+                                        } else {
+                                          dailyEntriesController
+                                              .hrsControllers[index].text = "";
+                                        }
+                                      },
+                                      keyboardType: Platform.isAndroid
+                                          ? TextInputType.numberWithOptions(
+                                          decimal: true)
+                                          : TextInputType.text,
+                                      inputFormatters: [
+                                        TextInputFormatter.withFunction(
+                                                (oldValue, newValue) {
+                                              return RegExp(r'^\d*\.?\d{0,2}$')
+                                                  .hasMatch(newValue.text)
+                                                  ? newValue
+                                                  : oldValue;
+                                            }),
+                                      ],
+                                      textAlign: TextAlign.center,
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                        const EdgeInsets.fromLTRB(
+                                            8.0, 0.0, 8.0, 0.0),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                            const BorderRadius.all(
+                                                Radius.circular(10))),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                            const BorderRadius.all(
+                                                Radius.circular(10))),
+                                      ),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          dailyEntriesController.clickEdit();
+                                        });
+                                      }),
+                                )),
+                            // Expanded(
+                            //   flex: 2,
+                            //   child: RichText(
+                            //     text: const TextSpan(
+                            //         style: TextStyle(
+                            //           fontSize: 12.0,
+                            //           fontWeight: FontWeight.normal,
+                            //           color: Colors.black,
+                            //         ),
+                            //         children: <TextSpan>[
+                            //           TextSpan(
+                            //             text: "Extras",
+                            //           ),
+                            //           TextSpan(
+                            //             text: "",
+                            //             style: TextStyle(
+                            //               color: Colors.white,
+                            //               fontSize: 12.0,
+                            //               fontWeight: FontWeight.bold,
+                            //             ),
+                            //           ),
+                            //         ]),
+                            //   ),
+                            //   // Text(
+                            //   //   "Extras",
+                            //   //   style: TextStyle(color: Colors.black),
+                            //   // ),
+                            // ),
+                            // Expanded(
+                            //   flex: 4,
+                            //   child: Container(
+                            //       margin: const EdgeInsets.only(left: 8),
+                            //       height: BaseUtitiles.getheightofPercentage(
+                            //           context, 4),
+                            //       child: TextFormField(
+                            //           onTap: () {
+                            //             if (dailyEntriesController
+                            //                 .ExtrasControllers[index]
+                            //                 .text !=
+                            //                 "" &&
+                            //                 dailyEntriesController
+                            //                     .ExtrasControllers[index]
+                            //                     .text !=
+                            //                     "0" &&
+                            //                 dailyEntriesController
+                            //                     .ExtrasControllers[index]
+                            //                     .text !=
+                            //                     "0.0") {
+                            //               return;
+                            //             } else {
+                            //               setState(() {
+                            //                 dailyEntriesController
+                            //                     .ExtrasControllers[index]
+                            //                     .text = "";
+                            //                 dailyEntriesController.clickEdit();
+                            //               });
+                            //             }
+                            //           },
+                            //           style:
+                            //           const TextStyle(color: Colors.black),
+                            //           controller: dailyEntriesController
+                            //               .ExtrasControllers[index],
+                            //           cursorColor: Colors.black,
+                            //           keyboardType: Platform.isAndroid
+                            //               ? TextInputType.numberWithOptions(
+                            //               decimal: true)
+                            //               : TextInputType.text,
+                            //           inputFormatters: [
+                            //             TextInputFormatter.withFunction(
+                            //                     (oldValue, newValue) {
+                            //                   return RegExp(r'^\d*\.?\d{0,2}$')
+                            //                       .hasMatch(newValue.text)
+                            //                       ? newValue
+                            //                       : oldValue;
+                            //                 }),
+                            //           ],
+                            //           textAlign: TextAlign.center,
+                            //           decoration: InputDecoration(
+                            //             contentPadding:
+                            //             const EdgeInsets.fromLTRB(
+                            //                 8.0, 0.0, 8.0, 0.0),
+                            //             focusedBorder: OutlineInputBorder(
+                            //                 borderSide: BorderSide(
+                            //                     color: Theme.of(context)
+                            //                         .primaryColor),
+                            //                 borderRadius:
+                            //                 const BorderRadius.all(
+                            //                     Radius.circular(10))),
+                            //             enabledBorder: OutlineInputBorder(
+                            //                 borderSide: BorderSide(
+                            //                     color: Theme.of(context)
+                            //                         .primaryColor),
+                            //                 borderRadius:
+                            //                 const BorderRadius.all(
+                            //                     Radius.circular(10))),
+                            //           ),
+                            //           onChanged: (value) {
+                            //             setState(() {
+                            //               dailyEntriesController.clickEdit();
+                            //             });
+                            //           })),
+                            // )
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin:
+                        const EdgeInsets.only(top: 10, left: 5, right: 3),
+                        child: Row(
+                          children: <Widget>[
                             Expanded(
                               flex: 2,
                               child: RichText(
@@ -2338,14 +3469,18 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                       controller: dailyEntriesController
                                           .MrngOtHrsControllers[index],
                                       cursorColor: Colors.black,
-                                      keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-
+                                      keyboardType: Platform.isAndroid
+                                          ? TextInputType.numberWithOptions(
+                                          decimal: true)
+                                          : TextInputType.text,
                                       inputFormatters: [
-                                        TextInputFormatter.withFunction((oldValue, newValue) {
-                                          return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
-                                              ? newValue
-                                              : oldValue;
-                                        }),
+                                        TextInputFormatter.withFunction(
+                                                (oldValue, newValue) {
+                                              return RegExp(r'^\d*\.?\d{0,2}$')
+                                                  .hasMatch(newValue.text)
+                                                  ? newValue
+                                                  : oldValue;
+                                            }),
                                       ],
                                       textAlign: TextAlign.center,
                                       decoration: InputDecoration(
@@ -2373,6 +3508,87 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                         });
                                       }),
                                 )),
+                            Expanded(
+                              flex: 2,
+                              child: RichText(
+                                text: const TextSpan(
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "Morning OT Amt",
+                                      ),
+                                      TextSpan(
+                                        text: "",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+
+                              // Text(
+                              //   "Mrg OT Amt",
+                              //   style: TextStyle(color: Colors.black),
+                              // ),
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: Container(
+                                  margin: const EdgeInsets.only(left: 8),
+                                  height: BaseUtitiles.getheightofPercentage(
+                                      context, 4),
+                                  child: TextField(
+                                      readOnly: true,
+                                      style:
+                                      const TextStyle(color: Colors.black),
+                                      controller: dailyEntriesController
+                                          .MrngOtAmtControllers[index],
+                                      cursorColor: Colors.black,
+                                      keyboardType: Platform.isAndroid
+                                          ? TextInputType.numberWithOptions(
+                                          decimal: true)
+                                          : TextInputType.text,
+                                      inputFormatters: [
+                                        TextInputFormatter.withFunction(
+                                                (oldValue, newValue) {
+                                              return RegExp(r'^\d*\.?\d{0,2}$')
+                                                  .hasMatch(newValue.text)
+                                                  ? newValue
+                                                  : oldValue;
+                                            }),
+                                      ],
+                                      textAlign: TextAlign.center,
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                        const EdgeInsets.fromLTRB(
+                                            8.0, 0.0, 8.0, 0.0),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                            const BorderRadius.all(
+                                                Radius.circular(10))),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                            borderRadius:
+                                            const BorderRadius.all(
+                                                Radius.circular(10))),
+                                      ),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          dailyEntriesController.clickEdit();
+                                        });
+                                      })),
+                            )
                           ],
                         ),
                       ),
@@ -2444,14 +3660,18 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                       style:
                                       const TextStyle(color: Colors.black),
                                       cursorColor: Colors.black,
-                                      keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-
+                                      keyboardType: Platform.isAndroid
+                                          ? TextInputType.numberWithOptions(
+                                          decimal: true)
+                                          : TextInputType.text,
                                       inputFormatters: [
-                                        TextInputFormatter.withFunction((oldValue, newValue) {
-                                          return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
-                                              ? newValue
-                                              : oldValue;
-                                        }),
+                                        TextInputFormatter.withFunction(
+                                                (oldValue, newValue) {
+                                              return RegExp(r'^\d*\.?\d{0,2}$')
+                                                  .hasMatch(newValue.text)
+                                                  ? newValue
+                                                  : oldValue;
+                                            }),
                                       ],
                                       textAlign: TextAlign.center,
                                       decoration: InputDecoration(
@@ -2479,91 +3699,6 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                         });
                                       }),
                                 )),
-                            Expanded(
-                              flex: 2,
-                              child: RichText(
-                                text: const TextSpan(
-                                    style: TextStyle(
-                                      fontSize: 12.0,
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.black,
-                                    ),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text: "Morning OT Amt",
-                                      ),
-                                      TextSpan(
-                                        text: "",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ]),
-                              ),
-
-                              // Text(
-                              //   "Mrg OT Amt",
-                              //   style: TextStyle(color: Colors.black),
-                              // ),
-                            ),
-                            Expanded(
-                              flex: 4,
-                              child: Container(
-                                  margin: const EdgeInsets.only(right: 11),
-                                  height: BaseUtitiles.getheightofPercentage(
-                                      context, 4),
-                                  child: TextField(
-                                      readOnly: true,
-                                      style:
-                                      const TextStyle(color: Colors.black),
-                                      controller: dailyEntriesController
-                                          .MrngOtAmtControllers[index],
-                                      cursorColor: Colors.black,
-                                      keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-
-                                      inputFormatters: [
-                                        TextInputFormatter.withFunction((oldValue, newValue) {
-                                          return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
-                                              ? newValue
-                                              : oldValue;
-                                        }),
-                                      ],
-                                      textAlign: TextAlign.center,
-                                      decoration: InputDecoration(
-                                        contentPadding:
-                                        const EdgeInsets.fromLTRB(
-                                            8.0, 0.0, 8.0, 0.0),
-                                        focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Theme.of(context)
-                                                    .primaryColor),
-                                            borderRadius:
-                                            const BorderRadius.all(
-                                                Radius.circular(10))),
-                                        enabledBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Theme.of(context)
-                                                    .primaryColor),
-                                            borderRadius:
-                                            const BorderRadius.all(
-                                                Radius.circular(10))),
-                                      ),
-                                      onChanged: (value) {
-                                        setState(() {
-                                          dailyEntriesController.clickEdit();
-                                        });
-                                      })),
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
-                        margin:
-                        const EdgeInsets.only(top: 10, left: 5, right: 3),
-                        child: Row(
-                          children: <Widget>[
                             Expanded(
                               flex: 2,
                               child: RichText(
@@ -2595,7 +3730,7 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                             Expanded(
                                 flex: 4,
                                 child: Container(
-                                  margin: const EdgeInsets.only(right: 11),
+                                  margin: const EdgeInsets.only(left: 8),
                                   height: BaseUtitiles.getheightofPercentage(
                                       context, 4),
                                   child: TextField(
@@ -2604,14 +3739,18 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                         .EvgOtAmtControllers[index],
                                     style: const TextStyle(color: Colors.black),
                                     cursorColor: Colors.black,
-                                    keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-
+                                    keyboardType: Platform.isAndroid
+                                        ? TextInputType.numberWithOptions(
+                                        decimal: true)
+                                        : TextInputType.text,
                                     inputFormatters: [
-                                      TextInputFormatter.withFunction((oldValue, newValue) {
-                                        return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
-                                            ? newValue
-                                            : oldValue;
-                                      }),
+                                      TextInputFormatter.withFunction(
+                                              (oldValue, newValue) {
+                                            return RegExp(r'^\d*\.?\d{0,2}$')
+                                                .hasMatch(newValue.text)
+                                                ? newValue
+                                                : oldValue;
+                                          }),
                                     ],
                                     textAlign: TextAlign.center,
                                     decoration: InputDecoration(
@@ -2632,80 +3771,221 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                     ),
                                   ),
                                 )),
-                            Expanded(
-                              flex: 2,
-                              child: RichText(
-                                text: const TextSpan(
-                                    style: TextStyle(
-                                      fontSize: 12.0,
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.black,
-                                    ),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text: "Net Amt",
-                                      ),
-                                      TextSpan(
-                                        text: "",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ]),
-                              ),
-
-                              // Text(
-                              //   "Net Amt",
-                              //   style: TextStyle(color: Colors.black),
-                              // ),
-                            ),
-                            Expanded(
-                                flex: 4,
-                                child: Container(
-                                  margin: const EdgeInsets.only(right: 11),
-                                  height: BaseUtitiles.getheightofPercentage(
-                                      context, 4),
-                                  child: TextField(
-                                    readOnly: true,
-                                    controller: dailyEntriesController
-                                        .NetAmtController[index],
-                                    style: const TextStyle(color: Colors.black),
-                                    cursorColor: Colors.black,
-                                    keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-
-                                    inputFormatters: [
-                                      TextInputFormatter.withFunction((oldValue, newValue) {
-                                        return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
-                                            ? newValue
-                                            : oldValue;
-                                      }),
-                                    ],
-                                    textAlign: TextAlign.center,
-                                    decoration: InputDecoration(
-                                      contentPadding: const EdgeInsets.fromLTRB(
-                                          8.0, 0.0, 8.0, 0.0),
-                                      focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Theme.of(context)
-                                                  .primaryColor),
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(10))),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Theme.of(context)
-                                                  .primaryColor),
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(10))),
-                                    ),
-                                  ),
-                                )),
-
                           ],
                         ),
                       ),
-
+                      // Container(
+                      //   margin:
+                      //   const EdgeInsets.only(top: 10, left: 5, right: 3),
+                      //   child: Row(
+                      //     children: <Widget>[
+                      //       Expanded(
+                      //         flex: 2,
+                      //         child: RichText(
+                      //           text: const TextSpan(
+                      //               style: TextStyle(
+                      //                 fontSize: 12.0,
+                      //                 fontWeight: FontWeight.normal,
+                      //                 color: Colors.black,
+                      //               ),
+                      //               children: <TextSpan>[
+                      //                 TextSpan(
+                      //                   text: "Ext Amt",
+                      //                 ),
+                      //                 TextSpan(
+                      //                   text: "",
+                      //                   style: TextStyle(
+                      //                     color: Colors.white,
+                      //                     fontSize: 12.0,
+                      //                     fontWeight: FontWeight.bold,
+                      //                   ),
+                      //                 ),
+                      //               ]),
+                      //         ),
+                      //         // Text(
+                      //         //   "Evg Ext Amt",
+                      //         //   style: TextStyle(color: Colors.black),
+                      //         // ),
+                      //       ),
+                      //       Expanded(
+                      //           flex: 4,
+                      //           child: Container(
+                      //             margin: const EdgeInsets.only(right: 11),
+                      //             height: BaseUtitiles.getheightofPercentage(
+                      //                 context, 4),
+                      //             child: TextField(
+                      //                 onTap: () {
+                      //                   if (dailyEntriesController
+                      //                       .EvgExtraAmtControllers[
+                      //                   index]
+                      //                       .text !=
+                      //                       "" &&
+                      //                       dailyEntriesController
+                      //                           .EvgExtraAmtControllers[
+                      //                       index]
+                      //                           .text !=
+                      //                           "0" &&
+                      //                       dailyEntriesController
+                      //                           .EvgExtraAmtControllers[
+                      //                       index]
+                      //                           .text !=
+                      //                           "0.0") {
+                      //                     return;
+                      //                   } else {
+                      //                     setState(() {
+                      //                       dailyEntriesController
+                      //                           .EvgExtraAmtControllers[index]
+                      //                           .text = "";
+                      //                       dailyEntriesController.clickEdit();
+                      //                     });
+                      //                   }
+                      //                 },
+                      //                 controller: dailyEntriesController
+                      //                     .EvgExtraAmtControllers[index],
+                      //                 style:
+                      //                 const TextStyle(color: Colors.black),
+                      //                 cursorColor: Colors.black,
+                      //                 keyboardType: Platform.isAndroid
+                      //                     ? TextInputType.numberWithOptions(
+                      //                     decimal: true)
+                      //                     : TextInputType.text,
+                      //                 inputFormatters: [
+                      //                   TextInputFormatter.withFunction(
+                      //                           (oldValue, newValue) {
+                      //                         return RegExp(r'^\d*\.?\d{0,2}$')
+                      //                             .hasMatch(newValue.text)
+                      //                             ? newValue
+                      //                             : oldValue;
+                      //                       }),
+                      //                 ],
+                      //                 textAlign: TextAlign.center,
+                      //                 decoration: InputDecoration(
+                      //                   contentPadding:
+                      //                   const EdgeInsets.fromLTRB(
+                      //                       8.0, 0.0, 8.0, 0.0),
+                      //                   focusedBorder: OutlineInputBorder(
+                      //                       borderSide: BorderSide(
+                      //                           color: Theme.of(context)
+                      //                               .primaryColor),
+                      //                       borderRadius:
+                      //                       const BorderRadius.all(
+                      //                           Radius.circular(10))),
+                      //                   enabledBorder: OutlineInputBorder(
+                      //                       borderSide: BorderSide(
+                      //                           color: Theme.of(context)
+                      //                               .primaryColor),
+                      //                       borderRadius:
+                      //                       const BorderRadius.all(
+                      //                           Radius.circular(10))),
+                      //                 ),
+                      //                 onChanged: (value) {
+                      //                   setState(() {
+                      //                     dailyEntriesController.clickEdit();
+                      //                   });
+                      //                 }),
+                      //           )),
+                      //       Expanded(
+                      //         flex: 2,
+                      //         child: RichText(
+                      //           text: const TextSpan(
+                      //               style: TextStyle(
+                      //                 fontSize: 12.0,
+                      //                 fontWeight: FontWeight.normal,
+                      //                 color: Colors.black,
+                      //               ),
+                      //               children: <TextSpan>[
+                      //                 TextSpan(
+                      //                   text: "Hrs",
+                      //                 ),
+                      //                 TextSpan(
+                      //                   text: "",
+                      //                   style: TextStyle(
+                      //                     color: Colors.white,
+                      //                     fontSize: 12.0,
+                      //                     fontWeight: FontWeight.bold,
+                      //                   ),
+                      //                 ),
+                      //               ]),
+                      //         ),
+                      //
+                      //         // Text(
+                      //         //   "Net Amt",
+                      //         //   style: TextStyle(color: Colors.black),
+                      //         // ),
+                      //       ),
+                      //       Expanded(
+                      //           flex: 4,
+                      //           child: Container(
+                      //             margin: const EdgeInsets.only(left: 8),
+                      //             height: BaseUtitiles.getheightofPercentage(
+                      //                 context, 4),
+                      //             child: TextField(
+                      //                 controller: dailyEntriesController
+                      //                     .hrsControllers[index],
+                      //                 style:
+                      //                 const TextStyle(color: Colors.black),
+                      //                 cursorColor: Colors.black,
+                      //                 onTap: () {
+                      //                   if (dailyEntriesController
+                      //                       .hrsControllers[index]
+                      //                       .text !=
+                      //                       "" &&
+                      //                       dailyEntriesController
+                      //                           .hrsControllers[index]
+                      //                           .text !=
+                      //                           "0" &&
+                      //                       dailyEntriesController
+                      //                           .hrsControllers[index]
+                      //                           .text !=
+                      //                           "0.0") {
+                      //                     return;
+                      //                   } else {
+                      //                     dailyEntriesController
+                      //                         .hrsControllers[index].text = "";
+                      //                   }
+                      //                 },
+                      //                 keyboardType: Platform.isAndroid
+                      //                     ? TextInputType.numberWithOptions(
+                      //                     decimal: true)
+                      //                     : TextInputType.text,
+                      //                 inputFormatters: [
+                      //                   TextInputFormatter.withFunction(
+                      //                           (oldValue, newValue) {
+                      //                         return RegExp(r'^\d*\.?\d{0,2}$')
+                      //                             .hasMatch(newValue.text)
+                      //                             ? newValue
+                      //                             : oldValue;
+                      //                       }),
+                      //                 ],
+                      //                 textAlign: TextAlign.center,
+                      //                 decoration: InputDecoration(
+                      //                   contentPadding:
+                      //                   const EdgeInsets.fromLTRB(
+                      //                       8.0, 0.0, 8.0, 0.0),
+                      //                   focusedBorder: OutlineInputBorder(
+                      //                       borderSide: BorderSide(
+                      //                           color: Theme.of(context)
+                      //                               .primaryColor),
+                      //                       borderRadius:
+                      //                       const BorderRadius.all(
+                      //                           Radius.circular(10))),
+                      //                   enabledBorder: OutlineInputBorder(
+                      //                       borderSide: BorderSide(
+                      //                           color: Theme.of(context)
+                      //                               .primaryColor),
+                      //                       borderRadius:
+                      //                       const BorderRadius.all(
+                      //                           Radius.circular(10))),
+                      //                 ),
+                      //                 onChanged: (value) {
+                      //                   setState(() {
+                      //                     dailyEntriesController.clickEdit();
+                      //                   });
+                      //                 }),
+                      //           )),
+                      //     ],
+                      //   ),
+                      // ),
                       Container(
                         margin: const EdgeInsets.only(
                             top: 10, left: 5, right: 3, bottom: 8),
@@ -2741,9 +4021,9 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                               // ),
                             ),
                             Expanded(
-                                flex: 10,
+                                flex: 4,
                                 child: Container(
-                                  margin: const EdgeInsets.only(left: 0),
+                                  margin: const EdgeInsets.only(right: 11),
                                   height: BaseUtitiles.getheightofPercentage(
                                       context, 4),
                                   child: TextFormField(
@@ -2779,6 +4059,79 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                                             .updateSubcontDetValue();
                                       });
                                     },
+                                  ),
+                                )),
+                            Expanded(
+                              flex: 2,
+                              child: RichText(
+                                text: const TextSpan(
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "Net Amt",
+                                      ),
+                                      TextSpan(
+                                        text: "",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+
+                              // Text(
+                              //   "Net Amt",
+                              //   style: TextStyle(color: Colors.black),
+                              // ),
+                            ),
+                            Expanded(
+                                flex: 4,
+                                child: Container(
+                                  margin: const EdgeInsets.only(left: 8),
+                                  height: BaseUtitiles.getheightofPercentage(
+                                      context, 4),
+                                  child: TextField(
+                                    readOnly: true,
+                                    controller: dailyEntriesController
+                                        .NetAmtController[index],
+                                    style: const TextStyle(color: Colors.black),
+                                    cursorColor: Colors.black,
+                                    keyboardType: Platform.isAndroid
+                                        ? TextInputType.numberWithOptions(
+                                        decimal: true)
+                                        : TextInputType.text,
+                                    inputFormatters: [
+                                      TextInputFormatter.withFunction(
+                                              (oldValue, newValue) {
+                                            return RegExp(r'^\d*\.?\d{0,2}$')
+                                                .hasMatch(newValue.text)
+                                                ? newValue
+                                                : oldValue;
+                                          }),
+                                    ],
+                                    textAlign: TextAlign.center,
+                                    decoration: InputDecoration(
+                                      contentPadding: const EdgeInsets.fromLTRB(
+                                          8.0, 0.0, 8.0, 0.0),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10))),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .primaryColor),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10))),
+                                    ),
                                   ),
                                 )),
                           ],
@@ -2836,7 +4189,8 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                         onPressed: () async {
                           Future.delayed(Duration(seconds: 0), () async {
                             setState(() {
-                              if (dailyEntriesController.saveButton.value != RequestConstant.APPROVAL) {
+                              if (dailyEntriesController.saveButton.value !=
+                                  RequestConstant.APPROVAL) {
                                 dailyEntriesController.readListdata.value
                                     .clear();
                                 dailyEntriesController
@@ -2902,7 +4256,8 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Alert!'),
-        content: Text('Are you sure to ${dailyEntriesController.saveButton.value}?'),
+        content:
+            Text('Are you sure to ${dailyEntriesController.saveButton.value}?'),
         actions: [
           Container(
             margin: const EdgeInsets.only(left: 20, right: 20),
@@ -2928,25 +4283,22 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                     indent: 15,
                     endIndent: 15, //Spacing at the bottom of divider.
                   ),
-
                   Expanded(
                     child: StatefulBuilder(
                       builder: (context, setState) => TextButton(
                         onPressed: () async {
-                            if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
-                              await dailyEntriesController.getDetTablesDatas();
-                              await dailyEntriesController.SaveEntryScreen(
+                          if (await BaseUtitiles.checkNetworkAndShowLoader(
+                              context)) {
+                            await dailyEntriesController.getDetTablesDatas();
+                            await dailyEntriesController.SaveEntryScreen(
                                 context,
-                                dailyEntriesController.attendId != 0
-                                    ? dailyEntriesController.attendId
-                                    : 0
-                              );
-                            }
+                                dailyEntriesController.attendId);
+                          }
                         },
                         child: Text(
                           dailyEntriesController.saveButton.value,
                           style: TextStyle(
-                            color:  Theme.of(context).primaryColor,
+                            color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,
                             fontSize: RequestConstant.Lable_Font_SIZE,
                           ),
@@ -2998,12 +4350,15 @@ class _SubAttendanceSiteEntryState extends State<SubattendanceSiteEntry> {
                     child: TextButton(
                         onPressed: () async {
                           if (itemType == "String") {
-                            final imageId = dailyEntriesController.imageIds[index];
+                            final imageId =
+                                dailyEntriesController.imageIds[index];
 
-                            final isDeleted = await dailyEntriesController.deletingImage(imageId);
+                            final isDeleted = await dailyEntriesController
+                                .deletingImage(imageId);
 
                             if (isDeleted) {
-                              dailyEntriesController.gettingNetworkImages.removeAt(index);
+                              dailyEntriesController.gettingNetworkImages
+                                  .removeAt(index);
                             }
                           } else if (itemType == "File") {
                             int localIndex = index -

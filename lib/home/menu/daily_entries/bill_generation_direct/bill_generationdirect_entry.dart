@@ -104,15 +104,21 @@ class _Subcont_Nmr_EntryScreenState_Site
         billGenerationDirectController.saveButton.value = RequestConstant.SUBMIT;
         billGenerationDirectController.billgen_itemlistTable_Delete();
         billGenerationDirectController.ItemGetTableListdata.value.clear();
+
+        billGenerationDirectController.Advded.text = "0.0";
+        billGenerationDirectController.netBillAmt.text = "0.0";
+        billGenerationDirectController.finalBillAmt.text = "0.0";
+
+
         billGenerationDirectController.billamount.text = "0.0";
         billGenerationDirectController.Creditamt.text = "0.0";
         billGenerationDirectController.Debitamt.text = "0.0";
         billGenerationDirectController.materialDebitamt.text = "0.0";
-        billGenerationDirectController.materialDebitRemarks.text = "";
-        billGenerationDirectController.CreditRemarksController.text = "";
-        billGenerationDirectController.DebitRemarksController.text = "";
+        billGenerationDirectController.materialDebitRemarks.text = "-";
+        billGenerationDirectController.CreditRemarksController.text = "-";
+        billGenerationDirectController.DebitRemarksController.text = "-";
         billGenerationDirectController.Advded.text = billGenerationDirectController.tobededadv.text;
-        billGenerationDirectController.Roundoff.text = "0";
+        billGenerationDirectController.Roundoff.text = "0.0";
         billGenerationDirectController.netpayamt.text = "0.0";
         billGenerationDirectController.tobededadv.text = billGenerationDirectController.to_be_dection_advance;
         billGenerationDirectController.createdById.value=0;

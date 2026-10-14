@@ -27,13 +27,16 @@ class _Subcontractor_Site_CategoryState
   @override
   void initState() {
     super.initState();
-    if (widget.type == "subcontAttendance") {
-      dailyEntriesController
-          .nosAndothrsZerovalueset(dailyEntriesController.store_ShowList);
-    } else {
-      manPowerController
-          .nosAndothrsZerovalueset(manPowerController.manpowerCategoryList);
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (widget.type == "subcontAttendance") {
+        dailyEntriesController
+            .nosAndothrsZerovalueset(dailyEntriesController.store_ShowList);
+      } else {
+        manPowerController
+            .nosZerovalueset(manPowerController.manpowerCategoryList);
+      }
+      setState(() {});
+    });
   }
 
   @override
@@ -140,8 +143,7 @@ class _Subcontractor_Site_CategoryState
                           () => ListView.builder(
                             padding: EdgeInsets.zero,
                             physics: const BouncingScrollPhysics(),
-                            itemCount: dailyEntriesController
-                                .store_ShowList.value.length,
+                            itemCount: dailyEntriesController.store_ShowList.value.length,
                             itemBuilder: (BuildContext context, int index) {
                               dailyEntriesController.textControllersInitiate();
                               return Container(
@@ -414,78 +416,91 @@ class _Subcontractor_Site_CategoryState
                                   color: const Color.fromRGBO(240, 240, 240, 1),
                                   child: Column(
                                     children: [
-                                      const SizedBox(height: 5),
+                                      // const SizedBox(height : 5),
                                       Row(
                                         children: [
-                                          const SizedBox(width: 10),
+                                          const SizedBox(width: 20),
+                                          Container(
+                                            width: 48,
+                                            height: 48,
+                                            decoration: BoxDecoration(
+                                              color:  Theme.of(context)
+                                                  .primaryColor.withOpacity(0.1), // Light blue background
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Icon(
+                                              Icons.groups_outlined,
+                                              color: Theme.of(context)
+                                                  .primaryColor, // Dark navy
+                                              size: 28,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 15),
                                           Expanded(
                                             flex: 1,
-                                            child: Text(
-                                              manPowerController
-                                                  .manpowerCategoryList
-                                                  .value[index]
-                                                  .labourCategoryName
-                                                  .toString(),
-                                              style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .primaryColor,
-                                                fontWeight: FontWeight.bold,
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                manPowerController.manpowerCategoryList.value[index].labourCategoryName
+                                                    .toString(),
+                                                softWrap: true,
+                                                maxLines: null,
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
                                           Expanded(
-                                            flex: 1,
+                                            flex: 2,
                                             child: Container(
                                               margin: const EdgeInsets.only(
-                                                  top: 10, left: 10, right: 10),
+                                                  top: 0, left: 10, right: 10),
                                               child: Card(
                                                 shape: RoundedRectangleBorder(
                                                   side: const BorderSide(
                                                       color: Colors.white70,
                                                       width: 1),
                                                   borderRadius:
-                                                      BorderRadius.circular(15),
+                                                  BorderRadius.circular(15),
                                                 ),
                                                 elevation: 3,
                                                 child: Padding(
                                                   padding:
-                                                      const EdgeInsets.only(
-                                                          top: 3,
-                                                          left: 10,
-                                                          bottom: 5),
+                                                  const EdgeInsets.only(
+                                                      top: 3,
+                                                      left: 10,
+                                                      bottom: 5),
                                                   child: TextFormField(
                                                     onTap: () {
                                                       if (manPowerController
-                                                                  .NosControllers[
-                                                                      index]
-                                                                  .text !=
-                                                              "" &&
+                                                          .NosControllers[
+                                                      index]
+                                                          .text !=
+                                                          "" &&
                                                           manPowerController
-                                                                  .NosControllers[
-                                                                      index]
-                                                                  .text !=
+                                                              .NosControllers[
+                                                          index]
+                                                              .text !=
                                                               "0" &&
                                                           manPowerController
-                                                                  .NosControllers[
-                                                                      index]
-                                                                  .text !=
+                                                              .NosControllers[
+                                                          index]
+                                                              .text !=
                                                               "0.0") {
                                                         return;
                                                       } else {
                                                         manPowerController
                                                             .NosControllers[
-                                                                index]
+                                                        index]
                                                             .text = "";
                                                       }
                                                     },
                                                     controller:
-                                                        manPowerController
-                                                                .NosControllers[
-                                                            index],
+                                                    manPowerController
+                                                        .NosControllers[
+                                                    index],
                                                     cursorColor: Colors.black,
                                                     keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
 
@@ -500,32 +515,32 @@ class _Subcontractor_Site_CategoryState
                                                         color: Colors.black),
                                                     decoration: InputDecoration(
                                                       contentPadding:
-                                                          EdgeInsets.zero,
+                                                      EdgeInsets.zero,
                                                       border: InputBorder.none,
                                                       labelText: RequestConstant
                                                           .HEAD_NOS,
                                                       labelStyle:
-                                                          const TextStyle(
+                                                      const TextStyle(
                                                         color: Colors.grey,
                                                         fontSize: RequestConstant
                                                             .Lable_Font_SIZE,
                                                       ),
                                                       prefixIconConstraints:
-                                                          const BoxConstraints(
-                                                              minWidth: 0,
-                                                              minHeight: 0),
+                                                      const BoxConstraints(
+                                                          minWidth: 0,
+                                                          minHeight: 0),
                                                       prefixIcon: Padding(
                                                         padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                vertical: 8,
-                                                                horizontal: 8),
+                                                        const EdgeInsets
+                                                            .symmetric(
+                                                            vertical: 8,
+                                                            horizontal: 8),
                                                         child: Icon(
                                                           Icons
                                                               .supervisor_account,
                                                           color:
-                                                              Theme.of(context)
-                                                                  .primaryColor,
+                                                          Theme.of(context)
+                                                              .primaryColor,
                                                         ),
                                                       ),
                                                     ),
@@ -534,90 +549,90 @@ class _Subcontractor_Site_CategoryState
                                               ),
                                             ),
                                           ),
-                                          Expanded(
-                                            flex: 1,
-                                            child: Container(
-                                              margin: const EdgeInsets.only(
-                                                  top: 10, left: 10, right: 10),
-                                              child: Card(
-                                                shape: RoundedRectangleBorder(
-                                                  side: const BorderSide(
-                                                      color: Colors.white70,
-                                                      width: 1),
-                                                  borderRadius:
-                                                      BorderRadius.circular(15),
-                                                ),
-                                                elevation: 3,
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 3,
-                                                          left: 10,
-                                                          bottom: 5),
-                                                  child: TextFormField(
-                                                    onTap: () {
-                                                      setState(() {
-                                                        if (manPowerController
-                                                                    .RemarksControllers[
-                                                                        index]
-                                                                    .text !=
-                                                                "" &&
-                                                            manPowerController
-                                                                    .RemarksControllers[
-                                                                        index]
-                                                                    .text !=
-                                                                "0" &&
-                                                            manPowerController
-                                                                    .RemarksControllers[
-                                                                        index]
-                                                                    .text !=
-                                                                "0.0") {
-                                                          return;
-                                                        } else {
-                                                          manPowerController
-                                                              .RemarksControllers[
-                                                                  index]
-                                                              .text = "";
-                                                        }
-                                                      });
-                                                    },
-                                                    controller: manPowerController
-                                                            .RemarksControllers[
-                                                        index],
-                                                    cursorColor: Colors.black,
-                                                    style: const TextStyle(
-                                                        color: Colors.black),
-                                                    decoration: InputDecoration(
-                                                      contentPadding:
-                                                          EdgeInsets.zero,
-                                                      border: InputBorder.none,
-                                                      labelText: "Remarks",
-                                                      labelStyle: const TextStyle(
-                                                          color: Colors.grey,
-                                                          fontSize: RequestConstant
-                                                              .Lable_Font_SIZE),
-                                                      prefixIconConstraints:
-                                                          const BoxConstraints(
-                                                              minWidth: 0,
-                                                              minHeight: 0),
-                                                      prefixIcon: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                                  vertical: 8,
-                                                                  horizontal:
-                                                                      8),
-                                                          child: Icon(
-                                                              Icons.receipt_long,
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .primaryColor)),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
+                                          // Expanded(
+                                          //     //   flex: 1,
+                                          //     //   child: Container(
+                                          //     //     margin: const EdgeInsets.only(
+                                          //     //         top: 10, left: 10, right: 10),
+                                          //     //     child: Card(
+                                          //     //       shape: RoundedRectangleBorder(
+                                          //     //         side: const BorderSide(
+                                          //     //             color: Colors.white70,
+                                          //     //             width: 1),
+                                          //     //         borderRadius:
+                                          //     //             BorderRadius.circular(15),
+                                          //     //       ),
+                                          //     //       elevation: 3,
+                                          //     //       child: Padding(
+                                          //     //         padding:
+                                          //     //             const EdgeInsets.only(
+                                          //     //                 top: 3,
+                                          //     //                 left: 10,
+                                          //     //                 bottom: 5),
+                                          //     //         child: TextFormField(
+                                          //     //           onTap: () {
+                                          //     //             setState(() {
+                                          //     //               if (manPowerController
+                                          //     //                           .RemarksControllers[
+                                          //     //                               index]
+                                          //     //                           .text !=
+                                          //     //                       "" &&
+                                          //     //                   manPowerController
+                                          //     //                           .RemarksControllers[
+                                          //     //                               index]
+                                          //     //                           .text !=
+                                          //     //                       "0" &&
+                                          //     //                   manPowerController
+                                          //     //                           .RemarksControllers[
+                                          //     //                               index]
+                                          //     //                           .text !=
+                                          //     //                       "0.0") {
+                                          //     //                 return;
+                                          //     //               } else {
+                                          //     //                 manPowerController
+                                          //     //                     .RemarksControllers[
+                                          //     //                         index]
+                                          //     //                     .text = "";
+                                          //     //               }
+                                          //     //             });
+                                          //     //           },
+                                          //     //           controller: manPowerController
+                                          //     //                   .RemarksControllers[
+                                          //     //               index],
+                                          //     //           cursorColor: Colors.black,
+                                          //     //           style: const TextStyle(
+                                          //     //               color: Colors.black),
+                                          //     //           decoration: InputDecoration(
+                                          //     //             contentPadding:
+                                          //     //                 EdgeInsets.zero,
+                                          //     //             border: InputBorder.none,
+                                          //     //             labelText: "Remarks",
+                                          //     //             labelStyle: const TextStyle(
+                                          //     //                 color: Colors.grey,
+                                          //     //                 fontSize: RequestConstant
+                                          //     //                     .Lable_Font_SIZE),
+                                          //     //             prefixIconConstraints:
+                                          //     //                 const BoxConstraints(
+                                          //     //                     minWidth: 0,
+                                          //     //                     minHeight: 0),
+                                          //     //             prefixIcon: Padding(
+                                          //     //                 padding:
+                                          //     //                     const EdgeInsets
+                                          //     //                         .symmetric(
+                                          //     //                         vertical: 8,
+                                          //     //                         horizontal:
+                                          //     //                             8),
+                                          //     //                 child: Icon(
+                                          //     //                     Icons.receipt_long,
+                                          //     //                     color: Theme.of(
+                                          //     //                             context)
+                                          //     //                         .primaryColor)),
+                                          //     //           ),
+                                          //     //         ),
+                                          //     //       ),
+                                          //     //     ),
+                                          //     //   ),
+                                          //     // ),
                                         ],
                                       ),
                                       const Divider(

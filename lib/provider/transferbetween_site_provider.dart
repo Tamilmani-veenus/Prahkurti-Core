@@ -49,7 +49,7 @@ class TransferBetSiteProvider{
       return data;
     } catch (error) {
       print(error);
-      BaseUtitiles.showToast('Something went wrong..');
+      // BaseUtitiles.showToast('Something went wrong..');
       return null;
     }
   }
@@ -61,24 +61,33 @@ class TransferBetSiteProvider{
     } catch (error,e) {
       print(error);
       print("ERROR....${e}");
-      BaseUtitiles.showToast('Something went wrong..');
+      // BaseUtitiles.showToast('Something went wrong..');
       return null;
     }
   }
 
 
 
-  static Future<TransferbetSiteEditApiResmodel?> entryList_editAPI(int pId,int sId, int frsId, int TransferId) async {
+  // static Future<TransferbetSiteEditApiResmodel?> entryList_editAPI(int pId,int sId, int frsId, int TransferId) async {
+  //   try {
+  //     final response = await ApiManager.getAPICall("${ApiConstant.EDIT_TRANSFERBET_SITE_API}?ProjectId=$pId&SiteId=$sId&FromSiteId=$frsId&TransferId=$TransferId");
+  //     return transferbetSiteEditApiResmodelFromJson(response);
+  //   }catch (error,e) {
+  //   print("Delete API Error: $error");
+  //   print("ERROR....${e}");
+  //   return null; // ✅ important
+  //   }
+  // }
+  static Future<TransferbetSiteEditApiResmodel?> entryList_editAPI(int TransferId) async {
     try {
-      final response = await ApiManager.getAPICall("${ApiConstant.EDIT_TRANSFERBET_SITE_API}?ProjectId=$pId&SiteId=$sId&FromSiteId=$frsId&TransferId=$TransferId");
+      final response = await ApiManager.getAPICall("${ApiConstant.EDIT_TRANSFERBET_SITE_API}/$TransferId");
       return transferbetSiteEditApiResmodelFromJson(response);
     }catch (error,e) {
-    print("Delete API Error: $error");
-    print("ERROR....${e}");
-    return null; // ✅ important
+      print("Delete API Error: $error");
+      print("ERROR....${e}");
+      return null; // ✅ important
     }
   }
-
 
   static Future<bool> entryList_deleteAPI(int TransferId) async {
     try {

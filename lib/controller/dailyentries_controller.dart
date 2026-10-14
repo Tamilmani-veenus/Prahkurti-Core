@@ -19,6 +19,7 @@ import '../models/labr_atten_response.dart';
 import '../models/subcont_entryscreen_save_model.dart';
 import '../provider/inward_pending_provider.dart';
 import '../provider/subcont_attendance_provider.dart';
+import '../utilities/apiconstant.dart';
 import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +53,7 @@ class DailyEntriesController extends GetxController {
   List<TextEditingController> MrngOtHrsControllers = [];
   List<TextEditingController> MrngOtAmtControllers = [];
   List<TextEditingController> EvgExtraAmtControllers = [];
+  List<TextEditingController> hrsControllers = [];
   List<TextEditingController> NetAmtController = [];
   List<TextEditingController> RemarksControllers = [];
 
@@ -83,6 +85,7 @@ class DailyEntriesController extends GetxController {
 
   Future getShowClickPopList(BuildContext context) async {
     store_ShowList.value = [];
+    await ClickUtils.run(() async {
     final value = await SubContAttendanceProvider.getSubcontAttenDetList(
         projectController.selectedProjectId.value,
         subcontractorController.selectedSubcontId.value);
@@ -90,7 +93,7 @@ class DailyEntriesController extends GetxController {
       if (value.success == true) {
         if (value.result!.isNotEmpty) {
           store_ShowList.value = value.result!;
-          Navigator.push(
+          await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => Subcontractor_Site_Category(type: 'subcontAttendance',)));
@@ -103,6 +106,7 @@ class DailyEntriesController extends GetxController {
     } else {
       BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
     }
+    });
   }
 
   saveSubContDetTableDatas(BuildContext context) async {
@@ -138,22 +142,39 @@ class DailyEntriesController extends GetxController {
         subContDetModel.EvgOtHrs = 0.0;
         subContDetModel.EvgOtAmt = 0.0;
         subContDetModel.EvgExtrsAmt = 0.0;
-        subContDetModel.netAmt =
-            double.parse(
-                ((element.wages * (double.tryParse(NosControllers[i].text) ?? 0) +
-                    subContDetModel.MrgOtAmt!)
-                    .toStringAsFixed(2)));
+        subContDetModel.hrs = 0.0;
+        if (AppClient.isVrindhavana) {
+          subContDetModel.netAmt = double.parse(
+            (
+                (double.tryParse(NosControllers[i].text) ?? 0) *
+                    (element.wages / 8) *
+                    0 +
+                    subContDetModel.MrgOtAmt!
+            ).toStringAsFixed(2),
+          );
+        } else {
+          subContDetModel.netAmt =
+              double.parse(
+                  ((element.wages *
+                      (double.tryParse(NosControllers[i].text) ?? 0) +
+                      subContDetModel.MrgOtAmt!)
+                      .toStringAsFixed(2)));
+        }
         readListdata.value.forEach((element) {
           if (element.siteId == subContDetModel.siteId &&
               element.catId == subContDetModel.catId) {
             j = 1;
           }
         });
-        if (j == 0) {
+        if (AppClient.isVrindhavana) {
           subcontModelList.add(subContDetModel);
-        } else {
-          BaseUtitiles.showToast("Entry already exist");
-          j = 0;
+        }else{
+          if (j == 0) {
+            subcontModelList.add(subContDetModel);
+          } else {
+            BaseUtitiles.showToast("Entry already exist");
+            j = 0;
+          }
         }
       }
       i++;
@@ -166,6 +187,87 @@ class DailyEntriesController extends GetxController {
   deleteSubcontDetTableDatas() async {
     await subContAttendatanceDetService.SubContDetdelete();
   }
+  void clearControllers() {
+    // Entry Screen Nos
+    for (final c in EntrySCreenNosControllers) {
+      c.dispose();
+    }
+    EntrySCreenNosControllers.clear();
+
+    // Net Amount
+    for (final c in NetAmtController) {
+      c.dispose();
+    }
+    NetAmtController.clear();
+
+    // Nos
+    for (final c in NosControllers) {
+      c.dispose();
+    }
+    NosControllers.clear();
+
+    // OT Hours
+    for (final c in OtHrsController) {
+      c.dispose();
+    }
+    OtHrsController.clear();
+
+    // Extras
+    for (final c in ExtrasControllers) {
+      c.dispose();
+    }
+    ExtrasControllers.clear();
+
+    // Evening OT Hours
+    for (final c in EvgOtHrsControllers) {
+      c.dispose();
+    }
+    EvgOtHrsControllers.clear();
+
+    // Evening OT Amount
+    for (final c in EvgOtAmtControllers) {
+      c.dispose();
+    }
+    EvgOtAmtControllers.clear();
+
+    // Morning OT Hours
+    for (final c in MrngOtHrsControllers) {
+      c.dispose();
+    }
+    MrngOtHrsControllers.clear();
+
+    // Morning OT Amount
+    for (final c in MrngOtAmtControllers) {
+      c.dispose();
+    }
+    MrngOtAmtControllers.clear();
+
+    // Evening Extra Amount
+    for (final c in EvgExtraAmtControllers) {
+      c.dispose();
+    }
+    EvgExtraAmtControllers.clear();
+
+    // Hours
+    for (final c in hrsControllers) {
+      c.dispose();
+    }
+    hrsControllers.clear();
+
+    // Remarks
+    for (final c in RemarksControllers) {
+      c.dispose();
+    }
+    RemarksControllers.clear();
+  }
+
+  void createControllers() {
+    clearControllers();
+
+    for (int i = 0; i < readListdata.length; i++) {
+      textControllersInitiate();
+    }
+  }
 
   Future getDetTablesDatas() async {
     var subCont = await subContAttendatanceDetService.SubContDetreadAll();
@@ -173,6 +275,9 @@ class DailyEntriesController extends GetxController {
     readListdata.value.clear();
     subCont.forEach((user) {
       var subContDetModel = SubContDetModel();
+      if (AppClient.isVrindhavana) {
+        subContDetModel.id = user['id'];
+      }
       subContDetModel.reqDetId = user['reqDetId'];
       subContDetModel.catId = user['catId'];
       subContDetModel.catName = user['catName'];
@@ -188,36 +293,64 @@ class DailyEntriesController extends GetxController {
       subContDetModel.remarks = user['remarks'];
       subContDetModel.siteId = user['siteId'];
       subContDetModel.siteName = user['siteName'];
+      subContDetModel.hrs = user['hrs'];
       subContDetReadList.add(subContDetModel);
       readListdata.value = subContDetReadList;
     });
+    createControllers();          // <-- Add this
+    setTextControllersValue();    // <-- Then set values
     getTotalamntAndTotalNos();
-    setTextControllersValue();
+
+    print("object..${readListdata.value.length}");
   }
 
-  setTextControllersValue() async {
+  Future<void> setTextControllersValue() async {
+    clearControllers();
+
     for (var index = 0; index < readListdata.length; index++) {
       textControllersInitiate();
-      EntrySCreenNosControllers[index].text = readListdata[index].nos;
+
+      EntrySCreenNosControllers[index].text =
+          readListdata[index].nos.toString();
+
       MrngOtHrsControllers[index].text =
           readListdata[index].MrgOtHrs.toString();
+
       MrngOtAmtControllers[index].text =
           readListdata[index].MrgOtAmt.toString();
-      EvgOtHrsControllers[index].text = readListdata[index].EvgOtHrs.toString();
-      EvgOtAmtControllers[index].text = readListdata[index].EvgOtAmt.toString();
+
+      EvgOtHrsControllers[index].text =
+          readListdata[index].EvgOtHrs.toString();
+
+      EvgOtAmtControllers[index].text =
+          readListdata[index].EvgOtAmt.toString();
+
       EvgExtraAmtControllers[index].text =
           readListdata[index].EvgExtrsAmt.toString();
-      ExtrasControllers[index].text = readListdata[index].Extra.toString();
-      NetAmtController[index].text = readListdata[index].netAmt.toString();
-      RemarksControllers[index].text = readListdata[index].remarks.toString();
+
+      hrsControllers[index].text =
+          readListdata[index].hrs.toString();
+
+      ExtrasControllers[index].text =
+          readListdata[index].Extra.toString();
+
+      NetAmtController[index].text =
+          readListdata[index].netAmt.toString();
+
+      RemarksControllers[index].text =
+          readListdata[index].remarks.toString();
     }
   }
 
   updateSubcontDetValue() async {
     UpdateModelList.clear();
     for (var n = 0; n < readListdata.length; n++) {
-      textControllersInitiate();
+      // textControllersInitiate();
       subContDetModel = SubContDetModel();
+      if (AppClient.isVrindhavana) {
+        subContDetModel.id = readListdata[n].id;
+      }
+      subContDetModel.reqDetId = readListdata[n].reqDetId;
       subContDetModel.catId = readListdata[n].catId;
       subContDetModel.catName = readListdata[n].catName;
       subContDetModel.wages = readListdata[n].wages;
@@ -245,6 +378,10 @@ class DailyEntriesController extends GetxController {
           EvgExtraAmtControllers[n].value.text != ""
               ? EvgExtraAmtControllers[n].value.text
               : "0");
+      subContDetModel.hrs = double.parse(
+          hrsControllers[n].value.text != ""
+              ? hrsControllers[n].value.text
+              : "0");
       subContDetModel.netAmt = double.parse(NetAmtController[n].value.text != ""
           ? NetAmtController[n].value.text
           : "0");
@@ -256,45 +393,58 @@ class DailyEntriesController extends GetxController {
     await subContAttendatanceDetService.SubContDetUpdate(UpdateModelList);
   }
 
-  clickEdit() {
+  void clickEdit() {
+    // textControllersInitiate();
+
     for (var index = 0; index < readListdata.length; index++) {
-      textControllersInitiate();
-      MrngOtAmtControllers[index].text = ((readListdata[index].wages / 8) *
-          double.parse(MrngOtHrsControllers[index].value.text != ""
-              ? MrngOtHrsControllers[index].value.text
-              : "0"))
-          .toStringAsFixed(2);
-      EvgOtAmtControllers[index].text = ((readListdata[index].wages / 8) *
-          double.parse(EvgOtHrsControllers[index].value.text != ""
-              ? EvgOtHrsControllers[index].value.text
-              : "0"))
-          .toStringAsFixed(2);
+      final wages = readListdata[index].wages;
 
-      // NetAmtController[index].text = (readListdata[index].wages * double.parse(EntrySCreenNosControllers[index].value.text != ""
-      //     ? EntrySCreenNosControllers[index].value.text : "0")).toString();
+      final mrngOtHrs =
+          double.tryParse(MrngOtHrsControllers[index].text) ?? 0;
 
-      NetAmtController[index].text = (readListdata[index].wages *
-          double.parse(EntrySCreenNosControllers[index].value.text != ""
-              ? EntrySCreenNosControllers[index].value.text
-              : "0") +
-          (double.parse(ExtrasControllers[index].text != ""
-              ? ExtrasControllers[index].text
-              : "0") *
-              double.parse(EntrySCreenNosControllers[index].value.text != ""
-                  ? EntrySCreenNosControllers[index].value.text
-                  : "0")) +
-          double.parse(EvgExtraAmtControllers[index].text != ""
-              ? EvgExtraAmtControllers[index].text
-              : "0") +
-          double.parse(MrngOtAmtControllers[index].text != ""
-              ? MrngOtAmtControllers[index].text
-              : "0") +
-          double.parse(
-              EvgOtAmtControllers[index].text != "" ? EvgOtAmtControllers[index].text : "0"))
-          .toStringAsFixed(2);
+      final evgOtHrs =
+          double.tryParse(EvgOtHrsControllers[index].text) ?? 0;
+
+      final nos =
+          double.tryParse(EntrySCreenNosControllers[index].text) ?? 0;
+
+      final extras =
+          double.tryParse(ExtrasControllers[index].text) ?? 0;
+
+      final evgExtraAmt =
+          double.tryParse(EvgExtraAmtControllers[index].text) ?? 0;
+
+      final hrs =
+          double.tryParse(hrsControllers[index].text) ?? 0;
+
+      final mrngOtAmt = (wages / 8) * mrngOtHrs;
+      final evgOtAmt = (wages / 8) * evgOtHrs;
+
+      MrngOtAmtControllers[index].text = mrngOtAmt.toStringAsFixed(2);
+      EvgOtAmtControllers[index].text = evgOtAmt.toStringAsFixed(2);
+
+      double netAmt;
+
+      if (AppClient.isVrindhavana) {
+        netAmt = (nos * wages / 8 * hrs) +
+            (extras * nos) +
+            evgExtraAmt +
+            mrngOtAmt +
+            evgOtAmt;
+      } else {
+        netAmt = (nos * wages ) +
+            (extras * nos) +
+            evgExtraAmt +
+            mrngOtAmt +
+            evgOtAmt;
+      }
+
+      NetAmtController[index].text = netAmt.toStringAsFixed(2);
     }
+
     updateSubcontDetValue();
   }
+
   clearDatas() {
     deleteSubcontDetTableDatas();
     readListdata.value.clear();
@@ -388,6 +538,7 @@ class DailyEntriesController extends GetxController {
             extra: readListdata[index].Extra,
             extraAmt: readListdata[index].EvgExtrsAmt,
             labourId: subcontractorController.selectedSubcontId.value,
+            hrs: readListdata[index].hrs,
             totalAmount: readListdata[index].netAmt);
         getAttendanceDetailsDto.add(list);
       }
@@ -432,8 +583,12 @@ class DailyEntriesController extends GetxController {
   Future deleteParticularList(SubContDetModel data) async {
     deleteModelList.clear();
     subContDetModel = SubContDetModel();
-    subContDetModel.catId = data.catId;
-    subContDetModel.siteId = siteController.selectedsiteId.value;
+    if (AppClient.isVrindhavana) {
+      subContDetModel.id = data.id; // Delete by SQLite ID
+    } else {
+      subContDetModel.catId = data.catId;
+      subContDetModel.siteId = siteController.selectedsiteId.value;
+    }
     deleteModelList.add(subContDetModel);
     await subContAttendatanceDetService.SubContDetdeleteById(deleteModelList);
   }
@@ -445,6 +600,7 @@ class DailyEntriesController extends GetxController {
 
   Future subContEntryList_EditApi(int attendId, status,String MenuName, BuildContext context,
       {String? type}) async {
+    await ClickUtils.run(() async {
     var response =
     await SubContAttendanceProvider.subcont_entryList_editAPI(attendId,status);
     if (response != null) {
@@ -452,9 +608,9 @@ class DailyEntriesController extends GetxController {
         EditListResDatas.value = [response.result];
         if (EditListResDatas.isNotEmpty) {
           saveButton.value = type=="approve"?RequestConstant.APPROVAL:RequestConstant.RESUBMIT;
-          editSaveDetTable();
-          getDetTablesDatas();
-          return Navigator.pushReplacement(
+          await editSaveDetTable();
+          await getDetTablesDatas();
+          await Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => SubattendanceSiteEntry(heading: MenuName,)));
@@ -467,11 +623,12 @@ class DailyEntriesController extends GetxController {
     } else {
       BaseUtitiles.showToast("Something Went Wrong...");
     }
+    });
   }
 
   Future editSaveDetTable() async {
     subcontModelList.clear();
-    EditListResDatas.forEach((element) {
+    for (var element in EditListResDatas) {
       element.subContLabourAttendDetS.forEach((val) {
         subContDetModel = SubContDetModel();
         subContDetModel.reqDetId = val.id;
@@ -484,6 +641,7 @@ class DailyEntriesController extends GetxController {
         subContDetModel.EvgOtHrs = val.eveotHrs!;
         subContDetModel.EvgOtAmt = val.eveotAmt!;
         subContDetModel.Extra = val.extra!;
+        subContDetModel.hrs = val.hrs!;
         subContDetModel.EvgExtrsAmt = val.extraAmt!;
         subContDetModel.netAmt = val.totalAmount!;
         subContDetModel.remarks = val.remarks;
@@ -491,7 +649,7 @@ class DailyEntriesController extends GetxController {
         subContDetModel.siteName = val.siteName;
         subcontModelList.add(subContDetModel);
       });
-    });
+    }
     var savedatas =
     await subContAttendatanceDetService.SubContDetSave(subcontModelList);
     return savedatas;
@@ -508,6 +666,7 @@ class DailyEntriesController extends GetxController {
     MrngOtHrsControllers.add(TextEditingController());
     MrngOtAmtControllers.add(TextEditingController());
     EvgExtraAmtControllers.add(TextEditingController());
+    hrsControllers.add(TextEditingController());
     RemarksControllers.add(TextEditingController());
   }
 
