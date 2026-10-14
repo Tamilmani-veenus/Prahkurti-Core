@@ -125,6 +125,7 @@ class RequestDet {
     this.stockqty,
     this.detRemarks,
     this.detDescription,
+    this.approxDays,
   });
 
   int? reqDetId;
@@ -136,6 +137,7 @@ class RequestDet {
   double? reqQty;
   double? balqty;
   double? stockqty;
+  double? approxDays;
   String? detRemarks;
   String? detDescription;
 
@@ -151,6 +153,7 @@ class RequestDet {
     stockqty: (json["stockQty"] as num?)?.toDouble(),
     detRemarks: json["remarks"],
     detDescription: json["reqDescription"],
+    approxDays: json["approxDays"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -165,5 +168,6 @@ class RequestDet {
     "stockQty": stockqty,
     "remarks": detRemarks,
     "reqDescription": detDescription,
+    "approxDays": approxDays,
   };
 }

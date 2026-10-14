@@ -69,6 +69,7 @@ class Result {
   String? verifyName;
   String? staffNo;
   String? requisitionTypeDesc;
+  String? leaveTypeDesc;
 
   Result({
     this.id,
@@ -107,6 +108,7 @@ class Result {
     this.verifyName,
     this.staffNo,
     this.requisitionTypeDesc,
+    this.leaveTypeDesc,
   });
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
@@ -146,6 +148,7 @@ class Result {
     verifyName: json["verifyName"],
     staffNo: json["staffNo"],
     requisitionTypeDesc: json["requisitionTypeDesc"],
+    leaveTypeDesc: json["leaveTypeDesc"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -185,5 +188,6 @@ class Result {
     "verifyName": verifyName,
     "staffNo": staffNo,
     "requisitionTypeDesc": requisitionTypeDesc,
+    "leaveTypeDesc": leaveTypeDesc,
   };
 }

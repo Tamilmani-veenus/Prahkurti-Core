@@ -37,24 +37,20 @@ class _WorkOrderBoqDeductionState extends State<WorkOrderBoqDeduction> {
     Future.delayed(duration, () async {
 
       if (workOrderBoqController.saveButton.value == RequestConstant.RESUBMIT || workOrderBoqController.saveButton.value == RequestConstant.VERIFY || workOrderBoqController.saveButton.value == RequestConstant.APPROVAL) {
-        // workOrderBoqController.workOrder_editListApiDatas.forEach((element) {
-        //   workOrderBoqController.workid = element.id;
-        //   workOrderBoqController.workOrdamount.text = element.workOrderAmount.toString();
-        //   workOrderBoqController.Roundoff.text = element.roundOff.toString();
-        //   workOrderBoqController.netpayamt.text = element.netAmount.toString();
-        //   // workOrderDirectController.deductionPaymentCalculation();
-        // });
+        workOrderBoqController.workOrderBoq_editListApiDatas.forEach((element) {
+          workOrderBoqController.workid = element.id;
+          workOrderBoqController.workOrdamount.text = element.workOrderAmount.toString();
+          workOrderBoqController.Roundoff.text = element.roundOff.toString();
+          workOrderBoqController.netpayamt.text = element.netAmount.toString();
+          // workOrderBoqController.deductionPaymentCalculation();
+        });
         await workOrderBoqController.deductionPaymentCalculation();
         workOrderBoqController.setBaseNetPay(
             workOrderBoqController.workOrdamount.text);
       }
       await workOrderBoqController.WorkOrder_CalculationList();
-
       if (workOrderBoqController.saveButton.value == RequestConstant.SUBMIT) {
-        workOrderBoqController.workid = 0;
-        workOrderBoqController.workOrdamount.text = "0.0";
-        workOrderBoqController.rebateAmount.text = "0.0";
-        workOrderBoqController.Roundoff.text = "0.0";
+
         workOrderBoqController.deductionPaymentCalculation();
       }
     });
@@ -88,7 +84,7 @@ class _WorkOrderBoqDeductionState extends State<WorkOrderBoqDeduction> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
-                          "Work Order Direct Deduction",
+                          "Work Order BOQ Deduction",
                           style: TextStyle(
                               fontSize: RequestConstant.Heading_Font_SIZE,
                               fontWeight: FontWeight.bold),
@@ -189,15 +185,18 @@ class _WorkOrderBoqDeductionState extends State<WorkOrderBoqDeduction> {
                                     });
                                   }
                                 },
-                                keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-
-                                inputFormatters: [
-                                  TextInputFormatter.withFunction((oldValue, newValue) {
-                                    return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
-                                        ? newValue
-                                        : oldValue;
-                                  }),
-                                ],
+                                keyboardType: Platform.isAndroid
+                                    ? const TextInputType.numberWithOptions(
+                                  signed: true,
+                                  decimal: true,
+                                ) : TextInputType.text,
+                                // inputFormatters: [
+                                //   TextInputFormatter.withFunction((oldValue, newValue) {
+                                //     return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                //         ? newValue
+                                //         : oldValue;
+                                //   }),
+                                // ],
                                 controller:
                                 workOrderBoqController.Roundoff,
                                 cursorColor: Colors.black,
@@ -386,6 +385,140 @@ class _WorkOrderBoqDeductionState extends State<WorkOrderBoqDeduction> {
 
 
                         /// Table Border
+
+                        // Expanded(
+                        //   child: Column(
+                        //     children: [
+                        //       /// Header
+                        //       Table(
+                        //         border: TableBorder.all(color: Colors.grey.shade300),
+                        //         columnWidths: const {
+                        //           0: FixedColumnWidth(40),
+                        //           1: FlexColumnWidth(),
+                        //           2: FixedColumnWidth(50),
+                        //         },
+                        //         children: const [
+                        //           TableRow(
+                        //             decoration: BoxDecoration(
+                        //               color: Color(0xff1E4BE9),
+                        //             ),
+                        //             children: [
+                        //               Padding(
+                        //                 padding: EdgeInsets.all(8),
+                        //                 child: Center(
+                        //                   child: Text(
+                        //                     "S.No",
+                        //                     style: TextStyle(
+                        //                       color: Colors.white,
+                        //                       fontSize: 12,
+                        //                       fontWeight: FontWeight.bold,
+                        //                     ),
+                        //                   ),
+                        //                 ),
+                        //               ),
+                        //               Padding(
+                        //                 padding: EdgeInsets.all(8),
+                        //                 child: Center(
+                        //                   child: Text(
+                        //                     "Terms & Conditions",
+                        //                     style: TextStyle(
+                        //                       color: Colors.white,
+                        //                       fontSize: 12,
+                        //                       fontWeight: FontWeight.bold,
+                        //                     ),
+                        //                   ),
+                        //                 ),
+                        //               ),
+                        //               Padding(
+                        //                 padding: EdgeInsets.all(8),
+                        //                 child: Center(
+                        //                   child: Text(
+                        //                     "Action",
+                        //                     style: TextStyle(
+                        //                       color: Colors.white,
+                        //                       fontSize: 12,
+                        //                       fontWeight: FontWeight.bold,
+                        //                     ),
+                        //                   ),
+                        //                 ),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ],
+                        //       ),
+                        //
+                        //       Expanded(
+                        //         child: ListView.builder(
+                        //           padding: EdgeInsets.zero,
+                        //           itemCount: workOrderBoqController.selectedTerms.length,
+                        //           itemBuilder: (context, index) {
+                        //             final item =
+                        //             workOrderBoqController.selectedTerms[index];
+                        //
+                        //             return Table(
+                        //               border: TableBorder(
+                        //                 left: BorderSide(color: Colors.grey.shade300),
+                        //                 right: BorderSide(color: Colors.grey.shade300),
+                        //                 bottom: BorderSide(color: Colors.grey.shade300),
+                        //                 verticalInside:
+                        //                 BorderSide(color: Colors.grey.shade300),
+                        //               ),
+                        //               columnWidths: const {
+                        //                 0: FixedColumnWidth(40),
+                        //                 1: FlexColumnWidth(),
+                        //                 2: FixedColumnWidth(50),
+                        //               },
+                        //               children: [
+                        //                 TableRow(
+                        //                   decoration: BoxDecoration(
+                        //                     color: index.isEven
+                        //                         ? Colors.white
+                        //                         : Colors.grey.shade100,
+                        //                   ),
+                        //                   children: [
+                        //                     Padding(
+                        //                       padding: const EdgeInsets.all(8),
+                        //                       child: Center(
+                        //                         child: Text(
+                        //                           "${index + 1}",
+                        //                           style: const TextStyle(fontSize: 12),
+                        //                         ),
+                        //                       ),
+                        //                     ),
+                        //
+                        //                     Padding(
+                        //                       padding: const EdgeInsets.all(8),
+                        //                       child: Text(
+                        //                         item.termsAndCondition ?? "",
+                        //                         style: const TextStyle(fontSize: 12),
+                        //                       ),
+                        //                     ),
+                        //
+                        //                     Center(
+                        //                       child: IconButton(
+                        //                         icon: const Icon(
+                        //                           Icons.delete_outline,
+                        //                           color: Colors.red,
+                        //                           size: 18,
+                        //                         ),
+                        //                         onPressed: () {
+                        //                           setState(() {
+                        //                             workOrderBoqController.selectedTerms
+                        //                                 .removeAt(index);
+                        //                           });
+                        //                         },
+                        //                       ),
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //               ],
+                        //             );
+                        //           },
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
                         Container(
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey.shade300),
@@ -400,8 +533,8 @@ class _WorkOrderBoqDeductionState extends State<WorkOrderBoqDeduction> {
                                 decoration: BoxDecoration(
                                   color: Theme.of(context).primaryColor,
                                   borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(8),
-                                    topRight: Radius.circular(8),
+                                    topLeft: Radius.circular(2),
+                                    topRight: Radius.circular(2),
                                   ),
                                 ),
                                 child: Row(
@@ -420,7 +553,7 @@ class _WorkOrderBoqDeductionState extends State<WorkOrderBoqDeduction> {
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 8
+                                          fontSize: 10
                                         ),
                                       ),
                                     ),
@@ -439,7 +572,7 @@ class _WorkOrderBoqDeductionState extends State<WorkOrderBoqDeduction> {
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 11
+                                            fontSize: 14
                                           ),
                                         ),
                                       ),
@@ -464,7 +597,7 @@ class _WorkOrderBoqDeductionState extends State<WorkOrderBoqDeduction> {
 
                               Obx(() {
                                 if (workOrderBoqController.selectedTerms.isEmpty) {
-                                  return  SizedBox(
+                                  return SizedBox(
                                     height: 180,
                                     child: Center(
                                       child: Column(
@@ -489,39 +622,71 @@ class _WorkOrderBoqDeductionState extends State<WorkOrderBoqDeduction> {
                                   );
                                 }
 
-                                return ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: workOrderBoqController.selectedTerms.length,
-                                  itemBuilder: (context, index) {
-                                    final item = workOrderBoqController.selectedTerms[index];
+                                return SizedBox(
+                                  height: workOrderBoqController.selectedTerms.length >= 5
+                                      ? 230 // Fixed height after 5 items
+                                      : workOrderBoqController.selectedTerms.length * 55.0,
+                                  child: ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    shrinkWrap: true,
+                                    itemCount: workOrderBoqController.selectedTerms.length,
+                                    itemBuilder: (context, index) {
+                                      final item = workOrderBoqController.selectedTerms[index];
 
-                                    return Container(
-                                      padding: const EdgeInsets.symmetric(vertical: 10),
-                                      child: Row(
+                                      return Table(
+                                        border: TableBorder(
+                                          left: BorderSide(color: Colors.grey.shade300),
+                                          right: BorderSide(color: Colors.grey.shade300),
+                                          bottom: BorderSide(color: Colors.grey.shade300),
+                                          verticalInside: BorderSide(color: Colors.grey.shade300),
+                                        ),
+                                        columnWidths: const {
+                                          0: FixedColumnWidth(30),
+                                          1: FlexColumnWidth(),
+                                          2: FixedColumnWidth(40),
+                                        },
                                         children: [
-                                          SizedBox(
-                                            width: 30,
-                                            child: Center(child: Text("${index + 1}")),
-                                          ),
-                                          Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                                              child: Text(item.termsAndCondition ?? " "),
+                                          TableRow(
+                                            decoration: BoxDecoration(
+                                              color:  Colors.white
                                             ),
-                                          ),
-                                          SizedBox(
-                                            width: 40,
-                                            child: IconButton(
-                                              icon: const Icon(Icons.delete, color: Colors.red, size: 18),
-                                              onPressed: () {
-                                                workOrderBoqController.selectedTerms.removeAt(index);
-                                              },
-                                            ),
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.all(8),
+                                                child: Center(
+                                                  child: Text(
+                                                    "${index + 1}",
+                                                    style: const TextStyle(fontSize: 12),
+                                                  ),
+                                                ),
+                                              ),
+
+                                              Padding(
+                                                padding: const EdgeInsets.all(8),
+                                                child: Text(
+                                                  item.termsAndCondition ?? "",
+                                                  style: const TextStyle(fontSize: 12),
+                                                ),
+                                              ),
+
+                                              Center(
+                                                child: IconButton(
+                                                  icon: const Icon(
+                                                    Icons.delete_outline,
+                                                    color: Colors.red,
+                                                    size: 18,
+                                                  ),
+                                                  onPressed: () {
+                                                    workOrderBoqController.selectedTerms.removeAt(index);
+                                                  },
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
-                                      ),
-                                    );
-                                  },
+                                      );
+                                    },
+                                  ),
                                 );
                               })
                             ],
@@ -792,7 +957,9 @@ class _WorkOrderBoqDeductionState extends State<WorkOrderBoqDeduction> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Expanded(
+                    if(workOrderBoqController.saveButton.value == RequestConstant.SUBMIT)
+
+                      Expanded(
                       child: InkWell(
                         child: Container(
                           margin: const EdgeInsets.only(left: 20, right: 20),
@@ -937,15 +1104,15 @@ class _WorkOrderBoqDeductionState extends State<WorkOrderBoqDeduction> {
                         onPressed:  () async {
 
                           if (_formKey.currentState!.validate()) {
-                            if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
-                              // await workOrderBoqController
-                              //     .SaveButton_DeductionScreen(
-                              //     context,
-                              //     workOrderBoqController
-                              //         .workid,subcontractorController.selectedWorkOrderId.value,
-                              //     workOrderBoqController.saveButton.value == RequestConstant.VERIFY ||
-                              //         workOrderBoqController.saveButton.value == RequestConstant.APPROVAL ? false : true);
-                            }
+                            // if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
+                              await workOrderBoqController
+                                  .SaveButton_DeductionScreen(
+                                  context,
+                                  workOrderBoqController
+                                      .workid,subcontractorController.selectedWorkOrderId.value,
+                                  workOrderBoqController.saveButton.value == RequestConstant.VERIFY ||
+                                      workOrderBoqController.saveButton.value == RequestConstant.APPROVAL ? false : true);
+                            // }
                           } else if (double.parse(workOrderBoqController.netpayamt.text) < 0) {
                             BaseUtitiles.showToast(
                                 "Net pay amount must be greater than 0");
@@ -1013,39 +1180,83 @@ class _WorkOrderBoqDeductionState extends State<WorkOrderBoqDeduction> {
                   ),
                   Expanded(
                     child: TextButton(
-                        onPressed: () async {
-                          workOrderBoqController.saveButton.value = RequestConstant.SUBMIT;
-                          workOrderBoqController.workid = 0;
-                          projectController.projectname.text = "--SELECT--";
-                          projectController.selectedProjectId.value = 0;
-                          subcontractorController.Subcontractorname.text = "--SELECT--";
-                          subcontractorController.selectedSubcontId.value = 0;
-                          workOrderBoqController.workOrdentryDateController.text = BaseUtitiles.initiateCurrentDateFormat();
+                      onPressed: () async {
+                        // Generate new BOQ number
+                        await autoYearWiseNoController.AutoYearWiseNo("WORK ORDER BOQ");
 
-                          workOrderBoqController
-                              .autoYearWiseNoController.text =
-                              autoYearWiseNoController
-                                  .DirectBillautoYrsWise.value;
-                          siteController.selectedsiteId = 0.obs;
-                          siteController.selectedsitedropdownName = "--SELECT--".obs;
-                          siteController.getSiteDropdownvalue.value.clear();
-                          siteController.Sitename.text = RequestConstant.SELECT;
-                          siteController.siteDropdownName.clear();
+                        workOrderBoqController.autoYearWiseNoController.text =
+                            autoYearWiseNoController.WorkOrdBoq_autoYrWise.value;
 
-                          workOrderBoqController.delete_WorkOrderBoq_itemlist_Table();
-                          workOrderBoqController.WorkOrdBoqitem_itemview_GetDbList.value.clear();
+                        // Current date
+                        final currentDate = BaseUtitiles.initiateCurrentDateFormat();
 
-                          workOrderBoqController.workOrdamount.text = "0.0";
-                          workOrderBoqController.Roundoff.text = "0";
-                          workOrderBoqController.netpayamt.text = "0.0";
+                        // -----------------------------
+                        // Reset Bill Header
+                        // -----------------------------
+                        workOrderBoqController.workOrdentryDateController.text = currentDate;
+                        workOrderBoqController.workid = 0;
+
+                        // Project
+                        projectController.projectname.text = "--SELECT--";
+                        projectController.selectedProjectId.value = 0;
+
+                        // Site
+                        siteController.Sitename.text = "--SELECT--";
+                        siteController.selectedsiteId.value = 0;
+
+                        // Subcontractor
+                        subcontractorController.Subcontractorname.text = "--SELECT--";
+                        subcontractorController.selectedSubcontId.value = 0;
+
+                        // Work Order
+                        workOrderBoqController.WorkOrdActiveTypeText.text = "--SELECT--";
+                        workOrderBoqController.workOrdActTypeID.value = "0";
+                        siteController.headNameController.text = "--SELECT--";
+                        siteController.selectedHeadId.value = 0;
+
+
+
+                        workOrderBoqController.RemarksController.clear();
+                        workOrderBoqController.termsAndCondition.clear();
+                        workOrderBoqController.filteredTermsAndCondition.clear();
+                        workOrderBoqController.selectedTerms.clear();
+
+
+                        await workOrderBoqController.workOrder_itemlistTable_Delete();
+
+                        workOrderBoqController.WorkOrdBoqitem_itemview_GetDbList.clear();
+
+                        workOrderBoqController.workOrdamount.text = "0.0";
+                        workOrderBoqController.netpayamt.text = "0.0";
+                        workOrderBoqController.Roundoff.text = "0.0";
+
+
+                        for (final controller
+                        in workOrderBoqController.percentControllers) {
+                          controller.clear();
+                        }
+                        for (final item
+                        in workOrderBoqController.workOrder_ItemReadList) {
+                          item.percentValue = 0.0;
+                          item.amount = 0.0;
+                        }
+                        workOrderBoqController.workOrder_ItemReadList.refresh();
+                        await workOrderBoqController.deductionPaymentCalculation();
+                        if (context.mounted) {
                           Navigator.pop(context);
-                        },
-                        child: Text("Reset",
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: RequestConstant.Lable_Font_SIZE))),
-                  )
+                        }
+                      },
+                      child: Text(
+                        "Reset",
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: RequestConstant.Lable_Font_SIZE,
+                        ),
+                      ),
+                    ),
+                  ),
+
                 ],
               ),
             ),

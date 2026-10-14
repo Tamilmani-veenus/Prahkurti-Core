@@ -351,10 +351,17 @@ class _WorkOrderDirectItemListState extends State<WorkOrderDirectItemList> {
                   ),
                   onTap: () {
                     setState(() {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const WorkOrderDirectDeduction()));
+                      if(workOrderDirectController.ItemGetTableListdata.value.isNotEmpty) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (
+                                    context) => const WorkOrderDirectDeduction()));
+                      }
+                      else
+                        {
+                          BaseUtitiles.showToast("Please add at least one item before proceeding.");
+                        }
                     });
                   },
                 ),
@@ -449,7 +456,7 @@ class _WorkOrderDirectItemListState extends State<WorkOrderDirectItemList> {
                                             Expanded(
                                               child: TextButton(
                                                   onPressed: () async {
-                                                    workOrderDirectController
+                                                    await workOrderDirectController
                                                         .deleteByIditemlistTableable(
                                                         workOrderDirectController
                                                             .ItemGetTableListdata

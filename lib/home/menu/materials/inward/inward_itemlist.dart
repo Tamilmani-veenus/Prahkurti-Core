@@ -103,7 +103,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                           ),
                         ),
                         onTap: () async {
-                          if (!AppClient.isPrahkurti) {
+                          if (!AppClient.isPrahkurti && !AppClient.isVrindhavana) {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -673,7 +673,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                     ),
                   ),
                   onTap: () async {
-                    if (!AppClient.isPrahkurti) {
+                    if (!AppClient.isPrahkurti && !AppClient.isVrindhavana) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -696,7 +696,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                   padding: EdgeInsets.only(left: 16.4, bottom: 24.r),
                   child: GestureDetector(
                     onTap: () async {
-                      if (!AppClient.isPrahkurti) {
+                      if (!AppClient.isPrahkurti && !AppClient.isVrindhavana) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -774,7 +774,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
                     ),
                   ),
                   onTap: () async {
-                    if (!AppClient.isPrahkurti) {
+                    if (!AppClient.isPrahkurti && !AppClient.isVrindhavana) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -946,7 +946,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Inward_Itemlist> {
       padding: EdgeInsets.only(left: 16.4, bottom: 24.r),
       child: GestureDetector(
         onTap: () async {
-          if (!AppClient.isPrahkurti) {
+          if (!AppClient.isPrahkurti && !AppClient.isVrindhavana) {
             Navigator.push(
               context,
               MaterialPageRoute(

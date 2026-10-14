@@ -3,20 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import '../models/admin_dashboard_response.dart';
+import '../newhome/maindashboard/admin_dashboard.dart';
 import '../provider/labourDashboard_Provider.dart';
+import '../utilities/baseutitiles.dart';
 
 class AdminDashboardController extends GetxController{
   RxBool isLoading = false.obs;
-  final entryFromDate = TextEditingController();
-  final entryToDate = TextEditingController();
   Rx<AdminDashboardResponse?> dashboardResponse = Rx<AdminDashboardResponse?>(null);
   RxList<PoVsbillTable> poVsBillTableList = <PoVsbillTable>[].obs;
   RxList<PoVsbillTable> allPoVsBillTableList = <PoVsbillTable>[].obs;  // Filter search
   RxList<BudgetVsSpend> allBudgetVsSpendList = <BudgetVsSpend>[].obs;
   RxList<BudgetVsSpend> filteredBudgetVsSpendList = <BudgetVsSpend>[].obs;
+  RxList<ProjectCompletion> allBudgetVsActualList = <ProjectCompletion>[].obs;
+  RxList<ProjectCompletion> filteredBudgetVsActualList = <ProjectCompletion>[].obs;
   RxList<ExpenseCategoryMix> expenseCategoryMixList = <ExpenseCategoryMix>[].obs;
   RxList<BoqProgress> boqProgressTableList = <BoqProgress>[].obs;
   RxList<BoqProgress> allBoqProgressTableList = <BoqProgress>[].obs;  // Filter search
+
+  RxList<ProjectStatus> filteredProjectStatusList =
+      <ProjectStatus>[].obs;
+
 
   final List<String> poVsBillStatusList = [
     "All Status",
@@ -35,15 +41,28 @@ class AdminDashboardController extends GetxController{
   RxString selectedStatus = "All Status".obs;
 
   Future<void> getAdminDashboardDetails() async {
+    dashboardResponse.value = null;
+    poVsBillTableList.value = [];
+    filteredBudgetVsSpendList.value = [];
+    allBudgetVsSpendList.value = [];
+    allBudgetVsActualList.value = [];
+    filteredBudgetVsActualList.value = [];
+    expenseCategoryMixList.value = [];
+    boqProgressTableList.value = [];
+    allBoqProgressTableList.value = [];
     try {
       isLoading.value = true;
-      final response = await LabourDashboardProvider.getAdminDashboard(entryFromDate.text,entryToDate.text);
+
+      final response = await LabourDashboardProvider.getAdminDashboard();
+
       if (response != null && response.success == true) {
         dashboardResponse.value = response;
         poVsBillTableList.assignAll(response.poVsbillTable ?? []);
         allPoVsBillTableList.assignAll(response.poVsbillTable ?? []);
         filteredBudgetVsSpendList.assignAll(response.budgetVsSpend ?? []);
         allBudgetVsSpendList.assignAll(response.budgetVsSpend ?? []);
+        allBudgetVsActualList.assignAll(response.projectCompletion ?? []);
+        filteredBudgetVsActualList.assignAll(response.projectCompletion ?? []);
         expenseCategoryMixList.assignAll(response.expenseCategoryMix != null ? [response.expenseCategoryMix!] : []);
         boqProgressTableList.assignAll(response.boqProgress ?? []);
         allBoqProgressTableList.assignAll(response.boqProgress ?? []);
@@ -109,6 +128,35 @@ class AdminDashboardController extends GetxController{
     return ((value ?? 0) / 100).clamp(0.0, 1.0);
   }
 
+  double parseChartValue(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 0;
+    }
+
+    String text = value
+        .replaceAll("₹", "")
+        .replaceAll(",", "")
+        .trim()
+        .toUpperCase();
+
+    if (text.endsWith("L")) {
+      return (double.tryParse(
+        text.replaceAll("L", "").trim(),
+      ) ??
+          0) *
+          100000;
+    }
+
+    if (text.endsWith("CR")) {
+      return (double.tryParse(
+        text.replaceAll("CR", "").trim(),
+      ) ??
+          0) *
+          10000000;
+    }
+
+    return double.tryParse(text) ?? 0;
+  }
   Color getVarianceColor(String? label) {
     if (label == null) return Colors.black;
 

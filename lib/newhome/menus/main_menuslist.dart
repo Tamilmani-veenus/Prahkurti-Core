@@ -540,7 +540,7 @@ class _MainManusListState extends State<MainManusList> {
                                           mainAxisAlignment:
                                           MainAxisAlignment.center,
                                           children: [
-                                            Icon(Icons.widgets,color: Colors.white,
+                                            Icon(Icons.assignment_outlined,color: Colors.white,
                                               size: 20,)
                                             // Image.asset('assets/images/ic_wallet.png',
                                             //     width: 22),
@@ -1008,7 +1008,7 @@ class _MainManusListState extends State<MainManusList> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Icon(
-                                              Icons.diversity_3,
+                                              Icons.groups_outlined,
                                               color: Colors.white,
                                               size: 25,
                                             )

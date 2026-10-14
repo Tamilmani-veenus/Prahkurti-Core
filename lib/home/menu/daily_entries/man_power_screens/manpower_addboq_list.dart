@@ -55,11 +55,13 @@ class _ManPowerAddBOQListState extends State<ManPowerAddBOQList> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "Add BOQ Items",
-                        style: TextStyle(
-                            fontSize: RequestConstant.Heading_Font_SIZE,
-                            fontWeight: FontWeight.bold),
+                      Expanded(
+                        child: Text(
+                          "Level 3 Items",
+                          style: TextStyle(
+                              fontSize: RequestConstant.Heading_Font_SIZE,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                       Container(
                         height: BaseUtitiles.getheightofPercentage(context, 5),

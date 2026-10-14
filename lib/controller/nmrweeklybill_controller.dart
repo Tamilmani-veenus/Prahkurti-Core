@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:prahkurticore/controller/pendinglistcontroller.dart';
-
 import '../controller/logincontroller.dart';
 import '../controller/projectcontroller.dart';
 import '../controller/sitecontroller.dart';
@@ -9,11 +7,7 @@ import '../controller/subcontcontroller.dart';
 import '../db_model/direct_bill_gst_calculation_model.dart';
 import '../db_services/direct_bill_itemlist_service.dart';
 import '../home/menu/daily_entries/subcont_nmr_weekbill_site/subcont_nmr_entry_site.dart';
-import '../home/menu/daily_entries/subcont_nmr_weekbill_site/subcont_nmr_entrylist_site.dart';
-import '../home/menu/daily_entries/subcont_nmr_weekbill_site/subcont_nmr_week_billgeneration_site.dart';
-import '../models/billdirectgstcalculations.dart';
 import '../models/nmrwklybill_deduction_save_model.dart';
-import '../provider/common_provider.dart';
 import '../provider/directbill_generat_provider.dart';
 import '../provider/nmrwkly_provider.dart';
 import '../utilities/baseutitiles.dart';
@@ -24,7 +18,6 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-
 import '../home/menu/daily_entries/subcont_nmr_weekbill_site/aprovedpopup.dart';
 import 'billgenerationdirect_controller.dart';
 
@@ -819,6 +812,7 @@ class NMRWklyController extends GetxController {
   Future NmrEntryList_EditApi(int workid,String MenuName, BuildContext context,from, bool checkSts) async {
     EditListSaveDatas.value=[];
     NmritemList.value=[];
+    await ClickUtils.run(() async {
     var response = await NMRWklyprovider.nmr_entryList_editAPI(workid,checkSts);
     if (response != null) {
       if (response.success == true) {
@@ -834,7 +828,7 @@ class NMRWklyController extends GetxController {
             else{
               saveButton.value = RequestConstant.RESUBMIT;
             }
-            return Navigator.pushReplacement(
+            await Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => Subcont_Nmr_EntryScreen_Site(heading: MenuName,)),
@@ -850,6 +844,7 @@ class NMRWklyController extends GetxController {
     else {
       BaseUtitiles.showToast("Something Went Wrong...");
     }
+    });
   }
 
   Future<bool> Nmr_EntryList_DeleteApi(int WorkId) async {

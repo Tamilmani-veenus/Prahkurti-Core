@@ -13,10 +13,10 @@ class DatabaseConnection {
 
   Future<void> _createDatabase(Database database, int version) async {
 
-    String subcontDetTable = "CREATE TABLE subcontAttendanceDet (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,catId INTEGER,catName TEXT,wages REAL,nos TEXT,netAmt REAL,remarks TEXT,siteId INTEGER,siteName TEXT,MrgOtHrs REAL,MrgOtAmt REAL,EvgOtHrs REAL,EvgOtAmt REAL,EvgExtrsAmt REAL,Extra REAL,reqDetId INTEGER)";
+    String subcontDetTable = "CREATE TABLE subcontAttendanceDet (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,catId INTEGER,catName TEXT,wages REAL,nos TEXT,netAmt REAL,remarks TEXT,siteId INTEGER,siteName TEXT,MrgOtHrs REAL,MrgOtAmt REAL,EvgOtHrs REAL,EvgOtAmt REAL,EvgExtrsAmt REAL,Extra REAL,reqDetId INTEGER,hrs REAL)";
     await database.execute(subcontDetTable);
 
-    String manPowerDetTable = "CREATE TABLE manPowerDet (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,reqDetId INTEGER,catId INTEGER,catName TEXT,nos TEXT,remarks TEXT)";
+    String manPowerDetTable = "CREATE TABLE manPowerDet (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,reqDetId INTEGER,catId INTEGER,catName TEXT,nos TEXT,remarks TEXT,savedNos TEXT)";
     await database.execute(manPowerDetTable);
 
     String dprItemListTable = "CREATE TABLE dprItemListTable (id INTEGER PRIMARY KEY UNIQUE,headItemId INTEGER,subItemId INTEGER,level3ItemId INTEGER,woDetId INTEGER,boqCode INTEGER,itemDesc TEXT,unit TEXT,rate REAL,qty REAL,amt REAL,balQty REAL,siteId INTEGER,scaleId INTEGER,subContractDailyWorkMasId INTEGER,reqDetId INTEGER)";
@@ -83,16 +83,16 @@ class DatabaseConnection {
     String staffvouchersite = "CREATE TABLE staffvouchersite (id INTEGER PRIMARY KEY UNIQUE,siteid INTEGER,projectid INTEGER,paytype TEXT,sitename TEXT,projectname TEXT,amt REAL,TdsPer REAL,TdsAmt REAL,NetAmt REAL,reqDetId INTEGER)";
     await database.execute(staffvouchersite);
 
-    String materialApprovalListTable = "CREATE TABLE materialApprovalListTable (id INTEGER PRIMARY KEY UNIQUE,materialid INTEGER,reqDetId INTEGER,materialname TEXT,scale TEXT,balqty REAL,reqqty REAL,appqty REAL,apptype TEXT,tranfromprjid TEXT,tranfromprjname TEXT,remarks TEXT,desc TEXT,scaleId INTEGER)";
+    String materialApprovalListTable = "CREATE TABLE materialApprovalListTable (id INTEGER PRIMARY KEY UNIQUE,materialid INTEGER,reqDetId INTEGER,materialname TEXT,scale TEXT,balqty REAL,reqqty REAL,appqty REAL,apptype TEXT,tranfromprjid TEXT,tranfromprjname TEXT,remarks TEXT,desc TEXT,scaleId INTEGER,approxdays REAL)";
     await database.execute(materialApprovalListTable);
 
-    String materialListTable = "CREATE TABLE materialListTable (id INTEGER PRIMARY KEY UNIQUE,materialid INTEGER,material TEXT,scale TEXT,balqty REAL,qty REAL,reqQty REAL,stockqty REAL,remarks TEXT,desc TEXT,scaleId INTEGER,reqDetId INTEGER)";
+    String materialListTable = "CREATE TABLE materialListTable (id INTEGER PRIMARY KEY UNIQUE,materialid INTEGER,material TEXT,scale TEXT,balqty REAL,qty REAL,reqQty REAL,stockqty REAL,remarks TEXT,desc TEXT,scaleId INTEGER,reqDetId INTEGER,approxdays REAL)";
     await database.execute(materialListTable);
 
     String consumItemListTable = "CREATE TABLE consumItemListTable (id INTEGER PRIMARY KEY UNIQUE,materialid INTEGER,material TEXT,scale TEXT,stockqty REAL,usageqty REAL,scaleId INTEGER,reqDetId INTEGER)";
     await database.execute(consumItemListTable);
 
-    String workOrderboqitemListTable = "CREATE TABLE workOrderboqitemListTable (id INTEGER PRIMARY KEY UNIQUE,reqDetId INTEGER,headItemId INTEGER,subItemId INTEGER,measureLevel3ItemId INTEGER,unit INTEGER,itemDesc TEXT,rate REAL,qty REAL,oldRate REAL,scaleName TEXT,amt REAL,balqty REAL,labrate REAL,boqcode TEXT,remarks TEXT,workOrderStatus INTEGER DEFAULT 1)";
+    String workOrderboqitemListTable = "CREATE TABLE workOrderboqitemListTable (id INTEGER PRIMARY KEY UNIQUE,reqDetId INTEGER,headItemId INTEGER,subItemId INTEGER,measureLevel3ItemId INTEGER,unit INTEGER,itemDesc TEXT,rate REAL,qty REAL,oldRate REAL,scaleName TEXT,amt REAL,balqty REAL,labrate REAL,boqcode TEXT,remarks TEXT,workOrderStatus BOOLEAN DEFAULT TRUE)";
     await database.execute(workOrderboqitemListTable);
 
     String boqitemListTable = "CREATE TABLE boqitemListTable (id INTEGER PRIMARY KEY UNIQUE,reqDetId INTEGER,measureHeadItemId INTEGER,measureSubItemId INTEGER,measureLevel3ItemId INTEGER,scaleId INTEGER,level3ItemName TEXT,rate REAL,qty REAL,reviseQty REAL,scaleName TEXT,amt REAL)";

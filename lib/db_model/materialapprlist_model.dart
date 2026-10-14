@@ -12,6 +12,7 @@ class Materialapprlist{
   String? remarks;
   String? desc;
   int? scaleId;
+  double? approxdays;
 
 
   Materialapprlistmodelmap(){
@@ -29,6 +30,7 @@ class Materialapprlist{
     mapping['apptype'] = apptype != null ? apptype : null;
     mapping['remarks'] = remarks != null ? remarks : null;
     mapping['desc'] = desc != null ? desc : null;
+    mapping['approxdays'] = approxdays != null ? approxdays : null;
     return mapping;
   }
 }

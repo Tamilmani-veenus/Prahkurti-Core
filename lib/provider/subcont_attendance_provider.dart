@@ -90,6 +90,7 @@ class SubContAttendanceProvider {
           request.fields['SubContLabourAttendDetS[$i].totalAmount'] = (det.totalAmount ?? 0).toString();
           request.fields['SubContLabourAttendDetS[$i].labourCategoryId'] = (det.lbrCatId ?? 0).toString();
           request.fields['SubContLabourAttendDetS[$i].siteId'] = (det.siteId ?? 0).toString();
+          request.fields['SubContLabourAttendDetS[$i].Hrs'] = (det.hrs ?? 0).toString();
 
         }
       }

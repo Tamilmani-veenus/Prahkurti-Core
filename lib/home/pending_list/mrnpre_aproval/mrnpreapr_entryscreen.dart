@@ -11,6 +11,7 @@ import '../../../controller/mrn_request_indent_controller.dart';
 import '../../../controller/pendinglistcontroller.dart';
 import '../../../controller/projectcontroller.dart';
 import '../../../controller/sitecontroller.dart';
+import '../../../utilities/apiconstant.dart';
 import '../../../utilities/baseutitiles.dart';
 import '../../../utilities/requestconstant.dart';
 import 'mrnpreapr_itemlist.dart';
@@ -78,6 +79,9 @@ class _MrnPreApprovalEntryScreenState extends State<MrnPreApprovalEntryScreen> {
       mrnPreApprovalController.mrnpre_ApprovalremarksText.text = "";
     }
 
+    if(AppClient.isAnusamm && mrn_request_controller.ReqType.value == "PO") {
+      mrn_request_controller.CheckBalQtyProAndSite();
+    }
     // 🔹 Item List
     int i = 0;
     for (var element in mrnPreApprovalController.MaterialAppr_itemview_GetDbList) {

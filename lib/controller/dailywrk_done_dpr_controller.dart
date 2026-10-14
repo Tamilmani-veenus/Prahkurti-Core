@@ -108,13 +108,14 @@ class DailyWrkDone_DPR_Controller extends GetxController {
 
   Future dpr_getItemList(int prid,int siteid,int subcontid,BuildContext context) async {
     dpr_mainitemList.value.clear();
+    await ClickUtils.run(() async {
     var response = await  DPRProvider.get_Dpr_ItemList(
         prid,siteid,subcontid);
     if (response != null) {
       if (response.success == true) {
         if(response.result!.isNotEmpty) {
           dpr_mainitemList.assignAll(response.result!);
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => AddwrkClickPopup(list: dpr_mainitemList.value,)));
+          await Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => AddwrkClickPopup(list: dpr_mainitemList.value,)));
         }
         else {
           BaseUtitiles.showToast("No Data Found");
@@ -125,6 +126,7 @@ class DailyWrkDone_DPR_Controller extends GetxController {
     } else {
       BaseUtitiles.showToast("Something Went Wrong...");
     }
+    });
   }
 
   Future dpr_getEntryList() async {
@@ -171,6 +173,7 @@ class DailyWrkDone_DPR_Controller extends GetxController {
 
 
   Future DprEntryList_EditApi(int workid, String MenuName, BuildContext context, int checkdata) async {
+    await ClickUtils.run(() async {
     final value = await DPRProvider.dpr_entryList_editAPI(workid);
     if (value != null) {
       if(value.success == true) {
@@ -179,7 +182,7 @@ class DailyWrkDone_DPR_Controller extends GetxController {
           checkdata == 1 ? saveButton.value = RequestConstant.APPROVAL : saveButton.value = RequestConstant.RESUBMIT;
           dpr_entrylist_editSaveDetTable();
           getDprTablesDatas();
-          Navigator.pushReplacement(
+          await Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) => DailyWork_done_DPR_Entry(heading:MenuName,)),
@@ -195,6 +198,7 @@ class DailyWrkDone_DPR_Controller extends GetxController {
     }else {
       BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
     }
+    });
   }
 
   Future<bool> Dpr_EntryList_DeleteApi(int reqId) async {

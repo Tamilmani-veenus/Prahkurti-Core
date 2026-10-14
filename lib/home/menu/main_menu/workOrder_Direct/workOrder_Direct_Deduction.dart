@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,9 +9,11 @@ import '../../../../controller/auto_yrwise_no_controller.dart';
 import '../../../../controller/projectcontroller.dart';
 import '../../../../controller/sitecontroller.dart';
 import '../../../../controller/subcontcontroller.dart';
+import '../../../../controller/workOrderBoq_Controller.dart';
 import '../../../../controller/workorderDirect_Controller.dart';
 import '../../../../utilities/baseutitiles.dart';
 import '../../../../utilities/requestconstant.dart';
+import '../workOrder_BOQ/workOrderBoq_Terms&Condition.dart';
 
 class WorkOrderDirectDeduction extends StatefulWidget {
   const WorkOrderDirectDeduction({super.key});
@@ -28,6 +29,8 @@ class _WorkOrderDirectDeductionState extends State<WorkOrderDirectDeduction> {
   SubcontractorController subcontractorController = Get.put(SubcontractorController());
   SiteController siteController = Get.put(SiteController());
   AutoYearWiseNoController autoYearWiseNoController = Get.put(AutoYearWiseNoController());
+  WorkOrderBoqController workOrderBoqController = Get.put(WorkOrderBoqController());
+
 
   @override
   void initState() {
@@ -46,13 +49,12 @@ class _WorkOrderDirectDeductionState extends State<WorkOrderDirectDeduction> {
         workOrderDirectController.setBaseNetPay(
             workOrderDirectController.workOrdamount.text);
       }
-      await workOrderDirectController.WorkOrder_CalculationList();
 
       if (workOrderDirectController.saveButton.value == RequestConstant.SUBMIT) {
-        workOrderDirectController.workid = 0;
-        workOrderDirectController.workOrdamount.text = "0.0";
-        workOrderDirectController.rebateAmount.text = "0.0";
-        workOrderDirectController.Roundoff.text = "0.0";
+        // workOrderDirectController.workid = 0;
+        // workOrderDirectController.workOrdamount.text = "0.0";
+        // workOrderDirectController.rebateAmount.text = "0.0";
+        // workOrderDirectController.Roundoff.text = "0.0";
         workOrderDirectController.deductionPaymentCalculation();
       }
     });
@@ -187,15 +189,18 @@ class _WorkOrderDirectDeductionState extends State<WorkOrderDirectDeduction> {
                                     });
                                   }
                                 },
-                                keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-
-                                inputFormatters: [
-                                  TextInputFormatter.withFunction((oldValue, newValue) {
-                                    return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
-                                        ? newValue
-                                        : oldValue;
-                                  }),
-                                ],
+                                keyboardType: Platform.isAndroid
+                                    ? const TextInputType.numberWithOptions(
+                                  signed: true,
+                                  decimal: true,
+                                ) : TextInputType.text,
+                                // inputFormatters: [
+                                //   TextInputFormatter.withFunction((oldValue, newValue) {
+                                //     return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                                //         ? newValue
+                                //         : oldValue;
+                                //   }),
+                                // ],
                                 controller:
                                 workOrderDirectController.Roundoff,
                                 cursorColor: Colors.black,
@@ -328,6 +333,238 @@ class _WorkOrderDirectDeductionState extends State<WorkOrderDirectDeduction> {
                         ),
                       ),
                     ],
+                  ),
+                  Container(
+                    margin:  EdgeInsets.only(top: 8,bottom: 4,left: 2,right: 2),
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(.15),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+
+                        /// Title & Button
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Terms and Conditions",
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (_) => const TermsConditionsDialog(),
+                                );
+                              },
+                              icon: const Icon(Icons.add, size: 13),
+                              label: const Text("Add Terms",style: TextStyle(fontSize: 11),),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Theme.of(context).primaryColor,
+                                foregroundColor: Colors.white,
+                                shape: const StadiumBorder(),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+
+                        /// Table Border
+
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Column(
+                            children: [
+
+                              /// Header
+                              Container(
+                                height: 45,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(8),
+                                    topRight: Radius.circular(8),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+
+                                    Container(
+                                      width: 30,
+                                      alignment: Alignment.center,
+                                      decoration: const BoxDecoration(
+                                        border: Border(
+                                          right: BorderSide(color: Colors.white),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        "S.No",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 10
+                                        ),
+                                      ),
+                                    ),
+
+                                    Expanded(
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                                        alignment: Alignment.centerLeft,
+                                        decoration: const BoxDecoration(
+                                          border: Border(
+                                            right: BorderSide(color: Colors.white),
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          "Terms & Conditions",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                    SizedBox(
+                                      width: 40,
+                                      child: Center(
+                                        child: Text(
+                                          "Action",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 11
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              Obx(() {
+                                if (workOrderBoqController.selectedTerms.isEmpty) {
+                                  return SizedBox(
+                                    height: 180,
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.description_outlined,
+                                            size: 55,
+                                            color: Colors.grey.shade400,
+                                          ),
+                                          const SizedBox(height: 12),
+                                          Text(
+                                            "No terms & conditions added yet",
+                                            style: TextStyle(
+                                              color: Colors.grey.shade600,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }
+
+                                return SizedBox(
+                                  height: workOrderBoqController.selectedTerms.length >= 5
+                                      ? 230 // Fixed height after 5 items
+                                      : workOrderBoqController.selectedTerms.length * 44.0,
+                                  child: ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    shrinkWrap: true,
+                                    itemCount: workOrderBoqController.selectedTerms.length,
+                                    itemBuilder: (context, index) {
+                                      final item = workOrderBoqController.selectedTerms[index];
+
+                                      return Table(
+                                        border: TableBorder(
+                                          left: BorderSide(color: Colors.grey.shade300),
+                                          right: BorderSide(color: Colors.grey.shade300),
+                                          bottom: BorderSide(color: Colors.grey.shade300),
+                                          verticalInside: BorderSide(color: Colors.grey.shade300),
+                                        ),
+                                        columnWidths: const {
+                                          0: FixedColumnWidth(30),
+                                          1: FlexColumnWidth(),
+                                          2: FixedColumnWidth(40),
+                                        },
+                                        children: [
+                                          TableRow(
+                                            decoration: BoxDecoration(
+                                                color:  Colors.white
+                                            ),
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.all(8),
+                                                child: Center(
+                                                  child: Text(
+                                                    "${index + 1}",
+                                                    style: const TextStyle(fontSize: 12),
+                                                  ),
+                                                ),
+                                              ),
+
+                                              Padding(
+                                                padding: const EdgeInsets.all(8),
+                                                child: Text(
+                                                  item.termsAndCondition ?? "",
+                                                  style: const TextStyle(fontSize: 12),
+                                                ),
+                                              ),
+
+                                              Center(
+                                                child: IconButton(
+                                                  icon: const Icon(
+                                                    Icons.delete_outline,
+                                                    color: Colors.red,
+                                                    size: 18,
+                                                  ),
+                                                  onPressed: () {
+                                                    workOrderBoqController.selectedTerms.removeAt(index);
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                );
+                              })
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   Container(
                     margin: const EdgeInsets.all(12),
@@ -591,7 +828,9 @@ class _WorkOrderDirectDeductionState extends State<WorkOrderDirectDeduction> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Expanded(
+                    if(workOrderDirectController.saveButton.value == RequestConstant.SUBMIT)
+
+                      Expanded(
                       child: InkWell(
                         child: Container(
                           margin: const EdgeInsets.only(left: 20, right: 20),
@@ -813,39 +1052,84 @@ class _WorkOrderDirectDeductionState extends State<WorkOrderDirectDeduction> {
                   ),
                   Expanded(
                     child: TextButton(
-                        onPressed: () async {
-                          workOrderDirectController.saveButton.value = RequestConstant.SUBMIT;
-                          workOrderDirectController.workid = 0;
-                          projectController.projectname.text = "--SELECT--";
-                          projectController.selectedProjectId.value = 0;
-                          subcontractorController.Subcontractorname.text = "--SELECT--";
-                          subcontractorController.selectedSubcontId.value = 0;
-                          workOrderDirectController.workOrdentryDateController.text = BaseUtitiles.initiateCurrentDateFormat();
+                      onPressed: () async {
+                        // Generate new BOQ number
+                        await autoYearWiseNoController.AutoYearWiseNo("WORK ORDER DIRECT");
 
-                          workOrderDirectController
-                              .autoYearWiseNoController.text =
-                              autoYearWiseNoController
-                                  .DirectBillautoYrsWise.value;
-                          siteController.selectedsiteId = 0.obs;
-                          siteController.selectedsitedropdownName = "--SELECT--".obs;
-                          siteController.getSiteDropdownvalue.value.clear();
-                          siteController.Sitename.text = RequestConstant.SELECT;
-                          siteController.siteDropdownName.clear();
+                        workOrderDirectController.autoYearWiseNoController.text =
+                            autoYearWiseNoController.WorkOrdDirect_autoYrWise.value;
 
-                          workOrderDirectController.workOrder_itemlistTable_Delete();
-                          workOrderDirectController.ItemGetTableListdata.value.clear();
+                        // Current date
+                        final currentDate = BaseUtitiles.initiateCurrentDateFormat();
 
-                          workOrderDirectController.workOrdamount.text = "0.0";
-                          workOrderDirectController.Roundoff.text = "0";
-                          workOrderDirectController.netpayamt.text = "0.0";
+                        // -----------------------------
+                        // Reset Bill Header
+                        // -----------------------------
+                        workOrderDirectController.workOrdentryDateController.text = currentDate;
+                        workOrderDirectController.workid = 0;
+
+                        // Project
+                        projectController.projectname.text = "--SELECT--";
+                        projectController.selectedProjectId.value = 0;
+
+                        // Site
+                        siteController.Sitename.text = "--SELECT--";
+                        siteController.selectedsiteId.value = 0;
+
+                        // Subcontractor
+                        subcontractorController.Subcontractorname.text = "--SELECT--";
+                        subcontractorController.selectedSubcontId.value = 0;
+
+                        // Work Order
+                        subcontractorController.WorkOrderNo.text = "--SELECT--";
+                        subcontractorController.selectedWorkOrderId.value = 0;
+                        workOrderDirectController.WorkOrdActiveTypeText.text = "--SELECT--";
+                        workOrderDirectController.workOrdActTypeID.value = "0";
+                        workOrderDirectController.WorkStatusTypeText.text = "--SELECT--";
+                        workOrderDirectController.workOrdStsTypeId.value = "0";
+
+
+                        workOrderDirectController.RemarksController.clear();
+                        workOrderBoqController.termsAndCondition.clear();
+                        workOrderBoqController.filteredTermsAndCondition.clear();
+                        workOrderBoqController.selectedTerms.clear();
+
+                        await workOrderDirectController.workOrder_itemlistTable_Delete();
+
+                        workOrderDirectController.ItemGetTableListdata.clear();
+
+                        workOrderDirectController.workOrdamount.text = "0.0";
+
+                        workOrderDirectController.netpayamt.text = "0.0";
+
+
+                        workOrderDirectController.Roundoff.text = "0.0";
+                        for (final controller
+                        in workOrderDirectController.percentControllers) {
+                          controller.clear();
+                        }
+                        for (final item
+                        in workOrderDirectController.workOrder_ItemReadList) {
+                          item.percentValue = 0.0;
+                          item.amount = 0.0;
+                        }
+                        workOrderDirectController.workOrder_ItemReadList.refresh();
+                        await workOrderDirectController.deductionPaymentCalculation();
+                        if (context.mounted) {
                           Navigator.pop(context);
-                        },
-                        child: Text("Reset",
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: RequestConstant.Lable_Font_SIZE))),
-                  )
+                        }
+                      },
+                      child: Text(
+                        "Reset",
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: RequestConstant.Lable_Font_SIZE,
+                        ),
+                      ),
+                    ),
+                  ),
+
                 ],
               ),
             ),

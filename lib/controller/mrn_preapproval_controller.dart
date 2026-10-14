@@ -1,8 +1,7 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:prahkurticore/models/project_name_response.dart';
 import '../controller/pendinglistcontroller.dart';
 import '../controller/projectcontroller.dart';
 import '../controller/sitecontroller.dart';
@@ -11,13 +10,11 @@ import '../db_model/materialapprlist_model.dart';
 import '../db_services/materialapprlist_service.dart';
 import '../home/pending_list/mrnpre_aproval/mrnpreapr_entryscreen.dart';
 import '../home/pending_list/mrnpre_aproval/mrnpreapr_stockmaterialwiselist_popup.dart';
-import '../home/pending_list/pending_list.dart';
 import '../models/materialintentsave_model.dart';
-import '../models/mrnfinalapproval_aproveapiresmodel.dart';
-import '../provider/common_provider.dart';
 import '../provider/mrn_request_indent_provider.dart';
 import '../provider/mrnfinalapproval_provider.dart';
 import '../provider/pendinglist_provider.dart';
+import '../utilities/apiconstant.dart';
 import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
 import 'logincontroller.dart';
@@ -53,6 +50,7 @@ class MrnPreApprovalController extends GetxController {
   List<TextEditingController> mrnpre_BalQty_ListController = [];
   List<TextEditingController> mrnpre_ReqQty_ListController = [];
   List<TextEditingController> mrnpre_ApprQty_ListController = [];
+  List<TextEditingController> mrnpre_ApproxDays_ListController = [];
   List<TextEditingController> mrnpre_Approval_ListController = [];
   List<TextEditingController> mrnpre_Description_ListController = [];
   List<TextEditingController> mrnpre_Remarks_ListController = [];
@@ -115,6 +113,7 @@ class MrnPreApprovalController extends GetxController {
       materialapprlistTableModel.balqty = element.balQty;
       materialapprlistTableModel.appqty = element.qty;
       materialapprlistTableModel.reqqty = element.reqQty;
+      materialapprlistTableModel.approxdays = element.approxDays;
       materialapprlistTableModel.apptype = "P";
       materialapprlistTableModel.remarks = element.remarks;
       materialapprlistTableModel.desc = element.description;
@@ -143,6 +142,7 @@ class MrnPreApprovalController extends GetxController {
       materialapprlist.balqty = getdatas['balqty'];
       materialapprlist.appqty = getdatas['appqty'];
       materialapprlist.reqqty = getdatas['reqqty'];
+      materialapprlist.approxdays = getdatas['approxdays'];
       materialapprlist.apptype = getdatas['apptype'];
       materialapprlist.remarks = getdatas['remarks'];
       materialapprlist.desc = getdatas['desc'];
@@ -165,6 +165,8 @@ class MrnPreApprovalController extends GetxController {
           MaterialAppr_itemview_GetDbList.value[index].reqqty.toString();
       mrnpre_ApprQty_ListController[index].text =
           MaterialAppr_itemview_GetDbList.value[index].appqty.toString();
+      mrnpre_ApproxDays_ListController[index].text =
+          MaterialAppr_itemview_GetDbList.value[index].approxdays.toString();
       mrnpre_Approval_ListController[index].text = MaterialAppr_itemview_GetDbList.value[index].apptype;
       mrnpre_TransfrProject_ListController[index].text =
           MaterialAppr_itemview_GetDbList.value[index].tranfromprjname == ""
@@ -179,6 +181,38 @@ class MrnPreApprovalController extends GetxController {
     }
   }
 
+  // void MaterialItemlistBal_clickEdit(int index) {
+  //   final double balQty = double.tryParse(
+  //     MaterialAppr_itemview_GetDbList.value[index].balqty.toString(),
+  //   ) ??
+  //       0.0;
+  //
+  //   final double enteredQty = double.tryParse(
+  //     mrnpre_ApprQty_ListController[index].text,
+  //   ) ??
+  //       0.0;
+  //
+  //   bool checkBalQty = false;
+  //
+  //   if (mrn_request_controller.ReqType.value == "PO") {
+  //     checkBalQty = true;
+  //   }
+  //
+  //   else if (AppClient.isAnusamm && mrn_request_controller.balQtyForProAndSite.value == true) {
+  //     if (balQty != 0) {
+  //       checkBalQty = true;
+  //     }
+  //   }
+  //
+  //   if (checkBalQty && enteredQty > balQty) {
+  //     mrnpre_ApprQty_ListController[index].text = "0.0";
+  //     BaseUtitiles.showToast("More than Bal Qty, Not Allowed");
+  //     return;
+  //   }
+  //
+  //   Approval_updateConsumTables();
+  // }
+
   MaterialItemlistBal_clickEdit(int index) {
     double balQty = double.parse(
         MaterialAppr_itemview_GetDbList.value[index].balqty.toString());
@@ -188,7 +222,8 @@ class MrnPreApprovalController extends GetxController {
         : double.parse(mrnpre_ApprQty_ListController[index].value.text);
     if(mrn_request_controller.ReqType.value == "PO")
     {
-      if (enteredQty > balQty) {
+      if ((!AppClient.isAnusamm || mrn_request_controller.balQtyForProAndSite.value) &&
+          enteredQty > balQty) {
         enteredQty = 0;
         mrnpre_ApprQty_ListController[index].text = "0.0";
         BaseUtitiles.showToast("More than Bal Qty, Not Allowed");
@@ -223,6 +258,7 @@ class MrnPreApprovalController extends GetxController {
         materialapprlistTableModel.balqty = element.balqty;
         materialapprlistTableModel.appqty = 0;
         materialapprlistTableModel.reqqty = element.reqqty;
+        materialapprlistTableModel.approxdays = element.approxdays;
         materialapprlistTableModel.apptype =
             mrnpre_Approval_ListController[i].text;
         materialapprlistTableModel.remarks =
@@ -244,8 +280,9 @@ class MrnPreApprovalController extends GetxController {
         materialapprlistTableModel.scaleId = element.scaleId;
         materialapprlistTableModel.balqty = element.balqty;
         materialapprlistTableModel.reqqty = element.reqqty;
+        materialapprlistTableModel.approxdays = double.tryParse(mrnpre_ApproxDays_ListController[i].value.text) ?? 0;
         materialapprlistTableModel.appqty =
-            double.parse(mrnpre_ApprQty_ListController[i].value.text);
+            double.tryParse(mrnpre_ApprQty_ListController[i].value.text)?? 0;
         materialapprlistTableModel.apptype =
             mrnpre_Approval_ListController[i].text;
         materialapprlistTableModel.remarks =
@@ -271,6 +308,7 @@ class MrnPreApprovalController extends GetxController {
   Future mrnPreapprovalDetListApi(
       String url, int ReqMasId, BuildContext context) async {
     mrnPreAppDetList.value = [];
+    await ClickUtils.run(() async {
     final value = await PendingListProvider.getMrnPreApproval(ReqMasId);
     if (value != null) {
       if (value.success == true) {
@@ -280,7 +318,7 @@ class MrnPreApprovalController extends GetxController {
           await getMaterialsItemlist_TableDatas();
           await mrn_request_controller.getCheckApprovalLevel();
           mrn_request_controller.saveButton.value = RequestConstant.PREAPPROVAL;
-          Navigator.pushReplacement(
+          await Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) =>
@@ -294,6 +332,7 @@ class MrnPreApprovalController extends GetxController {
     } else {
       BaseUtitiles.showToast("Something went wrong..");
     }
+    });
   }
 
   /// ----- MRN PreApproval -----
@@ -302,6 +341,7 @@ class MrnPreApprovalController extends GetxController {
     mrnpre_BalQty_ListController.add(TextEditingController());
     mrnpre_ReqQty_ListController.add(TextEditingController());
     mrnpre_ApprQty_ListController.add(TextEditingController());
+    mrnpre_ApproxDays_ListController.add(TextEditingController());
     mrnpre_Approval_ListController.add(TextEditingController());
     mrnpre_TransfrProject_ListController.add(TextEditingController());
     mrnpre_Description_ListController.add(TextEditingController());
@@ -397,7 +437,8 @@ class MrnPreApprovalController extends GetxController {
           refProjectId: int.tryParse(element.tranfromprjid),
           preApproveType: element.apptype,
           preApproveStatus: "Y",
-          approveStatus: "N"
+          approveStatus: "N",
+          approxDays: mrn_request_controller.ReqType.value=="CP"? element.approxdays:0
         );
         getsaveDetList.value.add(list);
       }

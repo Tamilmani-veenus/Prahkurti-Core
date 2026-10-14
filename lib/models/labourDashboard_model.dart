@@ -30,6 +30,7 @@ class LabourDashboardResponse {
   int? boqBillApprovalCount;
   List<SubContractPaymentPending>? subContractPaymentPending;
   List<SubContractorWiseLabourTradeChart>? subContractorWiseLabourTradeChart;
+  int? noWorkDetails;
 
 
   LabourDashboardResponse({
@@ -54,6 +55,7 @@ class LabourDashboardResponse {
     this.boqBillApprovalCount,
     this.subContractPaymentPending,
     this.subContractorWiseLabourTradeChart,
+    this.noWorkDetails
   });
 
   factory LabourDashboardResponse.fromJson(Map<String, dynamic> json) => LabourDashboardResponse(
@@ -123,6 +125,7 @@ class LabourDashboardResponse {
         : List<SubContractorWiseLabourTradeChart>.from(
         json["subContractorWiseLabourTradeChart"].map((x) => SubContractorWiseLabourTradeChart.fromJson(x))
     ),
+      noWorkDetails: json["noWorkDetails"]
 
   );
 
@@ -148,7 +151,7 @@ class LabourDashboardResponse {
     "boqBillApprovalCount": boqBillApprovalCount,
     "subContractPaymentPending": List<dynamic>.from(subContractPaymentPending!.map((x) => x.toJson())),
     "subContractorWiseLabourTradeChart": List<dynamic>.from(subContractorWiseLabourTradeChart!.map((x) => x.toJson())),
-
+    "noWorkDetails": noWorkDetails
   };
 }
 

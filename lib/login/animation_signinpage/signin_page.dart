@@ -15,9 +15,9 @@ class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
 
   static Future<void> checkVersion(BuildContext context) async {
-    final newVersion = NewVersionPlus(
-      androidId: 'com.veenus.prahkurti',
-    );
+     final newVersion = NewVersionPlus(
+       androidId: 'com.veenus.prahkurti',
+     );
 
     final status = await newVersion.getVersionStatus();
 

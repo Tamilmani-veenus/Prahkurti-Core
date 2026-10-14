@@ -188,6 +188,7 @@ class MMatReqMasLink {
   dynamic? refProjectName;
   num? stockQty;
   num? balQty;
+  double? approxDays;
 
   MMatReqMasLink({
     this.reqMasDetId,
@@ -209,6 +210,7 @@ class MMatReqMasLink {
     this.refProjectName,
     this.stockQty,
     this.balQty,
+    this.approxDays,
   });
 
   factory MMatReqMasLink.fromJson(Map<String, dynamic> json) => MMatReqMasLink(
@@ -231,6 +233,7 @@ class MMatReqMasLink {
     refProjectName: json["refProjectName"],
     stockQty: json["stockQty"]as num?,
     balQty: json["balQty"]as num?,
+    approxDays: json["approxDays"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -253,5 +256,6 @@ class MMatReqMasLink {
     "refProjectName": refProjectName,
     "stockQty": stockQty,
     "balQty": balQty,
+    "approxDays": approxDays,
   };
 }

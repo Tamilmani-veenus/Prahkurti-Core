@@ -1,21 +1,15 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:prahkurticore/controller/subcontcontroller.dart';
 import '../controller/pendinglistcontroller.dart';
 import '../controller/projectcontroller.dart';
 import '../controller/sitecontroller.dart';
-
 import '../db_model/cmpnmr_savereq_model.dart';
 import '../db_model/companynmr_atd_labourlist_dbmodel.dart';
 import '../db_services/companynmr_services.dart';
-import '../home/menu/daily_entries/company_nmr_attendance/company_nmr_entrylist.dart';
 import '../home/menu/daily_entries/company_nmr_attendance/company_nmr_entryscreen.dart';
-import '../home/menu/daily_entries/company_nmr_attendance/company_nmr_main.dart';
 import '../home/menu/daily_entries/company_nmr_attendance/listpopup_alert.dart';
-import '../home/pending_list/pending_list.dart';
-import '../models/cmpnmr_edit_resmodel.dart';
 import '../provider/companynmr_atdprovider.dart';
 import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
@@ -100,12 +94,13 @@ class CompanyNmrAttendanceController extends GetxController{
 
   Future getLabourList(BuildContext context, SubcontId) async {
     AlldataList.value=[];
+    await ClickUtils.run(() async {
     final value = await CompanyNmrAttendance_Provider.getLabourListAPI(SubcontId);
     if (value != null) {
       if (value.success == true) {
         if (value.result!.isNotEmpty) {
           AlldataList.value=value.result!;
-          showDialog(
+          await showDialog(
               context: context,
               builder: (BuildContext context) {
                 return CompanyNmr_ListAlert(list: AlldataList.value);
@@ -119,6 +114,7 @@ class CompanyNmrAttendanceController extends GetxController{
     } else {
       BaseUtitiles.showToast('Something went wrong..');
     }
+    });
   }
 
   Future getLabourStatusList() async {
@@ -259,6 +255,7 @@ class CompanyNmrAttendanceController extends GetxController{
 
   Future entryList_EditApi(int reqId,status,type,String MenuName, BuildContext context) async {
     EditListApiValue.value=[];
+    await ClickUtils.run(() async {
     var response = await CompanyNmrAttendance_Provider.Company_NmrList_EditAPI(reqId,status);
     if (response != null) {
       if (response.success == true) {
@@ -268,7 +265,7 @@ class CompanyNmrAttendanceController extends GetxController{
           delete_cmpNmrdetTable();
           editSaveDetTable();
           getcmpNMRTablesDatas();
-          return Navigator.pushReplacement(
+          await Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) => Company_nmr_entryscreen(heading: MenuName,)),
@@ -282,6 +279,7 @@ class CompanyNmrAttendanceController extends GetxController{
     } else {
       BaseUtitiles.showToast("Something went wrong..");
     }
+    });
   }
 
   Future editSaveDetTable() async {

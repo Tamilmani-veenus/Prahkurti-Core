@@ -3,6 +3,7 @@ class ManPowerDetModel{
   int? catId;
   String? catName;
   String? nos;
+  String? savedNos;
   String? remarks;
 
 
@@ -12,6 +13,7 @@ class ManPowerDetModel{
     mapping['catId'] = catId != null ? catId : null;
     mapping['catName'] = catName != null ? catName : null;
     mapping['nos'] = nos != null ? nos : null;
+    mapping['savedNos'] = savedNos != null ? savedNos : null;
     mapping['remarks'] = remarks != null ? remarks : "-";
     return mapping;
   }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../commonpopup/pendinglistdet_alert.dart';
 import '../commonpopup/po_suppliernamelist_alert.dart';
 import '../commonpopup/transferackmateriallist_alert.dart';
@@ -64,6 +66,8 @@ class PendingListController extends GetxController {
   RxList<OnClickListResult> workorderListvalue =
       <OnClickListResult>[].obs;
   RxList<OnClickListResult> add_PunchInAppListvalue =
+      <OnClickListResult>[].obs;
+  RxList<OnClickListResult> addCheckListvalue =
       <OnClickListResult>[].obs;
 
   RxList<NmrApprovalDet> getNMRAprovalDetList = <NmrApprovalDet>[].obs;
@@ -322,6 +326,36 @@ class PendingListController extends GetxController {
   //   });
   //   return getPoAprovalDetList.value;
   // }
+
+  Future MDPartListApproveApi(BuildContext context,type) async {
+    final List<Map<String, dynamic>> body =
+    addCheckListvalue.value.map((value) {
+      return {
+        "id": type=="NMR"?value.workId:value.id,
+        "verifyStatus": "Y",
+        "approveStatus": "Y",
+      };
+    }).toList();
+    print("eeeee...${body}");
+
+      var response = await PendingListProvider.putListApproval(jsonEncode(body),type);
+    print("response...${response}");
+
+    if (response != null) {
+        if (response["success"] == true) {
+          BaseUtitiles.showToast(response["message"] ?? 'Something went wrong..');
+          await getPendingList();
+          BaseUtitiles.popMultiple(context, count: 2);
+        }
+        else {
+          BaseUtitiles.showToast(response["message"] ?? 'Something went wrong..');
+          BaseUtitiles.popMultiple(context, count: 2);
+        }
+      } else {
+      BaseUtitiles.showToast("Something went wrong..");
+      BaseUtitiles.popMultiple(context, count: 2);
+    }
+  }
 
   Future subcontNmrAproval_buttonApi(BuildContext context) async {
     String body = subContNmrBillAprovalPendinglistResToJson(
@@ -1148,7 +1182,7 @@ class PendingListController extends GetxController {
             )
                 : name == "WORK ORDER VERIFICATION PENDING - DIRECT" ||
                 name ==
-                    "WORK ORDER VERIFICATION - BOQ"
+                    "WORK ORDER VERIFICATION PENDING - BOQ"
                 ? Navigator
                 .push(
               context,

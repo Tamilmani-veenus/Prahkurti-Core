@@ -591,17 +591,22 @@ class _ProjectWiseLabourDialogState extends State<ProjectWiseLabourDialog> {
                       child: SizedBox(
                         height: 36,
                         child: TextField(
+                            autocorrect: false,
+                            enableSuggestions: false,
                             controller: searchController,
-
+                            cursorColor: Colors.black87,
+                            cursorWidth: 1,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.black,
+                              decoration: TextDecoration.none, // Removes text underline
+                            ),
                             decoration: InputDecoration(
                               isDense: true,
                               hintText: "Search",
                               prefixIcon:
-                              const Icon(Icons.search),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 10,
-                              ),
+                              const Icon(Icons.search,color: Colors.grey),
+                              contentPadding: EdgeInsets.all(5),
                               filled: true,
                               fillColor: Colors.white,
                               enabledBorder: OutlineInputBorder(
@@ -631,55 +636,136 @@ class _ProjectWiseLabourDialogState extends State<ProjectWiseLabourDialog> {
                     ),
 
                     const SizedBox(width: 15),
-
                     SizedBox(
                       width: 140,
                       height: 36,
-                      child: DropdownButtonFormField<String>(
-                        value: filterValue,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
-                          ),
-                          filled: true,
-                          isDense: true,
-                          fillColor: Colors.white,
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(
-                              color: Colors.grey,
-                              width: 1,
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton2<String>(
+                          isExpanded: true,
+                          alignment: Alignment.centerLeft,
+
+                          hint: const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "All Status",
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: 14),
                             ),
                           ),
 
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(
-                              color: Colors.grey, // Purple when focused
-                              width: 2,
+                          value: filterValue,
+
+                          items: filterItems
+                              .map(
+                                (e) => DropdownMenuItem<String>(
+                              value: e,
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  e,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ),
+                            ),
+                          )
+                              .toList(),
+
+                          onChanged: (value) {
+                            if (value != null) {
+                              setState(() {
+                                filterValue = value;
+                              });
+                              filterProjects(value);
+                            }
+                          },
+
+                          buttonStyleData: ButtonStyleData(
+                            height: 36,
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Colors.grey,
+                                width: 1,
+                              ),
                             ),
                           ),
-                          border: OutlineInputBorder(
-                            borderRadius:
-                            BorderRadius.circular(12),
+
+                          iconStyleData: const IconStyleData(
+                            icon: Icon(Icons.arrow_drop_down),
+                            iconSize: 22,
+                            iconEnabledColor: Colors.grey,
+                          ),
+
+                          dropdownStyleData: DropdownStyleData(
+                            maxHeight: 220,
+                            offset: const Offset(0, 2),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 4,
+                          ),
+
+                          menuItemStyleData: const MenuItemStyleData(
+                            height: 40,
+                            padding: EdgeInsets.symmetric(horizontal: 12),
                           ),
                         ),
-                        items: filterItems
-                            .map(
-                              (e) => DropdownMenuItem(
-                            value: e,
-                            child: Text(e,style: TextStyle(fontSize: 14),),
-                          ),
-                        )
-                            .toList(),
-                        onChanged: (value) {
-                          if (value != null) {
-                            filterProjects(value);
-                          }
-                        },
                       ),
-                    ),
+                    )
+
+                    // SizedBox(
+                    //   width: 140,
+                    //   height: 36,
+                    //   child: DropdownButtonFormField<String>(
+                    //     value: filterValue,
+                    //     decoration: InputDecoration(
+                    //       contentPadding: const EdgeInsets.symmetric(
+                    //         horizontal: 12,
+                    //         vertical: 8,
+                    //       ),
+                    //       filled: true,
+                    //       isDense: true,
+                    //       fillColor: Colors.white,
+                    //       enabledBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(12),
+                    //         borderSide: const BorderSide(
+                    //           color: Colors.grey,
+                    //           width: 1,
+                    //         ),
+                    //       ),
+                    //
+                    //       focusedBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(12),
+                    //         borderSide: const BorderSide(
+                    //           color: Colors.grey, // Purple when focused
+                    //           width: 2,
+                    //         ),
+                    //       ),
+                    //       border: OutlineInputBorder(
+                    //         borderRadius:
+                    //         BorderRadius.circular(12),
+                    //       ),
+                    //     ),
+                    //     items: filterItems
+                    //         .map(
+                    //           (e) => DropdownMenuItem(
+                    //         value: e,
+                    //         child: Text(e,style: TextStyle(fontSize: 14),),
+                    //       ),
+                    //     )
+                    //         .toList(),
+                    //     onChanged: (value) {
+                    //       if (value != null) {
+                    //         filterProjects(value);
+                    //       }
+                    //     },
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
@@ -708,10 +794,8 @@ class _ProjectWiseLabourDialogState extends State<ProjectWiseLabourDialog> {
                     final axisValues = getYAxisValues(
                       labourDashboardController.filteredProjects,
                     );
-                    print("Max Value: ${axisValues['maximum']}");
-                    print("Interval : ${axisValues['interval']}");
-                    return SizedBox(
 
+                    return SizedBox(
                       width: math.max(
                         MediaQuery.of(context).size.width,
                         labourDashboardController.filteredProjects.length * 160.0,
@@ -756,8 +840,8 @@ class _ProjectWiseLabourDialogState extends State<ProjectWiseLabourDialog> {
 
                           ColumnSeries<ProjectWiseLabour, String>(
                             // animationDuration: 2000,
-                            width: 0.55,
-                            spacing: 0.35,
+                            width: 0.85,
+                            spacing: 0.10,
                             name: "NMR Work %",
                             dataSource: labourDashboardController.filteredProjects,
                             xValueMapper: (ProjectWiseLabour e, _) =>
@@ -779,8 +863,8 @@ class _ProjectWiseLabourDialogState extends State<ProjectWiseLabourDialog> {
                           ColumnSeries<ProjectWiseLabour, String>(
                             // animationDuration: 2000,
                             animationDelay: 0,
-                            width: 0.55,
-                            spacing: 0.35,
+                            width: 0.85,
+                            spacing: 0.10,
                             name: "Rate Work %",
                             dataSource: labourDashboardController.filteredProjects,
                             xValueMapper: (ProjectWiseLabour e, _) =>
@@ -1152,7 +1236,7 @@ class _SubcontractortWiseLabourSummaryDialogState extends State<SubcontractortWi
           int pointIndex,
           int seriesIndex) {
 
-        final item = labourDashboardController.subcontractorfilteredProjects[pointIndex];;
+        final item = labourDashboardController.subcontractorfilteredProjects[pointIndex];
 
         return Container(
           padding: const EdgeInsets.all(2),
@@ -1299,17 +1383,22 @@ class _SubcontractortWiseLabourSummaryDialogState extends State<SubcontractortWi
                       child: SizedBox(
                         height: 36,
                         child: TextField(
+                            autocorrect: false,
+                            enableSuggestions: false,
                             controller: searchController,
-
+                            cursorColor: Colors.black87,
+                            cursorWidth: 1,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.black,
+                              decoration: TextDecoration.none, // Removes text underline
+                            ),
                             decoration: InputDecoration(
                               isDense: true,
                               hintText: "Search",
                               prefixIcon:
-                              const Icon(Icons.search),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 10,
-                              ),
+                              const Icon(Icons.search,color: Colors.grey),
+                              contentPadding: EdgeInsets.all(5),
                               filled: true,
                               fillColor: Colors.white,
                               enabledBorder: OutlineInputBorder(
@@ -1339,55 +1428,135 @@ class _SubcontractortWiseLabourSummaryDialogState extends State<SubcontractortWi
                     ),
 
                     const SizedBox(width: 15),
-
                     SizedBox(
                       width: 140,
                       height: 36,
-                      child: DropdownButtonFormField<String>(
-                        value: filterValue,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
-                          ),
-                          filled: true,
-                          isDense: true,
-                          fillColor: Colors.white,
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(
-                              color: Colors.grey,
-                              width: 1,
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton2<String>(
+                          isExpanded: true,
+                          alignment: Alignment.centerLeft,
+
+                          hint: const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "All Status",
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: 14),
                             ),
                           ),
 
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(
-                              color: Colors.grey, // Purple when focused
-                              width: 2,
+                          value: filterValue,
+
+                          items: filterItems
+                              .map(
+                                (e) => DropdownMenuItem<String>(
+                              value: e,
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  e,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ),
+                            ),
+                          )
+                              .toList(),
+
+                          onChanged: (value) {
+                            if (value != null) {
+                              setState(() {
+                                filterValue = value;
+                              });
+                              filterProjects(value);
+                            }
+                          },
+
+                          buttonStyleData: ButtonStyleData(
+                            height: 36,
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Colors.grey,
+                                width: 1,
+                              ),
                             ),
                           ),
-                          border: OutlineInputBorder(
-                            borderRadius:
-                            BorderRadius.circular(12),
+
+                          iconStyleData: const IconStyleData(
+                            icon: Icon(Icons.arrow_drop_down),
+                            iconSize: 22,
+                            iconEnabledColor: Colors.grey,
+                          ),
+
+                          dropdownStyleData: DropdownStyleData(
+                            maxHeight: 220,
+                            offset: const Offset(0, 2),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 4,
+                          ),
+
+                          menuItemStyleData: const MenuItemStyleData(
+                            height: 40,
+                            padding: EdgeInsets.symmetric(horizontal: 12),
                           ),
                         ),
-                        items: filterItems
-                            .map(
-                              (e) => DropdownMenuItem(
-                            value: e,
-                            child: Text(e,style: TextStyle(fontSize: 14),),
-                          ),
-                        )
-                            .toList(),
-                        onChanged: (value) {
-                          if (value != null) {
-                            filterProjects(value);
-                          }
-                        },
                       ),
-                    ),
+                    )
+                    // SizedBox(
+                    //   width: 140,
+                    //   height: 36,
+                    //   child: DropdownButtonFormField<String>(
+                    //     value: filterValue,
+                    //     decoration: InputDecoration(
+                    //       contentPadding: const EdgeInsets.symmetric(
+                    //         horizontal: 12,
+                    //         vertical: 8,
+                    //       ),
+                    //       filled: true,
+                    //       isDense: true,
+                    //       fillColor: Colors.white,
+                    //       enabledBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(12),
+                    //         borderSide: const BorderSide(
+                    //           color: Colors.grey,
+                    //           width: 1,
+                    //         ),
+                    //       ),
+                    //
+                    //       focusedBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(12),
+                    //         borderSide: const BorderSide(
+                    //           color: Colors.grey, // Purple when focused
+                    //           width: 2,
+                    //         ),
+                    //       ),
+                    //       border: OutlineInputBorder(
+                    //         borderRadius:
+                    //         BorderRadius.circular(12),
+                    //       ),
+                    //     ),
+                    //     items: filterItems
+                    //         .map(
+                    //           (e) => DropdownMenuItem(
+                    //         value: e,
+                    //         child: Text(e,style: TextStyle(fontSize: 14),),
+                    //       ),
+                    //     )
+                    //         .toList(),
+                    //     onChanged: (value) {
+                    //       if (value != null) {
+                    //         filterProjects(value);
+                    //       }
+                    //     },
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
@@ -1464,8 +1633,8 @@ class _SubcontractortWiseLabourSummaryDialogState extends State<SubcontractortWi
 
                           ColumnSeries<SubContractorWiseLabourTradeChart, String>(
                             // animationDuration: 2000,
-                            width: 0.55,
-                            spacing: 0.35,
+                            width: 0.85,
+                            spacing: 0.10,
                             name: "NMR Work %",
                             dataSource: labourDashboardController.subcontractorfilteredProjects,
                             xValueMapper: (SubContractorWiseLabourTradeChart e, _) =>
@@ -1487,8 +1656,8 @@ class _SubcontractortWiseLabourSummaryDialogState extends State<SubcontractortWi
                           ColumnSeries<SubContractorWiseLabourTradeChart, String>(
                             // animationDuration: 2000,
                             animationDelay: 0,
-                            width: 0.55,
-                            spacing: 0.35,
+                            width: 0.85,
+                            spacing: 0.10,
                             name: "Rate Work %",
                             dataSource: labourDashboardController.subcontractorfilteredProjects,
                             xValueMapper: (SubContractorWiseLabourTradeChart e, _) =>
@@ -2631,3 +2800,1371 @@ class _AttendanceViewAllScreenState extends State<AttendanceViewAllScreen> {
 }
 
 
+
+class SubcontractorWiseLabourDialog extends StatefulWidget {
+  final List<SubContractorWiseLabourTradeChart> subcontractorList;
+
+  const SubcontractorWiseLabourDialog({
+    super.key,
+    required this.subcontractorList,
+  });
+
+  @override
+  State<SubcontractorWiseLabourDialog> createState() =>
+      _SubcontractorWiseLabourDialogState();
+}
+
+class _SubcontractorWiseLabourDialogState
+    extends State<SubcontractorWiseLabourDialog> {
+
+  late List<SubContractorWiseLabourTradeChart> allList;
+
+  List<SubContractorWiseLabourTradeChart> filteredList = [];
+
+  final TextEditingController searchController =
+  TextEditingController();
+
+  String selectedProject = "All Projects";
+
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    allList = List<SubContractorWiseLabourTradeChart>.from(
+      widget.subcontractorList,
+    );
+
+    filteredList = List.from(allList);
+
+    _sortAndFilter();
+  }
+
+
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+
+  void _sortAndFilter() {
+
+    List<SubContractorWiseLabourTradeChart> temp =
+    List.from(allList);
+
+    final searchText =
+    searchController.text.trim().toLowerCase();
+
+    if (searchText.isNotEmpty) {
+      temp = temp.where((item) {
+        final name =
+        (item.subcontractName ?? "").toLowerCase();
+
+        return name.contains(searchText);
+      }).toList();
+    }
+
+    temp.sort(
+          (a, b) => (a.subcontractName ?? "")
+          .toLowerCase()
+          .compareTo(
+        (b.subcontractName ?? "").toLowerCase(),
+      ),
+    );
+
+    setState(() {
+      filteredList = temp;
+    });
+  }
+
+  void _onSearchChanged(String value) {
+    _sortAndFilter();
+  }
+
+
+  Widget _projectDropdown() {
+    return SizedBox(
+      width: 120,
+      height: 36,
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton2<String>(
+          isExpanded: true,
+          alignment: Alignment.centerLeft,
+
+          hint: const Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "All Projects",
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 13,
+              ),
+            ),
+          ),
+
+          value: selectedProject,
+
+          items: const [
+            DropdownMenuItem<String>(
+              value: "All Projects",
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "All Projects",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            ),
+          ],
+
+          onChanged: (value) {
+            if (value != null) {
+              setState(() {
+                selectedProject = value;
+              });
+
+              _sortAndFilter();
+            }
+          },
+
+          // Button
+          buttonStyleData: ButtonStyleData(
+            height: 36,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(
+                color: Colors.grey,
+                width: 1,
+              ),
+            ),
+          ),
+
+          // Arrow
+          iconStyleData: const IconStyleData(
+            icon: Icon(
+              Icons.arrow_drop_down,
+            ),
+            iconSize: 22,
+            iconEnabledColor: Colors.grey,
+          ),
+
+          // Dropdown
+          dropdownStyleData: DropdownStyleData(
+            maxHeight: 220,
+            offset: const Offset(0, 2),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            elevation: 3,
+          ),
+
+          // Items
+          menuItemStyleData: const MenuItemStyleData(
+            height: 40,
+            padding: EdgeInsets.symmetric(
+              horizontal: 6,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _searchField() {
+    return Expanded(
+      child: SizedBox(
+        height: 38,
+        child: TextField(
+          cursorColor: Colors.black87,
+          cursorWidth: 2,
+          controller: searchController,
+          onChanged: _onSearchChanged,
+          style: const TextStyle(
+            fontSize: 14,
+          ),
+          decoration: InputDecoration(
+            hintText: "Search...",
+            hintStyle: const TextStyle(
+              fontSize: 14,
+              color: Color(0xff98A2B3),
+            ),
+            prefixIcon: const Icon(
+              Icons.search,
+              size: 18,
+              color: Color(0xff98A2B3),
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 10,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(7),
+              borderSide: const BorderSide(
+                color: Color(0xffD0D5DD),
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(7),
+              borderSide: const BorderSide(
+                color: Colors.grey,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(7),
+              borderSide: const BorderSide(
+                color: Colors.grey,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.symmetric(
+        horizontal: 25,
+        vertical: 25,
+      ),
+      child: Container(
+        constraints: const BoxConstraints(
+          maxWidth: 1150,
+          maxHeight: 450,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius:
+          BorderRadius.circular(18),
+        ),
+        child: Column(
+          children: [
+
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                22,
+                16,
+                18,
+                14,
+              ),
+              child: Row(
+                children: [
+
+                  Container(
+                    width: 34,
+                    height: 34,
+                    decoration: BoxDecoration(
+                      color:
+                      const Color(0xffEFF6FF),
+                      borderRadius:
+                      BorderRadius.circular(9),
+                    ),
+                    child: const Icon(
+                      Icons.bar_chart_rounded,
+                      size: 20,
+                      color: Color(0xff2864F0),
+                    ),
+                  ),
+
+                  const SizedBox(width: 12),
+
+                  Column(
+                    crossAxisAlignment:
+                    CrossAxisAlignment.start,
+                    children: [
+
+                      const Text(
+                        "Project Wise Subcontractor",
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight:
+                          FontWeight.w600,
+                          color:
+                          Color(0xff101828),
+                        ),
+                      ),
+
+                      const SizedBox(height: 3),
+
+                      Text(
+                        "${filteredList.length} of ${allList.length} entries",
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color:
+                          Color(0xff667085),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const Spacer(),
+
+                  InkWell(
+                    onTap: () =>
+                        Navigator.pop(context),
+                    child: const Icon(
+                      Icons.close,
+                      size: 20,
+                      color: Color(0xff98A2B3),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const Divider(
+              height: 1,
+              color: Color(0xffEAECF0),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                15,
+                10,
+                5,
+                10,
+              ),
+              child: Row(
+                children: [
+
+                  _searchField(),
+
+                  const SizedBox(width: 12),
+
+                  _projectDropdown(),
+
+                  const SizedBox(width: 16),
+
+
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 15,
+                right: 22,
+                top: 4,
+                bottom: 8,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  LabourWorkLegend(),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(
+                  15,
+                  0,
+                  15,
+                  15,
+                ),
+                // padding: const EdgeInsets.fromLTRB(
+                //   12,
+                //   12,
+                //   12,
+                //   5,
+                // ),
+                decoration: BoxDecoration(
+                  color: const Color(0xffF8FAFC),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: const Color(0xffEAECF0),
+                  ),
+                ),
+                child: filteredList.isEmpty
+                    ? const Center(
+                  child: Text(
+                    "No Record Found",
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Color(0xff667085),
+                    ),
+                  ),
+                )
+                    : Scrollbar(
+                  controller: _scrollController,
+                  thumbVisibility: true,
+                  radius: const Radius.circular(10),
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.fromLTRB(
+                          15,
+                          12,
+                          15,
+                          20,
+                        ),
+                        itemCount: filteredList.length,
+                        itemBuilder: (context, index) {
+                          final item = filteredList[index];
+
+                          return LabourNmrRateProgressItem(
+                            title: item.subcontractName ?? "",
+                            nmrNos: (item.nmrNos ?? 0).toInt(),
+                            rateNos: (item.rateNos ?? 0).toInt(),
+                            totalNos: (item.totalNos ?? 0).toInt(),
+                          );
+                          },
+                      ),
+                    ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ProjectWiseAttendanceDialog extends StatefulWidget {
+  final List<ProjectWiseAttendance> projectList;
+  final List<TodayAttendance> attendanceList;
+
+  const ProjectWiseAttendanceDialog({
+    super.key,
+    required this.projectList,
+    required this.attendanceList,
+  });
+
+  @override
+  State<ProjectWiseAttendanceDialog> createState() =>
+      _ProjectWiseAttendanceDialogState();
+}
+
+class _ProjectWiseAttendanceDialogState
+    extends State<ProjectWiseAttendanceDialog> {
+
+  late List<ProjectWiseAttendance> allList;
+
+  List<ProjectWiseAttendance> filteredList = [];
+
+  final TextEditingController searchController =
+  TextEditingController();
+
+  String selectedSubcontractor = "All Subcontractors";
+
+  final ScrollController _scrollController =
+  ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    allList = List<ProjectWiseAttendance>.from(
+      widget.projectList,
+    );
+
+    filteredList = List.from(allList);
+
+    _sortAndFilter();
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _sortAndFilter() {
+    List<ProjectWiseAttendance> temp =
+    List<ProjectWiseAttendance>.from(allList);
+
+    final searchText =
+    searchController.text.trim().toLowerCase();
+
+    // =====================================================
+    // SUBCONTRACTOR FILTER
+    // =====================================================
+
+    if (selectedSubcontractor != "All Subcontractors") {
+      final selectedProjects = widget.attendanceList
+          .where((attendance) {
+        final subcontractor =
+        (attendance.subContractorName ?? '')
+            .trim();
+
+        return subcontractor ==
+            selectedSubcontractor;
+      })
+          .map(
+            (attendance) =>
+            (attendance.projectName ?? '').trim(),
+      )
+          .where(
+            (projectName) => projectName.isNotEmpty,
+      )
+          .toSet();
+
+      temp = temp.where((item) {
+        return selectedProjects.contains(
+          item.projectName.trim(),
+        );
+      }).toList();
+    }
+
+    // =====================================================
+    // SEARCH PROJECT
+    // =====================================================
+
+    if (searchText.isNotEmpty) {
+      temp = temp.where((item) {
+        final projectName =
+        item.projectName.toLowerCase();
+
+        return projectName.contains(searchText);
+      }).toList();
+    }
+
+    temp.sort(
+          (a, b) => a.projectName
+          .toLowerCase()
+          .compareTo(
+        b.projectName.toLowerCase(),
+      ),
+    );
+
+    setState(() {
+      filteredList = temp;
+    });
+  }
+
+  void _onSearchChanged(String value) {
+    _sortAndFilter();
+  }
+
+  Widget _subcontractorDropdown() {
+    final List<String> subcontractorNames =
+    widget.attendanceList
+        .map(
+          (item) =>
+          (item.subContractorName ?? '').trim(),
+    )
+        .where(
+          (name) => name.isNotEmpty,
+    )
+        .toSet()
+        .toList()
+      ..sort();
+
+    return SizedBox(
+      width: 180,
+      height: 36,
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton2<String>(
+          isExpanded: true,
+          alignment: Alignment.centerLeft,
+
+          value: selectedSubcontractor,
+
+          items: [
+            const DropdownMenuItem<String>(
+              value: "All Subcontractors",
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "All Subcontractors",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            ),
+
+            ...subcontractorNames.map(
+                  (name) {
+                return DropdownMenuItem<String>(
+                  value: name,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+
+          onChanged: (value) {
+            if (value == null) return;
+
+            setState(() {
+              selectedSubcontractor = value;
+            });
+
+            _sortAndFilter();
+          },
+
+          buttonStyleData: ButtonStyleData(
+            height: 36,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(
+                color: Colors.grey,
+                width: 1,
+              ),
+            ),
+          ),
+
+          iconStyleData: const IconStyleData(
+            icon: Icon(
+              Icons.arrow_drop_down,
+            ),
+            iconSize: 22,
+            iconEnabledColor: Colors.grey,
+          ),
+
+          dropdownStyleData: DropdownStyleData(
+            maxHeight: 220,
+            offset: const Offset(0, 2),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            elevation: 3,
+          ),
+
+          menuItemStyleData:
+          const MenuItemStyleData(
+            height: 40,
+            padding: EdgeInsets.symmetric(
+              horizontal: 6,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _searchField() {
+    return Expanded(
+      child: SizedBox(
+        height: 38,
+        child: TextField(
+          cursorColor: Colors.black87,
+          cursorWidth: 2,
+          controller: searchController,
+          onChanged: _onSearchChanged,
+
+          style: const TextStyle(
+            fontSize: 14,
+          ),
+
+          decoration: InputDecoration(
+            hintText: "Search Project...",
+
+            hintStyle:
+            const TextStyle(
+              fontSize: 14,
+              color:
+              Color(0xff98A2B3),
+            ),
+
+            prefixIcon:
+            const Icon(
+              Icons.search,
+              size: 18,
+              color:
+              Color(0xff98A2B3),
+            ),
+
+            contentPadding:
+            const EdgeInsets
+                .symmetric(
+              horizontal: 10,
+            ),
+
+            border:
+            OutlineInputBorder(
+              borderRadius:
+              BorderRadius.circular(
+                7,
+              ),
+              borderSide:
+              const BorderSide(
+                color:
+                Color(0xffD0D5DD),
+              ),
+            ),
+
+            enabledBorder:
+            OutlineInputBorder(
+              borderRadius:
+              BorderRadius.circular(
+                7,
+              ),
+              borderSide:
+              const BorderSide(
+                color: Colors.grey,
+              ),
+            ),
+
+            focusedBorder:
+            OutlineInputBorder(
+              borderRadius:
+              BorderRadius.circular(
+                7,
+              ),
+              borderSide:
+              const BorderSide(
+                color: Colors.grey,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor:
+      Colors.transparent,
+
+      insetPadding:
+      const EdgeInsets.symmetric(
+        horizontal: 25,
+        vertical: 25,
+      ),
+
+      child: Container(
+        constraints:
+        const BoxConstraints(
+          maxWidth: 1150,
+          maxHeight: 450,
+        ),
+
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius:
+          BorderRadius.circular(18),
+        ),
+
+        child: Column(
+          children: [
+
+            Padding(
+              padding:
+              const EdgeInsets.fromLTRB(
+                22,
+                16,
+                18,
+                14,
+              ),
+
+              child: Row(
+                children: [
+
+                  Container(
+                    width: 34,
+                    height: 34,
+                    decoration:
+                    BoxDecoration(
+                      color:
+                      const Color(
+                        0xffEFF6FF,
+                      ),
+                      borderRadius:
+                      BorderRadius
+                          .circular(9),
+                    ),
+
+                    child: const Icon(
+                      Icons
+                          .bar_chart_rounded,
+                      size: 20,
+                      color:
+                      Color(0xff2864F0),
+                    ),
+                  ),
+
+                  const SizedBox(
+                    width: 12,
+                  ),
+
+                  Column(
+                    crossAxisAlignment:
+                    CrossAxisAlignment
+                        .start,
+                    children: [
+
+                      const Text(
+                        "Subcontractor Wise Project",
+                        style:
+                        TextStyle(
+                          fontSize: 15,
+                          fontWeight:
+                          FontWeight.w600,
+                          color:
+                          Color(
+                            0xff101828,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(
+                        height: 3,
+                      ),
+
+                      Text(
+                        "${filteredList.length} of ${allList.length} entries",
+                        style:
+                        const TextStyle(
+                          fontSize: 11,
+                          color:
+                          Color(
+                            0xff667085,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const Spacer(),
+
+                  InkWell(
+                    onTap: () =>
+                        Navigator.pop(
+                          context,
+                        ),
+                    child:
+                    const Icon(
+                      Icons.close,
+                      size: 20,
+                      color:
+                      Color(0xff98A2B3),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const Divider(
+              height: 1,
+              color:
+              Color(0xffEAECF0),
+            ),
+
+            Padding(
+              padding:
+              const EdgeInsets
+                  .fromLTRB(
+                15,
+                10,
+                5,
+                10,
+              ),
+
+              child: Row(
+                children: [
+
+                  _searchField(),
+
+                  const SizedBox(
+                    width: 12,
+                  ),
+
+                  _subcontractorDropdown(),
+
+                  const SizedBox(
+                    width: 16,
+                  ),
+                ],
+              ),
+            ),
+
+            Padding(
+              padding:
+              const EdgeInsets.only(
+                left: 15,
+                right: 22,
+                top: 4,
+                bottom: 8,
+              ),
+
+              child: Row(
+                mainAxisAlignment:
+                MainAxisAlignment.end,
+                children: [
+                  LabourWorkLegend(),
+                ],
+              ),
+            ),
+
+            Expanded(
+              child: Container(
+                margin:
+                const EdgeInsets
+                    .fromLTRB(
+                  15,
+                  0,
+                  15,
+                  15,
+                ),
+
+                decoration:
+                BoxDecoration(
+                  color:
+                  const Color(
+                    0xffF8FAFC,
+                  ),
+                  borderRadius:
+                  BorderRadius
+                      .circular(12),
+                  border: Border.all(
+                    color:
+                    const Color(
+                      0xffEAECF0,
+                    ),
+                  ),
+                ),
+
+                child:
+                filteredList.isEmpty
+                    ? const Center(
+                  child: Text(
+                    "No Record Found",
+                    style:
+                    TextStyle(
+                      fontSize:
+                      13,
+                      color:
+                      Color(
+                        0xff667085,
+                      ),
+                    ),
+                  ),
+                )
+                    : Scrollbar(
+                  controller:
+                  _scrollController,
+                  thumbVisibility:
+                  true,
+                  radius:
+                  const Radius
+                      .circular(
+                    10,
+                  ),
+
+                  child:
+                  ListView
+                      .builder(
+                    controller:
+                    _scrollController,
+                    physics:
+                    const AlwaysScrollableScrollPhysics(),
+                    padding:
+                    const EdgeInsets
+                        .fromLTRB(
+                      15,
+                      12,
+                      15,
+                      20,
+                    ),
+                    itemCount:
+                    filteredList
+                        .length,
+                    itemBuilder:
+                        (context,
+                        index) {
+                          final item = filteredList[index];
+
+                          return LabourNmrRateProgressItem(
+                            title: item.projectName,
+                            nmrNos: item.nmrCount.toInt(),
+                            rateNos: item.rateCount.toInt(),
+                            totalNos: item.total.toInt(),
+                          );
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class LabourWorkLegend extends StatelessWidget {
+  const LabourWorkLegend({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+
+        Container(
+          width: 10,
+          height: 10,
+          decoration: const BoxDecoration(
+            color: Color(0xff2864F0),
+            shape: BoxShape.circle,
+          ),
+        ),
+
+        const SizedBox(width: 6),
+
+        const Text(
+          "NMR Work",
+          style: TextStyle(
+            fontSize: 11,
+            color: Color(0xff667085),
+          ),
+        ),
+
+        const SizedBox(width: 20),
+
+        Container(
+          width: 10,
+          height: 10,
+          decoration: const BoxDecoration(
+            color: Color(0xffff7214),
+            shape: BoxShape.circle,
+          ),
+        ),
+
+        const SizedBox(width: 6),
+
+        const Text(
+          "Rate Work",
+          style: TextStyle(
+            fontSize: 11,
+            color: Color(0xff667085),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class LabourNmrRateProgressItem extends StatelessWidget {
+  final String title;
+  final int nmrNos;
+  final int rateNos;
+  final int totalNos;
+
+  const LabourNmrRateProgressItem({
+    super.key,
+    required this.title,
+    required this.nmrNos,
+    required this.rateNos,
+    required this.totalNos,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        bottom: 16,
+      ),
+      child: Column(
+        crossAxisAlignment:
+        CrossAxisAlignment.start,
+        children: [
+
+          // Name + Total
+          Row(
+            children: [
+
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: Color(0xff344054),
+                  ),
+                  overflow:
+                  TextOverflow.ellipsis,
+                ),
+              ),
+
+              Text(
+                totalNos.toString(),
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xff101828),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 7),
+
+          // ==================================================
+          // TAP TOOLTIP + PROGRESS BAR
+          // ==================================================
+
+          Tooltip(
+            triggerMode: TooltipTriggerMode.tap,
+            preferBelow: false,
+            verticalOffset: 10,
+            waitDuration: Duration.zero,
+            showDuration:
+            const Duration(seconds: 5),
+
+            padding: const EdgeInsets.all(12),
+
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius:
+              BorderRadius.circular(9),
+              border: Border.all(
+                color:
+                const Color(0xffD0D5DD),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color:
+                  Colors.black.withOpacity(.15),
+                  blurRadius: 12,
+                  offset:
+                  const Offset(0, 4),
+                ),
+              ],
+            ),
+
+            richMessage: WidgetSpan(
+              child: SizedBox(
+                width: 100,
+                child: Column(
+                  crossAxisAlignment:
+                  CrossAxisAlignment.start,
+                  children: [
+
+                    Text(
+                      title,
+                      style:
+                      const TextStyle(
+                        fontSize: 12,
+                        fontWeight:
+                        FontWeight.w600,
+                        color:
+                        Color(0xff344054),
+                      ),
+                      overflow:
+                      TextOverflow.ellipsis,
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    // NMR
+                    Row(
+                      children: [
+
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration:
+                          const BoxDecoration(
+                            color:
+                            Color(0xff2864F0),
+                            shape:
+                            BoxShape.circle,
+                          ),
+                        ),
+
+                        const SizedBox(width: 6),
+
+                        const Text(
+                          "NMR",
+                          style:
+                          TextStyle(
+                            fontSize: 11,
+                            color:
+                            Color(0xff667085),
+                          ),
+                        ),
+
+                        const Spacer(),
+
+                        Text(
+                          "$nmrNos (${totalNos > 0 ? ((nmrNos / totalNos) * 100).round() : 0}%)",
+                          style:
+                          const TextStyle(
+                            fontSize: 11,
+                            fontWeight:
+                            FontWeight.w600,
+                            color:
+                            Color(0xff344054),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 6),
+
+                    // Rate
+                    Row(
+                      children: [
+
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration:
+                          const BoxDecoration(
+                            color:
+                            Color(0xffff7214),
+                            shape:
+                            BoxShape.circle,
+                          ),
+                        ),
+
+                        const SizedBox(width: 6),
+
+                        const Text(
+                          "Rate",
+                          style:
+                          TextStyle(
+                            fontSize: 11,
+                            color:
+                            Color(0xff667085),
+                          ),
+                        ),
+
+                        const Spacer(),
+
+                        Text(
+                          "$rateNos (${totalNos > 0 ? ((rateNos / totalNos) * 100).round() : 0}%)",
+                          style:
+                          const TextStyle(
+                            fontSize: 11,
+                            fontWeight:
+                            FontWeight.w600,
+                            color:
+                            Color(0xff344054),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    const Divider(
+                      height: 1,
+                      color:
+                      Color(0xffEAECF0),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    Row(
+                      children: [
+
+                        const Text(
+                          "Total",
+                          style:
+                          TextStyle(
+                            fontSize: 11,
+                            color:
+                            Color(0xff667085),
+                          ),
+                        ),
+
+                        const Spacer(),
+
+                        Text(
+                          totalNos.toString(),
+                          style:
+                          const TextStyle(
+                            fontSize: 11,
+                            fontWeight:
+                            FontWeight.w600,
+                            color:
+                            Color(0xff344054),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // ==================================================
+            // PROGRESS BAR
+            // ==================================================
+
+            child: ClipRRect(
+              borderRadius:
+              BorderRadius.circular(7),
+              child: SizedBox(
+                height: 12,
+                child: Row(
+                  children: [
+
+                    if (nmrNos > 0)
+                      Expanded(
+                        flex: nmrNos,
+                        child: Container(
+                          color:
+                          const Color(
+                            0xff2864F0,
+                          ),
+                        ),
+                      ),
+
+                    if (rateNos > 0)
+                      Expanded(
+                        flex: rateNos,
+                        child: Container(
+                          color:
+                          const Color(
+                            0xffff7214,
+                          ),
+                        ),
+                      ),
+
+                    if (totalNos == 0)
+                      Expanded(
+                        child: Container(
+                          color:
+                          const Color(
+                            0xffEAECF0,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

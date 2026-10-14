@@ -2,7 +2,9 @@ import 'dart:io';
 import 'package:bottom_bar/bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:prahkurticore/newhome/maindashboard/hrDashboard.dart';
 import 'package:prahkurticore/newhome/maindashboard/labourDashboard.dart';
 import '../../constants/storage_constant.dart';
 import '../../constants/ui_constant/textfont_style.dart';
@@ -26,6 +28,7 @@ import '../../utilities/baseutitiles.dart';
 import '../../utilities/requestconstant.dart';
 import '../menus/main_menuslist.dart';
 import 'admin_dashboard.dart';
+import 'material_dashboard.dart';
 
 class Dashboard_screen extends StatefulWidget {
   const Dashboard_screen({Key? key}) : super(key: key);
@@ -45,6 +48,8 @@ class MyBehavior extends ScrollBehavior {
 class _Dashboard_screenState extends State<Dashboard_screen> {
   bool isLabour = false;
   bool isAdmin = false;
+  bool isMaterial = false;
+  bool isHr = false;
   int _currentPage = 0;
   final _pageController = PageController();
   LoginController loginController = Get.put(LoginController());
@@ -95,6 +100,27 @@ class _Dashboard_screenState extends State<Dashboard_screen> {
                   Row(
                     children: [
                       const SizedBox(width: 15),
+                      if (!Platform.isAndroid &&_currentPage == 0 && (isLabour || isMaterial || isHr))
+                        Row(
+                          children: [
+                            IconButton(
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const Dashboard_screen(),
+                                  ),
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.arrow_back_ios_new_rounded,size: 18,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                          ],
+                        ),
                       const Expanded(
                           flex: 3,
                           child: Text(
@@ -102,54 +128,117 @@ class _Dashboard_screenState extends State<Dashboard_screen> {
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 20),
                           )),
-                      // if(_currentPage == 0)    SizedBox(
-                      //     width: 24,
-                      //     height: 24,
-                      //     child: PopupMenuButton<String>(
-                      //       padding: EdgeInsets.zero,
-                      //       constraints: const BoxConstraints(),
-                      //       icon: Container(
-                      //         margin:
-                      //         const EdgeInsets.only( right: 10),
-                      //         child: Icon(
-                      //           Icons.widgets_outlined,
-                      //           size: 24,
-                      //           color: Theme.of(context).primaryColor,
-                      //         ),
-                      //       ),
-                      //       offset: const Offset(70, 35),
-                      //       onSelected: (value) {
-                      //         setState(() {
-                      //           isLabour = value == "Labour";
-                      //           isAdmin = value == "Admin";
-                      //           // _currentPage = 0;
-                      //         });},
-                      //       itemBuilder: (context) => [
-                      //         PopupMenuItem(
-                      //           value: "Admin",
-                      //           child: Row(
-                      //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      //             children: [
-                      //               Icon(Icons.person,size: 20,color: Theme.of(context).primaryColor,),
-                      //               Text(" Admin Dashboard",style: TextStyle(fontSize: 14),),
-                      //             ],
-                      //           ),
-                      //         ),
-                      //         PopupMenuItem(
-                      //           value: "Labour",
-                      //           child: Container(
-                      //             child: Row(
-                      //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      //               children: [
-                      //                 Icon(Icons.group,size: 20,color: Theme.of(context).primaryColor,),
-                      //                 Text(" Labour Dashboard",style: TextStyle(fontSize: 14)),
-                      //               ],
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ],
-                      //     )
-                      // ),
+                      if(_currentPage == 0)    SizedBox(
+                          width: 24,
+                          height: 24,
+                        child: PopupMenuButton<String>(
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                          icon: Container(
+                            margin: const EdgeInsets.only(right: 10),
+                            child: Icon(
+                              Icons.widgets_outlined,
+                              size: 24,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          offset: const Offset(70, 35),
+                          onSelected: (value) {
+                            setState(() {
+                              isLabour = value == "Labour";
+                              isAdmin = value == "Admin";
+                              isMaterial = value == "Material";
+                              isHr = value == "Hr";
+                              _currentPage = 0;
+                            });
+                          },
+                          itemBuilder: (context) => [
+                            // PopupMenuItem(
+                            //   value: "Admin",
+                            //   child: Row(
+                            //     children: [
+                            //       SizedBox(
+                            //         width: 30,
+                            //         child: Icon(
+                            //           Icons.person,
+                            //           size: 20,
+                            //           color: Theme.of(context).primaryColor,
+                            //         ),
+                            //       ),
+                            //       const SizedBox(width: 8),
+                            //       const Text(
+                            //         "Admin Dashboard",
+                            //         style: TextStyle(fontSize: 14),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
+
+                            PopupMenuItem(
+                              value: "Labour",
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 30,
+                                    child: Icon(
+                                      Icons.group,
+                                      size: 20,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Text(
+                                    "Labour Dashboard",
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            PopupMenuItem(
+                              value: "Material",
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 30,
+                                    child: Icon(
+                                      Icons.layers,
+                                      size: 20,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Text(
+                                    "Material Dashboard",
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if(!AppClient.isPrahkurti)
+                            PopupMenuItem(
+                              value: "Hr",
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 30,
+                                    child: FaIcon(
+                                      FontAwesomeIcons.users,
+                                      size: 20,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Text(
+                                    "HR Dashboard",
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        )
+                      ),
                       Container(
                         child: InkWell(
                           child: Container(
@@ -190,9 +279,8 @@ class _Dashboard_screenState extends State<Dashboard_screen> {
                       children: [
                         Container(
                           alignment: Alignment.center,
-                          child: isLabour
-                              ? const HomeScreen() : isAdmin ? const AdminHomeScreen()
-                              : const Home_Dashboard(),
+                          child: isLabour ? const HomeScreen() : isAdmin ? const AdminHomeScreen()
+                              : isMaterial ? const MaterialHomeScreen() :isHr ? const HrDashboard() :const AdminHomeScreen(),
                         ),
                         Container(
                           alignment: Alignment.center,

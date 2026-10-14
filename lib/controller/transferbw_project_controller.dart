@@ -140,6 +140,7 @@ class TransferBW_project_Controller extends GetxController {
   Future getTransferProject_Alldatas(int reqId,String MenuName, BuildContext context) async {
     transferAllDatasList.value = [];
     transferItemListdatas.value = [];
+    await ClickUtils.run(() async {
     final value =
         await TransferBetweenProject_provider.getTransferProj_ALLDatas(reqId);
     if (value != null) {
@@ -148,7 +149,7 @@ class TransferBW_project_Controller extends GetxController {
           transferAllDatasList.value = value.result!;
           saveButton.value = RequestConstant.SUBMIT;
           FocusScope.of(context).unfocus();
-          Navigator.push(
+          await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => TrasferBetweenProjects_Entry(heading: MenuName,)));
@@ -161,12 +162,14 @@ class TransferBW_project_Controller extends GetxController {
     } else {
       BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
     }
+    });
   }
 
   ///--------Transfer Request Pending-----------
   Future getTransPendingView(trId,String MenuName, BuildContext context) async {
     transferAllDatasList.value = [];
     transferItemListdatas.value = [];
+    await ClickUtils.run(() async {
     final value =
         await TransferBetweenProject_provider.getTransPendingViewAPI(trId);
     if (value != null) {
@@ -177,7 +180,7 @@ class TransferBW_project_Controller extends GetxController {
           await detTransReqPendingViewTable();
           await getItemlistTablesDatas();
           FocusScope.of(context).unfocus();
-          Navigator.push(
+          await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => TrasferBetweenProjects_Entry(heading: MenuName,)));
@@ -190,6 +193,7 @@ class TransferBW_project_Controller extends GetxController {
     } else {
       BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
     }
+    });
   }
 
   ///-------Det TransReqPendingView-------
@@ -245,6 +249,7 @@ class TransferBW_project_Controller extends GetxController {
       int prid, int siteId, int reqId, BuildContext context) async {
     mainlist.value = [];
     transferItemListdatas.value = [];
+    await ClickUtils.run(() async {
     final value = await Consumption_provider.getStockmaterial(prid, siteId,
         type: type.value == "Direct" ? "D" : "A", reqId: reqId);
     if (value != null) {
@@ -253,7 +258,7 @@ class TransferBW_project_Controller extends GetxController {
           transferItemListdatas.value = value.result ?? [];
           if (type.value == "Direct" ||
               type.value == "Against Transfer Request") {
-            Navigator.push(
+            await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (_) => Transfer_Between_Project_ItemList(),
@@ -269,6 +274,7 @@ class TransferBW_project_Controller extends GetxController {
     } else {
       BaseUtitiles.showToast("Something Went Wrong...");
     }
+    });
   }
 
   itemlistTable_Delete() async {
@@ -580,6 +586,7 @@ class TransferBW_project_Controller extends GetxController {
   }
 
   Future EntryList_EditApi(int workid,String MenuName,BuildContext context) async {
+    await ClickUtils.run(() async {
     final value =
         await TransferBetweenProject_provider.entryList_editAPI(workid);
     if (value != null) {
@@ -593,7 +600,7 @@ class TransferBW_project_Controller extends GetxController {
         saveButton.value = RequestConstant.RESUBMIT;
         EditTable_SaveTable();
         getItemlistTablesDatas();
-        return Navigator.pushReplacement(
+        await Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) => TrasferBetweenProjects_Entry(heading: MenuName)));
@@ -603,6 +610,7 @@ class TransferBW_project_Controller extends GetxController {
     } else {
       BaseUtitiles.showToast('Something went wrong..');
     }
+    });
   }
 
   EditTable_SaveTable() async {

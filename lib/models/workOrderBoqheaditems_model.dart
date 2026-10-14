@@ -121,7 +121,7 @@ class Message {
 }
 
 class MeasureLevel3Item {
-  int? id;
+  int? measureid;
   int? projectid;
   int? siteId;
   int? subItemid;
@@ -158,7 +158,7 @@ class MeasureLevel3Item {
   bool? isCheck=false;
 
   MeasureLevel3Item({
-    this.id,
+    this.measureid,
     this.projectid,
     this.siteId,
     this.subItemid,
@@ -195,7 +195,7 @@ class MeasureLevel3Item {
   });
 
   factory MeasureLevel3Item.fromJson(Map<String, dynamic> json) => MeasureLevel3Item(
-    id: json["id"],
+    measureid: json["id"],
     projectid: json["projectid"],
     siteId: json["siteId"],
     subItemid: json["subItemid"],
@@ -232,7 +232,7 @@ class MeasureLevel3Item {
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
+    "id": measureid,
     "projectid": projectid,
     "siteId": siteId,
     "subItemid": subItemid,

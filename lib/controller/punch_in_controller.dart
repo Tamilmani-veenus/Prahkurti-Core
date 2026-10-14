@@ -1,13 +1,10 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:ntp/ntp.dart';
 import 'package:prahkurticore/controller/site_location_controller.dart';
-import '../constants/storage_constant.dart';
 import '../models/punch_filter_response.dart';
 import '../models/punch_in_model.dart';
 import '../models/punch_in_payload.dart';

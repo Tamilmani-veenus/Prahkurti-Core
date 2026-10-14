@@ -105,15 +105,20 @@ class _Bill_Generation_Boq_EntryScreenState_Site
         billGenerationBoqController.saveButton.value = RequestConstant.SUBMIT;
         billGenerationBoqController.billgen_itemlistTable_Delete();
         billGenerationBoqController.ItemGetTableListdata.value=[];
+
+        billGenerationBoqController.Advded.text = "0.0";
+        billGenerationBoqController.netBillAmt.text = "0.0";
+        billGenerationBoqController.finalBillAmt.text = "0.0";
+
         billGenerationBoqController.billamount.text = "0.0";
         billGenerationBoqController.Creditamt.text = "0.0";
         billGenerationBoqController.Debitamt.text = "0.0";
         billGenerationBoqController.materialDebitamt.text = "0.0";
-        billGenerationBoqController.materialDebitRemarks.text = "";
-        billGenerationBoqController.CreditRemarksController.text = "";
-        billGenerationBoqController.DebitRemarksController.text = "";
+        billGenerationBoqController.materialDebitRemarks.text = "-";
+        billGenerationBoqController.CreditRemarksController.text = "-";
+        billGenerationBoqController.DebitRemarksController.text = "-";
         billGenerationBoqController.Advded.text = billGenerationBoqController.tobededadv.text;
-        billGenerationBoqController.Roundoff.text = "0";
+        billGenerationBoqController.Roundoff.text = "0.0";
         billGenerationBoqController.netpayamt.text = "0.0";
         billGenerationBoqController.createdById.value = 0;
         billGenerationBoqController.tobededadv.text = billGenerationBoqController.to_be_dection_advance;
@@ -612,7 +617,6 @@ class _Bill_Generation_Boq_EntryScreenState_Site
                         padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                         child: TextFormField(
                           autovalidateMode: AutovalidateMode.always,
-                          readOnly: true,
                           controller: subcontractorController.InvoiceNo,
                           cursorColor: Colors.black,
                           style: TextStyle(color: Colors.black),

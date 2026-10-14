@@ -12,6 +12,7 @@ import '../../../../controller/logincontroller.dart';
 import '../../../../controller/projectcontroller.dart';
 import '../../../../controller/sitecontroller.dart';
 import '../../../../controller/subcontcontroller.dart';
+import '../../../../controller/workOrderBoq_Controller.dart';
 import '../../../../controller/workorderDirect_Controller.dart';
 import '../../../../utilities/baseutitiles.dart';
 import '../../../../utilities/requestconstant.dart';
@@ -33,6 +34,8 @@ class _WorkOrdDirectEntryScreenState extends State<WorkOrdDirectEntryScreen> {
   SiteController siteController = Get.put(SiteController());
   BottomsheetControllers bottomsheetControllers = Get.put(BottomsheetControllers());
   LoginController loginController = Get.put(LoginController());
+  WorkOrderBoqController workOrderBoqController = Get.put(WorkOrderBoqController());
+
 
   @override
   void initState() {
@@ -57,6 +60,9 @@ class _WorkOrdDirectEntryScreenState extends State<WorkOrdDirectEntryScreen> {
           workOrderDirectController.RemarksController.text = element.remarks.toString();
         });
       }
+
+      await workOrderDirectController.WorkOrder_CalculationList();
+
       if (workOrderDirectController.saveButton.value == RequestConstant.SUBMIT) {
         await autoYearWiseNoController.AutoYearWiseNo("WORK ORDER DIRECT");
         workOrderDirectController.autoYearWiseNoController.text = autoYearWiseNoController.WorkOrdDirect_autoYrWise.value;
@@ -78,9 +84,13 @@ class _WorkOrdDirectEntryScreenState extends State<WorkOrdDirectEntryScreen> {
         workOrderDirectController.createdById.value=0;
         workOrderDirectController.workOrder_itemlistTable_Delete();
         workOrderDirectController.ItemGetTableListdata.value.clear();
+        workOrderDirectController.rebateAmount.text = "0.0";
         workOrderDirectController.workOrdamount.text = "0.0";
-        workOrderDirectController.Roundoff.text = "0";
+        workOrderDirectController.Roundoff.text = "0.0";
         workOrderDirectController.netpayamt.text = "0.0";
+        workOrderBoqController.termsAndCondition.clear();
+        workOrderBoqController.filteredTermsAndCondition.clear();
+        workOrderBoqController.selectedTerms.clear();
       }
     });
     super.initState();

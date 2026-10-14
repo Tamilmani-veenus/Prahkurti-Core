@@ -36,6 +36,7 @@ import '../../controller/requisitionslip_controller_new.dart';
 import '../../controller/sitevoucher_controller.dart';
 import '../../controller/transfer_acknowledgment_pending_controller.dart';
 import '../../controller/transferbw_site_controller.dart';
+import '../../controller/workOrderBoq_Controller.dart';
 import '../../controller/workorderDirect_Controller.dart';
 import '../../utilities/apiconstant.dart';
 import '../menu/materials/inward/inward_poamendment.dart';
@@ -9145,11 +9146,17 @@ class _WorkOrderState extends State<WorkOrder> {
       Get.put(PendingListController());
   WorkOrderDirectController workOrderDirectController =
       Get.put(WorkOrderDirectController());
+  WorkOrderBoqController workOrderBoqController =
+      Get.put(WorkOrderBoqController());
+  late List<bool> _isChecked;
 
+  var selectedValues;
   @override
   void initState() {
-    pendingListController.pendingmainlist.value.clear();
+    pendingListController.pendingmainlist.value=[];
+    pendingListController.addCheckListvalue.value=[];
     pendingListController.pendingmainlist.value = widget.onclickPendingListData;
+    _isChecked = List<bool>.filled(widget.onclickPendingListData.length, false);
     super.initState();
   }
 
@@ -9259,19 +9266,36 @@ class _WorkOrderState extends State<WorkOrder> {
                           itemBuilder: (context, index) {
                             return InkWell(
                               onTap: () async {
-                                workOrderDirectController
-                                    .workOrder_itemlistTable_Delete();
-                                await workOrderDirectController
-                                    .workOrderEntryList_EditApi(
-                                        pendingListController
-                                            .mainlist.value[index].id,
-                                        false,
-                                        widget.heading,
-                                        context,
-                                        type: widget.checkheading ==
-                                                "WORK ORDER VERIFICATION PENDING - DIRECT"
-                                            ? "Verify"
-                                            : "Approve");
+                                if (widget.checkheading ==
+                                    "WORK ORDER VERIFICATION PENDING - DIRECT") {
+                                  workOrderDirectController
+                                      .workOrder_itemlistTable_Delete();
+                                  await workOrderDirectController
+                                      .workOrderEntryList_EditApi(
+                                          pendingListController
+                                              .mainlist.value[index].id,
+                                          false,
+                                          widget.heading,
+                                          context,
+                                          type: widget.checkheading ==
+                                                  "WORK ORDER VERIFICATION PENDING - DIRECT"
+                                              ? "Verify"
+                                              : "Approve");
+                                } else {
+                                  workOrderBoqController
+                                      .delete_WorkOrderBoq_itemlist_Table();
+                                  await workOrderBoqController
+                                      .workOrderEntryList_EditApi(
+                                          pendingListController
+                                              .mainlist.value[index].id,
+                                          false,
+                                          widget.heading,
+                                          context,
+                                          type: widget.checkheading ==
+                                                  "WORK ORDER VERIFICATION PENDING - BOQ"
+                                              ? "Verify"
+                                              : "Approve");
+                                }
                               },
                               child: Container(
                                 margin: EdgeInsets.only(left: 3, right: 3),
@@ -9288,49 +9312,41 @@ class _WorkOrderState extends State<WorkOrder> {
                                       children: <Widget>[
                                         Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: <Widget>[
-                                            Container(
-                                              margin:
-                                                  EdgeInsets.only(right: 15),
-                                              child: Text(
-                                                pendingListController
-                                                    .mainlist[index].workOrderNo
-                                                    .toString(),
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 5),
-                                        Row(
+                                          MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
                                             Container(
                                               margin: EdgeInsets.only(
-                                                  top: 8, left: 10),
-                                              child: Text(""),
+                                                  left: 10, top: 10),
+                                              child: Row(
+                                                children: [
+                                                  ConstIcons.list_date,
+                                                  Text(
+                                                    pendingListController
+                                                        .mainlist
+                                                        .value[index]
+                                                        .entryDate
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
+                                                        fontWeight:
+                                                        FontWeight.bold),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                            Expanded(
-                                                flex: 3,
-                                                child: Text(
-                                                  "Date",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                  ),
-                                                )),
-                                            Expanded(
-                                                flex: 8,
-                                                child: Text(
-                                                  pendingListController
-                                                      .mainlist[index].entryDate
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                  ),
-                                                )),
+                                            Container(
+                                              margin:
+                                              EdgeInsets.only(right: 10),
+                                              child: Text(
+                                                pendingListController.mainlist
+                                                    .value[index].workOrderNo
+                                                    .toString(),
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                    FontWeight.bold),
+                                              ),
+                                            ),
                                           ],
                                         ),
                                         SizedBox(height: 5),
@@ -9442,9 +9458,7 @@ class _WorkOrderState extends State<WorkOrder> {
                                             Expanded(
                                                 flex: 8,
                                                 child: Text(
-                                                  pendingListController
-                                                      .mainlist[index].netamount
-                                                      .toString(),
+                                                  "₹ ${pendingListController.mainlist[index].netamount}",
                                                   style: TextStyle(
                                                     color: Colors.black,
                                                   ),
@@ -9470,7 +9484,7 @@ class _WorkOrderState extends State<WorkOrder> {
                                               ),
                                             ),
                                             Expanded(
-                                                flex: 8,
+                                                flex: widget.checkheading =="WORK ORDER APPROVAL PENDING" && AppClient.isAnusamm?5:8,
                                                 child: Text(
                                                   pendingListController.mainlist
                                                       .value[index].createdName
@@ -9479,9 +9493,58 @@ class _WorkOrderState extends State<WorkOrder> {
                                                     color: Colors.black,
                                                   ),
                                                 )),
+                                            if(widget.checkheading == "WORK ORDER APPROVAL PENDING" && AppClient.isAnusamm)
+                                              Expanded(
+                                                flex: 3,
+                                                child: Checkbox(
+                                                  shape:
+                                                  const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              5.0))),
+                                                  side: MaterialStateBorderSide
+                                                      .resolveWith(
+                                                        (states) => BorderSide(
+                                                      width: 1.0,
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
+                                                    ),
+                                                  ),
+                                                  checkColor: Colors.white,
+                                                  activeColor: Theme.of(context)
+                                                      .primaryColor,
+                                                  // Rounded Checkbox
+                                                  value: _isChecked[index],
+                                                  onChanged: (val) {
+                                                    setState(
+                                                          () {
+                                                        if (val == true) {
+                                                          _isChecked[index] =
+                                                          val!;
+                                                          pendingListController
+                                                              .addCheckListvalue
+                                                              .value
+                                                              .add(widget
+                                                              .onclickPendingListData[
+                                                          index]);
+                                                        } else {
+                                                          _isChecked[index] =
+                                                          val!;
+                                                          pendingListController
+                                                              .addCheckListvalue
+                                                              .value
+                                                              .remove(widget
+                                                              .onclickPendingListData[
+                                                          index]);
+                                                        }
+                                                      },
+                                                    );
+                                                  },
+                                                ),
+                                              ),
                                           ],
                                         ),
-                                        SizedBox(height: 10),
                                       ],
                                     ),
                                   ),
@@ -9494,6 +9557,42 @@ class _WorkOrderState extends State<WorkOrder> {
               ),
             ),
           ),
+          bottomNavigationBar: (widget.checkheading == "WORK ORDER APPROVAL PENDING" && AppClient.isAnusamm) ? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              InkWell(
+                child: Container(
+                  margin: EdgeInsets.only(left: 20, right: 20),
+                  width: BaseUtitiles.getWidthtofPercentage(context, 25),
+                  height: BaseUtitiles.getheightofPercentage(context, 4),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: Theme.of(context).primaryColor),
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 3, right: 3),
+                    child: Text(
+                      RequestConstant.APPROVAL,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: RequestConstant.Lable_Font_SIZE,
+                          color: Colors.white),
+                    ),
+                  ),
+                ),
+                onTap: () async {
+                  if (pendingListController
+                      .addCheckListvalue.value.isNotEmpty) {
+                    if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
+                      await pendingListController.MDPartListApproveApi(context,"WO");
+                    }
+                  } else {
+                    BaseUtitiles.showToast("Please select item for approval");
+                  }
+                },
+              ),
+            ],
+          ) : null,
         ),
       ),
     );
@@ -14563,6 +14662,9 @@ class _StaffRequisitionVerifyState extends State<StaffRequisitionVerify> {
                         physics: BouncingScrollPhysics(),
                         itemCount: pendingListController.mainlist.length,
                         itemBuilder: (context, index) {
+                          final isHalfDay = pendingListController
+                                  .mainlist.value[index].isHalfDay ??
+                              false;
                           return InkWell(
                             onTap: () async {
                               requisitionSlipController.remarksValue.text = "";
@@ -14867,12 +14969,49 @@ class _StaffRequisitionVerifyState extends State<StaffRequisitionVerify> {
                                                               Expanded(
                                                                 flex: 4,
                                                                 child: Text(
+                                                                  "${pendingListController.mainlist.value[index].totalLeaveDays}"
+                                                                  "${isHalfDay == true ? ' (Half Day)' : ''}",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        RequestConstant
+                                                                            .Lable_Font_SIZE,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 5),
+                                                        Container(
+                                                          margin:
+                                                              const EdgeInsets
+                                                                  .only(top: 2),
+                                                          child: Row(
+                                                            children: <Widget>[
+                                                              const Expanded(
+                                                                  flex: 2,
+                                                                  child: Text(
+                                                                    "Leave Type: ",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontSize:
+                                                                          RequestConstant
+                                                                              .Lable_Font_SIZE,
+                                                                    ),
+                                                                  )),
+                                                              Expanded(
+                                                                flex: 4,
+                                                                child: Text(
                                                                   pendingListController
-                                                                      .mainlist
-                                                                      .value[
-                                                                          index]
-                                                                      .totalLeaveDays
-                                                                      .toString(),
+                                                                          .mainlist
+                                                                          .value[
+                                                                              index]
+                                                                          .LeaveTypeDesc ??
+                                                                      "-",
                                                                   style:
                                                                       TextStyle(
                                                                     fontSize:
@@ -14997,7 +15136,7 @@ class _StaffRequisitionVerifyState extends State<StaffRequisitionVerify> {
                                                             Expanded(
                                                               flex: 4,
                                                               child: Text(
-                                                                widget.heading
+                                                                widget.checkheading
                                                                             .toString() ==
                                                                         "STAFF L & P VERIFICATION"
                                                                     ? pendingListController
@@ -17757,12 +17896,16 @@ class _NMRBillVerificationState extends State<NMRBillVerification> {
   AdvanceReqVoucherController_new advanceReqVoucherController_new =
       Get.put(AdvanceReqVoucherController_new());
   NMRWklyController nmrWklyController = Get.put(NMRWklyController());
+  late List<bool> _isChecked;
 
   var selectedValues;
   @override
   void initState() {
-    pendingListController.pendingmainlist.value.clear();
+    pendingListController.pendingmainlist.value=[];
+    pendingListController.addCheckListvalue.value=[];
     pendingListController.pendingmainlist.value = widget.onclickPendingListData;
+    _isChecked = List<bool>.filled(widget.onclickPendingListData.length, false);
+
     super.initState();
   }
 
@@ -17898,49 +18041,41 @@ class _NMRBillVerificationState extends State<NMRBillVerification> {
                                       children: <Widget>[
                                         Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.end,
+                                              MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
                                             Container(
+                                              margin: EdgeInsets.only(
+                                                  left: 10, top: 10),
+                                              child: Row(
+                                                children: [
+                                                  ConstIcons.list_date,
+                                                  Text(
+                                                    pendingListController
+                                                        .mainlist
+                                                        .value[index]
+                                                        .workDate
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
                                               margin:
-                                                  EdgeInsets.only(right: 15),
+                                                  EdgeInsets.only(right: 10),
                                               child: Text(
-                                                pendingListController
-                                                    .mainlist[index].workNo
+                                                pendingListController.mainlist
+                                                    .value[index].workNo
                                                     .toString(),
                                                 style: TextStyle(
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 5),
-                                        Row(
-                                          children: <Widget>[
-                                            Container(
-                                              margin: EdgeInsets.only(
-                                                  top: 8, left: 10),
-                                              child: Text(""),
-                                            ),
-                                            Expanded(
-                                                flex: 3,
-                                                child: Text(
-                                                  "Date",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                  ),
-                                                )),
-                                            Expanded(
-                                                flex: 8,
-                                                child: Text(
-                                                  pendingListController
-                                                      .mainlist[index].workDate
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                  ),
-                                                )),
                                           ],
                                         ),
                                         SizedBox(height: 5),
@@ -18090,36 +18225,36 @@ class _NMRBillVerificationState extends State<NMRBillVerification> {
                                           ],
                                         ),
                                         SizedBox(height: 5),
-                                        Row(
-                                          children: <Widget>[
-                                            Container(
-                                              margin: EdgeInsets.only(
-                                                  top: 5, left: 10),
-                                              child: Text(""),
-                                            ),
-                                            Expanded(
-                                                flex: 3,
-                                                child: Text(
-                                                  "Subcontractor",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                  ),
-                                                )),
-                                            Expanded(
-                                                flex: 8,
-                                                child: Text(
-                                                  pendingListController
-                                                      .mainlist[index]
-                                                      .SubcontractName
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                  ),
-                                                )),
-                                          ],
-                                        ),
-                                        SizedBox(height: 5),
+                                        // Row(
+                                        //   children: <Widget>[
+                                        //     Container(
+                                        //       margin: EdgeInsets.only(
+                                        //           top: 5, left: 10),
+                                        //       child: Text(""),
+                                        //     ),
+                                        //     Expanded(
+                                        //         flex: 3,
+                                        //         child: Text(
+                                        //           "Subcontractor",
+                                        //           style: TextStyle(
+                                        //             fontWeight: FontWeight.bold,
+                                        //             color: Colors.black,
+                                        //           ),
+                                        //         )),
+                                        //     Expanded(
+                                        //         flex: 8,
+                                        //         child: Text(
+                                        //           pendingListController
+                                        //               .mainlist[index]
+                                        //               .SubcontractName
+                                        //               .toString(),
+                                        //           style: TextStyle(
+                                        //             color: Colors.black,
+                                        //           ),
+                                        //         )),
+                                        //   ],
+                                        // ),
+                                        // SizedBox(height: 5),
                                         Row(
                                           children: <Widget>[
                                             Container(
@@ -18139,10 +18274,7 @@ class _NMRBillVerificationState extends State<NMRBillVerification> {
                                             Expanded(
                                                 flex: 8,
                                                 child: Text(
-                                                  pendingListController
-                                                      .mainlist[index]
-                                                      .netPayAmount
-                                                      .toString(),
+                                                  "₹ ${pendingListController.mainlist[index].netPayAmount}",
                                                   style: TextStyle(
                                                     color: Colors.black,
                                                   ),
@@ -18168,7 +18300,7 @@ class _NMRBillVerificationState extends State<NMRBillVerification> {
                                               ),
                                             ),
                                             Expanded(
-                                                flex: 8,
+                                                flex: 5,
                                                 child: Text(
                                                   pendingListController
                                                       .mainlist
@@ -18179,9 +18311,58 @@ class _NMRBillVerificationState extends State<NMRBillVerification> {
                                                     color: Colors.black,
                                                   ),
                                                 )),
+                                            if(widget.checkheading != "BILL VERIFICATION - NMR" && AppClient.isAnusamm)
+                                            Expanded(
+                                              flex: 3,
+                                              child: Checkbox(
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    5.0))),
+                                                side: MaterialStateBorderSide
+                                                    .resolveWith(
+                                                  (states) => BorderSide(
+                                                    width: 1.0,
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
+                                                  ),
+                                                ),
+                                                checkColor: Colors.white,
+                                                activeColor: Theme.of(context)
+                                                    .primaryColor,
+                                                // Rounded Checkbox
+                                                value: _isChecked[index],
+                                                onChanged: (val) {
+                                                  setState(
+                                                    () {
+                                                      if (val == true) {
+                                                        _isChecked[index] =
+                                                            val!;
+                                                        pendingListController
+                                                            .addCheckListvalue
+                                                            .value
+                                                            .add(widget
+                                                                    .onclickPendingListData[
+                                                                index]);
+                                                      } else {
+                                                        _isChecked[index] =
+                                                            val!;
+                                                        pendingListController
+                                                            .addCheckListvalue
+                                                            .value
+                                                            .remove(widget
+                                                                    .onclickPendingListData[
+                                                                index]);
+                                                      }
+                                                    },
+                                                  );
+                                                },
+                                              ),
+                                            ),
                                           ],
                                         ),
-                                        SizedBox(height: 10),
                                       ],
                                     ),
                                   ),
@@ -18189,11 +18370,48 @@ class _NMRBillVerificationState extends State<NMRBillVerification> {
                               ),
                             );
                           })),
-                  SizedBox(height: 20)
+                  SizedBox(height: 20),
                 ],
               ),
             ),
           ),
+          bottomNavigationBar: (widget.checkheading != "BILL VERIFICATION - NMR" && AppClient.isAnusamm) ?
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              InkWell(
+                child: Container(
+                  margin: EdgeInsets.only(left: 20, right: 20),
+                  width: BaseUtitiles.getWidthtofPercentage(context, 25),
+                  height: BaseUtitiles.getheightofPercentage(context, 4),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: Theme.of(context).primaryColor),
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 3, right: 3),
+                    child: Text(
+                      RequestConstant.APPROVAL,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: RequestConstant.Lable_Font_SIZE,
+                          color: Colors.white),
+                    ),
+                  ),
+                ),
+                onTap: () async {
+                  if (pendingListController
+                      .addCheckListvalue.value.isNotEmpty) {
+                    if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
+                      await pendingListController.MDPartListApproveApi(context,"NMR");
+                    }
+                  } else {
+                    BaseUtitiles.showToast("Please select item for approval");
+                  }
+                },
+              ),
+            ],
+          ) : null,
         ),
       ),
     );
@@ -18225,10 +18443,14 @@ class _BillDirectVerificationState extends State<BillDirectVerification> {
       Get.put(BillGenerationDirectController());
 
   var selectedValues;
+  late List<bool> _isChecked;
+
   @override
   void initState() {
     pendingListController.pendingmainlist.value.clear();
+    pendingListController.addCheckListvalue.value=[];
     pendingListController.pendingmainlist.value = widget.onclickPendingListData;
+    _isChecked = List<bool>.filled(widget.onclickPendingListData.length, false);
     super.initState();
   }
 
@@ -18368,92 +18590,52 @@ class _BillDirectVerificationState extends State<BillDirectVerification> {
                                       children: <Widget>[
                                         Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.end,
+                                          MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
                                             Container(
+                                              margin: EdgeInsets.only(
+                                                  left: 10, top: 10),
+                                              child: Row(
+                                                children: [
+                                                  ConstIcons.list_date,
+                                                  Text(
+                                                    widget.checkheading ==
+                                                        "BILL VERIFICATION - DIRECT"
+                                                        ? pendingListController
+                                                        .mainlist[index]
+                                                        .entryDate
+                                                        .toString()
+                                                        : pendingListController
+                                                        .mainlist[index]
+                                                        .workDate
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
+                                                        fontWeight:
+                                                        FontWeight.bold),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
                                               margin:
-                                                  EdgeInsets.only(right: 15),
+                                              EdgeInsets.only(right: 10),
                                               child: Text(
                                                 widget.checkheading ==
-                                                        "BILL VERIFICATION - DIRECT"
+                                                    "BILL VERIFICATION - DIRECT"
                                                     ? pendingListController
-                                                        .mainlist[index].entryNo
-                                                        .toString()
+                                                    .mainlist[index].entryNo
+                                                    .toString().trim()
                                                     : pendingListController
-                                                        .mainlist[index].workNo
-                                                        .toString(),
+                                                    .mainlist[index].workNo.toString().trim(),
                                                 style: TextStyle(
                                                     fontWeight:
-                                                        FontWeight.bold),
+                                                    FontWeight.bold),
                                               ),
                                             ),
                                           ],
                                         ),
-                                        SizedBox(height: 5),
-                                        Row(
-                                          children: <Widget>[
-                                            Container(
-                                              margin: EdgeInsets.only(
-                                                  top: 8, left: 10),
-                                              child: Text(""),
-                                            ),
-                                            Expanded(
-                                                flex: 3,
-                                                child: Text(
-                                                  "Date",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                  ),
-                                                )),
-                                            Expanded(
-                                                flex: 8,
-                                                child: Text(
-                                                  widget.checkheading ==
-                                                          "BILL VERIFICATION - DIRECT"
-                                                      ? pendingListController
-                                                          .mainlist[index]
-                                                          .entryDate
-                                                          .toString()
-                                                      : pendingListController
-                                                          .mainlist[index]
-                                                          .workDate
-                                                          .toString(),
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                  ),
-                                                )),
-                                          ],
-                                        ),
-                                        // SizedBox(height: 5),
-                                        // Row(
-                                        //   children: <Widget>[
-                                        //     Container(
-                                        //       margin: EdgeInsets.only(
-                                        //           top: 8, left: 10),
-                                        //       child: Text(""),
-                                        //     ),
-                                        //     Expanded(
-                                        //         flex: 3,
-                                        //         child: Text(
-                                        //           "Bill No",
-                                        //           style: TextStyle(
-                                        //             fontWeight: FontWeight.bold,
-                                        //             color: Colors.black,
-                                        //           ),
-                                        //         )),
-                                        //     Expanded(
-                                        //         flex: 8,
-                                        //         child: Text(
-                                        //           pendingListController
-                                        //               .mainlist[index].billNo
-                                        //               .toString(),
-                                        //           style: TextStyle(
-                                        //             color: Colors.black,
-                                        //           ),
-                                        //         )),
-                                        //   ],
-                                        // ),
                                         SizedBox(height: 5),
                                         Row(
                                           children: <Widget>[
@@ -18628,10 +18810,7 @@ class _BillDirectVerificationState extends State<BillDirectVerification> {
                                             Expanded(
                                                 flex: 8,
                                                 child: Text(
-                                                  pendingListController
-                                                      .mainlist[index]
-                                                      .netPayAmount
-                                                      .toString(),
+                                                    "₹ ${pendingListController.mainlist[index].netPayAmount}",
                                                   style: TextStyle(
                                                     color: Colors.black,
                                                   ),
@@ -18657,7 +18836,8 @@ class _BillDirectVerificationState extends State<BillDirectVerification> {
                                               ),
                                             ),
                                             Expanded(
-                                                flex: 8,
+                                                flex: widget.checkheading ==
+                                                    "BILL VERIFICATION - DIRECT"?8:5,
                                                 child: Text(
                                                   pendingListController.mainlist
                                                       .value[index].preparedName
@@ -18666,9 +18846,58 @@ class _BillDirectVerificationState extends State<BillDirectVerification> {
                                                     color: Colors.black,
                                                   ),
                                                 )),
+                                            if(widget.checkheading != "BILL VERIFICATION - DIRECT" && AppClient.isAnusamm)
+                                            Expanded(
+                                              flex: 3,
+                                              child: Checkbox(
+                                                shape:
+                                                const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.all(
+                                                        Radius.circular(
+                                                            5.0))),
+                                                side: MaterialStateBorderSide
+                                                    .resolveWith(
+                                                      (states) => BorderSide(
+                                                    width: 1.0,
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
+                                                  ),
+                                                ),
+                                                checkColor: Colors.white,
+                                                activeColor: Theme.of(context)
+                                                    .primaryColor,
+                                                // Rounded Checkbox
+                                                value: _isChecked[index],
+                                                onChanged: (val) {
+                                                  setState(
+                                                        () {
+                                                      if (val == true) {
+                                                        _isChecked[index] =
+                                                        val!;
+                                                        pendingListController
+                                                            .addCheckListvalue
+                                                            .value
+                                                            .add(widget
+                                                            .onclickPendingListData[
+                                                        index]);
+                                                      } else {
+                                                        _isChecked[index] =
+                                                        val!;
+                                                        pendingListController
+                                                            .addCheckListvalue
+                                                            .value
+                                                            .remove(widget
+                                                            .onclickPendingListData[
+                                                        index]);
+                                                      }
+                                                    },
+                                                  );
+                                                },
+                                              ),
+                                            ),
                                           ],
                                         ),
-                                        SizedBox(height: 10),
                                       ],
                                     ),
                                   ),
@@ -18681,6 +18910,43 @@ class _BillDirectVerificationState extends State<BillDirectVerification> {
               ),
             ),
           ),
+          bottomNavigationBar: (widget.checkheading !=
+              "BILL VERIFICATION - DIRECT" && AppClient.isAnusamm) ? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              InkWell(
+                child: Container(
+                  margin: EdgeInsets.only(left: 20, right: 20),
+                  width: BaseUtitiles.getWidthtofPercentage(context, 25),
+                  height: BaseUtitiles.getheightofPercentage(context, 4),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: Theme.of(context).primaryColor),
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 3, right: 3),
+                    child: Text(
+                      RequestConstant.APPROVAL,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: RequestConstant.Lable_Font_SIZE,
+                          color: Colors.white),
+                    ),
+                  ),
+                ),
+                onTap: () async {
+                  if (pendingListController
+                      .addCheckListvalue.value.isNotEmpty) {
+                    if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
+                      await pendingListController.MDPartListApproveApi(context,"Direct");
+                    }
+                  } else {
+                    BaseUtitiles.showToast("Please select item for approval");
+                  }
+                },
+              ),
+            ],
+          ) : null,
         ),
       ),
     );
@@ -19026,12 +19292,15 @@ class _BillBoqVerificationState extends State<BillBoqVerification> {
       Get.put(AdvanceReqVoucherController_new());
   BillGenerationBoqController billGenerationBoqController =
       Get.put(BillGenerationBoqController());
+  late List<bool> _isChecked;
 
   var selectedValues;
   @override
   void initState() {
-    pendingListController.pendingmainlist.value.clear();
+    pendingListController.pendingmainlist.value=[];
+    pendingListController.addCheckListvalue.value=[];
     pendingListController.pendingmainlist.value = widget.onclickPendingListData;
+    _isChecked = List<bool>.filled(widget.onclickPendingListData.length, false);
     super.initState();
   }
 
@@ -19174,49 +19443,41 @@ class _BillBoqVerificationState extends State<BillBoqVerification> {
                                       children: <Widget>[
                                         Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: <Widget>[
-                                            Container(
-                                              margin:
-                                                  EdgeInsets.only(right: 15),
-                                              child: Text(
-                                                pendingListController
-                                                    .mainlist[index].workNo
-                                                    .toString(),
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 5),
-                                        Row(
+                                          MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
                                             Container(
                                               margin: EdgeInsets.only(
-                                                  top: 8, left: 10),
-                                              child: Text(""),
+                                                  left: 10, top: 10),
+                                              child: Row(
+                                                children: [
+                                                  ConstIcons.list_date,
+                                                  Text(
+                                                    pendingListController
+                                                        .mainlist
+                                                        .value[index]
+                                                        .workDate
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
+                                                        fontWeight:
+                                                        FontWeight.bold),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                            Expanded(
-                                                flex: 3,
-                                                child: Text(
-                                                  "Date",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                  ),
-                                                )),
-                                            Expanded(
-                                                flex: 8,
-                                                child: Text(
-                                                  pendingListController
-                                                      .mainlist[index].workDate
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                  ),
-                                                )),
+                                            Container(
+                                              margin:
+                                              EdgeInsets.only(right: 10),
+                                              child: Text(
+                                                pendingListController.mainlist
+                                                    .value[index].workNo
+                                                    .toString(),
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                    FontWeight.bold),
+                                              ),
+                                            ),
                                           ],
                                         ),
                                         SizedBox(height: 5),
@@ -19315,65 +19576,65 @@ class _BillBoqVerificationState extends State<BillBoqVerification> {
                                           ],
                                         ),
                                         SizedBox(height: 5),
-                                        Row(
-                                          children: <Widget>[
-                                            Container(
-                                              margin: EdgeInsets.only(
-                                                  top: 5, left: 10),
-                                              child: Text(""),
-                                            ),
-                                            Expanded(
-                                                flex: 3,
-                                                child: Text(
-                                                  "Bill Type",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                  ),
-                                                )),
-                                            Expanded(
-                                                flex: 8,
-                                                child: Text(
-                                                  pendingListController
-                                                      .mainlist[index].billType
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                  ),
-                                                )),
-                                          ],
-                                        ),
-                                        SizedBox(height: 5),
-                                        Row(
-                                          children: <Widget>[
-                                            Container(
-                                              margin: EdgeInsets.only(
-                                                  top: 5, left: 10),
-                                              child: Text(""),
-                                            ),
-                                            Expanded(
-                                                flex: 3,
-                                                child: Text(
-                                                  "Bill Status",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                  ),
-                                                )),
-                                            Expanded(
-                                                flex: 8,
-                                                child: Text(
-                                                  pendingListController
-                                                      .mainlist[index]
-                                                      .billStatus
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                  ),
-                                                )),
-                                          ],
-                                        ),
-                                        SizedBox(height: 5),
+                                        // Row(
+                                        //   children: <Widget>[
+                                        //     Container(
+                                        //       margin: EdgeInsets.only(
+                                        //           top: 5, left: 10),
+                                        //       child: Text(""),
+                                        //     ),
+                                        //     Expanded(
+                                        //         flex: 3,
+                                        //         child: Text(
+                                        //           "Bill Type",
+                                        //           style: TextStyle(
+                                        //             fontWeight: FontWeight.bold,
+                                        //             color: Colors.black,
+                                        //           ),
+                                        //         )),
+                                        //     Expanded(
+                                        //         flex: 8,
+                                        //         child: Text(
+                                        //           pendingListController
+                                        //               .mainlist[index].billType
+                                        //               .toString(),
+                                        //           style: TextStyle(
+                                        //             color: Colors.black,
+                                        //           ),
+                                        //         )),
+                                        //   ],
+                                        // ),
+                                        // SizedBox(height: 5),
+                                        // Row(
+                                        //   children: <Widget>[
+                                        //     Container(
+                                        //       margin: EdgeInsets.only(
+                                        //           top: 5, left: 10),
+                                        //       child: Text(""),
+                                        //     ),
+                                        //     Expanded(
+                                        //         flex: 3,
+                                        //         child: Text(
+                                        //           "Bill Status",
+                                        //           style: TextStyle(
+                                        //             fontWeight: FontWeight.bold,
+                                        //             color: Colors.black,
+                                        //           ),
+                                        //         )),
+                                        //     Expanded(
+                                        //         flex: 8,
+                                        //         child: Text(
+                                        //           pendingListController
+                                        //               .mainlist[index]
+                                        //               .billStatus
+                                        //               .toString(),
+                                        //           style: TextStyle(
+                                        //             color: Colors.black,
+                                        //           ),
+                                        //         )),
+                                        //   ],
+                                        // ),
+                                        // SizedBox(height: 5),
                                         Row(
                                           children: <Widget>[
                                             Container(
@@ -19393,10 +19654,7 @@ class _BillBoqVerificationState extends State<BillBoqVerification> {
                                             Expanded(
                                                 flex: 8,
                                                 child: Text(
-                                                  pendingListController
-                                                      .mainlist[index]
-                                                      .netPayAmount
-                                                      .toString(),
+                                                  "₹ ${pendingListController.mainlist[index].netPayAmount}",
                                                   style: TextStyle(
                                                     color: Colors.black,
                                                   ),
@@ -19422,7 +19680,7 @@ class _BillBoqVerificationState extends State<BillBoqVerification> {
                                               ),
                                             ),
                                             Expanded(
-                                                flex: 8,
+                                                flex: widget.checkheading != "BILL VERIFICATION - BOQ"?5:8,
                                                 child: Text(
                                                   widget.checkheading ==
                                                           "BILL VERIFICATION - BOQ"
@@ -19440,9 +19698,58 @@ class _BillBoqVerificationState extends State<BillBoqVerification> {
                                                     color: Colors.black,
                                                   ),
                                                 )),
+                                            if(widget.checkheading != "BILL VERIFICATION - BOQ" && AppClient.isAnusamm)
+                                            Expanded(
+                                              flex: 3,
+                                              child: Checkbox(
+                                                shape:
+                                                const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.all(
+                                                        Radius.circular(
+                                                            5.0))),
+                                                side: MaterialStateBorderSide
+                                                    .resolveWith(
+                                                      (states) => BorderSide(
+                                                    width: 1.0,
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
+                                                  ),
+                                                ),
+                                                checkColor: Colors.white,
+                                                activeColor: Theme.of(context)
+                                                    .primaryColor,
+                                                // Rounded Checkbox
+                                                value: _isChecked[index],
+                                                onChanged: (val) {
+                                                  setState(
+                                                        () {
+                                                      if (val == true) {
+                                                        _isChecked[index] =
+                                                        val!;
+                                                        pendingListController
+                                                            .addCheckListvalue
+                                                            .value
+                                                            .add(widget
+                                                            .onclickPendingListData[
+                                                        index]);
+                                                      } else {
+                                                        _isChecked[index] =
+                                                        val!;
+                                                        pendingListController
+                                                            .addCheckListvalue
+                                                            .value
+                                                            .remove(widget
+                                                            .onclickPendingListData[
+                                                        index]);
+                                                      }
+                                                    },
+                                                  );
+                                                },
+                                              ),
+                                            ),
                                           ],
                                         ),
-                                        SizedBox(height: 10),
                                       ],
                                     ),
                                   ),
@@ -19455,6 +19762,43 @@ class _BillBoqVerificationState extends State<BillBoqVerification> {
               ),
             ),
           ),
+          bottomNavigationBar: (widget.checkheading != "BILL VERIFICATION - BOQ" && AppClient.isAnusamm) ?
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              InkWell(
+                child: Container(
+                  margin: EdgeInsets.only(left: 20, right: 20),
+                  width: BaseUtitiles.getWidthtofPercentage(context, 25),
+                  height: BaseUtitiles.getheightofPercentage(context, 4),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: Theme.of(context).primaryColor),
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 3, right: 3),
+                    child: Text(
+                      RequestConstant.APPROVAL,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: RequestConstant.Lable_Font_SIZE,
+                          color: Colors.white),
+                    ),
+                  ),
+                ),
+                onTap: () async {
+                  if (pendingListController
+                      .addCheckListvalue.value.isNotEmpty) {
+                    if (await BaseUtitiles.checkNetworkAndShowLoader(context)) {
+                      await pendingListController.MDPartListApproveApi(context,"BOQ");
+                    }
+                  } else {
+                    BaseUtitiles.showToast("Please select item for approval");
+                  }
+                },
+              ),
+            ],
+          ) : null,
         ),
       ),
     );
@@ -20003,7 +20347,7 @@ class _ManPowerApprovalState extends State<ManPowerApproval> {
                           itemBuilder: (context, index) {
                             return InkWell(
                               onTap: () async {
-                                manPowerController.readListdata.value=[];
+                                manPowerController.readListdata.value = [];
                                 manPowerController.deleteSubcontDetTableDatas();
                                 await manPowerController.manPowerEditApi(
                                     pendingListController.mainlist[index].id,

@@ -1,7 +1,6 @@
 import 'package:prahkurticore/controller/logincontroller.dart';
 import 'package:prahkurticore/controller/reports_controller.dart';
 import 'package:prahkurticore/controller/transfer_acknowledgment_pending_controller.dart';
-
 import '../controller/projectcontroller.dart';
 import '../home/mrn_report/mrn_popup.dart';
 import '../home/pdf_generate/pdf_model/pdfmodel.dart';
@@ -11,9 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:prahkurticore/models/mrnreq_tracker_reportmodel.dart';
 import '../models/sitedropdownresponse_model.dart';
-
 import '../utilities/baseutitiles.dart';
-import '../utilities/requestconstant.dart';
 import 'fromproject_ccontroller.dart';
 import 'fromsite_controller.dart';
 

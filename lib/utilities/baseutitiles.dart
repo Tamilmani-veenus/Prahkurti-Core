@@ -6,9 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-
 import '../models/boqrevised_itemlist_model.dart';
-import '../models/labourDashboard_model.dart';
 import '../models/manpowerlevel3_model.dart';
 
 String? punchStatus;
@@ -1294,25 +1292,22 @@ class BaseUtitiles {
     }
   }
 
-  static materialNamePopupAlert(String value,list)  {
+  static materialNamePopupAlert(String value, List list) {
     dummyListData.value.clear();
-    if (value.isNotEmpty) {
-      list.forEach((item) {
-        if (item.material.toString().toLowerCase().contains(value) ||
-            item.material.toString().toUpperCase().contains(value) ||
-            item.balqty.toString().toLowerCase().contains(value) ||
-            item.balqty.toString().toUpperCase().contains(value) ||
-            item.scale.toString().toLowerCase().contains(value) ||
-            item.scale.toString().toUpperCase().contains(value)
-        )
-        {
+
+    final search = value.trim().toLowerCase();
+
+    if (search.isNotEmpty) {
+      for (var item in list) {
+        if ((item.material ?? "").toLowerCase().contains(search) ||
+            (item.scale ?? "").toLowerCase().contains(search) ||
+            (item.balqty?.toString() ?? "").contains(search)) {
           dummyListData.value.add(item);
         }
-      });
-      return  dummyListData.value;
-    }
-    else {
-      return  list;
+      }
+      return dummyListData.value;
+    } else {
+      return list;
     }
   }
 
@@ -1755,7 +1750,11 @@ class BaseUtitiles {
     }
   }
 
-  static formatDate(DateTime date) => DateFormat.yMd().format(date);
+  static String formatDate(DateTime date) {
+    return '${date.day.toString().padLeft(2, '0')}-'
+        '${date.month.toString().padLeft(2, '0')}-'
+        '${date.year}';
+  }
 
   static String dateformat(String date){
     String data="";
@@ -1810,4 +1809,81 @@ class BaseUtitiles {
 
 }
 
+class ClickUtils {
+  static final Set<String> _runningActions = <String>{};
 
+  static Future<void> run(
+      Future<void> Function() action,
+      ) async {
+    final stack = StackTrace.current.toString();
+
+    // Get the caller location
+    final lines = stack.split('\n');
+
+    String key = 'global';
+
+    if (lines.length > 1) {
+      key = lines[1].trim();
+    }
+
+    if (_runningActions.contains(key)) {
+      return;
+    }
+
+    _runningActions.add(key);
+
+    try {
+      await action();
+    } catch (e, stackTrace) {
+      debugPrint("ClickUtils Error: $e");
+      debugPrint("$stackTrace");
+    } finally {
+      _runningActions.remove(key);
+    }
+  }
+}
+
+
+class DashboardErrorWidget extends StatelessWidget {
+  const DashboardErrorWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(height: 100),
+
+        Icon(
+          Icons.warning,
+          color: Colors.red,
+          size: 35,
+        ),
+
+        SizedBox(height: 15),
+
+        Text(
+          "Failed to load dashboard data",
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 17,
+          ),
+        ),
+
+        SizedBox(height: 8),
+
+        Text(
+          "Please check your connection and try refreshing the dashboard.",
+          maxLines: 2,
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: 12,
+          ),
+        ),
+      ],
+    );
+  }
+}

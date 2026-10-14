@@ -10,7 +10,6 @@ import '../../constants/ui_constant/icons_const.dart';
 import '../../controller/logincontroller.dart';
 import '../../controller/punch_in_controller.dart';
 import '../../controller/site_location_controller.dart';
-import '../../splash/splash.dart';
 import '../../utilities/apiconstant.dart';
 import '../../utilities/baseutitiles.dart';
 import '../punch_in_out/punch_in.dart';
@@ -40,14 +39,14 @@ class _SiteLocationViewState extends State<SiteLocationView> {
     super.initState();
 
     siteLocationController.projectNameSearch.text = "";
-    if (AppClient.isIOSProjects) {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high,
-        );
-        setState(() {});
-      });
-    }
+    // if (AppClient.isIOSProjects) {
+    //   WidgetsBinding.instance.addPostFrameCallback((_) async {
+    //     position = await Geolocator.getCurrentPosition(
+    //       desiredAccuracy: LocationAccuracy.high,
+    //     );
+    //     setState(() {});
+    //   });
+    // }
   }
 
   @override
@@ -182,23 +181,24 @@ class _SiteLocationViewState extends State<SiteLocationView> {
                                         siteLocationController
                                             .projectNameRxList[i].projectId
                                             .toString();
-                                    if (AppClient.isIOSProjects) {
-                                      if (position != null) {
-                                        Get.to(() => DrawMapView(
-                                              latitude:
-                                                  position!.latitude.toString(),
-                                              longitude: position!.longitude
-                                                  .toString(),
-                                              ProjectId: siteLocationController
-                                                  .projectId,
-                                            ));
-                                      }
-                                    }else{
+                                    // if (AppClient.isIOSProjects) {
+                                    //   if (position != null) {
+                                    //     Get.to(() => DrawMapView(
+                                    //           latitude:
+                                    //               position!.latitude.toString(),
+                                    //           longitude: position!.longitude
+                                    //               .toString(),
+                                    //           ProjectId: siteLocationController
+                                    //               .projectId,
+                                    //         ));
+                                    //   }
+                                    // }
+                                    // else{
                                       Get.to(() =>
                                          RadiusView(
                                               ProjectId: siteLocationController
                                                   .projectId));
-                                    }
+                                    // }
                                   } else {
                                     await punchInController
                                         .getProjectPunchInSts();
@@ -288,12 +288,9 @@ class _SiteLocationViewState extends State<SiteLocationView> {
                                                   SizedBox(
                                                     width: 250.r,
                                                     child: Text(
-                                                      siteLocationController
-                                                          .projectNameRxList![i]
-                                                          .projectName
-                                                          .toString(),
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
+                                                      siteLocationController.projectNameRxList![i].projectName.toString(),
+                                                      // overflow:
+                                                      //     TextOverflow.ellipsis,
                                                       style: TextStyle(
                                                         fontSize: ScreenUtil()
                                                             .setSp(14),

@@ -84,6 +84,7 @@ class TransferAcknowledgmentPendingController extends GetxController{
 
 
   Future tranAckAlldatasApi(int transferId, BuildContext context) async {
+    await ClickUtils.run(() async {
     var value = await PendingListProvider.TransferAcknowPendingAPI(transferId);
 
     if (value != null ) {
@@ -95,7 +96,7 @@ class TransferAcknowledgmentPendingController extends GetxController{
       await SaveDetTable();
       await getDetTablesDatas();
 
-      Navigator.pushReplacement(
+      await Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => TransferAcknow_EntryScreen(),
@@ -111,6 +112,7 @@ class TransferAcknowledgmentPendingController extends GetxController{
     } else {
       BaseUtitiles.showToast('Something went wrong..');
     }
+    });
   }
 
   deleteDetTableDatas() async {

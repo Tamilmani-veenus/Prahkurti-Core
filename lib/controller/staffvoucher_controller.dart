@@ -344,27 +344,31 @@ class StaffVoucher_Controller extends GetxController {
 
   Future StaffvoucherEntryList_EditApi(int VocId,String MenuName, BuildContext context) async {
     Sitevoucher_EditListApiValue.value = [];
-    final value = await StaffVoucher_provider.SitevoucherSite_entryList_editAPI(VocId);
-    if (value != null) {
-      if (value.success == true) {
+    await ClickUtils.run(() async {
+      final value = await StaffVoucher_provider
+          .SitevoucherSite_entryList_editAPI(VocId);
+      if (value != null) {
+        if (value.success == true) {
           Sitevoucher_EditListApiValue.value = [value.result];
           if (Sitevoucher_EditListApiValue.value.isNotEmpty) {
             SaveButton.value = RequestConstant.RESUBMIT;
-          await Sitevoucher_entrylist_editSaveDetTable();
-          await getstaffvouchersiteTablesDatas();
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => Staff_Voucher_EntryScreen(heading: MenuName,)),
-          );
+            await Sitevoucher_entrylist_editSaveDetTable();
+            await getstaffvouchersiteTablesDatas();
+            await Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) =>
+                  Staff_Voucher_EntryScreen(heading: MenuName,)),
+            );
+          } else {
+            BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+          }
         } else {
-          BaseUtitiles.showToast(RequestConstant.NORECORD_FOUND);
+          BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
         }
       } else {
-        BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
+        BaseUtitiles.showToast("Something Went Wrong...");
       }
-    } else {
-      BaseUtitiles.showToast("Something Went Wrong...");
-    }
+    });
   }
 
   Future DeleteAlert(BuildContext context, int index) async {

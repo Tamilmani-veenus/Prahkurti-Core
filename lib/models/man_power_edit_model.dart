@@ -33,44 +33,52 @@ class ManPowerEditModel {
 }
 
 class ManPowerEditResult {
-  int id;
-  String manPowerNo;
-  String entryDate;
-  int projectId;
-  int siteId;
-  int headItemId;
-  String remarks;
-  int createdBy;
-  String projectName;
-  String siteName;
-  String createdByName;
-  String approvedByName;
-  String materialHeadName;
-  String status;
-  List<ManPowerEditDet> manPowerDets;
+  int? id;
+  String? manPowerNo;
+  String? entryDate;
+  String? reqDate;
+  String? dueDate;
+  int? projectId;
+  int? siteId;
+  int? headItemId;
+  String? remarks;
+  int? createdBy;
+  String? projectName;
+  String? siteName;
+  String? createdByName;
+  String? approvedByName;
+  String? materialHeadName;
+  String? status;
+  String? level3ItemId;
+  List<ManPowerEditDet>? manPowerDets;
 
   ManPowerEditResult({
-    required this.id,
-    required this.manPowerNo,
-    required this.entryDate,
-    required this.projectId,
-    required this.siteId,
-    required this.headItemId,
-    required this.remarks,
-    required this.createdBy,
-    required this.projectName,
-    required this.siteName,
-    required this.createdByName,
-    required this.approvedByName,
-    required this.materialHeadName,
-    required this.status,
-    required this.manPowerDets,
+    this.id,
+    this.manPowerNo,
+    this.entryDate,
+    this.dueDate,
+    this.reqDate,
+    this.projectId,
+    this.siteId,
+    this.headItemId,
+    this.remarks,
+    this.createdBy,
+    this.projectName,
+    this.siteName,
+    this.createdByName,
+    this.approvedByName,
+    this.materialHeadName,
+    this.status,
+    this.level3ItemId,
+    this.manPowerDets,
   });
 
   factory ManPowerEditResult.fromJson(Map<String, dynamic> json) => ManPowerEditResult(
     id: json["id"],
     manPowerNo: json["manPowerNo"],
     entryDate: json["entryDate"],
+    dueDate: json["dueDate"],
+    reqDate: json["reqDate"],
     projectId: json["projectId"],
     siteId: json["siteId"],
     headItemId: json["headItemId"],
@@ -82,13 +90,16 @@ class ManPowerEditResult {
     approvedByName: json["approvedByName"],
     materialHeadName: json["materialHeadName"],
     status: json["status"],
-    manPowerDets: List<ManPowerEditDet>.from(json["manPowerDets"].map((x) => ManPowerEditDet.fromJson(x))),
+    level3ItemId: json["level3ItemId"],
+    manPowerDets: List<ManPowerEditDet>.from(json["manPowerReqDets"].map((x) => ManPowerEditDet.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "manPowerNo": manPowerNo,
     "entryDate": entryDate,
+    "dueDate": dueDate,
+    "reqDate": reqDate,
     "projectId": projectId,
     "siteId": siteId,
     "headItemId": headItemId,
@@ -100,27 +111,28 @@ class ManPowerEditResult {
     "approvedByName": approvedByName,
     "materialHeadName": materialHeadName,
     "status": status,
-    "manPowerDets": List<dynamic>.from(manPowerDets.map((x) => x.toJson())),
+    "level3ItemId": level3ItemId,
+    "manPowerReqDets": List<dynamic>.from(manPowerDets!.map((x) => x.toJson())),
   };
 }
 
 class ManPowerEditDet {
-  int id;
-  int manPowerAllocationMasId;
-  int categoryId;
-  String level3ItemId;
-  int nos;
-  String remarks;
-  String categoryName;
+  int? id;
+  int? manPowerAllocationMasId;
+  int? categoryId;
+  String? level3ItemId;
+  int? nos;
+  String? remarks;
+  String? categoryName;
 
   ManPowerEditDet({
-    required this.id,
-    required this.manPowerAllocationMasId,
-    required this.categoryId,
-    required this.level3ItemId,
-    required this.nos,
-    required this.remarks,
-    required this.categoryName,
+   this.id,
+   this.manPowerAllocationMasId,
+   this.categoryId,
+   this.level3ItemId,
+   this.nos,
+   this.remarks,
+   this.categoryName,
   });
 
   factory ManPowerEditDet.fromJson(Map<String, dynamic> json) => ManPowerEditDet(

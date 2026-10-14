@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:prahkurticore/home/menu/accounts/site_voucher/site_voucher_new/site_voucher_sitewise.dart';
 import 'package:prahkurticore/home/punch_in_out/Image_galleryScreen.dart';
-import 'package:permission_handler/permission_handler.dart';
 import '../../../../../app_theme/app_colors.dart';
 import '../../../../../commonpopup/accountnameadd_alert.dart';
 import '../../../../../commonpopup/vouchertype_alert.dart';
@@ -1023,7 +1021,7 @@ class _SiteVoucher_EntryScreenState extends State<SiteVoucher_EntryScreen> {
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 _formKey.currentState!.save();
-                                if (!AppClient.isPrahkurti) {
+                                if (!AppClient.isPrahkurti && !AppClient.isVrindhavana) {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(

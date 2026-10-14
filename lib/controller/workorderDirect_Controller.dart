@@ -7,6 +7,7 @@ import 'package:prahkurticore/controller/pendinglistcontroller.dart';
 import 'package:prahkurticore/controller/projectcontroller.dart';
 import 'package:prahkurticore/controller/sitecontroller.dart';
 import 'package:prahkurticore/controller/subcontcontroller.dart';
+import 'package:prahkurticore/controller/workOrderBoq_Controller.dart';
 import '../db_model/wordOrder_itemlist_model.dart';
 import '../db_model/workOrderGST_calculation_model.dart';
 import '../db_services/workOrdDirect_itemlist_service.dart';
@@ -24,6 +25,7 @@ class WorkOrderDirectController extends GetxController{
   SubcontractorController subcontractorController = Get.put(SubcontractorController());
   PendingListController pendingListController = Get.put(PendingListController());
   LoginController loginController = Get.put(LoginController());
+  WorkOrderBoqController workOrderBoqController = Get.put(WorkOrderBoqController());
 
 
   final EntrylistFrDate = TextEditingController();
@@ -272,6 +274,10 @@ class WorkOrderDirectController extends GetxController{
       BuildContext context, int id, int workOrderId, status) async {
     getDetList.value.clear();
     await Future.delayed(const Duration(seconds: 0));
+    await Future.delayed(const Duration(seconds: 0));
+    String termsConditionIds = workOrderBoqController.selectedTerms
+        .map((e) => e.id.toString())
+        .join(",");
     String body = workOrdDirectSaveModelToJson(WorkOrdDirectSaveModel(
       id:id != 0 ? id : 0,
       workOrderNo: autoYearWiseNoController.text,
@@ -285,7 +291,8 @@ class WorkOrderDirectController extends GetxController{
       roundOff: double.tryParse(Roundoff.text) ?? 0.0,
       workOrderAmount: double.tryParse(workOrdamount.text)?? 0.0,
       netAmount: double.tryParse(netpayamt.text)?? 0.0,
-      termsCondition: "",
+      termsCondition:termsConditionIds,
+
       remarks: RemarksController.text,
       createdBy: saveButton.value == RequestConstant.SUBMIT?int.parse(loginController.EmpId()):createdById.value,
       // createdDt: BaseUtitiles().convertToUtcIso(workOrdentryDateController.text),
@@ -374,6 +381,7 @@ class WorkOrderDirectController extends GetxController{
   }
 
   Future workOrderEntryList_EditApi(int workId, status,String MenuName, BuildContext context,{String? type}) async {
+    await ClickUtils.run(() async {
     var response = await WorkOrderDirectProvider.workOrder_entryList_editAPI(workId,status);
     if (response != null) {
       if (response.success == true) {
@@ -382,7 +390,7 @@ class WorkOrderDirectController extends GetxController{
           saveButton.value = type == "Approve"? RequestConstant.APPROVAL: type == "Verify" ? RequestConstant.VERIFY : RequestConstant.RESUBMIT;
           workOrder_EditTable_SaveTable("");
           getItemlistTablesDatas();
-          return Navigator.pushReplacement(
+          await Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => WorkOrdDirectEntryScreen(heading: MenuName,)));
@@ -395,6 +403,7 @@ class WorkOrderDirectController extends GetxController{
     } else {
       BaseUtitiles.showToast("Something Went Wrong...");
     }
+    });
   }
 
   workOrder_EditTable_SaveTable(name) async {
@@ -430,7 +439,6 @@ class WorkOrderDirectController extends GetxController{
 
   Future<bool> deductionPaymentCalculation() async {
     await getItemlistTablesDatas();
-
 
     if (ItemGetTableListdata.value.isEmpty) return false;
 
@@ -559,6 +567,8 @@ class WorkOrderDirectController extends GetxController{
     double round = double.tryParse(Roundoff.text) ?? 0;
 
     double netAmount = bill + round + tempTotal;
+
+    print("ZZZZZZZZZZZZ....${netAmount}");
 
     // NEGATIVE VALIDATION
     if (netAmount < 0) {

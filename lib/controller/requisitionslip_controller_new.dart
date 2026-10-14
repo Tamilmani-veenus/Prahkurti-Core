@@ -1,7 +1,3 @@
-import 'dart:convert';
-import 'dart:ffi';
-
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:prahkurticore/controller/pendinglistcontroller.dart';
 import 'package:prahkurticore/controller/reports_controller.dart';
@@ -43,7 +39,7 @@ class  RequisitionSlipControllerNew extends GetxController{
   var leaveType = "".obs;
   var yearofLeavedays = ''.obs;
   var yearofPerHrs = ''.obs;
-
+  RxBool isHalfDay = false.obs;
 
   final ondutyDate=TextEditingController();
   final perDate=TextEditingController();
@@ -55,6 +51,7 @@ class  RequisitionSlipControllerNew extends GetxController{
 
   ///Verify and Approval-----
   final remarksValue=TextEditingController();
+  final leaveTypeText=TextEditingController();
 
   ReportsController reportsController = Get.put(ReportsController());
   PendingListController pendingListController = Get.put(PendingListController());
@@ -65,12 +62,15 @@ class  RequisitionSlipControllerNew extends GetxController{
   int reqId=0;
   RxInt createdById = 0.obs;
   RxString saveButton=RequestConstant.SUBMIT.obs;
+  RxString leaveTypeValue="-".obs;
+  RxString totalLeaveValue="".obs;
   RxList ReqSlipEtyList = [].obs;
   RxList mainentrylist = [].obs;
   RxList staffLeaveInfolist = [].obs;
   RxList ReqSlipEditList = [].obs;
   RxList staffReqTypeList = [].obs;
   RxList verifyList = [].obs;
+  RxList leaveTypeList = ["Casual Leave","Sick Leave","Earned Leave"].obs;
   LoginController loginController=Get.put(LoginController());
 
 
@@ -165,15 +165,17 @@ class  RequisitionSlipControllerNew extends GetxController{
       permissionToDate: Date.text,
       permissionFromTime: Fromtime.text,
       permissionToTime: Totime.text,
-      permissionTimeHrs: int.tryParse(RequiredHrs.text),
-      permissionTimeMins: int.tryParse(RequiredMins.text),
+      permissionTimeHrs: int.tryParse(RequiredHrs.text) ?? 0,
+      permissionTimeMins: int.tryParse(RequiredMins.text) ?? 0,
       totalPermissionHours: double.tryParse(TotalHrs.text),
       createdBy: saveButton.value==RequestConstant.SUBMIT?int.tryParse(loginController.EmpId()):createdById.value,
       // createdDt: BaseUtitiles().convertToUtcIso(Reqdate.text),
       verifyStatus: "N",
       approveStatus: "N",
       verifyRemarks: "-",
-      approveRemarks: "-"
+      approveRemarks: "-",
+      leaveType: leaveTypeValue.value,
+      isHalfDay: isHalfDay.value,
     ));
     final list = await RequisitionslipProvider.SaveReqslipScreenEntryAPI(body, reqId);
     if (list != null ) {
@@ -219,6 +221,8 @@ class  RequisitionSlipControllerNew extends GetxController{
       approveRemarks: type=="Approve"||type=="Approve-Reject"?remarksValue.text:"",
       verifyStatus: type=="Verify-Reject"?"R":"Y",
       approveStatus: type=="Approve-Reject"?"R":type=="Approve"?"Y":"N",
+      leaveType: data.LeaveType,
+      isHalfDay: data.isHalfDay
     ));
     final list = await RequisitionslipProvider.SaveReqslipScreenEntryAPI(body, data.id);
     if (list != null ) {
@@ -240,13 +244,14 @@ class  RequisitionSlipControllerNew extends GetxController{
 
   Future Requisitionslip_EditApi(int reqId,String MenuName, BuildContext context, status) async {
     ReqSlipEditList.value=[];
+    await ClickUtils.run(() async {
     var response = await RequisitionslipProvider.Requisitionslip_editAPI(reqId,status);
     if (response != null) {
       if (response.success == true) {
         ReqSlipEditList.value = [response.result];
         if (ReqSlipEditList.isNotEmpty) {
           saveButton.value=RequestConstant.RESUBMIT;
-          Navigator.pushReplacement(
+          await Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => RequisitionSlip_Entry(heading: MenuName,))
           );
@@ -259,6 +264,7 @@ class  RequisitionSlipControllerNew extends GetxController{
     } else {
       BaseUtitiles.showToast("Something went wrong..");
     }
+    });
   }
 
 
@@ -289,6 +295,7 @@ class  RequisitionSlipControllerNew extends GetxController{
     int totalDays = toDate.difference(fromDate).inDays + 1;
     totalDays = totalDays < 1 ? 1 : totalDays;
     Totaldays.text = totalDays.toString();
+    totalLeaveValue.value = totalDays.toString();
   }
 
 

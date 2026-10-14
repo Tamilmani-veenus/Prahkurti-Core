@@ -5,20 +5,16 @@ import 'package:prahkurticore/controller/projectcontroller.dart';
 import 'package:prahkurticore/controller/sitecontroller.dart';
 import '../db_model/materiallist_model.dart';
 import '../db_services/materiallist_service.dart';
-import '../home/menu/materials/mrn_request(indent)/mrnrequest_entry.dart';
-import '../home/menu/materials/mrn_request(indent)/mrnrequest_list.dart';
 import '../home/menu/materials/mrn_request(preIndent)/mrnreq_preindent_entry.dart';
-import '../home/menu/materials/mrn_request(preIndent)/mrnreq_preindent_list.dart';
 import '../home/menu/materials/mrn_request(preIndent)/mrnreq_preindent_materialsadd.dart';
-import '../home/pending_list/pending_list.dart';
 import '../models/materialintentsave_model.dart';
-import '../models/materialreqpreindentsave_model.dart';
 import '../models/mrnrq_addmat_resmodel.dart';
 import '../provider/common_provider.dart';
 import '../provider/mrnreq_preindent_provider.dart';
 import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
 import 'logincontroller.dart';
+import 'mrn_request_indent_controller.dart';
 
 class MRNRequest_PreIndent_Controller extends GetxController{
 
@@ -77,6 +73,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
   ProjectController projectController=Get.put(ProjectController());
   SiteController siteController=Get.put(SiteController());
   PendingListController pendingListController=Get.put(PendingListController());
+  MRN_Request_Controller mrn_request_controller = Get.put(MRN_Request_Controller());
 
 
   //------MRNReq PreIndent List-----------------
@@ -106,6 +103,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
 
   Future getPendingList_Alldatas(int reqId,String MenuName, context, Url) async {
     pendingAllDatasList.value = [];
+    await ClickUtils.run(() async {
     final value =
      await MRNRequest_PreIndent_Provider.Material_PreIntentList_editAPI(reqId);
     if (value != null) {
@@ -123,7 +121,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
             saveButton.value = RequestConstant.APPROVAL;
           }
           FocusScope.of(context).unfocus();
-          Navigator.push(
+          await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => MRNRequest_PreIndent_EntryScreen(heading: MenuName,)));
@@ -136,6 +134,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
     } else {
       BaseUtitiles.showToast('Something went wrong..');
     }
+    });
   }
 
 
@@ -143,30 +142,32 @@ class MRNRequest_PreIndent_Controller extends GetxController{
 
   Future getMaterialList(
       BuildContext context, String requestType, projectId, siteId) async {
-    getmaterialvalue.value.clear();
-    final value = await CommonProvider.getmaterial(
-        requestType == "CP", projectId, siteId);
-    if (value != null) {
-      if (value.success == true) {
-        if (value.result!.isNotEmpty) {
-          getmaterialvalue.value = value.result!;
-          return Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => MRNRequest_PreIndent_MAterialsAdd(
-                    list: getmaterialvalue.value,
-                  )));
+    getmaterialvalue.value=[];
+    await ClickUtils.run(() async {
+      final value = await CommonProvider.getmaterial(
+          requestType == "CP", projectId, siteId);
+      if (value != null) {
+        if (value.success == true) {
+          if (value.result!.isNotEmpty) {
+            getmaterialvalue.value = value.result!;
+            await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        MRNRequest_PreIndent_MAterialsAdd(
+                          list: getmaterialvalue.value,
+                        )));
+          } else {
+            BaseUtitiles.showToast('No Data Found');
+          }
         } else {
-          BaseUtitiles.showToast('No Data Found');
+          BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
         }
       } else {
-        BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
+        BaseUtitiles.showToast('Something went wrong..');
       }
-    } else {
-      BaseUtitiles.showToast('Something went wrong..');
-    }
+    });
   }
-
 
   setCheck(int id,bool value){
     addMaterialControl=1;
@@ -218,7 +219,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
         }
         else if(ReqType.value == "PO")
         {
-          if(element.balqty<=0.0){
+          if(mrn_request_controller.activeType.value && element.balqty<=0.0){
             itemcount = itemcount+1;
           }
           else {
@@ -247,7 +248,6 @@ class MRNRequest_PreIndent_Controller extends GetxController{
             }
           }
         }
-
         else {
           materialTableModel =new Materiallist();
           materialTableModel.materialid = element.materialId!;
@@ -559,6 +559,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
 
   Future MaterialPreIntentList_EditApi(
       int reqId, int pId, int sId, String MenuName,BuildContext context) async {
+    await ClickUtils.run(() async {
     final value =
     await MRNRequest_PreIndent_Provider.Material_PreIntentList_editAPI(reqId);
     if (value != null) {
@@ -569,7 +570,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
           Material_Intentlist_editSaveDetTable();
           getMaterialTablesDatas();
           saveButton.value = RequestConstant.RESUBMIT;
-          return Navigator.pushReplacement(
+          await Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => MRNRequest_PreIndent_EntryScreen(heading: MenuName,)));
@@ -582,6 +583,7 @@ class MRNRequest_PreIndent_Controller extends GetxController{
     } else {
       BaseUtitiles.showToast('Something went wrong..');
     }
+    });
   }
 
 

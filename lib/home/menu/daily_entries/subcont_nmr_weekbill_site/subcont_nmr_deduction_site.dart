@@ -669,15 +669,18 @@ class _Subcont_NMR_DeductionState_Site
                       padding:
                           const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                       child: TextFormField(
-                        keyboardType: Platform.isAndroid ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-
-                        inputFormatters: [
-                          TextInputFormatter.withFunction((oldValue, newValue) {
-                            return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
-                                ? newValue
-                                : oldValue;
-                          }),
-                        ],
+                        keyboardType: Platform.isAndroid
+                            ? const TextInputType.numberWithOptions(
+                          signed: true,
+                          decimal: true,
+                        ) : TextInputType.text,
+                        // inputFormatters: [
+                        //   TextInputFormatter.withFunction((oldValue, newValue) {
+                        //     return RegExp(r'^\d*\.?\d{0,2}$').hasMatch(newValue.text)
+                        //         ? newValue
+                        //         : oldValue;
+                        //   }),
+                        // ],
                         controller: nmrWklyController.Roundoff,
                         cursorColor: Colors.black,
                         style: TextStyle(color: Colors.black),

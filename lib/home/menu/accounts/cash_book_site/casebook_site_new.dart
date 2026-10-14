@@ -10,6 +10,7 @@ import '../../../../controller/bottomsheet_Controllers.dart';
 import '../../../../controller/cashbook_site_controller.dart';
 import '../../../../controller/expensencecontroller.dart';
 import '../../../../controller/projectcontroller.dart';
+import '../../../../controller/reports_controller.dart';
 import '../../../../utilities/baseutitiles.dart';
 import '../../../../utilities/requestconstant.dart';
 
@@ -33,6 +34,9 @@ class _CashBook_SiteState extends State<CashBook_Site> {
 
   BottomsheetControllers bottomsheetControllers = Get.put(BottomsheetControllers());
 
+  ReportsController reportsController = Get.put(ReportsController());
+
+
   @override
   void initState() {
     // TODO: implement initState
@@ -40,8 +44,10 @@ class _CashBook_SiteState extends State<CashBook_Site> {
     DateTime lastDayOfMonth = new DateTime(currentDate.year, currentDate.month - 1, 0);
     cashBookSiteController.cashbooksite_frdateController.text = lastDayOfMonth.toString().substring(0, 10);
     cashBookSiteController.cashbooksite_todateController.text = currentDate.toString().substring(0, 10);
-    projectController.projectname.text="--SELECT--";
-    projectController.selectedProjectId.value=0;
+    reportsController.companyName.text = "--ALL--";
+    reportsController.selectedCompanyId.value = 0;
+    reportsController.projectname.text = "--ALL--";
+    reportsController.selectedProjectId.value = 0;
     cashBookSiteController.cashsiteDatas.clear();
     cashBookSiteController.totalDebit.text = "0.0";
     cashBookSiteController.totalCredit.text ="0.0";
@@ -246,13 +252,13 @@ class _CashBook_SiteState extends State<CashBook_Site> {
                           const EdgeInsets.only(top: 3, left: 10, bottom: 5),
                           child: TextFormField(
                             readOnly: true,
-                            controller: projectController.projectname,
+                            controller: reportsController.companyName,
                             cursorColor: Colors.black,
-                            style: TextStyle(color: Colors.black),
-                            decoration: InputDecoration(
+                            style: const TextStyle(color: Colors.black),
+                            decoration: const InputDecoration(
                               contentPadding: EdgeInsets.zero,
                               border: InputBorder.none,
-                              labelText: "ProjectName",
+                              labelText: "Company Name",
                               labelStyle: TextStyle(
                                   color: Colors.grey,
                                   fontSize: RequestConstant.Lable_Font_SIZE),
@@ -261,22 +267,54 @@ class _CashBook_SiteState extends State<CashBook_Site> {
                               prefixIcon: Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 8, horizontal: 8),
-                                  child: ConstIcons.staffName),
+                                  child: ConstIcons.billType
+
+                              ),
                             ),
                             onTap: () async {
-
-                                await projectController.getProjectList();
-                                if (mounted) {
-                                  bottomsheetControllers.ProjectName(context, projectController.getdropDownvalue.value);
-                                }
-                                FocusScope.of(context).unfocus();
-
+                              await reportsController.getCompanyReportList(type: "MRNReqTracker");
+                              bottomsheetControllers.CompanyName(context, reportsController.getCompanyDropDownvalue.value,type: "mrnReqTracker");
                             },
-                            validator: (value) {
-                              if (value!.isEmpty || value == "--SELECT--") {
-                                return '\u26A0 Required';
-                              }
-                              return null;
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    Container(
+                      margin: EdgeInsets.only(top: 5, left: 10, right: 10),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(color: Colors.white70, width: 1),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        elevation: 3,
+                        child: Padding(
+                          padding:
+                          const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                          child: TextFormField(
+                            readOnly: true,
+                            controller: reportsController.projectname,
+                            cursorColor: Colors.black,
+                            style: const TextStyle(color: Colors.black),
+                            decoration: const InputDecoration(
+                              contentPadding: EdgeInsets.zero,
+                              border: InputBorder.none,
+                              labelText: "Project Name",
+                              labelStyle: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: RequestConstant.Lable_Font_SIZE),
+                              prefixIconConstraints:
+                              BoxConstraints(minWidth: 0, minHeight: 0),
+                              prefixIcon: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 8),
+                                  child: ConstIcons.projectName
+
+                              ),
+                            ),
+                            onTap: () async {
+                              await reportsController.getReportProjectList(type: "mrnReqTracker");
+                              bottomsheetControllers.projectNameReport(context, reportsController.getProjectdropDownvalue.value);
                             },
                           ),
                         ),
@@ -526,7 +564,7 @@ class _CashBook_SiteState extends State<CashBook_Site> {
                                     Expanded(
                                       flex: 3,
                                       child: Text(
-                                        cashBookSiteController.cashsiteDatas.value[index].vocdate.toString(),
+                                        cashBookSiteController.cashsiteDatas.value[index].vocDate.toString(),
                                         textAlign: TextAlign.left,
                                       ),
                                     ),

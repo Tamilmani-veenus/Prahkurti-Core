@@ -1,7 +1,10 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import '../../../../app_theme/app_colors.dart';
+import '../../../../commonpopup/worktype_alert.dart';
 import '../../../../constants/ui_constant/icons_const.dart';
 import '../../../../controller/auto_yrwise_no_controller.dart';
 import '../../../../controller/bottomsheet_Controllers.dart';
@@ -30,66 +33,76 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
   ReportsController reportsController = Get.put(ReportsController());
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
- @override
+  @override
   void initState() {
-   super.initState();
-   Future.delayed(Duration.zero, () async {
-     if(requisitionSlipController.saveButton.value==RequestConstant.SUBMIT){
-       requisitionSlipController.reqId=0;
-       requisitionSlipController.Reqdate.text = BaseUtitiles.initiateCurrentDateFormat();
-       if(loginController.user.value.userType == "A"){
-         staffController.selectedstaffId.value = 0;
-         staffController.Staffname.text = "--SELECT--";
-       }
-       else{
-         staffController.selectedstaffId.value = loginController.user.value.empId!;
-         staffController.Staffname.text = loginController.user.value.empName!;
-       }
-       reportsController.projectname.text  = "--SELECT--";
-       reportsController.selectedProjectId.value = 0;
-       requisitionSlipController.createdById.value = 0;
-       requisitionSlipController.LeaveReason.text = "";
-       requisitionSlipController.Reason.text = "";
-       requisitionSlipController.Fromdate.text = BaseUtitiles.initiateCurrentDateFormat();
-       requisitionSlipController.Todate.text = BaseUtitiles.initiateCurrentDateFormat();
-       requisitionSlipController.Totaldays.text = "1";
-       requisitionSlipController.Date.text = BaseUtitiles.initiateCurrentDateFormat();
-       requisitionSlipController.Fromtime.text = "00:00";
-       requisitionSlipController.Totime.text = "00:00";
-       requisitionSlipController.RequiredHrs.text = "0";
-       requisitionSlipController.RequiredMins.text = "0";
-       requisitionSlipController.TotalHrs.text = "0.0";
-       requisitionSlipController.yearofLeavedays.value="0";
-       await autoYearWiseNoController.AutoYearWiseNo("REQ SLIP");
-       requisitionSlipController.ReqAutoyearwise.text = autoYearWiseNoController.RequisitionSlip_autoYrsWise.value;
-       await requisitionSlipController.getStaffReqTypeList();
-       requisitionSlipController.type.value = "L";
-     }
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await requisitionSlipController.getStaffReqTypeList();
+      if(requisitionSlipController.saveButton.value==RequestConstant.SUBMIT){
+        requisitionSlipController.reqId=0;
+        requisitionSlipController.Reqdate.text = BaseUtitiles.initiateCurrentDateFormat();
+        if(loginController.user.value.userType == "A"){
+          staffController.selectedstaffId.value = 0;
+          staffController.Staffname.text = "--SELECT--";
+        }
+        else{
+          staffController.selectedstaffId.value = loginController.user.value.empId!;
+          staffController.Staffname.text = loginController.user.value.empName!;
+        }
+        reportsController.projectname.text  = "--SELECT--";
+        reportsController.selectedProjectId.value = 0;
+        requisitionSlipController.createdById.value = 0;
+        requisitionSlipController.LeaveReason.text = "";
+        requisitionSlipController.Reason.text = "";
+        requisitionSlipController.Fromdate.text = BaseUtitiles.initiateCurrentDateFormat();
+        requisitionSlipController.Todate.text = BaseUtitiles.initiateCurrentDateFormat();
+        requisitionSlipController.Totaldays.text = "1";
+        requisitionSlipController.totalLeaveValue.value = "1";
+        requisitionSlipController.Date.text = BaseUtitiles.initiateCurrentDateFormat();
+        requisitionSlipController.Fromtime.text = "00:00";
+        requisitionSlipController.Totime.text = "00:00";
+        requisitionSlipController.RequiredHrs.text = "0";
+        requisitionSlipController.RequiredMins.text = "0";
+        requisitionSlipController.TotalHrs.text = "0.0";
+        requisitionSlipController.yearofLeavedays.value="0";
+        requisitionSlipController.leaveTypeText.text="--SELECT--";
+        requisitionSlipController.leaveTypeValue.value="-";
+        await autoYearWiseNoController.AutoYearWiseNo("REQ SLIP");
+        requisitionSlipController.ReqAutoyearwise.text = autoYearWiseNoController.RequisitionSlip_autoYrsWise.value;
+        requisitionSlipController.type.value = "L";
+        requisitionSlipController.isHalfDay.value=false;
+      }
 
-     else if(requisitionSlipController.saveButton.value==RequestConstant.RESUBMIT){
-       requisitionSlipController.ReqSlipEditList.forEach((element) {
-         requisitionSlipController.reqId=element.id;
-         requisitionSlipController.ReqAutoyearwise.text=element.requisitionNo;
-         requisitionSlipController.Reqdate.text=element.entryDate;
-         staffController.selectedstaffId.value =element.staffId;
-         staffController.Staffname.text = element.staffName;
-         reportsController.projectname.text= element.projectName;
-         reportsController.selectedProjectId.value = element.projectId;
-         requisitionSlipController.type.value=element.requisitionType.toString();
-         requisitionSlipController.Fromdate.text=element.leaveFromDate;
-         requisitionSlipController.Todate.text=element.leaveToDate;
-         requisitionSlipController.Reason.text=element.permissionReason;
-         requisitionSlipController.LeaveReason.text = element.leaveReason;
-         requisitionSlipController.Date.text = element.permissionFromDate;
-         requisitionSlipController.createdById.value = element.createdBy;
-         requisitionSlipController.Totaldays.text=element.totalLeaveDays.toString();
-         requisitionSlipController.Fromtime.text = element.permissionFromTime;
-         requisitionSlipController.Totime.text = element.permissionToTime;
-         requisitionSlipController.TotalHrs.text=element.totalPermissionHours.toStringAsFixed(2);
-         requisitionSlipController.yearofLeavedays.value="0";
-       });
-     }
-   });
+      else if(requisitionSlipController.saveButton.value==RequestConstant.RESUBMIT){
+        for (var element in requisitionSlipController.ReqSlipEditList) {
+          requisitionSlipController.reqId=element.id;
+          requisitionSlipController.ReqAutoyearwise.text=element.requisitionNo;
+          requisitionSlipController.Reqdate.text=element.entryDate;
+          staffController.selectedstaffId.value =element.staffId;
+          staffController.Staffname.text = element.staffName;
+          reportsController.projectname.text= element.projectName;
+          reportsController.selectedProjectId.value = element.projectId;
+          requisitionSlipController.type.value=element.requisitionType.toString();
+          requisitionSlipController.Fromdate.text=element.leaveFromDate;
+          requisitionSlipController.Todate.text=element.leaveToDate;
+          requisitionSlipController.Reason.text=element.permissionReason;
+          requisitionSlipController.LeaveReason.text = element.leaveReason;
+          requisitionSlipController.Date.text = element.permissionFromDate;
+          requisitionSlipController.createdById.value = element.createdBy;
+          requisitionSlipController.Totaldays.text = element.totalLeaveDays.toString();
+          requisitionSlipController.totalLeaveValue.value = (element.totalLeaveDays ?? 0.0) == 1.0
+              ? "1"
+              : (element.totalLeaveDays ?? 0.0).toString();
+          requisitionSlipController.Fromtime.text = element.permissionFromTime;
+          requisitionSlipController.Totime.text = element.permissionToTime;
+          requisitionSlipController.TotalHrs.text=element.totalPermissionHours.toStringAsFixed(2);
+          requisitionSlipController.yearofLeavedays.value="0";
+          requisitionSlipController.leaveTypeText.text=element.leaveTypeDesc;
+          requisitionSlipController.leaveTypeValue.value=element.leaveType;
+          requisitionSlipController.isHalfDay.value=element.isHalfDay;
+        }
+      }
+    });
   }
 
 
@@ -344,12 +357,16 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                           requisitionSlipController.pTotime.text = "00:00";
                                           requisitionSlipController.TotalHrs.text = "0.0";
                                           requisitionSlipController.Totaldays.text = "1";
+                                          requisitionSlipController.totalLeaveValue.value = "1";
                                           requisitionSlipController.RequiredHrs.text = "0";
                                           requisitionSlipController.RequiredMins.text = "0";
                                           requisitionSlipController.Fromdate.text =
                                               BaseUtitiles.initiateCurrentDateFormat();
                                           requisitionSlipController.Todate.text =
                                               BaseUtitiles.initiateCurrentDateFormat();
+                                          requisitionSlipController.leaveTypeText.text="--SELECT--";
+                                          requisitionSlipController.leaveTypeValue.value="-";
+                                          requisitionSlipController.isHalfDay.value=false;
                                           },
                                       ),
                                     ),
@@ -375,916 +392,203 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                     ),
 
 
-                    Obx(() => Container(
-                      child: Visibility(
-                        visible: requisitionSlipController.type.value=="L"?true:false,
-                        child: Container(
-                          child: Column(
-                            children: <Widget>[
+                    Obx(() => Visibility(
+                      visible: requisitionSlipController.type.value=="L"?true:false,
+                      child: Column(
+                        children: <Widget>[
 
-                              Container(
-                                margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(color: Colors.white70, width: 1), borderRadius: BorderRadius.circular(15),
+                          Container(
+                            margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(color: Colors.white70, width: 1), borderRadius: BorderRadius.circular(15),
+                              ),
+                              elevation: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                child: TextFormField(
+                                  readOnly: false,
+                                  autovalidateMode: AutovalidateMode.always,
+                                  controller: requisitionSlipController.LeaveReason,
+                                  cursorColor: Colors.black,
+                                  style: const TextStyle(color: Colors.black),
+                                  decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.zero,
+                                    border: InputBorder.none,
+                                    labelText: "Reason",
+                                    labelStyle: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: RequestConstant.Lable_Font_SIZE),
+                                    prefixIconConstraints:
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
+                                    prefixIcon: Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                        child: ConstIcons.remarks),
                                   ),
-                                  elevation: 3,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                    child: TextFormField(
-                                      readOnly: false,
-                                      autovalidateMode: AutovalidateMode.always,
-                                      controller: requisitionSlipController.LeaveReason,
-                                      cursorColor: Colors.black,
-                                      style: const TextStyle(color: Colors.black),
-                                      decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.zero,
-                                        border: InputBorder.none,
-                                        labelText: "Reason",
-                                        labelStyle: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: RequestConstant.Lable_Font_SIZE),
-                                        prefixIconConstraints:
-                                        BoxConstraints(minWidth: 0, minHeight: 0),
-                                        prefixIcon: Padding(
-                                            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                            child: ConstIcons.remarks),
-                                      ),
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return '\u26A0 Required';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                  ),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return '\u26A0 Required';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
+                            ),
+                          ),
 
-                              Container(
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-                                        margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                        child: Card(
-                                          shape: RoundedRectangleBorder(
-                                            side: const BorderSide(color: Colors.white70, width: 1),
-                                            borderRadius: BorderRadius.circular(15),
-                                          ),
-                                          elevation: 3,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                            child: TextFormField(
-                                              readOnly: true,
-                                              controller: requisitionSlipController.Fromdate,
-                                              cursorColor: Colors.black,
-                                              style: const TextStyle(color: Colors.black),
-                                              decoration: const InputDecoration(
-                                                contentPadding: EdgeInsets.zero,
-                                                border: InputBorder.none,
-                                                labelText: "From Date",
-                                                labelStyle: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: RequestConstant.Lable_Font_SIZE,
-                                                ),
-                                                prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                                prefixIcon: Padding(
-                                                    padding: EdgeInsets.symmetric(
-                                                        vertical: 8, horizontal: 8),
-                                                    child: ConstIcons.date),
-                                              ),
-                                              onTap: () async {
-                                                var Frdate = await showDatePicker(
-                                                  fieldHintText: "From",
-                                                  context: context,
-                                                  initialDate: DateTime.now(),
-                                                  firstDate: DateTime.now(), // disables previous dates
-                                                  lastDate: DateTime(2100),
+                          Container(
+                            margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(color: Colors.white70, width: 1),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              elevation: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                child: TextFormField(
+                                  autovalidateMode: AutovalidateMode.always,
+                                  readOnly: true,
+                                  controller: requisitionSlipController.leaveTypeText,
+                                  cursorColor: Colors.black,
+                                  style: const TextStyle(color: Colors.black),
+                                  decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.zero,
+                                    border: InputBorder.none,
+                                    labelText: "Leave Type",
+                                    labelStyle: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: RequestConstant.Lable_Font_SIZE),
+                                    prefixIconConstraints:
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
+                                    prefixIcon: Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                        child: ConstIcons.projectName),
+                                  ),
+                                  onTap: () async {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return const LeaveTypeAlert();
+                                        });
+                                    FocusScope.of(context).unfocus();
+                                  },
+                                  validator: (value) {
+                                    if (value!.isEmpty || value=="--SELECT--") {
+                                      return '\u26A0 Required';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
 
-                                                  builder: (context, child) {
-                                                    return Theme(
-                                                      data: Theme.of(context).copyWith(
-                                                        colorScheme: ColorScheme.light(
-                                                          primary: Theme.of(context).primaryColor,
-                                                          onPrimary: Colors.white,
-                                                          onSurface: Colors.black,
-                                                        ),
-                                                        textButtonTheme: TextButtonThemeData(
-                                                          style: TextButton.styleFrom(
-                                                            foregroundColor: Colors.black,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      child: child!,
-                                                    );
-                                                  },
-                                                );
-                                                requisitionSlipController.Fromdate.text = BaseUtitiles.selectDateFormat(Frdate!);
-                                                requisitionSlipController.vehicleAge(DateTime.parse(requisitionSlipController.Fromdate.text),DateTime.parse(requisitionSlipController.Todate.text));
-
-                                              },
-                                            ),
-                                          ),
-                                        ),
+                          Container(
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        side: const BorderSide(color: Colors.white70, width: 1),
+                                        borderRadius: BorderRadius.circular(15),
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                        child: Card(
-                                          shape: RoundedRectangleBorder(
-                                            side: const BorderSide(color: Colors.white70, width: 1),
-                                            borderRadius: BorderRadius.circular(15),
+                                      elevation: 3,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                        child: TextFormField(
+                                          readOnly: true,
+                                          controller: requisitionSlipController.Fromdate,
+                                          cursorColor: Colors.black,
+                                          style: const TextStyle(color: Colors.black),
+                                          decoration: const InputDecoration(
+                                            contentPadding: EdgeInsets.zero,
+                                            border: InputBorder.none,
+                                            labelText: "From Date",
+                                            labelStyle: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: RequestConstant.Lable_Font_SIZE,
+                                            ),
+                                            prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+                                            prefixIcon: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 8, horizontal: 8),
+                                                child: ConstIcons.date),
                                           ),
-                                          elevation: 3,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                            child: TextFormField(
-                                              readOnly: true,
-                                              controller: requisitionSlipController.Todate,
-                                              cursorColor: Colors.black,
-                                              style: const TextStyle(color: Colors.black),
-                                              decoration: const InputDecoration(
-                                                contentPadding: EdgeInsets.zero,
-                                                border: InputBorder.none,
-                                                labelText: "To Date",
-                                                labelStyle: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: RequestConstant.Lable_Font_SIZE,
-                                                ),
-                                                prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                                prefixIcon: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                                    child: ConstIcons.date),
-                                              ),
-                                              onTap: () async {
-                                                var Todate = await showDatePicker(
-                                                    context: context,
-                                                    initialDate: DateTime.parse(requisitionSlipController.Fromdate.text),
-                                                    firstDate:DateTime.parse(requisitionSlipController.Fromdate.text),
-                                                    lastDate: DateTime(2100),
-                                                    builder: (context, child) {
-                                                  return Theme(
-                                                    data: Theme.of(context).copyWith(
-                                                      colorScheme: ColorScheme.light(
-                                                        primary: Theme.of(context).primaryColor,
-                                                        onPrimary: Colors.white,
-                                                        onSurface:
-                                                        Colors.black, // body text color
-                                                      ),
-                                                      textButtonTheme: TextButtonThemeData(
-                                                        style: TextButton.styleFrom(
-                                                          primary: Colors.black, // button text color
-                                                        ),
+                                          onTap: () async {
+                                            var Frdate = await showDatePicker(
+                                              fieldHintText: "From",
+                                              context: context,
+                                              initialDate: DateTime.now(),
+                                              firstDate: DateTime.now(), // disables previous dates
+                                              lastDate: DateTime(2100),
+
+                                              builder: (context, child) {
+                                                return Theme(
+                                                  data: Theme.of(context).copyWith(
+                                                    colorScheme: ColorScheme.light(
+                                                      primary: Theme.of(context).primaryColor,
+                                                      onPrimary: Colors.white,
+                                                      onSurface: Colors.black,
+                                                    ),
+                                                    textButtonTheme: TextButtonThemeData(
+                                                      style: TextButton.styleFrom(
+                                                        foregroundColor: Colors.black,
                                                       ),
                                                     ),
-                                                    child: child!,
-                                                  );
-                                                });
-                                                requisitionSlipController.Todate.text =BaseUtitiles.selectDateFormat(Todate!);
-                                                requisitionSlipController.vehicleAge(DateTime.parse(requisitionSlipController.Fromdate.text),DateTime.parse(requisitionSlipController.Todate.text));
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              Container(
-                                margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(color: Colors.white70, width: 1),
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  elevation: 3,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                    child: TextFormField(
-                                      readOnly: true,
-                                      autovalidateMode: AutovalidateMode.always,
-                                      controller: requisitionSlipController.Totaldays,
-                                      cursorColor: Colors.black,
-                                      style: const TextStyle(color: Colors.black),
-                                      decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.zero,
-                                        border: InputBorder.none,
-                                        labelText: "Total Days",
-                                        labelStyle: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: RequestConstant.Lable_Font_SIZE),
-                                        prefixIconConstraints:
-                                        BoxConstraints(minWidth: 0, minHeight: 0),
-                                        prefixIcon: Padding(
-                                            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                            child: Icon(Icons.format_list_numbered_rounded, color: ConstIcons.IconColor),
-                                      ),
-                                    ),
-                                      onTap: (){
-                                        requisitionSlipController.Totaldays.text == "0" ? requisitionSlipController.Totaldays.text = "" : requisitionSlipController.Totaldays.text;
-                                      },
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return '\u26A0 Required';
-                                        }
-                                        return null;
-                                      },
-                                  ),
-                                ),
-                              ),
-                              ),
-
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  margin:  EdgeInsets.only(left: 14, right: 14),
-                                    child: Row(
-                                        children: [
-                                          Expanded(
-                                            flex: 2,
-                                              child: Text("Previous Leave Taken (This Year)", style:  TextStyle(fontWeight: FontWeight.bold),)),
-                                          Expanded(
-                                              child:
-                                              Obx(() =>
-                                                  Text(requisitionSlipController.yearofLeavedays.value.toString(),style:  TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),),
-                                              )
-                                          )
-                                        ],
-                                    )
-                                ),
-                              ),
-
-                            ],
-                          ),
-                        ),
-                      ),
-                    )),
-
-                    Obx(() => Container(
-                      child: Visibility(
-                        visible: requisitionSlipController.type.value=="C"?true:false,
-                        child: Container(
-                          child: Column(
-                            children: <Widget>[
-
-                              Container(
-                                margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(color: Colors.white70, width: 1), borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  elevation: 3,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                    child: TextFormField(
-                                      readOnly: false,
-                                      autovalidateMode: AutovalidateMode.always,
-                                      controller: requisitionSlipController.LeaveReason,
-                                      cursorColor: Colors.black,
-                                      style: const TextStyle(color: Colors.black),
-                                      decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.zero,
-                                        border: InputBorder.none,
-                                        labelText: "Reason",
-                                        labelStyle: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: RequestConstant.Lable_Font_SIZE),
-                                        prefixIconConstraints:
-                                        BoxConstraints(minWidth: 0, minHeight: 0),
-                                        prefixIcon: Padding(
-                                            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                            child: ConstIcons.remarks),
-                                      ),
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return '\u26A0 Required';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-                              Container(
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-                                        margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                        child: Card(
-                                          shape: RoundedRectangleBorder(
-                                            side: const BorderSide(color: Colors.white70, width: 1),
-                                            borderRadius: BorderRadius.circular(15),
-                                          ),
-                                          elevation: 3,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                            child: TextFormField(
-                                              readOnly: true,
-                                              controller: requisitionSlipController.Fromdate,
-                                              cursorColor: Colors.black,
-                                              style: const TextStyle(color: Colors.black),
-                                              decoration: const InputDecoration(
-                                                contentPadding: EdgeInsets.zero,
-                                                border: InputBorder.none,
-                                                labelText: "From Date",
-                                                labelStyle: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: RequestConstant.Lable_Font_SIZE,
-                                                ),
-                                                prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                                prefixIcon: Padding(
-                                                    padding: EdgeInsets.symmetric(
-                                                        vertical: 8, horizontal: 8),
-                                                    child: ConstIcons.date),
-                                              ),
-                                              onTap: () async {
-                                                var Frdate = await showDatePicker(
-                                                  fieldHintText: "From",
-                                                  context: context,
-                                                  initialDate: DateTime.now(),
-                                                  firstDate: DateTime.now(), // disables previous dates
-                                                  lastDate: DateTime(2100),
-
-                                                  builder: (context, child) {
-                                                    return Theme(
-                                                      data: Theme.of(context).copyWith(
-                                                        colorScheme: ColorScheme.light(
-                                                          primary: Theme.of(context).primaryColor,
-                                                          onPrimary: Colors.white,
-                                                          onSurface: Colors.black,
-                                                        ),
-                                                        textButtonTheme: TextButtonThemeData(
-                                                          style: TextButton.styleFrom(
-                                                            foregroundColor: Colors.black,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      child: child!,
-                                                    );
-                                                  },
+                                                  ),
+                                                  child: child!,
                                                 );
-                                                requisitionSlipController.Fromdate.text = BaseUtitiles.selectDateFormat(Frdate!);
-                                                requisitionSlipController.vehicleAge(DateTime.parse(requisitionSlipController.Fromdate.text),DateTime.parse(requisitionSlipController.Todate.text));
-
                                               },
-                                            ),
-                                          ),
+                                            );
+                                            requisitionSlipController.Fromdate.text = BaseUtitiles.selectDateFormat(Frdate!);
+                                            requisitionSlipController.vehicleAge(DateTime.parse(requisitionSlipController.Fromdate.text),DateTime.parse(requisitionSlipController.Todate.text));
+                                            setState(() {
+                                              requisitionSlipController.isHalfDay.value = false;
+                                            });
+                                          },
                                         ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                        child: Card(
-                                          shape: RoundedRectangleBorder(
-                                            side: const BorderSide(color: Colors.white70, width: 1),
-                                            borderRadius: BorderRadius.circular(15),
-                                          ),
-                                          elevation: 3,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                            child: TextFormField(
-                                              readOnly: true,
-                                              controller: requisitionSlipController.Todate,
-                                              cursorColor: Colors.black,
-                                              style: const TextStyle(color: Colors.black),
-                                              decoration: const InputDecoration(
-                                                contentPadding: EdgeInsets.zero,
-                                                border: InputBorder.none,
-                                                labelText: "To Date",
-                                                labelStyle: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: RequestConstant.Lable_Font_SIZE,
-                                                ),
-                                                prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                                prefixIcon: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                                    child: ConstIcons.date),
-                                              ),
-                                              onTap: () async {
-                                                var Todate = await showDatePicker(
-                                                    context: context,
-                                                    initialDate: DateTime.parse(requisitionSlipController.Fromdate.text),
-                                                    firstDate:DateTime.parse(requisitionSlipController.Fromdate.text),
-                                                    lastDate: DateTime(2100),
-                                                    builder: (context, child) {
-                                                      return Theme(
-                                                        data: Theme.of(context).copyWith(
-                                                          colorScheme: ColorScheme.light(
-                                                            primary: Theme.of(context).primaryColor,
-                                                            onPrimary: Colors.white,
-                                                            onSurface:
-                                                            Colors.black, // body text color
-                                                          ),
-                                                          textButtonTheme: TextButtonThemeData(
-                                                            style: TextButton.styleFrom(
-                                                              primary: Colors.black, // button text color
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        child: child!,
-                                                      );
-                                                    });
-                                                requisitionSlipController.Todate.text =BaseUtitiles.selectDateFormat(Todate!);
-                                                requisitionSlipController.vehicleAge(DateTime.parse(requisitionSlipController.Fromdate.text),DateTime.parse(requisitionSlipController.Todate.text));
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              Container(
-                                margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(color: Colors.white70, width: 1),
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  elevation: 3,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                    child: TextFormField(
-                                      readOnly: false,
-                                      autovalidateMode: AutovalidateMode.always,
-                                      controller: requisitionSlipController.Totaldays,
-                                      cursorColor: Colors.black,
-                                      style: const TextStyle(color: Colors.black),
-                                      decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.zero,
-                                        border: InputBorder.none,
-                                        labelText: "Total Days",
-                                        labelStyle: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: RequestConstant.Lable_Font_SIZE),
-                                        prefixIconConstraints:
-                                        BoxConstraints(minWidth: 0, minHeight: 0),
-                                        prefixIcon: Padding(
-                                          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                          child: Icon(Icons.format_list_numbered_rounded, color: ConstIcons.IconColor),
-                                        ),
-                                      ),
-                                      onTap: (){
-                                        requisitionSlipController.Totaldays.text == "0" ? requisitionSlipController.Totaldays.text = "" : requisitionSlipController.Totaldays.text;
-                                      },
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return '\u26A0 Required';
-                                        }
-                                        return null;
-                                      },
                                     ),
                                   ),
                                 ),
-                              ),
-
-
-
-                              Visibility(
-                                visible: requisitionSlipController.type.value == "C"? false : true,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                Expanded(
                                   child: Container(
-                                      margin: const EdgeInsets.only(left: 14, right: 14),
-                                      child: Row(
-                                        children: [
-                                          const Expanded(
-                                              flex: 2,
-                                              child: Text("Previous Leave Taken (This Year)", style:  TextStyle(fontWeight: FontWeight.bold),)),
-                                          Expanded(
-                                              child: Obx(() => Text(requisitionSlipController.yearofLeavedays.value.toString(),style:  TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),),)
-                                          )
-                                        ],
-                                      )
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )),
-
-                    Obx(() => Container(
-                      child: Visibility(
-                        visible: requisitionSlipController.type.value=="O"?true:false,
-                        child: Container(
-                          child: Column(
-                            children: <Widget>[
-                              Container(
-                                margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(color: Colors.white70, width: 1),
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  elevation: 3,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 3, left: 10, bottom: 5),
-                                    child: TextFormField(
-                                      readOnly: false,
-                                      autovalidateMode: AutovalidateMode.always,
-                                      controller: requisitionSlipController.Reason,
-                                      cursorColor: Colors.black,
-                                      style: const TextStyle(color: Colors.black),
-                                      decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.zero,
-                                        border: InputBorder.none,
-                                        labelText: "Reason",
-                                        labelStyle: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: RequestConstant.Lable_Font_SIZE),
-                                        prefixIconConstraints:
-                                        BoxConstraints(minWidth: 0, minHeight: 0),
-                                        prefixIcon: Padding(
-                                            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                            child: ConstIcons.remarks),
+                                    margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        side: const BorderSide(color: Colors.white70, width: 1),
+                                        borderRadius: BorderRadius.circular(15),
                                       ),
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return '\u26A0 Required';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(color: Colors.white70, width: 1),
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  elevation: 3,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                    child: TextFormField(
-                                      readOnly: true,
-                                      controller: requisitionSlipController.Date,
-                                      cursorColor: Colors.black,
-                                      style: const TextStyle(color: Colors.black),
-                                      decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.zero,
-                                        border: InputBorder.none,
-                                        labelText: "Date",
-                                        labelStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: RequestConstant.Lable_Font_SIZE,
-                                        ),
-                                        prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                        prefixIcon: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                            child: ConstIcons.date),
-                                      ),
-                                      onTap: () async {
-                                        var Entrydate = await showDatePicker(
-                                            context: context,
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime.now(),
-                                            lastDate: DateTime(2100),
-                                            builder: (context, child) {
-                                          return Theme(
-                                            data: Theme.of(context).copyWith(
-                                              colorScheme: ColorScheme.light(
-                                                primary: Theme.of(context).primaryColor,
-                                                onPrimary: Colors.white,
-                                                onSurface:
-                                                Colors.black, // body text color
-                                              ),
-                                              textButtonTheme: TextButtonThemeData(
-                                                style: TextButton.styleFrom(
-                                                  primary: Colors.black, // button text color
-                                                ),
-                                              ),
+                                      elevation: 3,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                        child: TextFormField(
+                                          readOnly: true,
+                                          controller: requisitionSlipController.Todate,
+                                          cursorColor: Colors.black,
+                                          style: const TextStyle(color: Colors.black),
+                                          decoration: const InputDecoration(
+                                            contentPadding: EdgeInsets.zero,
+                                            border: InputBorder.none,
+                                            labelText: "To Date",
+                                            labelStyle: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: RequestConstant.Lable_Font_SIZE,
                                             ),
-                                            child: child!,
-                                          );
-                                        });
-                                        requisitionSlipController.Date.text =BaseUtitiles.selectDateFormat(Entrydate!);
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-                              Container(
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-                                        margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                        child: Card(
-                                          shape: RoundedRectangleBorder(
-                                            side: const BorderSide(color: Colors.white70, width: 1),
-                                            borderRadius: BorderRadius.circular(15),
+                                            prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+                                            prefixIcon: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                                child: ConstIcons.date),
                                           ),
-                                          elevation: 3,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                            child: TextFormField(
-                                              readOnly: true,
-                                              autovalidateMode: AutovalidateMode.always,
-                                              controller: requisitionSlipController.Fromtime,
-                                              cursorColor: Colors.black,
-                                              style: const TextStyle(color: Colors.black),
-                                              decoration: const InputDecoration(
-                                                contentPadding: EdgeInsets.zero,
-                                                border: InputBorder.none,
-                                                labelText: "From Time",
-                                                labelStyle: TextStyle(color: Colors.grey, fontSize: RequestConstant.Lable_Font_SIZE),
-                                                prefixIconConstraints:
-                                                BoxConstraints(minWidth: 0, minHeight: 0),
-                                                prefixIcon: Padding(
-                                                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                                    child: Icon(Icons.timer_sharp, color: ConstIcons.IconColor)
-                                                ),
-                                              ),
-                                              validator: (value) {
-                                                if (value!.isEmpty || value=="00:00") {
-                                                  return '\u26A0 Required';
-                                                }
-                                                return null;
-                                              },
-                                              onTap: () async {
-                                                await requisitionSlipController.selectTime(context, requisitionSlipController.Fromtime);
-                                                requisitionSlipController.calculateTimeDifference();
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                        child: Card(
-                                          shape: RoundedRectangleBorder(
-                                            side: const BorderSide(color: Colors.white70, width: 1),
-                                            borderRadius: BorderRadius.circular(15),
-                                          ),
-                                          elevation: 3,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                            child: TextFormField(
-                                              readOnly: true,
-                                              autovalidateMode: AutovalidateMode.always,
-                                              controller: requisitionSlipController.Totime,
-                                              cursorColor: Colors.black,
-                                              style: const TextStyle(color: Colors.black),
-                                              decoration: const InputDecoration(
-                                                contentPadding: EdgeInsets.zero,
-                                                border: InputBorder.none,
-                                                labelText: "To Time",
-                                                labelStyle: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: RequestConstant.Lable_Font_SIZE),
-                                                prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                                prefixIcon: Padding(
-                                                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                                    child: Icon(Icons.timer_sharp, color: ConstIcons.IconColor),
-                                              ),
-                                            ),
-                                              validator: (value) {
-                                                if (value!.isEmpty || value=="00:00") {
-                                                  return '\u26A0 Required';
-                                                }
-                                                return null;
-                                              },
-                                              onTap: () async {
-                                                await requisitionSlipController.selectTime(context, requisitionSlipController.Totime);
-                                                requisitionSlipController.calculateTimeDifference();
-                                              },
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                ),
-                                ]),
-                              ),
-
-                              Container(
-                                child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                          child: Card(
-                                            shape: RoundedRectangleBorder(
-                                              side: const BorderSide(color: Colors.white70, width: 1),
-                                              borderRadius: BorderRadius.circular(15),
-                                            ),
-                                            elevation: 3,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                              child: TextFormField(
-                                                readOnly: true,
-                                                autovalidateMode: AutovalidateMode.always,
-                                                controller: requisitionSlipController.RequiredHrs,
-                                                cursorColor: Colors.black,
-                                                style: const TextStyle(color: Colors.black),
-                                                decoration: const InputDecoration(
-                                                  contentPadding: EdgeInsets.zero,
-                                                  border: InputBorder.none,
-                                                  labelText: "Required Hrs",
-                                                  labelStyle: TextStyle(color: Colors.grey, fontSize: RequestConstant.Lable_Font_SIZE),
-                                                  prefixIconConstraints:
-                                                  BoxConstraints(minWidth: 0, minHeight: 0),
-                                                  prefixIcon: Padding(
-                                                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                                      child: Icon(Icons.timer_sharp, color: ConstIcons.IconColor)
-                                                  ),
-                                                ),
-                                                validator: (value) {
-                                                  if (value!.isEmpty) {
-                                                    return '\u26A0 Required';
-                                                  }
-                                                  return null;
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                          child: Card(
-                                            shape: RoundedRectangleBorder(
-                                              side: const BorderSide(color: Colors.white70, width: 1),
-                                              borderRadius: BorderRadius.circular(15),
-                                            ),
-                                            elevation: 3,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                              child: TextFormField(
-                                                readOnly: true,
-                                                autovalidateMode: AutovalidateMode.always,
-                                                controller: requisitionSlipController.RequiredMins,
-                                                cursorColor: Colors.black,
-                                                style: const TextStyle(color: Colors.black),
-                                                decoration: const InputDecoration(
-                                                  contentPadding: EdgeInsets.zero,
-                                                  border: InputBorder.none,
-                                                  labelText: "Required Mins",
-                                                  labelStyle: TextStyle(
-                                                      color: Colors.grey,
-                                                      fontSize: RequestConstant.Lable_Font_SIZE),
-                                                  prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                                  prefixIcon: Padding(
-                                                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                                    child: Icon(Icons.timer_sharp, color: ConstIcons.IconColor),
-                                                  ),
-                                                ),
-                                                validator: (value) {
-                                                  if (value!.isEmpty) {
-                                                    return '\u26A0 Required';
-                                                  }
-                                                  return null;
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ]),
-                              ),
-
-                              Container(
-                                margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(color: Colors.white70, width: 1),
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  elevation: 3,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                    child: TextFormField(
-                                      readOnly: true,
-                                      autovalidateMode: AutovalidateMode.always,
-                                      controller: requisitionSlipController.TotalHrs,
-                                      cursorColor: Colors.black,
-                                      style: const TextStyle(color: Colors.black),
-                                      decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.zero,
-                                        border: InputBorder.none,
-                                        labelText: "Total Hours",
-                                        labelStyle: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: RequestConstant.Lable_Font_SIZE),
-                                        prefixIconConstraints:
-                                        BoxConstraints(minWidth: 0, minHeight: 0),
-                                        prefixIcon: Padding(
-                                            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                            child: Icon(Icons.access_time_filled_outlined, color: ConstIcons.IconColor)),
-                                      ),
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return '\u26A0 Required';
-                                        }
-                                        return null;
-                                      },
-                                      // onTap: (){
-                                      //   requisitionSlipController.TotalHrs.text == '0.0' ? requisitionSlipController.TotalHrs.text = "" : requisitionSlipController.TotalHrs.text;
-                                      // },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )),
-
-                    Obx(() => Container(
-                      child: Visibility(
-                        visible: requisitionSlipController.type.value=="P"?true:false,
-                        child: Container(
-                          child: Column(
-                            children: <Widget>[
-                              Container(
-                                margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(color: Colors.white70, width: 1),
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  elevation: 3,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                    child: TextFormField(
-                                      readOnly: false,
-                                      autovalidateMode: AutovalidateMode.always,
-                                      controller: requisitionSlipController.Reason,
-                                      cursorColor: Colors.black,
-                                      style: const TextStyle(color: Colors.black),
-                                      decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.zero,
-                                        border: InputBorder.none,
-                                        labelText: "Reason",
-                                        labelStyle: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: RequestConstant.Lable_Font_SIZE),
-                                        prefixIconConstraints:
-                                        BoxConstraints(minWidth: 0, minHeight: 0),
-                                        prefixIcon: Padding(
-                                            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                            child: ConstIcons.remarks),
-                                      ),
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return '\u26A0 Required';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(color: Colors.white70, width: 1),
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  elevation: 3,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                    child: TextFormField(
-                                      readOnly: true,
-                                      controller: requisitionSlipController.Date,
-                                      cursorColor: Colors.black,
-                                      style: const TextStyle(color: Colors.black),
-                                      decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.zero,
-                                        border: InputBorder.none,
-                                        labelText: "Date",
-                                        labelStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: RequestConstant.Lable_Font_SIZE,
-                                        ),
-                                        prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                        prefixIcon: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                            child: ConstIcons.date),
-                                      ),
-                                      onTap: () async {
-                                        var Entrydate = await showDatePicker(
-                                            context: context,
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime.now(),
-                                            lastDate: DateTime(2100),
-                                            builder: (context, child) {
+                                          onTap: () async {
+                                            var Todate = await showDatePicker(
+                                                context: context,
+                                                initialDate: DateTime.parse(requisitionSlipController.Fromdate.text),
+                                                firstDate:DateTime.parse(requisitionSlipController.Fromdate.text),
+                                                lastDate: DateTime(2100),
+                                                builder: (context, child) {
                                               return Theme(
                                                 data: Theme.of(context).copyWith(
                                                   colorScheme: ColorScheme.light(
@@ -1302,259 +606,1098 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                                                 child: child!,
                                               );
                                             });
-                                        requisitionSlipController.Date.text =BaseUtitiles.selectDateFormat(Entrydate!);
-                                      },
+                                            requisitionSlipController.Todate.text =BaseUtitiles.selectDateFormat(Todate!);
+                                            requisitionSlipController.vehicleAge(DateTime.parse(requisitionSlipController.Fromdate.text),DateTime.parse(requisitionSlipController.Todate.text));
+                                          setState(() {
+                                            requisitionSlipController.isHalfDay.value = false;
+                                          });
+                                            },
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
+                              ],
+                            ),
+                          ),
 
-                              Container(
-                                child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                          child: Card(
-                                            shape: RoundedRectangleBorder(
-                                              side: const BorderSide(color: Colors.white70, width: 1),
-                                              borderRadius: BorderRadius.circular(15),
-                                            ),
-                                            elevation: 3,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                              child: TextFormField(
-                                                readOnly: true,
-                                                autovalidateMode: AutovalidateMode.always,
-                                                controller: requisitionSlipController.Fromtime,
-                                                cursorColor: Colors.black,
-                                                style: const TextStyle(color: Colors.black),
-                                                decoration: const InputDecoration(
-                                                  contentPadding: EdgeInsets.zero,
-                                                  border: InputBorder.none,
-                                                  labelText: "From Time",
-                                                  labelStyle: TextStyle(color: Colors.grey, fontSize: RequestConstant.Lable_Font_SIZE),
-                                                  prefixIconConstraints:
-                                                  BoxConstraints(minWidth: 0, minHeight: 0),
-                                                  prefixIcon: Padding(
-                                                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                                      child: Icon(Icons.timer_sharp, color: ConstIcons.IconColor)
-                                                  ),
-                                                ),
-                                                validator: (value) {
-                                                  if (value!.isEmpty || value=="00:00") {
-                                                    return '\u26A0 Required';
-                                                  }
-                                                  return null;
-                                                },
-                                                onTap: () async {
-                                                  await requisitionSlipController.selectTime(context, requisitionSlipController.Fromtime);
-                                                  requisitionSlipController.calculateTimeDifference();
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                          child: Card(
-                                            shape: RoundedRectangleBorder(
-                                              side: const BorderSide(color: Colors.white70, width: 1),
-                                              borderRadius: BorderRadius.circular(15),
-                                            ),
-                                            elevation: 3,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                              child: TextFormField(
-                                                readOnly: true,
-                                                autovalidateMode: AutovalidateMode.always,
-                                                controller: requisitionSlipController.Totime,
-                                                cursorColor: Colors.black,
-                                                style: const TextStyle(color: Colors.black),
-                                                decoration: const InputDecoration(
-                                                  contentPadding: EdgeInsets.zero,
-                                                  border: InputBorder.none,
-                                                  labelText: "To Time",
-                                                  labelStyle: TextStyle(
-                                                      color: Colors.grey,
-                                                      fontSize: RequestConstant.Lable_Font_SIZE),
-                                                  prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                                  prefixIcon: Padding(
-                                                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                                    child: Icon(Icons.timer_sharp, color: ConstIcons.IconColor),
-                                                  ),
-                                                ),
-                                                validator: (value) {
-                                                  if (value!.isEmpty || value=="00:00" ) {
-                                                    return '\u26A0 Required';
-                                                  }
-                                                  return null;
-                                                },
-                                                onTap: () async {
-                                                  await requisitionSlipController.selectTime(context, requisitionSlipController.Totime);
-                                                  requisitionSlipController.calculateTimeDifference();
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ]),
-                              ),
-
-                              Container(
-                                child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                          child: Card(
-                                            shape: RoundedRectangleBorder(
-                                              side: const BorderSide(color: Colors.white70, width: 1),
-                                              borderRadius: BorderRadius.circular(15),
-                                            ),
-                                            elevation: 3,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                              child: TextFormField(
-                                                readOnly: true,
-                                                autovalidateMode: AutovalidateMode.always,
-                                                controller: requisitionSlipController.RequiredHrs,
-                                                cursorColor: Colors.black,
-                                                style: const TextStyle(color: Colors.black),
-                                                decoration: const InputDecoration(
-                                                  contentPadding: EdgeInsets.zero,
-                                                  border: InputBorder.none,
-                                                  labelText: "Required Hrs",
-                                                  labelStyle: TextStyle(color: Colors.grey, fontSize: RequestConstant.Lable_Font_SIZE),
-                                                  prefixIconConstraints:
-                                                  BoxConstraints(minWidth: 0, minHeight: 0),
-                                                  prefixIcon: Padding(
-                                                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                                      child: Icon(Icons.timer_sharp, color: ConstIcons.IconColor)
-                                                  ),
-                                                ),
-                                                validator: (value) {
-                                                  if (value!.isEmpty) {
-                                                    return '\u26A0 Required';
-                                                  }
-                                                  return null;
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                          child: Card(
-                                            shape: RoundedRectangleBorder(
-                                              side: const BorderSide(color: Colors.white70, width: 1),
-                                              borderRadius: BorderRadius.circular(15),
-                                            ),
-                                            elevation: 3,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                              child: TextFormField(
-                                                readOnly: true,
-                                                autovalidateMode: AutovalidateMode.always,
-                                                controller: requisitionSlipController.RequiredMins,
-                                                cursorColor: Colors.black,
-                                                style: const TextStyle(color: Colors.black),
-                                                decoration: const InputDecoration(
-                                                  contentPadding: EdgeInsets.zero,
-                                                  border: InputBorder.none,
-                                                  labelText: "Required Mins",
-                                                  labelStyle: TextStyle(
-                                                      color: Colors.grey,
-                                                      fontSize: RequestConstant.Lable_Font_SIZE),
-                                                  prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                                  prefixIcon: Padding(
-                                                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                                    child: Icon(Icons.timer_sharp, color: ConstIcons.IconColor),
-                                                  ),
-                                                ),
-                                                validator: (value) {
-                                                  if (value!.isEmpty) {
-                                                    return '\u26A0 Required';
-                                                  }
-                                                  return null;
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ]),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    side: const BorderSide(color: Colors.white70, width: 1),
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  elevation: 3,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 3, left: 10, bottom: 5),
-                                    child: TextFormField(
-                                      readOnly: true,
-                                      autovalidateMode: AutovalidateMode.always,
-                                      controller: requisitionSlipController.TotalHrs,
-                                      cursorColor: Colors.black,
-                                      style: const TextStyle(color: Colors.black),
-                                      decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.zero,
-                                        border: InputBorder.none,
-                                        labelText: "Total Hours",
-                                        labelStyle: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: RequestConstant.Lable_Font_SIZE),
-                                        prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                        prefixIcon: Padding(
-                                            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                            child: Icon(Icons.access_time_filled_outlined, color: ConstIcons.IconColor)),
-                                      ),
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return '\u26A0 Required';
-                                        }
-                                        return null;
-                                      },
-                                      onTap: (){
-                                        requisitionSlipController.TotalHrs.text == '0.0'
-                                            ? requisitionSlipController.TotalHrs.text = ""
-                                            : requisitionSlipController.TotalHrs.text;
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
+                          Row(
+                            children: [
+                              Expanded(flex: 2,
                                 child: Container(
-                                    margin:  EdgeInsets.only(left: 14, right: 14),
-                                    child: Row(
-                                      children: [
-                                        const Expanded(
-                                            flex: 2,
-                                            child: Text("Previous Leave Taken (This Year)", style:  TextStyle(fontWeight: FontWeight.bold),)),
-                                        Expanded(
-                                            child: Obx(() => Text(requisitionSlipController.yearofPerHrs.value.toString(),style:  TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),))
-                                        )
-                                      ],
-                                    )
+                                  margin: const EdgeInsets.only(top: 2, left: 10),
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                      side: const BorderSide(color: Colors.white70, width: 1),
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    elevation: 3,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                      child: TextFormField(
+                                        readOnly: true,
+                                        autovalidateMode: AutovalidateMode.always,
+                                        controller: requisitionSlipController.Totaldays,
+                                        cursorColor: Colors.black,
+                                        style: const TextStyle(color: Colors.black),
+                                        decoration: const InputDecoration(
+                                          contentPadding: EdgeInsets.zero,
+                                          border: InputBorder.none,
+                                          labelText: "Total Days",
+                                          labelStyle: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: RequestConstant.Lable_Font_SIZE),
+                                          prefixIconConstraints:
+                                          BoxConstraints(minWidth: 0, minHeight: 0),
+                                          prefixIcon: Padding(
+                                              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                              child: Icon(Icons.format_list_numbered_rounded, color: ConstIcons.IconColor),
+                                        ),
+                                      ),
+                                        onTap: (){
+                                          setState(() {
+                                            requisitionSlipController.Totaldays.text == "0" ? requisitionSlipController.Totaldays.text = "" : requisitionSlipController.Totaldays.text;
+                                          });
+                                        },
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return '\u26A0 Required';
+                                          }
+                                          return null;
+                                        },
+                                    ),
+                                  ),
+                                ),
                                 ),
                               ),
-
+            Expanded(flex: 1,
+              child: Row(
+                children: [
+                  Obx((){
+                    return Checkbox(
+                      value: requisitionSlipController.isHalfDay.value,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                      side: BorderSide(
+                        width: 1,
+                        color: requisitionSlipController.totalLeaveValue.value!="1" && requisitionSlipController.totalLeaveValue.value!="0.5"?Colors.grey:Theme.of(context).primaryColor,
+                      ),
+                      activeColor: requisitionSlipController.totalLeaveValue.value!="1" && requisitionSlipController.totalLeaveValue.value!="0.5"?Colors.grey:Theme.of(context).primaryColor,
+                      checkColor: Colors.white,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          if(requisitionSlipController.totalLeaveValue.value=="1" ||requisitionSlipController.totalLeaveValue.value=="0.5") {
+                            requisitionSlipController.isHalfDay.value = value ?? false;
+                            if (requisitionSlipController.isHalfDay.value == true) {
+                              requisitionSlipController.Totaldays.text = "0.5";
+                            }
+                            else {
+                              requisitionSlipController.Totaldays.text = "1";
+                            }
+                          }
+                        });
+                      },
+                    );},
+                  ),
+                  Text("Half Day", style:  TextStyle(fontWeight: FontWeight.bold,color: requisitionSlipController.totalLeaveValue.value!="1" && requisitionSlipController.totalLeaveValue.value!="0.5"?Colors.grey:Colors.black),),
+                ],
+              ),
+            ),
                             ],
                           ),
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              margin:  EdgeInsets.only(left: 14, right: 14),
+                                child: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 2,
+                                          child: Text("Previous Leave Taken (This Year)", style:  TextStyle(fontWeight: FontWeight.bold),)),
+                                      Expanded(
+                                          child:
+                                          Obx(() =>
+                                              Text(requisitionSlipController.yearofLeavedays.value.toString(),style:  TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),),
+                                          )
+                                      )
+                                    ],
+                                )
+                            ),
+                          ),
+
+
+
+                        ],
+                      ),
+                    )),
+
+                    Obx(() => Visibility(
+                      visible: requisitionSlipController.type.value=="C"?true:false,
+                      child: Column(
+                        children: <Widget>[
+
+                          Container(
+                            margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(color: Colors.white70, width: 1), borderRadius: BorderRadius.circular(15),
+                              ),
+                              elevation: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                child: TextFormField(
+                                  readOnly: false,
+                                  autovalidateMode: AutovalidateMode.always,
+                                  controller: requisitionSlipController.LeaveReason,
+                                  cursorColor: Colors.black,
+                                  style: const TextStyle(color: Colors.black),
+                                  decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.zero,
+                                    border: InputBorder.none,
+                                    labelText: "Reason",
+                                    labelStyle: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: RequestConstant.Lable_Font_SIZE),
+                                    prefixIconConstraints:
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
+                                    prefixIcon: Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                        child: ConstIcons.remarks),
+                                  ),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return '\u26A0 Required';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          Container(
+                            margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(color: Colors.white70, width: 1),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              elevation: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                child: TextFormField(
+                                  autovalidateMode: AutovalidateMode.always,
+                                  readOnly: true,
+                                  controller: requisitionSlipController.leaveTypeText,
+                                  cursorColor: Colors.black,
+                                  style: const TextStyle(color: Colors.black),
+                                  decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.zero,
+                                    border: InputBorder.none,
+                                    labelText: "Leave Type",
+                                    labelStyle: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: RequestConstant.Lable_Font_SIZE),
+                                    prefixIconConstraints:
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
+                                    prefixIcon: Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                        child: ConstIcons.projectName),
+                                  ),
+                                  onTap: () async {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return const LeaveTypeAlert();
+                                        });
+                                    FocusScope.of(context).unfocus();
+                                  },
+                                  validator: (value) {
+                                    if (value!.isEmpty || value=="--SELECT--") {
+                                      return '\u26A0 Required';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                      side: const BorderSide(color: Colors.white70, width: 1),
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    elevation: 3,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                      child: TextFormField(
+                                        readOnly: true,
+                                        controller: requisitionSlipController.Fromdate,
+                                        cursorColor: Colors.black,
+                                        style: const TextStyle(color: Colors.black),
+                                        decoration: const InputDecoration(
+                                          contentPadding: EdgeInsets.zero,
+                                          border: InputBorder.none,
+                                          labelText: "From Date",
+                                          labelStyle: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: RequestConstant.Lable_Font_SIZE,
+                                          ),
+                                          prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+                                          prefixIcon: Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 8, horizontal: 8),
+                                              child: ConstIcons.date),
+                                        ),
+                                        onTap: () async {
+                                          var Frdate = await showDatePicker(
+                                            fieldHintText: "From",
+                                            context: context,
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime.now(), // disables previous dates
+                                            lastDate: DateTime(2100),
+
+                                            builder: (context, child) {
+                                              return Theme(
+                                                data: Theme.of(context).copyWith(
+                                                  colorScheme: ColorScheme.light(
+                                                    primary: Theme.of(context).primaryColor,
+                                                    onPrimary: Colors.white,
+                                                    onSurface: Colors.black,
+                                                  ),
+                                                  textButtonTheme: TextButtonThemeData(
+                                                    style: TextButton.styleFrom(
+                                                      foregroundColor: Colors.black,
+                                                    ),
+                                                  ),
+                                                ),
+                                                child: child!,
+                                              );
+                                            },
+                                          );
+                                          requisitionSlipController.Fromdate.text = BaseUtitiles.selectDateFormat(Frdate!);
+                                          requisitionSlipController.vehicleAge(DateTime.parse(requisitionSlipController.Fromdate.text),DateTime.parse(requisitionSlipController.Todate.text));
+
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                      side: const BorderSide(color: Colors.white70, width: 1),
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    elevation: 3,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                      child: TextFormField(
+                                        readOnly: true,
+                                        controller: requisitionSlipController.Todate,
+                                        cursorColor: Colors.black,
+                                        style: const TextStyle(color: Colors.black),
+                                        decoration: const InputDecoration(
+                                          contentPadding: EdgeInsets.zero,
+                                          border: InputBorder.none,
+                                          labelText: "To Date",
+                                          labelStyle: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: RequestConstant.Lable_Font_SIZE,
+                                          ),
+                                          prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+                                          prefixIcon: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                              child: ConstIcons.date),
+                                        ),
+                                        onTap: () async {
+                                          var Todate = await showDatePicker(
+                                              context: context,
+                                              initialDate: DateTime.parse(requisitionSlipController.Fromdate.text),
+                                              firstDate:DateTime.parse(requisitionSlipController.Fromdate.text),
+                                              lastDate: DateTime(2100),
+                                              builder: (context, child) {
+                                                return Theme(
+                                                  data: Theme.of(context).copyWith(
+                                                    colorScheme: ColorScheme.light(
+                                                      primary: Theme.of(context).primaryColor,
+                                                      onPrimary: Colors.white,
+                                                      onSurface:
+                                                      Colors.black, // body text color
+                                                    ),
+                                                    textButtonTheme: TextButtonThemeData(
+                                                      style: TextButton.styleFrom(
+                                                        primary: Colors.black, // button text color
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: child!,
+                                                );
+                                              });
+                                          requisitionSlipController.Todate.text =BaseUtitiles.selectDateFormat(Todate!);
+                                          requisitionSlipController.vehicleAge(DateTime.parse(requisitionSlipController.Fromdate.text),DateTime.parse(requisitionSlipController.Todate.text));
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          Row(
+                            children: [
+                              Expanded(flex: 2,
+                                child: Container(
+                                  margin: const EdgeInsets.only(top: 2, left: 10),
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                      side: const BorderSide(color: Colors.white70, width: 1),
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    elevation: 3,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                      child: TextFormField(
+                                        readOnly: true,
+                                        autovalidateMode: AutovalidateMode.always,
+                                        controller: requisitionSlipController.Totaldays,
+                                        cursorColor: Colors.black,
+                                        style: const TextStyle(color: Colors.black),
+                                        decoration: const InputDecoration(
+                                          contentPadding: EdgeInsets.zero,
+                                          border: InputBorder.none,
+                                          labelText: "Total Days",
+                                          labelStyle: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: RequestConstant.Lable_Font_SIZE),
+                                          prefixIconConstraints:
+                                          BoxConstraints(minWidth: 0, minHeight: 0),
+                                          prefixIcon: Padding(
+                                            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                            child: Icon(Icons.format_list_numbered_rounded, color: ConstIcons.IconColor),
+                                          ),
+                                        ),
+                                        onTap: (){
+                                          requisitionSlipController.Totaldays.text == "0" ? requisitionSlipController.Totaldays.text = "" : requisitionSlipController.Totaldays.text;
+                                        },
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return '\u26A0 Required';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(flex: 1,
+                                child: Row(
+                                  children: [
+                                    Obx((){
+                                      return Checkbox(
+                                        value: requisitionSlipController.isHalfDay.value,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(2),
+                                        ),
+                                        side: BorderSide(
+                                          width: 1,
+                                          color: requisitionSlipController.Totaldays.text!="1" && requisitionSlipController.Totaldays.text!="0.5"?Colors.grey:Theme.of(context).primaryColor,
+                                        ),
+                                        activeColor: requisitionSlipController.Totaldays.text!="1" && requisitionSlipController.Totaldays.text!="0.5"?Colors.grey:Theme.of(context).primaryColor,
+                                        checkColor: Colors.white,
+                                        onChanged: (bool? value) {
+                                          setState(() {
+                                            if(requisitionSlipController.Totaldays.text=="1" ||requisitionSlipController.Totaldays.text=="0.5") {
+                                              requisitionSlipController.isHalfDay.value = value ?? false;
+                                              if (requisitionSlipController.isHalfDay.value == true) {
+                                                requisitionSlipController.Totaldays.text = "0.5";
+                                              }
+                                              else {
+                                                requisitionSlipController.Totaldays.text = "1";
+                                              }
+                                            }
+                                          });
+                                        },
+                                      );},
+                                    ),
+                                    Text("Half Day", style:  TextStyle(fontWeight: FontWeight.bold,color: requisitionSlipController.Totaldays.text!="1" && requisitionSlipController.Totaldays.text!="0.5"?Colors.grey:Colors.black),),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+
+                        ],
+                      ),
+                    )),
+
+                    Obx(() => Visibility(
+                      visible: requisitionSlipController.type.value=="O"?true:false,
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(color: Colors.white70, width: 1),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              elevation: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 3, left: 10, bottom: 5),
+                                child: TextFormField(
+                                  readOnly: false,
+                                  autovalidateMode: AutovalidateMode.always,
+                                  controller: requisitionSlipController.Reason,
+                                  cursorColor: Colors.black,
+                                  style: const TextStyle(color: Colors.black),
+                                  decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.zero,
+                                    border: InputBorder.none,
+                                    labelText: "Reason",
+                                    labelStyle: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: RequestConstant.Lable_Font_SIZE),
+                                    prefixIconConstraints:
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
+                                    prefixIcon: Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                        child: ConstIcons.remarks),
+                                  ),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return '\u26A0 Required';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(color: Colors.white70, width: 1),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              elevation: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                child: TextFormField(
+                                  readOnly: true,
+                                  controller: requisitionSlipController.Date,
+                                  cursorColor: Colors.black,
+                                  style: const TextStyle(color: Colors.black),
+                                  decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.zero,
+                                    border: InputBorder.none,
+                                    labelText: "Date",
+                                    labelStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: RequestConstant.Lable_Font_SIZE,
+                                    ),
+                                    prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+                                    prefixIcon: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                        child: ConstIcons.date),
+                                  ),
+                                  onTap: () async {
+                                    var Entrydate = await showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime.now(),
+                                        lastDate: DateTime(2100),
+                                        builder: (context, child) {
+                                      return Theme(
+                                        data: Theme.of(context).copyWith(
+                                          colorScheme: ColorScheme.light(
+                                            primary: Theme.of(context).primaryColor,
+                                            onPrimary: Colors.white,
+                                            onSurface:
+                                            Colors.black, // body text color
+                                          ),
+                                          textButtonTheme: TextButtonThemeData(
+                                            style: TextButton.styleFrom(
+                                              primary: Colors.black, // button text color
+                                            ),
+                                          ),
+                                        ),
+                                        child: child!,
+                                      );
+                                    });
+                                    requisitionSlipController.Date.text =BaseUtitiles.selectDateFormat(Entrydate!);
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        side: const BorderSide(color: Colors.white70, width: 1),
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      elevation: 3,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                        child: TextFormField(
+                                          readOnly: true,
+                                          autovalidateMode: AutovalidateMode.always,
+                                          controller: requisitionSlipController.Fromtime,
+                                          cursorColor: Colors.black,
+                                          style: const TextStyle(color: Colors.black),
+                                          decoration: const InputDecoration(
+                                            contentPadding: EdgeInsets.zero,
+                                            border: InputBorder.none,
+                                            labelText: "From Time",
+                                            labelStyle: TextStyle(color: Colors.grey, fontSize: RequestConstant.Lable_Font_SIZE),
+                                            prefixIconConstraints:
+                                            BoxConstraints(minWidth: 0, minHeight: 0),
+                                            prefixIcon: Padding(
+                                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                                child: Icon(Icons.timer_sharp, color: ConstIcons.IconColor)
+                                            ),
+                                          ),
+                                          validator: (value) {
+                                            if (value!.isEmpty || value=="00:00") {
+                                              return '\u26A0 Required';
+                                            }
+                                            return null;
+                                          },
+                                          onTap: () async {
+                                            await requisitionSlipController.selectTime(context, requisitionSlipController.Fromtime);
+                                            requisitionSlipController.calculateTimeDifference();
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        side: const BorderSide(color: Colors.white70, width: 1),
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      elevation: 3,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                        child: TextFormField(
+                                          readOnly: true,
+                                          autovalidateMode: AutovalidateMode.always,
+                                          controller: requisitionSlipController.Totime,
+                                          cursorColor: Colors.black,
+                                          style: const TextStyle(color: Colors.black),
+                                          decoration: const InputDecoration(
+                                            contentPadding: EdgeInsets.zero,
+                                            border: InputBorder.none,
+                                            labelText: "To Time",
+                                            labelStyle: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: RequestConstant.Lable_Font_SIZE),
+                                            prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+                                            prefixIcon: Padding(
+                                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                                child: Icon(Icons.timer_sharp, color: ConstIcons.IconColor),
+                                          ),
+                                        ),
+                                          validator: (value) {
+                                            if (value!.isEmpty || value=="00:00") {
+                                              return '\u26A0 Required';
+                                            }
+                                            return null;
+                                          },
+                                          onTap: () async {
+                                            await requisitionSlipController.selectTime(context, requisitionSlipController.Totime);
+                                            requisitionSlipController.calculateTimeDifference();
+                                          },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ),
+                            ]),
+                          ),
+                          Container(
+                            child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          side: const BorderSide(color: Colors.white70, width: 1),
+                                          borderRadius: BorderRadius.circular(15),
+                                        ),
+                                        elevation: 3,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                          child: TextFormField(
+                                            readOnly: true,
+                                            autovalidateMode: AutovalidateMode.always,
+                                            controller: requisitionSlipController.RequiredHrs,
+                                            cursorColor: Colors.black,
+                                            style: const TextStyle(color: Colors.black),
+                                            decoration: const InputDecoration(
+                                              contentPadding: EdgeInsets.zero,
+                                              border: InputBorder.none,
+                                              labelText: "Required Hrs",
+                                              labelStyle: TextStyle(color: Colors.grey, fontSize: RequestConstant.Lable_Font_SIZE),
+                                              prefixIconConstraints:
+                                              BoxConstraints(minWidth: 0, minHeight: 0),
+                                              prefixIcon: Padding(
+                                                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                                  child: Icon(Icons.timer_sharp, color: ConstIcons.IconColor)
+                                              ),
+                                            ),
+                                            validator: (value) {
+                                              if (value!.isEmpty) {
+                                                return '\u26A0 Required';
+                                              }
+                                              return null;
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          side: const BorderSide(color: Colors.white70, width: 1),
+                                          borderRadius: BorderRadius.circular(15),
+                                        ),
+                                        elevation: 3,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                          child: TextFormField(
+                                            readOnly: true,
+                                            autovalidateMode: AutovalidateMode.always,
+                                            controller: requisitionSlipController.RequiredMins,
+                                            cursorColor: Colors.black,
+                                            style: const TextStyle(color: Colors.black),
+                                            decoration: const InputDecoration(
+                                              contentPadding: EdgeInsets.zero,
+                                              border: InputBorder.none,
+                                              labelText: "Required Mins",
+                                              labelStyle: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: RequestConstant.Lable_Font_SIZE),
+                                              prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+                                              prefixIcon: Padding(
+                                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                                child: Icon(Icons.timer_sharp, color: ConstIcons.IconColor),
+                                              ),
+                                            ),
+                                            validator: (value) {
+                                              if (value!.isEmpty) {
+                                                return '\u26A0 Required';
+                                              }
+                                              return null;
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ]),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(color: Colors.white70, width: 1),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              elevation: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                child: TextFormField(
+                                  readOnly: true,
+                                  autovalidateMode: AutovalidateMode.always,
+                                  controller: requisitionSlipController.TotalHrs,
+                                  cursorColor: Colors.black,
+                                  style: const TextStyle(color: Colors.black),
+                                  decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.zero,
+                                    border: InputBorder.none,
+                                    labelText: "Total Hours",
+                                    labelStyle: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: RequestConstant.Lable_Font_SIZE),
+                                    prefixIconConstraints:
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
+                                    prefixIcon: Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                        child: Icon(Icons.access_time_filled_outlined, color: ConstIcons.IconColor)),
+                                  ),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return '\u26A0 Required';
+                                    }
+                                    return null;
+                                  },
+                                  // onTap: (){
+                                  //   requisitionSlipController.TotalHrs.text == '0.0' ? requisitionSlipController.TotalHrs.text = "" : requisitionSlipController.TotalHrs.text;
+                                  // },
+                                ),
+                              ),
+                            ),
+                          ),
+
+                        ],
+                      ),
+                    )),
+
+                    Obx(() => Visibility(
+                      visible: requisitionSlipController.type.value=="P"?true:false,
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(color: Colors.white70, width: 1),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              elevation: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                child: TextFormField(
+                                  readOnly: false,
+                                  autovalidateMode: AutovalidateMode.always,
+                                  controller: requisitionSlipController.Reason,
+                                  cursorColor: Colors.black,
+                                  style: const TextStyle(color: Colors.black),
+                                  decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.zero,
+                                    border: InputBorder.none,
+                                    labelText: "Reason",
+                                    labelStyle: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: RequestConstant.Lable_Font_SIZE),
+                                    prefixIconConstraints:
+                                    BoxConstraints(minWidth: 0, minHeight: 0),
+                                    prefixIcon: Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                        child: ConstIcons.remarks),
+                                  ),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return '\u26A0 Required';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(color: Colors.white70, width: 1),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              elevation: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                child: TextFormField(
+                                  readOnly: true,
+                                  controller: requisitionSlipController.Date,
+                                  cursorColor: Colors.black,
+                                  style: const TextStyle(color: Colors.black),
+                                  decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.zero,
+                                    border: InputBorder.none,
+                                    labelText: "Date",
+                                    labelStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: RequestConstant.Lable_Font_SIZE,
+                                    ),
+                                    prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+                                    prefixIcon: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                        child: ConstIcons.date),
+                                  ),
+                                  onTap: () async {
+                                    var Entrydate = await showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime.now(),
+                                        lastDate: DateTime(2100),
+                                        builder: (context, child) {
+                                          return Theme(
+                                            data: Theme.of(context).copyWith(
+                                              colorScheme: ColorScheme.light(
+                                                primary: Theme.of(context).primaryColor,
+                                                onPrimary: Colors.white,
+                                                onSurface:
+                                                Colors.black, // body text color
+                                              ),
+                                              textButtonTheme: TextButtonThemeData(
+                                                style: TextButton.styleFrom(
+                                                  primary: Colors.black, // button text color
+                                                ),
+                                              ),
+                                            ),
+                                            child: child!,
+                                          );
+                                        });
+                                    requisitionSlipController.Date.text =BaseUtitiles.selectDateFormat(Entrydate!);
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          Container(
+                            child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          side: const BorderSide(color: Colors.white70, width: 1),
+                                          borderRadius: BorderRadius.circular(15),
+                                        ),
+                                        elevation: 3,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                          child: TextFormField(
+                                            readOnly: true,
+                                            autovalidateMode: AutovalidateMode.always,
+                                            controller: requisitionSlipController.Fromtime,
+                                            cursorColor: Colors.black,
+                                            style: const TextStyle(color: Colors.black),
+                                            decoration: const InputDecoration(
+                                              contentPadding: EdgeInsets.zero,
+                                              border: InputBorder.none,
+                                              labelText: "From Time",
+                                              labelStyle: TextStyle(color: Colors.grey, fontSize: RequestConstant.Lable_Font_SIZE),
+                                              prefixIconConstraints:
+                                              BoxConstraints(minWidth: 0, minHeight: 0),
+                                              prefixIcon: Padding(
+                                                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                                  child: Icon(Icons.timer_sharp, color: ConstIcons.IconColor)
+                                              ),
+                                            ),
+                                            validator: (value) {
+                                              if (value!.isEmpty || value=="00:00") {
+                                                return '\u26A0 Required';
+                                              }
+                                              return null;
+                                            },
+                                            onTap: () async {
+                                              await requisitionSlipController.selectTime(context, requisitionSlipController.Fromtime);
+                                              requisitionSlipController.calculateTimeDifference();
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          side: const BorderSide(color: Colors.white70, width: 1),
+                                          borderRadius: BorderRadius.circular(15),
+                                        ),
+                                        elevation: 3,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                          child: TextFormField(
+                                            readOnly: true,
+                                            autovalidateMode: AutovalidateMode.always,
+                                            controller: requisitionSlipController.Totime,
+                                            cursorColor: Colors.black,
+                                            style: const TextStyle(color: Colors.black),
+                                            decoration: const InputDecoration(
+                                              contentPadding: EdgeInsets.zero,
+                                              border: InputBorder.none,
+                                              labelText: "To Time",
+                                              labelStyle: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: RequestConstant.Lable_Font_SIZE),
+                                              prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+                                              prefixIcon: Padding(
+                                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                                child: Icon(Icons.timer_sharp, color: ConstIcons.IconColor),
+                                              ),
+                                            ),
+                                            validator: (value) {
+                                              if (value!.isEmpty || value=="00:00" ) {
+                                                return '\u26A0 Required';
+                                              }
+                                              return null;
+                                            },
+                                            onTap: () async {
+                                              await requisitionSlipController.selectTime(context, requisitionSlipController.Totime);
+                                              requisitionSlipController.calculateTimeDifference();
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ]),
+                          ),
+
+                          Container(
+                            child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          side: const BorderSide(color: Colors.white70, width: 1),
+                                          borderRadius: BorderRadius.circular(15),
+                                        ),
+                                        elevation: 3,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                          child: TextFormField(
+                                            readOnly: true,
+                                            autovalidateMode: AutovalidateMode.always,
+                                            controller: requisitionSlipController.RequiredHrs,
+                                            cursorColor: Colors.black,
+                                            style: const TextStyle(color: Colors.black),
+                                            decoration: const InputDecoration(
+                                              contentPadding: EdgeInsets.zero,
+                                              border: InputBorder.none,
+                                              labelText: "Required Hrs",
+                                              labelStyle: TextStyle(color: Colors.grey, fontSize: RequestConstant.Lable_Font_SIZE),
+                                              prefixIconConstraints:
+                                              BoxConstraints(minWidth: 0, minHeight: 0),
+                                              prefixIcon: Padding(
+                                                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                                  child: Icon(Icons.timer_sharp, color: ConstIcons.IconColor)
+                                              ),
+                                            ),
+                                            validator: (value) {
+                                              if (value!.isEmpty) {
+                                                return '\u26A0 Required';
+                                              }
+                                              return null;
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          side: const BorderSide(color: Colors.white70, width: 1),
+                                          borderRadius: BorderRadius.circular(15),
+                                        ),
+                                        elevation: 3,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
+                                          child: TextFormField(
+                                            readOnly: true,
+                                            autovalidateMode: AutovalidateMode.always,
+                                            controller: requisitionSlipController.RequiredMins,
+                                            cursorColor: Colors.black,
+                                            style: const TextStyle(color: Colors.black),
+                                            decoration: const InputDecoration(
+                                              contentPadding: EdgeInsets.zero,
+                                              border: InputBorder.none,
+                                              labelText: "Required Mins",
+                                              labelStyle: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: RequestConstant.Lable_Font_SIZE),
+                                              prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+                                              prefixIcon: Padding(
+                                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                                child: Icon(Icons.timer_sharp, color: ConstIcons.IconColor),
+                                              ),
+                                            ),
+                                            validator: (value) {
+                                              if (value!.isEmpty) {
+                                                return '\u26A0 Required';
+                                              }
+                                              return null;
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ]),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(color: Colors.white70, width: 1),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              elevation: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 3, left: 10, bottom: 5),
+                                child: TextFormField(
+                                  readOnly: true,
+                                  autovalidateMode: AutovalidateMode.always,
+                                  controller: requisitionSlipController.TotalHrs,
+                                  cursorColor: Colors.black,
+                                  style: const TextStyle(color: Colors.black),
+                                  decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.zero,
+                                    border: InputBorder.none,
+                                    labelText: "Total Hours",
+                                    labelStyle: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: RequestConstant.Lable_Font_SIZE),
+                                    prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
+                                    prefixIcon: Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                        child: Icon(Icons.access_time_filled_outlined, color: ConstIcons.IconColor)),
+                                  ),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return '\u26A0 Required';
+                                    }
+                                    return null;
+                                  },
+                                  onTap: (){
+                                    requisitionSlipController.TotalHrs.text == '0.0'
+                                        ? requisitionSlipController.TotalHrs.text = ""
+                                        : requisitionSlipController.TotalHrs.text;
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+
+                        ],
                       ),
                     )),
 
@@ -1702,10 +1845,12 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                           reportsController.projectname.text  = "--SELECT--";
                           reportsController.selectedProjectId.value = 0;
                           requisitionSlipController.Totaldays.text="1";
+                          requisitionSlipController.totalLeaveValue.value = "1";
                           requisitionSlipController.type.value="L";
                           requisitionSlipController.TotalHrs.text="0";
                           requisitionSlipController.Reason.text="";
                           requisitionSlipController.LeaveReason.text="";
+                          requisitionSlipController.isHalfDay.value=false;
                           Navigator.pop(context);
                         },
                         child: Text("Reset",

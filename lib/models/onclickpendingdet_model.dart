@@ -257,7 +257,7 @@ class MMatReqMasLink {
     POQty: json["PoQty"],
     poqty: json["poqty"] ?? json["Qty"],
     PORate: json["PORate"],
-    DataRate: json["DataRate"],
+    DataRate: json["DataRate"] ?? json["dataRate"],
     PoAmt: json["POAmt"],
     GSTPer: json["GSTPer"],
     GSTAmt: json["GSTAmt"],
@@ -373,6 +373,7 @@ class MMatPurOrdLink {
   int? materialReqOrdDetLinkid;
   double? reqQty;
   dynamic reqRate;
+  dynamic dataRate;
   String? materialName;
   double? balQty;
   double? balqty;
@@ -414,6 +415,7 @@ class MMatPurOrdLink {
     this.unitName,
     this.scaleName,
     this.status,
+    this.dataRate,
   });
 
   factory MMatPurOrdLink.fromJson(Map<String, dynamic> json) => MMatPurOrdLink(
@@ -450,6 +452,7 @@ class MMatPurOrdLink {
     unitName: json["UnitName"],
     scaleName: json["ScaleName"],
     status: json["status"],
+    dataRate: json["dataRate"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -486,6 +489,7 @@ class MMatPurOrdLink {
     "UnitName": unitName,
     "ScaleName": scaleName,
     "status": status,
+    "dataRate": dataRate,
 
   };
 }

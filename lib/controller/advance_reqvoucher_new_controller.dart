@@ -1,9 +1,5 @@
 import 'dart:convert';
-
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
 import 'package:prahkurticore/controller/pendinglistcontroller.dart';
-
 import '../controller/commonvoucher_controller.dart';
 import '../controller/logincontroller.dart';
 import '../controller/projectcontroller.dart';
@@ -12,14 +8,8 @@ import '../db_model/advReqVoc_SitewisePayTable_model.dart';
 import '../db_model/advReqvoucher_itemlistTable_model.dart';
 import '../db_services/advReqVouc_SitewisePaylist_service.dart';
 import '../db_services/advReqvoucher_itemlist_service.dart';
-import '../home/menu/daily_entries/advance_requs_voucher/advance_req_entry.dart';
-import '../home/menu/daily_entries/advance_requs_voucher/advance_req_entrylist.dart';
-import '../home/menu/daily_entries/advance_requs_voucher/advancereq_voucher.dart';
 import '../home/menu/daily_entries/advancereques_voucher_new/advance_req_entry_new.dart';
-import '../home/menu/daily_entries/advancereques_voucher_new/advance_req_entrylist_new.dart';
-import '../models/AdvanceReqDeleteModel.dart';
 import '../models/advancereqvouche_saveapi_reqmodel.dart';
-import '../models/pendingpo_aprovalapi_resmodel.dart';
 import '../provider/advancereqvoucher_provider.dart';
 import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
@@ -425,6 +415,7 @@ class AdvanceReqVoucherController_new extends GetxController {
 
   Future EntryList_EditApi(type,vocId,status,String MenuName, context) async {
     editListApiDatas.value=[];
+    await ClickUtils.run(() async {
     final value = await AdvanceReqVoucherProvider.entryList_editAPI(vocId, status);
     if (value != null) {
       if(value.success==true){
@@ -440,7 +431,7 @@ class AdvanceReqVoucherController_new extends GetxController {
               await getItemlistTablesDatas();
             }
           }
-          return Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AdvReq_voucher_New(heading: MenuName,)),
+          await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AdvReq_voucher_New(heading: MenuName,)),
           );
         }
         else {
@@ -452,6 +443,7 @@ class AdvanceReqVoucherController_new extends GetxController {
     } else {
       BaseUtitiles.showToast("Something Went Wrong...");
     }
+    });
   }
 
   ///-------ADVANCE-------------------

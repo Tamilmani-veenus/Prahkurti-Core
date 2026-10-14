@@ -1,17 +1,12 @@
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:prahkurticore/controller/pendinglistcontroller.dart';
-import '../app_theme/app_colors.dart';
 import '../controller/projectcontroller.dart';
 import '../controller/sitecontroller.dart';
 import '../controller/subcontcontroller.dart';
-import '../db_model/materiallist_model.dart';
 import '../db_model/transferbet_sitewise_itemlistTable_model.dart';
 import '../db_services/transferbet_sitewise_itemlist_service.dart';
 import '../home/menu/materials/transfer_between_sites/transferbetween_sites_additems.dart';
 import '../home/menu/materials/transfer_between_sites/transferbetween_sites_entry.dart';
-import '../home/menu/materials/transfer_between_sites/transferbetween_sites_list.dart';
 import '../models/transferbet_site_saveapi_req_model.dart';
-import '../provider/common_provider.dart';
 import '../provider/consumption_provider.dart';
 import '../provider/transferbetween_site_provider.dart';
 import '../utilities/baseutitiles.dart';
@@ -19,7 +14,6 @@ import '../utilities/requestconstant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'fromsite_controller.dart';
 import 'logincontroller.dart';
 
@@ -39,7 +33,7 @@ class TransferBt_Site_Controller extends GetxController {
   ProjectController projectController = Get.put(ProjectController());
   SiteController siteController = Get.put(SiteController());
   SubcontractorController subcontractorController =
-      Get.put(SubcontractorController());
+  Get.put(SubcontractorController());
   FromSiteController fromsiteController = Get.put(FromSiteController());
 
   List<TextEditingController> Itemlist_stockQty_ListController = [];
@@ -71,39 +65,41 @@ class TransferBt_Site_Controller extends GetxController {
 
 
   late List<TransferBet_Site_ItemListTableModel> ItemListTableModelList =
-      <TransferBet_Site_ItemListTableModel>[];
+  <TransferBet_Site_ItemListTableModel>[];
   late List<TransferBet_Site_ItemListTableModel> detTransReqItemListTableList =
   <TransferBet_Site_ItemListTableModel>[];
   var ItemListTableModel = TransferBet_Site_ItemListTableModel();
   var transferSite_ItemlistService = Transferbet_Site_ItemlistService();
   List ItemListTableModelReadList = <TransferBet_Site_ItemListTableModel>[];
   late List<TransferBet_Site_ItemListTableModel> itemListUpdateModelList =
-      <TransferBet_Site_ItemListTableModel>[];
+  <TransferBet_Site_ItemListTableModel>[];
   late List<TransferBet_Site_ItemListTableModel> deleteModelList =
-      <TransferBet_Site_ItemListTableModel>[];
+  <TransferBet_Site_ItemListTableModel>[];
   RxList ItemGetTableListdata = [].obs;
   RxList<MaterialSiteLink> getTransfferbetDetList = <MaterialSiteLink>[].obs;
 
   Future getItemList(int prid, int siteId, context) async {
     transferItemListdatas.value = [];
-    final value = await Consumption_provider.getStockmaterial(prid, siteId);
-    if (value != null) {
-      if (value.success == true) {
-        if (value.result!.isNotEmpty) {
-          transferItemListdatas.value = value.result ?? [];
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Transferbetween_sites_additems()));
+    await ClickUtils.run(() async {
+      final value = await Consumption_provider.getStockmaterial(prid, siteId);
+      if (value != null) {
+        if (value.success == true) {
+          if (value.result!.isNotEmpty) {
+            transferItemListdatas.value = value.result ?? [];
+            await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Transferbetween_sites_additems()));
+          } else {
+            BaseUtitiles.showToast("No Data Found");
+          }
         } else {
-          BaseUtitiles.showToast("No Data Found");
+          BaseUtitiles.showToast(value.message ?? RequestConstant.NETWORKERROR);
         }
       } else {
-        BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
+        BaseUtitiles.showToast(RequestConstant.NETWORKERROR);
       }
-    } else {
-      BaseUtitiles.showToast("Something Went Wrong...");
-    }
+    });
   }
 
   itemlist_textControllersInitiate() {
@@ -126,7 +122,7 @@ class TransferBt_Site_Controller extends GetxController {
         .Transferbet_Site_ItemlistTable_deleteById(deleteModelList);
   }
 
-  itemlistPopup_saveLabTableDatas(BuildContext context) async {
+  itemlistPopup_saveLabTableDatas(BuildContext context,{from}) async {
     int i = 0;
     int j = 0;
     ItemListTableModelList.clear();
@@ -156,9 +152,11 @@ class TransferBt_Site_Controller extends GetxController {
       i++;
     });
     var savedatas =
-        await transferSite_ItemlistService.Transferbet_Site_ItemlistTable_Save(
-            ItemListTableModelList);
-    return Navigator.pop(context, savedatas);
+    await transferSite_ItemlistService.Transferbet_Site_ItemlistTable_Save(
+        ItemListTableModelList);
+    if(from!="Bottomsheet") {
+      return Navigator.pop(context, savedatas);
+    }
   }
 
   Future getItemlistTablesDatas() async {
@@ -318,7 +316,7 @@ class TransferBt_Site_Controller extends GetxController {
     ));
 
     final list =
-        await TransferBetSiteProvider.transferbet_Site_SaveApi(body, id);
+    await TransferBetSiteProvider.transferbet_Site_SaveApi(body, id);
 
     if (list != null) {
       if (list["success"] == true) {
@@ -329,14 +327,15 @@ class TransferBt_Site_Controller extends GetxController {
         }
         else {
           BaseUtitiles.showToast(list["message"]);
-          print("Message....${list["message"]}");
           await getEntryList();
           BaseUtitiles.popMultiple(context, count: 3);
-        }} else {
-        BaseUtitiles.showToast(list?["message"] ?? "Something went wrong..");
+        }}
+      else {
+        BaseUtitiles.showToast(list?["message"] ?? RequestConstant.NETWORKERROR);
+        BaseUtitiles.popMultiple(context, count: 2);
       }
     } else {
-      BaseUtitiles.showToast("Something went wrong..");
+      BaseUtitiles.showToast(RequestConstant.NETWORKERROR);
       BaseUtitiles.popMultiple(context, count: 2);
     }
   }
@@ -388,10 +387,10 @@ class TransferBt_Site_Controller extends GetxController {
           BaseUtitiles.showToast("No Data Found");
         }
       } else {
-        BaseUtitiles.showToast(response?.message ?? 'Something went wrong..');
+        BaseUtitiles.showToast(response?.message ?? RequestConstant.NETWORKERROR);
       }
     } else {
-      BaseUtitiles.showToast("Something Went Wrong...");
+      BaseUtitiles.showToast(RequestConstant.NETWORKERROR);
     }
   }
 
@@ -399,29 +398,33 @@ class TransferBt_Site_Controller extends GetxController {
   Future getStoreTransPendingView(trId,frSiteId,String MenuName, BuildContext context) async {
     transferAllDatasList.value = [];
     transferItemListdatas.value = [];
-    final value =
-    await TransferBetSiteProvider.getStoreTransPendingViewAPI(trId,frSiteId);
+    // await ClickUtils.run(() async {
+    final value = await TransferBetSiteProvider.getStoreTransPendingViewAPI(trId,frSiteId);
     if (value != null) {
       if (value.success == true) {
-          transferAllDatasList.value = [value.result!];
-          if (transferAllDatasList!.isNotEmpty) {
-            saveButton.value = RequestConstant.PENDINGLIST;
-            await detTransReqPendingViewTable();
-            await getItemlistTablesDatas();
+        transferAllDatasList.value = [value.result!];
+        if (transferAllDatasList!.isNotEmpty) {
+          saveButton.value = RequestConstant.PENDINGLIST;
+          await detTransReqPendingViewTable();
+          await getItemlistTablesDatas();
+          if(frSiteId==0) {
             FocusScope.of(context).unfocus();
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => TransferBetweenSites_Entry(heading: MenuName,)));
+            await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        TransferBetweenSites_Entry(heading: MenuName,)));
+          }
         } else {
           BaseUtitiles.showToast("No Data Found");
         }
       } else {
-        BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
+        BaseUtitiles.showToast(value.message ?? RequestConstant.NETWORKERROR);
       }
     } else {
-      BaseUtitiles.showToast(RequestConstant.SOMETHINGWENT_WRONG);
+      BaseUtitiles.showToast(RequestConstant.NETWORKERROR);
     }
+    // });
   }
 
   detTransReqPendingViewTable() async {
@@ -450,46 +453,46 @@ class TransferBt_Site_Controller extends GetxController {
 
 
   Future EntryList_EditApi(pId,sId,frsId,int workid,String MenuName, BuildContext context) async {
-    final value = await TransferBetSiteProvider.entryList_editAPI(pId,sId,frsId,workid);
-    if (value != null) {
-      if (value.success == true) {
-        editListApiDatas.value = value.result!;
-        saveButton.value = RequestConstant.RESUBMIT;
-        EditTable_SaveTable();
-        getItemlistTablesDatas();
-        return Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => TransferBetweenSites_Entry(heading: MenuName,)));
+    await ClickUtils.run(() async {
+      final value = await TransferBetSiteProvider.entryList_editAPI(workid);
+      if (value != null) {
+        if (value.success == true) {
+          editListApiDatas.value = [value.result!];
+          saveButton.value = RequestConstant.RESUBMIT;
+          EditTable_SaveTable();
+          getItemlistTablesDatas();
+          await Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => TransferBetweenSites_Entry(heading: MenuName,)));
+        } else {
+          BaseUtitiles.showToast(value.message ?? RequestConstant.NETWORKERROR);
+        }
       } else {
-        BaseUtitiles.showToast(value?.message ?? 'Something went wrong..');
+        BaseUtitiles.showToast(RequestConstant.NETWORKERROR);
       }
-    } else {
-      BaseUtitiles.showToast("Something Went Wrong...");
-    }
-
+    });
   }
 
   EditTable_SaveTable() async {
     ItemListTableModelList.clear();
-    editListApiDatas.value.forEach((value) {
+    editListApiDatas[0].materialSiteLink.forEach((value) {
       // value.materialSiteLink.forEach((element) {
-        ItemListTableModel = new TransferBet_Site_ItemListTableModel();
-        ItemListTableModel.materialId = value.materialid;
-        ItemListTableModel.StSDetId = value.StSDetId;
-
-        ItemListTableModel.reqDetId = value.reqDetId;
-        ItemListTableModel.materialName = value.materialName.toString();
-        ItemListTableModel.stockQty = value.stockQty;
-        ItemListTableModel.scale = value.scale;
-        // ItemListTableModel.balQty = element.balQty;
-        ItemListTableModel.Qty = value.qty;
-        ItemListTableModelList.add(ItemListTableModel);
-      });
+      ItemListTableModel = new TransferBet_Site_ItemListTableModel();
+      ItemListTableModel.materialId = value.materialId;
+      ItemListTableModel.StSDetId = value.reqOrdDetId;
+      ItemListTableModel.reqDetId = value.id;
+      ItemListTableModel.materialName = value.materialName.toString();
+      ItemListTableModel.stockQty = value.stockQty;
+      ItemListTableModel.scale = value.unitName;
+      // ItemListTableModel.balQty = element.balQty;
+      ItemListTableModel.Qty = value.qty;
+      ItemListTableModelList.add(ItemListTableModel);
+    });
     // });
     var savedatas =
-        await transferSite_ItemlistService.Transferbet_Site_ItemlistTable_Save(
-            ItemListTableModelList);
+    await transferSite_ItemlistService.Transferbet_Site_ItemlistTable_Save(
+        ItemListTableModelList);
     return savedatas;
   }
 
@@ -503,7 +506,6 @@ class TransferBt_Site_Controller extends GetxController {
     else
       return saveButton.value = RequestConstant.SUBMIT;
   }
-
   Future DeleteAlert(BuildContext context, int index) async {
     return await showDialog(
       context: context,

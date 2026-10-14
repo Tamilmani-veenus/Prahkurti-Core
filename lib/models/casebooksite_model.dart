@@ -45,53 +45,73 @@ class Casebooksite {
 }
 
 class Result {
+  List<Voucher>? vouchers;
+
+  Result({
+    this.vouchers,
+  });
+
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+    vouchers: List<Voucher>.from(json["vouchers"].map((x) => Voucher.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "vouchers": List<dynamic>.from(vouchers!.map((x) => x.toJson())),
+  };
+}
+
+class Voucher {
   int? sno;
   int? projectId;
+  int? voucherId;
   String? voucherNo;
-  String? vocdate;
+  dynamic vocDate;
   String? voucherDate;
-  String? voucherType;
   String? descriptions;
+  String? voucherType;
   double? creditAmount;
   double? depitAmount;
   String? remarks;
 
-  Result({
+  Voucher({
     this.sno,
     this.projectId,
+    this.voucherId,
     this.voucherNo,
-    this.vocdate,
+    this.vocDate,
     this.voucherDate,
-    this.voucherType,
     this.descriptions,
+    this.voucherType,
     this.creditAmount,
     this.depitAmount,
     this.remarks,
   });
 
-  factory Result.fromJson(Map<String, dynamic> json) => Result(
-    sno: json["SNO"],
-    projectId: json["ProjectId"],
-    voucherNo: json["VoucherNo"],
-    vocdate: json["Vocdate"],
-    voucherDate: json["VoucherDate"],
-    voucherType: json["VoucherType"],
-    descriptions: json["Descriptions"],
-    creditAmount: json["CreditAmount"],
-    depitAmount: json["DepitAmount"],
-    remarks: json["Remarks"],
+  factory Voucher.fromJson(Map<String, dynamic> json) => Voucher(
+    sno: json["sno"],
+    projectId: json["projectId"],
+    voucherId: json["voucherId"],
+    voucherNo: json["voucherNo"],
+    vocDate: json["vocDate"],
+    voucherDate: json["voucherDate"],
+    descriptions: json["descriptions"],
+    voucherType: json["voucherType"],
+    creditAmount: json["creditAmount"]?.toDouble(),
+    depitAmount: json["depitAmount"],
+    remarks: json["remarks"],
   );
 
   Map<String, dynamic> toJson() => {
-    "SNO": sno,
-    "ProjectId": projectId,
-    "VoucherNo": voucherNo,
-    "Vocdate": vocdate,
-    "VoucherDate": voucherDate,
-    "VoucherType": voucherType,
-    "Descriptions": descriptions,
-    "CreditAmount": creditAmount,
-    "DepitAmount": depitAmount,
-    "Remarks": remarks,
+    "sno": sno,
+    "projectId": projectId,
+    "voucherId": voucherId,
+    "voucherNo": voucherNo,
+    "vocDate": vocDate,
+    "voucherDate": voucherDate,
+    "descriptions": descriptions,
+    "voucherType": voucherType,
+    "creditAmount": creditAmount,
+    "depitAmount": depitAmount,
+    "remarks": remarks,
   };
 }

@@ -1,4 +1,5 @@
 class SubContDetModel {
+  int? id;
   int? reqDetId;
   int? catId;
   String? catName;
@@ -14,25 +15,31 @@ class SubContDetModel {
   double? EvgOtAmt;
   double? EvgExtrsAmt;
   double? Extra;
+  double? hrs;
 
 
   SubContDetMap() {
-    var mapping = Map<String, dynamic>();
-    mapping['reqDetId'] =  reqDetId!=null?reqDetId:0;
-    mapping['catId'] = catId!=null?catId:null;
-    mapping['catName'] = catName!=null?catName:null;
-    mapping['wages'] = wages!=null?wages:null;
-    mapping['nos'] = nos!=null?nos:null;
-    mapping['netAmt'] = netAmt!=null?netAmt:0.0;
-    mapping['remarks'] = remarks!=null?remarks:"-";
-    mapping['siteId'] = siteId!=null?siteId:null;
-    mapping['siteName'] = siteName!=null?siteName:null;
-    mapping['MrgOtHrs'] = MrgOtHrs!=null?MrgOtHrs:0.0;
-    mapping['MrgOtAmt'] = MrgOtAmt!=null?MrgOtAmt:0.0;
-    mapping['EvgOtHrs'] = EvgOtHrs!=null?EvgOtHrs:0.0;
-    mapping['EvgOtAmt'] = EvgOtAmt!=null?EvgOtAmt:0.0;
-    mapping['EvgExtrsAmt'] = EvgExtrsAmt!=null?EvgExtrsAmt:0.0;
-    mapping['Extra'] = Extra!=null?Extra:0.0;
+    var mapping = <String, dynamic>{};
+    if (id != null) {
+      mapping['id'] = id;
+    }
+
+    mapping['reqDetId'] = reqDetId ?? 0;
+    mapping['catId'] = catId;
+    mapping['catName'] = catName;
+    mapping['wages'] = wages;
+    mapping['nos'] = nos;
+    mapping['netAmt'] = netAmt ?? 0;
+    mapping['remarks'] = remarks ?? "-";
+    mapping['siteId'] = siteId;
+    mapping['siteName'] = siteName;
+    mapping['MrgOtHrs'] = MrgOtHrs ?? 0;
+    mapping['MrgOtAmt'] = MrgOtAmt ?? 0;
+    mapping['EvgOtHrs'] = EvgOtHrs ?? 0;
+    mapping['EvgOtAmt'] = EvgOtAmt ?? 0;
+    mapping['EvgExtrsAmt'] = EvgExtrsAmt ?? 0;
+    mapping['Extra'] = Extra ?? 0;
+    mapping['hrs'] = hrs ?? 0;
     return mapping;
   }
 

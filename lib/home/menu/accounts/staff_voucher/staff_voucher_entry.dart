@@ -1302,7 +1302,7 @@ class _Subcont_Nmr_EntryScreenState_Site
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 _formKey.currentState!.save();
-                                if (!AppClient.isPrahkurti) {
+                                if (!AppClient.isPrahkurti && !AppClient.isVrindhavana) {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(

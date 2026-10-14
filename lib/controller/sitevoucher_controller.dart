@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:prahkurticore/controller/pendinglistcontroller.dart';
 import '../controller/commonvoucher_controller.dart';
 import '../controller/projectcontroller.dart';
@@ -10,11 +9,6 @@ import 'package:get/get.dart';
 import '../db_model/sitevoucherdet_model.dart';
 import '../db_services/sitevoucherlist_service.dart';
 import '../home/menu/accounts/site_voucher/site_voucher_new/site_voucher_entry_new.dart';
-import '../home/menu/accounts/site_voucher/site_voucher_new/site_voucher_entrylist_new.dart';
-import '../models/get_site_voc_image.dart';
-import '../models/inwardimageres_model.dart';
-import '../models/site_voc_image_delete.dart';
-import '../models/site_voc_image_payload.dart';
 import '../models/sitevouchersave_model.dart';
 import '../provider/inward_pending_provider.dart';
 import '../provider/sitevoucher_provider.dart';
@@ -318,6 +312,7 @@ class SiteVoucher_Controller extends GetxController {
 
   Future SiteVoucher_List_EditApi(int VocId,String MenuName, BuildContext context,Url) async {
     Sitevoucher_EditListApiValue.value = [];
+    await ClickUtils.run(() async {
     await Sitevoucher_provider.Sitevoucher_entryList_editAPI(VocId)
         .then((value) async {
       if (value != null) {
@@ -334,7 +329,7 @@ class SiteVoucher_Controller extends GetxController {
           Sitevoucher_itemview_GetDbList.clear();
           await Sitevoucher_entrylist_editSaveDetTable();
           await getsitevoucherTablesDatas();
-          Navigator.pushReplacement(
+          await Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => SiteVoucher_EntryScreen(heading: MenuName,)));
         } else {
           BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
@@ -342,6 +337,7 @@ class SiteVoucher_Controller extends GetxController {
       } else {
         BaseUtitiles.showToast('Something went wrong..');
       }
+    });
     });
   }
   

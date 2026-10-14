@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controller/pendinglistcontroller.dart';
@@ -14,14 +16,13 @@ import '../provider/common_provider.dart';
 import '../provider/mrn_request_indent_provider.dart';
 import '../provider/mrnfinalapproval_provider.dart';
 import '../provider/pendinglist_provider.dart';
+import '../utilities/apiconstant.dart';
 import '../utilities/baseutitiles.dart';
 import '../utilities/requestconstant.dart';
 import 'logincontroller.dart';
 import 'mrn_request_indent_controller.dart';
 
-class MrnFinalApprovalController extends GetxController{
-
-
+class MrnFinalApprovalController extends GetxController {
   final RequestNoText = TextEditingController();
   final RequestDateText = TextEditingController();
   final DueDateText = TextEditingController();
@@ -34,21 +35,23 @@ class MrnFinalApprovalController extends GetxController{
   final PreparedbyText = TextEditingController();
 
   int preparedById = 0;
-  int reqId=0;
-  RxList mrngetdropDownvalue=[].obs;
+  int reqId = 0;
+  RxList mrngetdropDownvalue = [].obs;
   List mainlist = [];
-  RxList mrnProjectDropdownName=[].obs;
+  RxList mrnProjectDropdownName = [].obs;
 
-  LoginController loginController=Get.put(LoginController());
-  ProjectController projectController=Get.put(ProjectController());
-  SiteController siteController=Get.put(SiteController());
-  PendingListController pendingListController=Get.put(PendingListController());
-  MRN_Request_Controller mrn_request_controller = Get.put(MRN_Request_Controller());
-
+  LoginController loginController = Get.put(LoginController());
+  ProjectController projectController = Get.put(ProjectController());
+  SiteController siteController = Get.put(SiteController());
+  PendingListController pendingListController =
+      Get.put(PendingListController());
+  MRN_Request_Controller mrn_request_controller =
+      Get.put(MRN_Request_Controller());
 
   List<TextEditingController> BalQty_ListController = [];
   List<TextEditingController> ReqQty_ListController = [];
   List<TextEditingController> ApprQty_ListController = [];
+  List<TextEditingController> ApproxDays_ListController = [];
   List<TextEditingController> Approval_ListController = [];
   List<TextEditingController> TransfrProject_ListController = [];
   List<TextEditingController> Description_ListController = [];
@@ -60,31 +63,31 @@ class MrnFinalApprovalController extends GetxController{
   String? approvalType;
   List projectName = [];
 
-
   /// ----- Getting project name -----
 
   late List<Materialapprlist> materialFinalApprTableList = <Materialapprlist>[];
-  late List<Materialapprlist> finalapprupdateTableListDatas = <Materialapprlist>[];
+  late List<Materialapprlist> finalapprupdateTableListDatas =
+      <Materialapprlist>[];
   var materialFinalapprlistTableModel = Materialapprlist();
   var materialFinalapprlistService = MaterialapprlistService();
   RxList MaterialFinalAppr_itemview_GetDbList = [].obs;
 
-
-  Future gettingProjectName(int reqMasId,int matId,int proId,BuildContext context) async {
-    final value = await MrnFinalApprovalProvider.projectNameProvider("MRN Final Approve",proId);
+  Future gettingProjectName(
+      int reqMasId, int matId, int proId, BuildContext context) async {
+    final value = await MrnFinalApprovalProvider.projectNameProvider(
+        "MRN Final Approve", proId);
     if (value != null) {
-      if(value.success == true)
-      {
+      if (value.success == true) {
         showDialog(
             context: context,
             builder: (BuildContext context) {
-              return MrnFinalAprFrProjectAlert(list:value.result!,data: reqMasId);
+              return MrnFinalAprFrProjectAlert(
+                  list: value.result!, data: reqMasId);
             });
-      }else {
+      } else {
         BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
       }
-    }
-    else{
+    } else {
       BaseUtitiles.showToast('Something went wrong..');
     }
   }
@@ -94,57 +97,67 @@ class MrnFinalApprovalController extends GetxController{
     ReqQty_ListController.add(TextEditingController());
     ApprQty_ListController.add(TextEditingController());
     Approval_ListController.add(TextEditingController());
+    ApproxDays_ListController.add(TextEditingController());
     TransfrProject_ListController.add(TextEditingController());
     Description_ListController.add(TextEditingController());
     Remarks_ListController.add(TextEditingController());
     projectId.add(TextEditingController());
   }
 
-
   //-------------Itemlist save in DB----------------
 
-  finalapp_malerialitemlist_save_DB(BuildContext context){
+  finalapp_malerialitemlist_save_DB(BuildContext context) {
     materialFinalApprTableList.clear();
     var result = mrnfinalAppDetList.value.first;
     result.mMatReqMasLink?.forEach((element) {
       itemlist_textControllersInitiate();
-      materialFinalapprlistTableModel =  Materialapprlist();
+      materialFinalapprlistTableModel = Materialapprlist();
       materialFinalapprlistTableModel.reqDetId = element.reqMasDetId;
       materialFinalapprlistTableModel.materialid = element.materialid;
-      materialFinalapprlistTableModel.tranfromprjid = element.refProjectId.toString();
-      materialFinalapprlistTableModel.materialname = element.material.toString();
-      materialFinalapprlistTableModel.tranfromprjname =element.refProjectName=="_"? "--SELECT--":element.refProjectName;
+      materialFinalapprlistTableModel.tranfromprjid =
+          element.refProjectId.toString();
+      materialFinalapprlistTableModel.materialname =
+          element.material.toString();
+      materialFinalapprlistTableModel.tranfromprjname =
+          element.refProjectName == "_" ? "--SELECT--" : element.refProjectName;
       materialFinalapprlistTableModel.scale = element.scale.toString();
       materialFinalapprlistTableModel.scaleId = element.scaleId;
       materialFinalapprlistTableModel.balqty = element.balQty;
+      materialFinalapprlistTableModel.approxdays = element.approxDays;
       materialFinalapprlistTableModel.appqty = element.qty;
       materialFinalapprlistTableModel.reqqty = element.reqQty;
-      materialFinalapprlistTableModel.apptype = element.apptype.toString()=="N"||element.apptype.toString()=="null"?"P":element.apptype;
+      materialFinalapprlistTableModel.apptype =
+          element.apptype.toString() == "N" ||
+                  element.apptype.toString() == "null"
+              ? "P"
+              : element.apptype;
       materialFinalapprlistTableModel.remarks = element.remarks;
       materialFinalapprlistTableModel.desc = element.description;
       materialFinalApprTableList.add(materialFinalapprlistTableModel);
     });
-    var saveData =  materialFinalapprlistService.MaterialApproval_table_Save(materialFinalApprTableList);
+    var saveData = materialFinalapprlistService.MaterialApproval_table_Save(
+        materialFinalApprTableList);
     // Navigator.pop(context, saveData);
-    return saveData ;//
+    return saveData; //
   }
-
 
   /// ------------ Get itemlist from local DB ---------------
 
   getFinalApp_MaterialsItemlist_TableDatas() async {
     MaterialFinalAppr_itemview_GetDbList.value = [];
-    var MatAppList = await materialFinalapprlistService.Material_ApprovalItemlist_table_readAll();
-    MatAppList.forEach((getdatas){
-      var materialapprlist =  Materialapprlist();
+    var MatAppList = await materialFinalapprlistService
+        .Material_ApprovalItemlist_table_readAll();
+    MatAppList.forEach((getdatas) {
+      var materialapprlist = Materialapprlist();
       materialapprlist.reqDetId = getdatas['reqDetId'];
       materialapprlist.materialid = getdatas['materialid'];
       materialapprlist.tranfromprjid = getdatas['tranfromprjid'];
       materialapprlist.materialname = getdatas['materialname'];
       materialapprlist.tranfromprjname = getdatas['tranfromprjname'];
-      materialapprlist.scale =  getdatas['scale'];
+      materialapprlist.scale = getdatas['scale'];
       materialapprlist.scaleId = getdatas['scaleId'];
       materialapprlist.balqty = getdatas['balqty'];
+      materialapprlist.approxdays = getdatas['approxdays'];
       materialapprlist.appqty = getdatas['appqty'];
       materialapprlist.reqqty = getdatas['reqqty'];
       materialapprlist.apptype = getdatas['apptype'];
@@ -155,22 +168,71 @@ class MrnFinalApprovalController extends GetxController{
     setTextControllersValue();
   }
 
-
   /// -----  Set Value -----
 
   setTextControllersValue() async {
-    for (var index = 0; index < MaterialFinalAppr_itemview_GetDbList.length; index++) {
+    for (var index = 0;
+        index < MaterialFinalAppr_itemview_GetDbList.length;
+        index++) {
       itemlist_textControllersInitiate();
-      BalQty_ListController[index].text = MaterialFinalAppr_itemview_GetDbList.value[index].balqty.toString();
-      ReqQty_ListController[index].text = MaterialFinalAppr_itemview_GetDbList.value[index].reqqty.toString();
-      ApprQty_ListController[index].text = MaterialFinalAppr_itemview_GetDbList.value[index].appqty.toString();
-      Approval_ListController[index].text = MaterialFinalAppr_itemview_GetDbList.value[index].apptype;
-      TransfrProject_ListController[index].text = MaterialFinalAppr_itemview_GetDbList.value[index].tranfromprjname =="_"?"--SELECT--":MaterialFinalAppr_itemview_GetDbList.value[index].tranfromprjname;
-      projectId[index].text = MaterialFinalAppr_itemview_GetDbList.value[index].tranfromprjid.toString();
-      Description_ListController[index].text=MaterialFinalAppr_itemview_GetDbList.value[index].desc.toString();
-      Remarks_ListController[index].text=MaterialFinalAppr_itemview_GetDbList.value[index].remarks.toString();
+      BalQty_ListController[index].text =
+          MaterialFinalAppr_itemview_GetDbList.value[index].balqty.toString();
+      ReqQty_ListController[index].text =
+          MaterialFinalAppr_itemview_GetDbList.value[index].reqqty.toString();
+      ApprQty_ListController[index].text =
+          MaterialFinalAppr_itemview_GetDbList.value[index].appqty.toString();
+      ApproxDays_ListController[index].text =
+          MaterialFinalAppr_itemview_GetDbList.value[index].approxdays
+              .toString();
+      Approval_ListController[index].text =
+          MaterialFinalAppr_itemview_GetDbList.value[index].apptype;
+      TransfrProject_ListController[index].text =
+          MaterialFinalAppr_itemview_GetDbList.value[index].tranfromprjname ==
+                  "_"
+              ? "--SELECT--"
+              : MaterialFinalAppr_itemview_GetDbList
+                  .value[index].tranfromprjname;
+      projectId[index].text = MaterialFinalAppr_itemview_GetDbList
+          .value[index].tranfromprjid
+          .toString();
+      Description_ListController[index].text =
+          MaterialFinalAppr_itemview_GetDbList.value[index].desc.toString();
+      Remarks_ListController[index].text =
+          MaterialFinalAppr_itemview_GetDbList.value[index].remarks.toString();
     }
   }
+
+  // void MaterialItemlistBal_clickEdit(int index) {
+  //   final double balQty = double.tryParse(
+  //     MaterialFinalAppr_itemview_GetDbList.value[index].balqty.toString(),
+  //   ) ??
+  //       0.0;
+  //
+  //   final double enteredQty = double.tryParse(
+  //     ApprQty_ListController[index].text,
+  //   ) ??
+  //       0.0;
+  //
+  //   bool checkBalQty = false;
+  //
+  //   if (mrn_request_controller.ReqType.value == "PO") {
+  //     checkBalQty = true;
+  //   }
+  //
+  //   else if (AppClient.isAnusamm && mrn_request_controller.balQtyForProAndSite.value == true) {
+  //     if (balQty != 0) {
+  //       checkBalQty = true;
+  //     }
+  //   }
+  //
+  //   if (checkBalQty && enteredQty > balQty) {
+  //     ApprQty_ListController[index].text = "0.0";
+  //     BaseUtitiles.showToast("More than Bal Qty, Not Allowed");
+  //     return;
+  //   }
+  //
+  //   finalApproval_updateConsumTables();
+  // }
 
   MaterialItemlistBal_clickEdit(int index) {
     double balQty = double.parse(
@@ -179,19 +241,16 @@ class MrnFinalApprovalController extends GetxController{
     double enteredQty = ApprQty_ListController[index].value.text.isEmpty
         ? 0
         : double.parse(ApprQty_ListController[index].value.text);
-    if(mrn_request_controller.ReqType.value == "PO")
-    {
-      if (enteredQty > balQty) {
+    if (mrn_request_controller.ReqType.value == "PO") {
+      if ((!AppClient.isAnusamm || mrn_request_controller.balQtyForProAndSite.value) && enteredQty > balQty) {
         enteredQty = 0;
         ApprQty_ListController[index].text = "0.0";
         BaseUtitiles.showToast("More than Bal Qty, Not Allowed");
-      }
-      else {
+      } else {
         // If none of the above conditions are met, call updateConsumTables()
         finalApproval_updateConsumTables();
       }
-    }
-    else {
+    } else {
       finalApproval_updateConsumTables();
     }
   }
@@ -201,47 +260,60 @@ class MrnFinalApprovalController extends GetxController{
     int i = 0;
     finalapprupdateTableListDatas.clear();
     MaterialFinalAppr_itemview_GetDbList.forEach((element) {
-      if(ApprQty_ListController[i].value.text == ""){
+      if (ApprQty_ListController[i].value.text == "") {
         materialFinalapprlistTableModel = new Materialapprlist();
         materialFinalapprlistTableModel.reqDetId = element.reqDetId;
         materialFinalapprlistTableModel.materialid = element.materialid;
         materialFinalapprlistTableModel.tranfromprjid = projectId[i].text;
-        materialFinalapprlistTableModel.materialname = element.materialname.toString();
-        materialFinalapprlistTableModel.tranfromprjname = TransfrProject_ListController[i].text;
-        materialFinalapprlistTableModel.scale =  element.scale;
+        materialFinalapprlistTableModel.materialname =
+            element.materialname.toString();
+        materialFinalapprlistTableModel.tranfromprjname =
+            TransfrProject_ListController[i].text;
+        materialFinalapprlistTableModel.scale = element.scale;
         materialFinalapprlistTableModel.scaleId = element.scaleId;
         materialFinalapprlistTableModel.balqty = element.balqty;
         materialFinalapprlistTableModel.appqty = 0;
+        materialFinalapprlistTableModel.approxdays = element.approxdays;
         materialFinalapprlistTableModel.reqqty = element.reqqty;
-        materialFinalapprlistTableModel.apptype = Approval_ListController[i].text;
-        materialFinalapprlistTableModel.remarks = Remarks_ListController[i].text;
-        materialFinalapprlistTableModel.desc = Description_ListController[i].text;
+        materialFinalapprlistTableModel.apptype =
+            Approval_ListController[i].text;
+        materialFinalapprlistTableModel.remarks =
+            Remarks_ListController[i].text;
+        materialFinalapprlistTableModel.desc =
+            Description_ListController[i].text;
         finalapprupdateTableListDatas.add(materialFinalapprlistTableModel);
         i++;
-      }
-      else{
+      } else {
         materialFinalapprlistTableModel = Materialapprlist();
         materialFinalapprlistTableModel.reqDetId = element.reqDetId;
         materialFinalapprlistTableModel.materialid = element.materialid;
         materialFinalapprlistTableModel.tranfromprjid = projectId[i].text;
-        materialFinalapprlistTableModel.materialname = element.materialname.toString();
-        materialFinalapprlistTableModel.tranfromprjname = TransfrProject_ListController[i].text;
-        materialFinalapprlistTableModel.scale =  element.scale;
+        materialFinalapprlistTableModel.materialname =
+            element.materialname.toString();
+        materialFinalapprlistTableModel.tranfromprjname =
+            TransfrProject_ListController[i].text;
+        materialFinalapprlistTableModel.scale = element.scale;
         materialFinalapprlistTableModel.scaleId = element.scaleId;
         materialFinalapprlistTableModel.balqty = element.balqty;
         materialFinalapprlistTableModel.reqqty = element.reqqty;
-        materialFinalapprlistTableModel.appqty = double.parse(ApprQty_ListController[i].value.text);
-        materialFinalapprlistTableModel.apptype = Approval_ListController[i].text;
-        materialFinalapprlistTableModel.remarks = Remarks_ListController[i].text;
-        materialFinalapprlistTableModel.desc = Description_ListController[i].text;
+        materialFinalapprlistTableModel.approxdays =
+            double.tryParse(ApproxDays_ListController[i].value.text)??0;
+        materialFinalapprlistTableModel.appqty =
+            double.tryParse(ApprQty_ListController[i].value.text)??0;
+        materialFinalapprlistTableModel.apptype =
+            Approval_ListController[i].text;
+        materialFinalapprlistTableModel.remarks =
+            Remarks_ListController[i].text;
+        materialFinalapprlistTableModel.desc =
+            Description_ListController[i].text;
         finalapprupdateTableListDatas.add(materialFinalapprlistTableModel);
 
         i++;
       }
     });
-    await materialFinalapprlistService.Material_ApprovalItemlist_table_Update(finalapprupdateTableListDatas);
+    await materialFinalapprlistService.Material_ApprovalItemlist_table_Update(
+        finalapprupdateTableListDatas);
   }
-
 
   //----delete Table data------
 
@@ -249,57 +321,58 @@ class MrnFinalApprovalController extends GetxController{
     await materialFinalapprlistService.Material_ApprovalItemlist_table_delete();
   }
 
-
-
   //------------MRN Final Approval List--------------
-  Future mrnFinalapprovalDetListApi(int ReqMasId,String MenuName, BuildContext context) async {
+  Future mrnFinalapprovalDetListApi(
+      int ReqMasId, String MenuName, BuildContext context) async {
     mrnfinalAppDetList.value.clear();
-    final value = await PendingListProvider.getMrnFinalApproval(ReqMasId);
-    if (value != null ) {
-      if(value.success == true)
-      {
-        mrnfinalAppDetList.value = [value.result];
-        if(mrnfinalAppDetList.value.isNotEmpty)
-        {
-          await finalapp_malerialitemlist_save_DB(context);
-          await getFinalApp_MaterialsItemlist_TableDatas();
-          await mrn_request_controller.getCheckApprovalLevel();
-          mrn_request_controller.saveButton.value = RequestConstant.APPROVAL;
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MrnfinalEntryScreen(heading: MenuName,)));
+    await ClickUtils.run(() async {
+      final value = await PendingListProvider.getMrnFinalApproval(ReqMasId);
+      if (value != null) {
+        if (value.success == true) {
+          mrnfinalAppDetList.value = [value.result];
+          if (mrnfinalAppDetList.value.isNotEmpty) {
+            await finalapp_malerialitemlist_save_DB(context);
+            await getFinalApp_MaterialsItemlist_TableDatas();
+            await mrn_request_controller.getCheckApprovalLevel();
+            mrn_request_controller.saveButton.value = RequestConstant.APPROVAL;
+            await Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => MrnfinalEntryScreen(
+                          heading: MenuName,
+                        )));
+          } else {
+            BaseUtitiles.showToast("No Data Found");
+          }
+        } else {
+          BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
         }
-        else {
-          BaseUtitiles.showToast("No Data Found");
-        }
-      }else {
-        BaseUtitiles.showToast(value.message ?? 'Something went wrong..');
+      } else {
+        BaseUtitiles.showToast("Something went wrong..");
       }
-    }
-    else{
-      BaseUtitiles.showToast("Something went wrong..");
-    }
+    });
   }
 
-
   Future ApproveAPI(BuildContext context) async {
-    getsaveDetList.value=[];
-    await Future.delayed(const Duration(seconds:0));
+    getsaveDetList.value = [];
+    await Future.delayed(const Duration(seconds: 0));
     String body = materiasaveResponseToJson(MateriasaveResponse(
-        id:reqId,
-        reqOrdNo:RequestNoText.text,
-        reqOrdDate:RequestDateText.text,
-        reqdueDate:DueDateText.text,
-        projectId:projectController.selectedProjectId.value,
-        siteId:siteController.selectedsiteId.value,
-        reqRemarks:ReqremarksText.text,
+        id: reqId,
+        reqOrdNo: RequestNoText.text,
+        reqOrdDate: RequestDateText.text,
+        reqdueDate: DueDateText.text,
+        projectId: projectController.selectedProjectId.value,
+        siteId: siteController.selectedsiteId.value,
+        reqRemarks: ReqremarksText.text,
         requestType: mrn_request_controller.ReqType.value.toString(),
         approvedBy: int.parse(loginController.EmpId()),
         verifyStatus: "Y",
         preApproveStatus: "Y",
         approveStatus: "Y",
-        approveDate: BaseUtitiles().convertToUtcIso(RequestDateText.text) ,
+        approveDate: BaseUtitiles().convertToUtcIso(RequestDateText.text),
         approveRemarks: ApprovalremarksText.text,
-        mMatReqMasLink: attendanceListDet(reqId)
-    ));
+        mMatReqMasLink: attendanceListDet(reqId)));
+
     final list = await Mrn_Req_provider.SaveMaterialScreenEntryAPI(
         body, reqId, mrn_request_controller.saveButton.value, context);
     if (list != null) {
@@ -318,28 +391,28 @@ class MrnFinalApprovalController extends GetxController{
     }
   }
 
-
-
   List<MMatReqMasLink>? attendanceListDet(reqId) {
-    getsaveDetList.value=[];
+    getsaveDetList.value = [];
     MaterialFinalAppr_itemview_GetDbList.value.forEach((element) {
       itemlist_textControllersInitiate();
       if (element.reqqty > 0) {
         var list = MMatReqMasLink(
-          id: element.reqDetId,
-          materialReqOrdMasid: reqId,
-          materialId: element.materialid,
-          qty: element.appqty,
-          scaleId: element.scaleId,
-          siteId: siteController.selectedsiteId.value,
-          reqQty: element.reqqty,
-          remarks: element.remarks,
-          reqDescription: element.desc,
-          refProjectId:int.tryParse(element.tranfromprjid),
-          approveType:element.apptype,
-          preApproveStatus: "Y",
-          approveStatus: "Y",
-        );
+            id: element.reqDetId,
+            materialReqOrdMasid: reqId,
+            materialId: element.materialid,
+            qty: element.appqty,
+            scaleId: element.scaleId,
+            siteId: siteController.selectedsiteId.value,
+            reqQty: element.reqqty,
+            remarks: element.remarks,
+            reqDescription: element.desc,
+            refProjectId: int.tryParse(element.tranfromprjid),
+            approveType: element.apptype,
+            preApproveStatus: "Y",
+            approveStatus: "Y",
+            approxDays: mrn_request_controller.ReqType.value == "CP"
+                ? element.approxdays
+                : 0);
         getsaveDetList.value.add(list);
       }
     });

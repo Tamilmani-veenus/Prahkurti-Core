@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -9,6 +8,7 @@ import '../../../../constants/ui_constant/icons_const.dart';
 import '../../../../controller/auto_yrwise_no_controller.dart';
 import '../../../../controller/bottomsheet_Controllers.dart';
 import '../../../../controller/logincontroller.dart';
+import '../../../../controller/mrn_request_indent_controller.dart';
 import '../../../../controller/mrnrequest_preIndent_controller.dart';
 import '../../../../controller/projectcontroller.dart';
 import '../../../../controller/sitecontroller.dart';
@@ -33,6 +33,8 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
   AutoYearWiseNoController autoYearWiseNoController = Get.put(AutoYearWiseNoController());
   LoginController loginController = Get.put(LoginController());
   SubcontractorController subcontractorController = Get.put(SubcontractorController());
+  final MRN_Request_Controller mrn_request_controller = Get.put(MRN_Request_Controller());
+
 
   final _formKey = GlobalKey<FormState>();
 
@@ -40,6 +42,7 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
   void initState() {
     var duration = Duration(seconds: 0);
     Future.delayed(duration, () async {
+      mrn_request_controller.CheckmaterialBalQty();
 
       if (mrnRequest_PreIndent_Controller.saveButton.value == RequestConstant.VERIFY || mrnRequest_PreIndent_Controller.saveButton.value == RequestConstant.APPROVAL) {
         mrnRequest_PreIndent_Controller.pendingAllDatasList.forEach((element) {
@@ -71,7 +74,7 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
           mrnRequest_PreIndent_Controller.preparedbyController.text = element.preparedbyName;
           mrnRequest_PreIndent_Controller.ReqTypeController.text = element.purchaseType == "PO" ? "General Items" : "Asset Materials";
           mrnRequest_PreIndent_Controller.ReqType.value = element.purchaseVal.toString();
-          mrnRequest_PreIndent_Controller.createdById.value=element.createdBy;
+          mrnRequest_PreIndent_Controller.createdById.value=element.preparedby;
           mrnRequest_PreIndent_Controller.RemarksController.text = element.reqRemarks;
         });
       }
@@ -912,26 +915,35 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Expanded(
-                                    flex: 3,
-                                    child: Container(
-                                        margin: EdgeInsets.only(left: 15, bottom: 10,right: 5),
-                                        child: Text( "BalQty:  ",
-                                            style: TextStyle(
-                                                fontSize: RequestConstant.ALERT_Font_SIZE,
-                                                fontWeight: FontWeight.bold,
-                                                color: Theme.of(context).primaryColor))
-                                    ),
+
+                                  Obx((){
+                                    return mrn_request_controller.activeType.value ?
+                                    Expanded(
+                                      flex: 3,
+                                      child: Container(
+                                          margin: EdgeInsets.only(left: 15, bottom: 10,right: 5),
+                                          child: Text( "BalQty:  ",
+                                              style: TextStyle(
+                                                  fontSize: RequestConstant.ALERT_Font_SIZE,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Theme.of(context).primaryColor))
+                                      ),
+                                    ) : SizedBox();
+                                    },
                                   ),
-                                  Expanded(
-                                    flex: 4,
-                                    child: Container(
-                                        margin: EdgeInsets.only(bottom: 10),
-                                        child: Text( mrnRequest_PreIndent_Controller.Material_itemview_GetDbList.value[index].balqty.toString(),
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: RequestConstant.ALERT_Font_SIZE,
-                                                color: Colors.black))),
+                                  Obx((){
+                                    return mrn_request_controller.activeType.value ?
+                                      Expanded(
+                                      flex: 4,
+                                      child: Container(
+                                          margin: EdgeInsets.only(bottom: 10),
+                                          child: Text( mrnRequest_PreIndent_Controller.Material_itemview_GetDbList.value[index].balqty.toString(),
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: RequestConstant.ALERT_Font_SIZE,
+                                                  color: Colors.black))),
+                                    ) : SizedBox();
+                                    },
                                   ),
 
                                   Expanded(
@@ -983,7 +995,13 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
                                         onChanged: (value) {
                                           setState(() {
                                           });
-                                          mrnRequest_PreIndent_Controller.MaterialItemlist_clickEdit();
+                                          if(mrn_request_controller.activeType.value){
+                                            mrnRequest_PreIndent_Controller.MaterialItemlist_clickEdit();
+                                          }
+                                          else{
+                                            mrnRequest_PreIndent_Controller.updateConsumTables();
+                                          }
+                                          // mrnRequest_PreIndent_Controller.MaterialItemlist_clickEdit();
                                         },
                                         onTap: (){
                                           if(mrnRequest_PreIndent_Controller.Addwork_qtyControllers[index].text=="0" || mrnRequest_PreIndent_Controller.Addwork_qtyControllers[index].text=="0.0" ){

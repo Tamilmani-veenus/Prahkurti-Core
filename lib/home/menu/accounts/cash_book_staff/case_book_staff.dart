@@ -560,7 +560,7 @@ class _Case_Book_StaffState extends State<Case_Book_Staff> {
                                         flex: 4,
                                         child: Text(
                                           cashBookStaffController
-                                              .cashstaffDatas.value[index].vocdate
+                                              .cashstaffDatas.value[index].voucherDate
                                               .toString(),
                                         )),
                                   ],
