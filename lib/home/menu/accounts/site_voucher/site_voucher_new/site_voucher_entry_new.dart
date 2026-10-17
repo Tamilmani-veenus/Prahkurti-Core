@@ -22,6 +22,7 @@ import '../../../../../controller/sitevoucher_controller.dart';
 import '../../../../../controller/subcontcontroller.dart';
 import '../../../../../utilities/apiconstant.dart';
 import '../../../../../utilities/baseutitiles.dart';
+import '../../../../../utilities/common_date_fields.dart';
 import '../../../../../utilities/image_view.dart';
 import '../../../../../utilities/requestconstant.dart';
 import '../../../../punch_in_out/camera_screen.dart';
@@ -121,6 +122,9 @@ class _SiteVoucher_EntryScreenState extends State<SiteVoucher_EntryScreen> {
           siteVoucher_Controller.createdById.value = element.createdBy;
         });
       }
+      if (!mounted) return;
+
+      setState(() {});
     });
     super.initState();
   }
@@ -205,38 +209,24 @@ class _SiteVoucher_EntryScreenState extends State<SiteVoucher_EntryScreen> {
                         ),
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.white70, width: 1),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        elevation: 3,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 3, left: 10, bottom: 5),
-                          child: TextFormField(
-                            readOnly: true,
-                            controller: siteVoucher_Controller.sitevocDate,
-                            cursorColor: Colors.black,
-                            style: TextStyle(color: Colors.black),
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.zero,
-                              border: InputBorder.none,
-                              labelText: "Entry Date",
-                              labelStyle: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: RequestConstant.Lable_Font_SIZE),
-                              prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
-                              prefixIcon: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 8),
-                                  child: ConstIcons.date),
-                            ),
-                          ),
-                        ),
+                    CommonDateFields(
+                      date1: CommonDateFieldConfig(
+                          title: "Date",
+                          value: siteVoucher_Controller.sitevocDate.text,
+                          controller: siteVoucher_Controller.sitevocDate,
+                          selectable: loginController.user.value.userType != "S",
+                        initialDate: DateTime.tryParse(
+                          siteVoucher_Controller.sitevocDate.text,
+                        ) ??
+                            DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime.now(),
+                        onChanged: (date) {
+                          setState(() {
+                            siteVoucher_Controller.sitevocDate.text =
+                                CommonDateUtils.formatApiDate(date);
+                          });
+                        },
                       ),
                     ),
                     Container(

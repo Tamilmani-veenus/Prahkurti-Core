@@ -14,6 +14,7 @@ import '../../../../controller/man_power_controller.dart';
 import '../../../../controller/projectcontroller.dart';
 import '../../../../controller/sitecontroller.dart';
 import '../../../../utilities/baseutitiles.dart';
+import '../../../../utilities/common_date_fields.dart';
 import '../../../../utilities/requestconstant.dart';
 
 class ManPowerEntrySreen extends StatefulWidget {
@@ -79,6 +80,9 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
           manPowerController.RemarksController.text = element.remarks!;
         }
       }
+      if (!mounted) return;
+
+      setState(() {});
     });
   }
 
@@ -167,232 +171,71 @@ class _ManPowerEntrySreenState extends State<ManPowerEntrySreen> {
                         ),
                       ),
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            margin: const EdgeInsets.only(
-                                top: 2, left: 10, right: 10),
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                    color: Colors.white70, width: 1),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 3, left: 10, bottom: 5),
-                                child: TextFormField(
-                                    readOnly: true,
-                                    controller: manPowerController
-                                        .ManPowerEntryDateController,
-                                    cursorColor: Colors.black,
-                                    style: const TextStyle(color: Colors.black),
-                                    decoration: const InputDecoration(
-                                      contentPadding: EdgeInsets.zero,
-                                      border: InputBorder.none,
-                                      labelText: "Entry Date",
-                                      labelStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize:
-                                          RequestConstant.Lable_Font_SIZE),
-                                      prefixIconConstraints: BoxConstraints(
-                                          minWidth: 0, minHeight: 0),
-                                      prefixIcon: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 8, horizontal: 8),
-                                          child: ConstIcons.date),
-                                    ),
-                                    onTap: () async {
-                                        var Entrydate = await showDatePicker(
-                                            context: context,
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime(2010),
-                                            // .subtract(
-                                            // const Duration(days: 1)),
-                                            lastDate: DateTime.now(),
-                                            builder: (context, child) {
-                                              return Theme(
-                                                data:
-                                                Theme.of(context).copyWith(
-                                                  colorScheme:
-                                                  ColorScheme.light(
-                                                    primary: Theme.of(context)
-                                                        .primaryColor,
-                                                    // header background color
-                                                    onPrimary: Colors.white,
-                                                    // header text color
-                                                    onSurface: Colors
-                                                        .black, // body text color
-                                                  ),
-                                                  textButtonTheme:
-                                                  TextButtonThemeData(
-                                                    style: TextButton.styleFrom(
-                                                      primary: Colors
-                                                          .black, // button text color
-                                                    ),
-                                                  ),
-                                                ),
-                                                child: child!,
-                                              );
-                                            });
-                                        manPowerController
-                                            .ManPowerEntryDateController.text =
-                                            BaseUtitiles.selectDateFormat(
-                                                Entrydate!);
-                                      }
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                    CommonDateFields(
+                      date1: CommonDateFieldConfig(
+                        title: "Date",
+                        value: manPowerController
+                            .ManPowerEntryDateController.text,
+                        controller: manPowerController
+                            .ManPowerEntryDateController,
+                        selectable: loginController.user.value.userType != "S",
+                        initialDate: DateTime.tryParse(
+                          manPowerController
+                              .ManPowerEntryDateController.text,
+                        ) ??
+                            DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime.now(),
+                        onChanged: (date) {
+                          setState(() {
+                            manPowerController
+                                .ManPowerEntryDateController.text =
+                                CommonDateUtils.formatApiDate(date);
+                          });
+                        },
+                      ),
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            margin: const EdgeInsets.only(
-                                top: 2, left: 10, right: 10),
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                    color: Colors.white70, width: 1),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 3, left: 10, bottom: 5),
-                                child: TextFormField(
-                                    readOnly: true,
-                                    controller: manPowerController
-                                        .ManPowerReqDateController,
-                                    cursorColor: Colors.black,
-                                    style: const TextStyle(color: Colors.black),
-                                    decoration: const InputDecoration(
-                                      contentPadding: EdgeInsets.zero,
-                                      border: InputBorder.none,
-                                      labelText: "Req Date",
-                                      labelStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize:
-                                          RequestConstant.Lable_Font_SIZE),
-                                      prefixIconConstraints: BoxConstraints(
-                                          minWidth: 0, minHeight: 0),
-                                      prefixIcon: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 8, horizontal: 8),
-                                          child: ConstIcons.date),
-                                    ),
-                                    onTap: () async {
-                                      DateTime? entryDate = await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(2000), // Earliest selectable date
-                                        lastDate: DateTime(2100),  // Latest selectable date
-                                        builder: (context, child) {
-                                          return Theme(
-                                            data: Theme.of(context).copyWith(
-                                              colorScheme: ColorScheme.light(
-                                                primary: Theme.of(context).primaryColor,
-                                                onPrimary: Colors.white,
-                                                onSurface: Colors.black,
-                                              ),
-                                            ),
-                                            child: child!,
-                                          );
-                                        },
-                                      );
+                    CommonDateFields(
+                      date1: CommonDateFieldConfig(
+                        title: "Req Date",
+                        value: manPowerController.ManPowerReqDateController.text,
+                        controller: manPowerController.ManPowerReqDateController,
+                        selectable: true,
+                        initialDate: DateTime.tryParse(
+                          manPowerController.ManPowerReqDateController.text,
+                        ) ??
+                            DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime.now(),
+                        onChanged: (date) {
+                          setState(() {
+                            manPowerController.ManPowerReqDateController.text =
+                                CommonDateUtils.formatApiDate(date);
+                          });
+                        },
 
-                                      if (entryDate != null) {
-                                        manPowerController.ManPowerReqDateController.text =
-                                            BaseUtitiles.selectDateFormat(entryDate);
+                      ),
 
-                                        if (manPowerController.ManPowerDueDateController.text.isNotEmpty) {
-                                          final dueDate = DateTime.parse(
-                                            manPowerController.ManPowerDueDateController.text,
-                                          );
-
-                                          if (dueDate.isBefore(entryDate)) {
-                                            manPowerController.ManPowerDueDateController.text =
-                                                BaseUtitiles.selectDateFormat(entryDate);
-                                          }
-                                        }
-                                      }
-                                    }
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            margin: const EdgeInsets.only(
-                                top: 2, left: 10, right: 10),
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                    color: Colors.white70, width: 1),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 3, left: 10, bottom: 5),
-                                child: TextFormField(
-                                    readOnly: true,
-                                    controller: manPowerController
-                                        .ManPowerDueDateController,
-                                    cursorColor: Colors.black,
-                                    style: const TextStyle(color: Colors.black),
-                                    decoration: const InputDecoration(
-                                      contentPadding: EdgeInsets.zero,
-                                      border: InputBorder.none,
-                                      labelText: "Req Due Date",
-                                      labelStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize:
-                                          RequestConstant.Lable_Font_SIZE),
-                                      prefixIconConstraints: BoxConstraints(
-                                          minWidth: 0, minHeight: 0),
-                                      prefixIcon: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 8, horizontal: 8),
-                                          child: ConstIcons.date),
-                                    ),
-                                    onTap: () async {
-                                      DateTime? entryDate = await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.parse(manPowerController.ManPowerReqDateController.text),
-                                        firstDate:DateTime.parse(manPowerController.ManPowerReqDateController.text),
-                                        lastDate: DateTime(2100),  // Latest selectable date
-                                        builder: (context, child) {
-                                          return Theme(
-                                            data: Theme.of(context).copyWith(
-                                              colorScheme: ColorScheme.light(
-                                                primary: Theme.of(context).primaryColor,
-                                                onPrimary: Colors.white,
-                                                onSurface: Colors.black,
-                                              ),
-                                            ),
-                                            child: child!,
-                                          );
-                                        },
-                                      );
-
-                                      if (entryDate != null) {
-                                        manPowerController.ManPowerDueDateController.text =
-                                            BaseUtitiles.selectDateFormat(entryDate);
-                                      }
-                                    }
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      date2: CommonDateFieldConfig(
+                        title: "Req Due Date",
+                        value: manPowerController.ManPowerDueDateController.text,
+                        controller: manPowerController.ManPowerDueDateController,
+                        selectable: true,
+                        initialDate: DateTime.tryParse(
+                          manPowerController.ManPowerDueDateController.text,
+                        ) ??
+                            DateTime.now(),
+                        firstDate: DateTime.tryParse(
+                            manPowerController.ManPowerReqDateController.text) ??
+                            DateTime.now(),
+                        lastDate: DateTime(2100),
+                        onChanged: (date) {
+                          setState(() {
+                            manPowerController.ManPowerDueDateController.text =
+                                CommonDateUtils.formatApiDate(date);
+                          });
+                        },
+                      ),
                     ),
                     Container(
                       margin:

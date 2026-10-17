@@ -7,10 +7,12 @@ import '../../../../controller/auto_yrwise_no_controller.dart';
 import '../../../../controller/billgeneration_boq_controller.dart';
 import '../../../../controller/bottomsheet_Controllers.dart';
 import '../../../../controller/dailywrk_done_dpr_controller.dart';
+import '../../../../controller/logincontroller.dart';
 import '../../../../controller/projectcontroller.dart';
 import '../../../../controller/sitecontroller.dart';
 import '../../../../controller/subcontcontroller.dart';
 import '../../../../utilities/baseutitiles.dart';
+import '../../../../utilities/common_date_fields.dart';
 import '../../../../utilities/requestconstant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -35,6 +37,7 @@ class _Bill_Generation_Boq_EntryScreenState_Site
   AutoYearWiseNoController autoYearWiseNoController =
   Get.put(AutoYearWiseNoController());
   BillGenerationBoqController billGenerationBoqController=Get.put(BillGenerationBoqController());
+  LoginController loginController = Get.put(LoginController());
 
   BottomsheetControllers bottomsheetControllers =
   Get.put(BottomsheetControllers());
@@ -45,9 +48,9 @@ class _Bill_Generation_Boq_EntryScreenState_Site
 
   @override
   void initState() {
+    super.initState();
     var duration = Duration(seconds: 0);
     Future.delayed(duration, () async {
-
       if (billGenerationBoqController.saveButton.value == RequestConstant.RESUBMIT || billGenerationBoqController.saveButton.value == RequestConstant.VERIFY || billGenerationBoqController.saveButton.value == RequestConstant.APPROVAL) {
         billGenerationBoqController.bill_editListApiDatas.forEach((element) {
           billGenerationBoqController.workid = element.id!;
@@ -123,8 +126,11 @@ class _Bill_Generation_Boq_EntryScreenState_Site
         billGenerationBoqController.createdById.value = 0;
         billGenerationBoqController.tobededadv.text = billGenerationBoqController.to_be_dection_advance;
       }
+      if (!mounted) return;
+
+      setState(() {});
+
     });
-    super.initState();
   }
 
   @override
@@ -204,70 +210,23 @@ class _Bill_Generation_Boq_EntryScreenState_Site
                     ),
                   ),
 
-                  Container(
-                    margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.white70, width: 1),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      elevation: 3,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                        child: TextFormField(
-                          readOnly: true,
-                          controller: billGenerationBoqController.billentryDateController,
-                          cursorColor: Colors.black,
-                          style: TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.zero,
-                            border: InputBorder.none,
-                            labelText: "Entry Date",
-                            labelStyle: TextStyle(
-                                color: Colors.grey,
-                                fontSize: RequestConstant.Lable_Font_SIZE),
-                            prefixIconConstraints:
-                            BoxConstraints(minWidth: 0, minHeight: 0),
-                            prefixIcon: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 8),
-                                child: ConstIcons.date),
-                          ),
-                          onTap: () async {
-                            if (billGenerationBoqController.saveButton.value == RequestConstant.RESUBMIT) {
-                            } else {
-                              var Entrydate = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(2010),
-                                  lastDate: DateTime.now(),
-                                  builder: (context, child) {
-                                    return Theme(
-                                      data: Theme.of(context).copyWith(
-                                        colorScheme: ColorScheme.light(
-                                          primary: Theme.of(context).primaryColor,
-                                          // header background color
-                                          onPrimary: Colors.white,
-                                          // header text color
-                                          onSurface:
-                                          Colors.black, // body text color
-                                        ),
-                                        textButtonTheme: TextButtonThemeData(
-                                          style: TextButton.styleFrom(
-                                            primary:
-                                            Colors.black, // button text color
-                                          ),
-                                        ),
-                                      ),
-                                      child: child!,
-                                    );
-                                  });
-                              billGenerationBoqController.billentryDateController
-                                  .text = BaseUtitiles.selectDateFormat(Entrydate!);
-                            }
-                          },
-                        ),
-                      ),
+                  CommonDateFields(
+                    date1: CommonDateFieldConfig(
+                      title: "Date",
+                      value: billGenerationBoqController.billentryDateController.text,
+                      controller: billGenerationBoqController.billentryDateController,
+                      initialDate: DateTime.tryParse(
+                          billGenerationBoqController.billentryDateController.text) ??
+                          DateTime.now(),
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime.now(),
+                      selectable: loginController.user.value.userType != "S",
+                      onChanged: (date) {
+                        setState(() {
+                          billGenerationBoqController.billentryDateController.text =
+                              CommonDateUtils.formatApiDate(date);
+                        });
+                      },
                     ),
                   ),
                   Container(
@@ -473,136 +432,22 @@ class _Bill_Generation_Boq_EntryScreenState_Site
                       ),
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.white70, width: 1),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      elevation: 3,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                        child: TextFormField(
-                          readOnly: true,
-                          controller: billGenerationBoqController.billInvoiceDateController,
-                          cursorColor: Colors.black,
-                          style: TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.zero,
-                            border: InputBorder.none,
-                            labelText: "Invoice Date",
-                            labelStyle: TextStyle(
-                                color: Colors.grey,
-                                fontSize: RequestConstant.Lable_Font_SIZE),
-                            prefixIconConstraints:
-                            BoxConstraints(minWidth: 0, minHeight: 0),
-                            prefixIcon: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 8),
-                                child: ConstIcons.date),
-                          ),
-                          onTap: () async {
-                            if (billGenerationBoqController.saveButton.value == RequestConstant.RESUBMIT) {
-                            } else {
-                              var Entrydate = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(1900),
-                                  lastDate: DateTime.now(),
-                                  builder: (context, child) {
-                                    return Theme(
-                                      data: Theme.of(context).copyWith(
-                                        colorScheme: ColorScheme.light(
-                                          primary: Theme.of(context).primaryColor,
-                                          // header background color
-                                          onPrimary: Colors.white,
-                                          // header text color
-                                          onSurface:
-                                          Colors.black, // body text color
-                                        ),
-                                        textButtonTheme: TextButtonThemeData(
-                                          style: TextButton.styleFrom(
-                                            primary:
-                                            Colors.black, // button text color
-                                          ),
-                                        ),
-                                      ),
-                                      child: child!,
-                                    );
-                                  });
-                              billGenerationBoqController.billInvoiceDateController
-                                  .text = BaseUtitiles.selectDateFormat(Entrydate!);
-                            }
-                          },
-                        ),
-                      ),
+                  CommonDateFields(
+                    date1: CommonDateFieldConfig(
+                      title: "Invoice Date",
+                      value:billGenerationBoqController.billInvoiceDateController.text,
+                      controller: billGenerationBoqController.billInvoiceDateController,
+                      selectable: billGenerationBoqController.saveButton.value != RequestConstant.RESUBMIT,
+                      lastDate: DateTime.now(),
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.white70, width: 1),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      elevation: 3,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                        child: TextFormField(
-                          readOnly: true,
-                          controller: billGenerationBoqController.billPaymentWkDateController,
-                          cursorColor: Colors.black,
-                          style: TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.zero,
-                            border: InputBorder.none,
-                            labelText: "Payment Wk Date",
-                            labelStyle: TextStyle(
-                                color: Colors.grey,
-                                fontSize: RequestConstant.Lable_Font_SIZE),
-                            prefixIconConstraints:
-                            BoxConstraints(minWidth: 0, minHeight: 0),
-                            prefixIcon: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 8),
-                                child: ConstIcons.date),
-                          ),
-                          onTap: () async {
-                            if (billGenerationBoqController.saveButton.value == RequestConstant.RESUBMIT) {
-                            } else {
-                              var Entrydate = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(1900),
-                                  lastDate: DateTime.now(),
-                                  builder: (context, child) {
-                                    return Theme(
-                                      data: Theme.of(context).copyWith(
-                                        colorScheme: ColorScheme.light(
-                                          primary: Theme.of(context).primaryColor,
-                                          // header background color
-                                          onPrimary: Colors.white,
-                                          // header text color
-                                          onSurface:
-                                          Colors.black, // body text color
-                                        ),
-                                        textButtonTheme: TextButtonThemeData(
-                                          style: TextButton.styleFrom(
-                                            primary:
-                                            Colors.black, // button text color
-                                          ),
-                                        ),
-                                      ),
-                                      child: child!,
-                                    );
-                                  });
-                              billGenerationBoqController.billPaymentWkDateController
-                                  .text = BaseUtitiles.selectDateFormat(Entrydate!);
-                            }
-                          },
-                        ),
-                      ),
+                  CommonDateFields(
+                    date1: CommonDateFieldConfig(
+                      title: "Payment Wk Date",
+                      value:billGenerationBoqController.billPaymentWkDateController.text,
+                      controller: billGenerationBoqController.billPaymentWkDateController,
+                      selectable: billGenerationBoqController.saveButton.value != RequestConstant.RESUBMIT,
+                      lastDate: DateTime.now(),
                     ),
                   ),
                   Container(
@@ -675,152 +520,43 @@ class _Bill_Generation_Boq_EntryScreenState_Site
                       ),
                     ],
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.white70, width: 1),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 3,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 3, left: 10, bottom: 5),
-                              child: TextFormField(
-                                readOnly: true,
-                                controller: billGenerationBoqController.FromdateController,
-                                cursorColor: Colors.black,
-                                style: TextStyle(color: Colors.black),
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.zero,
-                                  border: InputBorder.none,
-                                  labelText: RequestConstant.FROMDATE,
-                                  labelStyle: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: RequestConstant.Lable_Font_SIZE),
-                                  prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
-                                  prefixIcon: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 8, horizontal: 8),
-                                      child: ConstIcons.date),
-                                ),
-                                onTap: () async {
-                                  if (billGenerationBoqController.saveButton.value == RequestConstant.RESUBMIT) {
-                                  } else {
-                                    var Frdate = await showDatePicker(
-                                        fieldHintText: "From",
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(1900),
-                                        lastDate: DateTime(2100),
-                                        builder: (context, child) {
-                                          return Theme(
-                                            data: Theme.of(context).copyWith(
-                                              colorScheme: ColorScheme.light(
-                                                primary:
-                                                Theme.of(context).primaryColor,
-                                                // header background color
-                                                onPrimary: Colors.white,
-                                                // header text color
-                                                onSurface:
-                                                Colors.black, // body text color
-                                              ),
-                                              textButtonTheme: TextButtonThemeData(
-                                                style: TextButton.styleFrom(
-                                                  primary: Colors
-                                                      .black, // button text color
-                                                ),
-                                              ),
-                                            ),
-                                            child: child!,
-                                          );
-                                        });
-                                    billGenerationBoqController
-                                        .FromdateController.text =
-                                        BaseUtitiles.selectDateFormat(Frdate!);
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 10, left: 10, right: 10),
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.white70, width: 1),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 3,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 3, left: 10, bottom: 5),
-                              child: TextFormField(
-                                readOnly: true,
-                                controller: billGenerationBoqController.TodateController,
-                                cursorColor: Colors.black,
-                                style: TextStyle(color: Colors.black),
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.zero,
-                                  border: InputBorder.none,
-                                  labelText: RequestConstant.TODATE,
-                                  labelStyle: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: RequestConstant.Lable_Font_SIZE),
-                                  prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
-                                  prefixIcon: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 8, horizontal: 8),
-                                      child: ConstIcons.date),
-                                ),
-                                onTap: () async {
-                                  if (billGenerationBoqController.saveButton.value == RequestConstant.RESUBMIT) {
-                                  } else {
-                                    var Todate = await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(1900),
-                                        lastDate: DateTime(2100),
-                                        builder: (context, child) {
-                                          return Theme(
-                                            data: Theme.of(context).copyWith(
-                                              colorScheme: ColorScheme.light(
-                                                primary:
-                                                Theme.of(context).primaryColor,
-                                                // header background color
-                                                onPrimary: Colors.white,
-                                                // header text color
-                                                onSurface:
-                                                Colors.black, // body text color
-                                              ),
-                                              textButtonTheme: TextButtonThemeData(
-                                                style: TextButton.styleFrom(
-                                                  primary: Colors
-                                                      .black, // button text color
-                                                ),
-                                              ),
-                                            ),
-                                            child: child!,
-                                          );
-                                        });
-                                    billGenerationBoqController
-                                        .TodateController.text =
-                                        BaseUtitiles.selectDateFormat(Todate!);
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                  CommonDateFields(
+                    date1: CommonDateFieldConfig(
+                      title: "From Date",
+                      value:billGenerationBoqController.FromdateController.text,
+                      controller: billGenerationBoqController.FromdateController,
+                      selectable: true,
+                      initialDate: DateTime.tryParse(
+                          billGenerationBoqController.FromdateController.text) ??
+                          DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime.now(),
+                      onChanged: (date) {
+                        setState(() {
+                          billGenerationBoqController.FromdateController.text =
+                              CommonDateUtils.formatApiDate(date);
+                        });
+                      },
+                    ),
+                    date2: CommonDateFieldConfig(
+                      title: "To Date",
+                      value:billGenerationBoqController.TodateController.text,
+                      controller: billGenerationBoqController.TodateController,
+                      selectable: true,
+                      initialDate: DateTime.tryParse(
+                          billGenerationBoqController.TodateController.text) ??
+                          DateTime.now(),
+                      firstDate: DateTime.tryParse(
+                          billGenerationBoqController.FromdateController.text) ??
+                          DateTime.now(),
+                      lastDate: DateTime(2100),
+                      onChanged: (date) {
+                        setState(() {
+                          billGenerationBoqController.TodateController.text =
+                              CommonDateUtils.formatApiDate(date);
+                        });
+                      },
+                    ),
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 5, left: 10, right: 10),

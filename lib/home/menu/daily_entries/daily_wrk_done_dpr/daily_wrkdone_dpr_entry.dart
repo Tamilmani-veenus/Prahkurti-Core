@@ -23,6 +23,7 @@ import '../../../../controller/subcontcontroller.dart';
 import '../../../../home/menu/daily_entries/daily_wrk_done_dpr/type_subcont_alert.dart';
 import '../../../../utilities/apiconstant.dart';
 import '../../../../utilities/baseutitiles.dart';
+import '../../../../utilities/common_date_fields.dart';
 import '../../../../utilities/image_view.dart';
 import '../../../../utilities/print_logger.dart';
 import '../../../../utilities/requestconstant.dart';
@@ -101,6 +102,9 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
         await autoYearWiseNoController.AutoYearWiseNo("DPR");
         dailyWrkDone_DPR_Controller.dpr_autoYearWiseNoController.text=autoYearWiseNoController.DPR_autoYrsWise.value;
       }
+      if (!mounted) return;
+
+      setState(() {});
      });
     super.initState();
   }
@@ -192,78 +196,27 @@ class _DailyWork_done_DPR_EntryState extends State<DailyWork_done_DPR_Entry> {
                       ),
                     ),
 
-                    Row(
-                      children: [
-
-                        Expanded(
-                          child: Container(
-                            margin: const EdgeInsets.only(top: 5, left: 10, right: 10),
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(color: Colors.white70, width: 1),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 3,
-                              child: Padding(
-                                padding:
-                                const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                child: TextFormField(
-                                  readOnly: true,
-                                  controller: dailyWrkDone_DPR_Controller.dpr_dateController,
-                                  cursorColor: Colors.black,
-                                  style: const TextStyle(color: Colors.black),
-                                  decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.zero,
-                                    border: InputBorder.none,
-                                    labelText: "Date",
-                                    labelStyle: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: RequestConstant.Lable_Font_SIZE),
-                                    prefixIconConstraints:
-                                    BoxConstraints(minWidth: 0, minHeight: 0),
-                                    prefixIcon: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 8,
-                                            horizontal: 8),
-                                        child: ConstIcons.date),
-                                  ),
-                                  onTap: () async {
-                                    if(dailyWrkDone_DPR_Controller.saveButton.value==RequestConstant.APPROVAL){
-
-                                    }
-                                    else{
-                                      var Entrydate = await showDatePicker(
-                                          context: context,
-                                          initialDate: DateTime.now(),
-                                          firstDate: DateTime.now().subtract(const Duration(days: 1)),
-                                          lastDate: DateTime.now(),
-                                          builder: (context, child) {
-                                            return Theme(data: Theme.of(context).copyWith(
-                                              colorScheme: ColorScheme.light(
-                                                primary: Theme.of(context).primaryColor, // header background color
-                                                onPrimary: Colors.white, // header text color
-                                                onSurface: Colors.black, // body text color
-                                              ),
-                                              textButtonTheme: TextButtonThemeData(
-                                                style: TextButton.styleFrom(
-                                                  primary: Colors.black, // button text color
-                                                ),
-                                              ),
-                                            ),
-                                              child: child!,
-                                            );
-                                          });
-                                      dailyWrkDone_DPR_Controller.dpr_dateController.text = BaseUtitiles.selectDateFormat(Entrydate!);
-                                    }
-
-                                  },
-
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                    CommonDateFields(
+                      date1: CommonDateFieldConfig(
+                        title: "Date",
+                        value:
+                        dailyWrkDone_DPR_Controller.dpr_dateController.text,
+                        controller:
+                        dailyWrkDone_DPR_Controller.dpr_dateController,
+                        selectable: loginController.user.value.userType != "S",
+                        initialDate: DateTime.tryParse(
+                          dailyWrkDone_DPR_Controller.dpr_dateController.text,
+                        ) ??
+                            DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime.now(),
+                        onChanged: (date) {
+                          setState(() {
+                            dailyWrkDone_DPR_Controller.dpr_dateController.text =
+                                CommonDateUtils.formatApiDate(date);
+                          });
+                        },
+                      ),
                     ),
 
                     Container(

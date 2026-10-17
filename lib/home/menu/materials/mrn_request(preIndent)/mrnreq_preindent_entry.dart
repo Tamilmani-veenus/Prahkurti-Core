@@ -14,6 +14,7 @@ import '../../../../controller/projectcontroller.dart';
 import '../../../../controller/sitecontroller.dart';
 import '../../../../controller/subcontcontroller.dart';
 import '../../../../utilities/baseutitiles.dart';
+import '../../../../utilities/common_date_fields.dart';
 import '../../../../utilities/requestconstant.dart';
 
 class MRNRequest_PreIndent_EntryScreen extends StatefulWidget {
@@ -99,6 +100,9 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
         mrnRequest_PreIndent_Controller.createdById.value=0;
         bottomsheetControllers.searchcontroller.text = "";
       }
+      if (!mounted) return;
+
+      setState(() {});
     });
     super.initState();
   }
@@ -184,118 +188,48 @@ class _MRNRequest_PreIndent_EntryScreenState extends State<MRNRequest_PreIndent_
                           ),
                         ),
                       ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              margin:
-                              EdgeInsets.only(top: 2, left: 10, right: 10),
-                              child: Card(
-                                color: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  side:
-                                  BorderSide(color: Colors.white70, width: 1),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                elevation: 3,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 3, left: 10, bottom: 5),
-                                  child: TextFormField(
-                                    readOnly: true,
-                                    controller: mrnRequest_PreIndent_Controller.RequestDateController,
-                                    cursorColor: Colors.black,
-                                    style: const TextStyle(color: Colors.black),
-                                    decoration: const InputDecoration(
-                                      contentPadding: EdgeInsets.zero,
-                                      border: InputBorder.none,
-                                      labelText: "Request Date",
-                                      labelStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize:
-                                          RequestConstant.Lable_Font_SIZE),
-                                      prefixIconConstraints: BoxConstraints(
-                                          minWidth: 0, minHeight: 0),
-                                      prefixIcon: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 8, horizontal: 8),
-                                          child: ConstIcons.date),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                              child: Card(
-                                color: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  side: const BorderSide(color: Colors.white70, width: 1),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                elevation: 3,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 3, left: 10, bottom: 5),
-                                  child: TextFormField(
-                                    readOnly: true,
-                                    controller: mrnRequest_PreIndent_Controller.DuedateController,
-                                    cursorColor: Colors.black,
-                                    style: const TextStyle(color: Colors.black),
-                                    decoration: const InputDecoration(
-                                      contentPadding: EdgeInsets.zero,
-                                      border: InputBorder.none,
-                                      labelText: "Due Date",
-                                      labelStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize:
-                                          RequestConstant.Lable_Font_SIZE),
-                                      prefixIconConstraints: BoxConstraints(
-                                          minWidth: 0, minHeight: 0),
-                                      prefixIcon: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 8, horizontal: 8),
-                                          child: ConstIcons.date),
-                                    ),
-                                    onTap: () async {
-                                      var Entrydate = await showDatePicker(
-                                          context: context,
-                                          initialDate: DateTime.now(),
-                                          firstDate: DateTime.now(),
-                                          lastDate: DateTime(2100),
-                                          builder: (context, child) {
-                                            return Theme(
-                                              data: Theme.of(context).copyWith(
-                                                colorScheme: ColorScheme.light(
-                                                  primary: Theme.of(context)
-                                                      .primaryColor,
-                                                  // header background color
-                                                  onPrimary: Colors.white,
-                                                  // header text color
-                                                  onSurface: Colors
-                                                      .black, // body text color
-                                                ),
-                                                textButtonTheme:
-                                                TextButtonThemeData(
-                                                  style: TextButton.styleFrom(
-                                                    primary: Colors
-                                                        .black, // button text color
-                                                  ),
-                                                ),
-                                              ),
-                                              child: child!,
-                                            );
-                                          });
-                                      mrnRequest_PreIndent_Controller.DuedateController.text = BaseUtitiles.selectDateFormat(Entrydate!);
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                      CommonDateFields(
+                        date1: CommonDateFieldConfig(
+                          title: "Request Date",
+                          value: mrnRequest_PreIndent_Controller.RequestDateController.text,
+                          controller: mrnRequest_PreIndent_Controller.RequestDateController,
+                          selectable: true,
+                          initialDate: DateTime.tryParse(
+                            mrnRequest_PreIndent_Controller.RequestDateController.text,
+                          ) ??
+                              DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime.now(),
+                          onChanged: (date) {
+                            setState(() {
+                              mrnRequest_PreIndent_Controller.RequestDateController.text =
+                                  CommonDateUtils.formatApiDate(date);
+                            });
+                          },
+                        ),
+
+                        date2: CommonDateFieldConfig(
+                          title: "Due Date",
+                          value: mrnRequest_PreIndent_Controller.DuedateController.text,
+                          controller: mrnRequest_PreIndent_Controller.DuedateController,
+                          selectable: true,
+                          initialDate: DateTime.tryParse(
+                            mrnRequest_PreIndent_Controller.DuedateController.text,
+                          ) ??
+                              DateTime.now(),
+                          firstDate: DateTime.tryParse(
+                              mrnRequest_PreIndent_Controller
+                                  .RequestDateController.text) ??
+                              DateTime.now(),
+                          lastDate: DateTime(2100),
+                          onChanged: (date) {
+                            setState(() {
+                              mrnRequest_PreIndent_Controller
+                                  .DuedateController.text =
+                                  CommonDateUtils.formatApiDate(date);
+                            });
+                          },
+                        ),
                       ),
                       Container(
                         margin:

@@ -8,6 +8,7 @@ import '../../../controller/logincontroller.dart';
 import '../../../controller/punch_in_controller.dart';
 import 'package:intl/intl.dart';
 import '../../../utilities/baseutitiles.dart';
+import '../../../utilities/common_date_fields.dart';
 import '../../../utilities/image_view.dart';
 
 class PunchTodayReports extends GetView<PunchInController> {
@@ -30,52 +31,17 @@ class PunchTodayReports extends GetView<PunchInController> {
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.only(
-                        top: 16.r, left: 8.r, right: 8.r, bottom: 8.r),
+                        top: 5.r, left: 2.r, right: 2.r, bottom: 5.r),
                     child: Row(
                       children: [
                         Expanded(
                           flex: 1,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              side: const BorderSide(
-                                  color: Colors.white70, width: 1),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 3,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 3),
-                              child: TextFormField(
-                                readOnly: true,
-                                controller: controller.todayDate,
-                                cursorColor: Colors.black,
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                ),
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.zero,
-                                  border: InputBorder.none,
-                                  labelText: "Today Date",
-                                  labelStyle: const TextStyle(
-                                      color: Colors.grey,
-                                      fontSize:
-                                          RequestConstant.Lable_Font_SIZE),
-                                  prefixIconConstraints: const BoxConstraints(
-                                      minWidth: 0, minHeight: 0),
-                                  prefixIcon: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 8, horizontal: 8),
-                                      child: Icon(Icons.calendar_month,
-                                          color:
-                                              Theme.of(context).primaryColor)),
-                                ),
-                                onTap: () async {},
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Select Date';
-                                  }
-                                  return null;
-                                },
-                              ),
+                          child: CommonDateFields(
+                            date1: CommonDateFieldConfig(
+                              title: "Request Date",
+                              value: controller.todayDate.text,
+                              controller: controller.todayDate,
+                              selectable: false,
                             ),
                           ),
                         ),

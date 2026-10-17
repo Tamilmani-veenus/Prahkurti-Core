@@ -9,6 +9,7 @@ import '../../../../controller/projectcontroller.dart';
 import '../../../../controller/sitecontroller.dart';
 import '../../../../controller/subcontcontroller.dart';
 import '../../../../utilities/baseutitiles.dart';
+import '../../../../utilities/common_date_fields.dart';
 import '../../../../utilities/requestconstant.dart';
 import 'inward_itemlist.dart';
 
@@ -103,6 +104,9 @@ class _InwardState extends State<Inward_entry> {
           inward_controller.InwardRemarksText.text = element.remarks == null ? "" : element.remarks.toString();
         });
       }
+      if (!mounted) return;
+
+      setState(() {});
     });
   }
 
@@ -190,70 +194,24 @@ class _InwardState extends State<Inward_entry> {
                     ),
                   ),
 
-                  Container(
-                    margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.white70, width: 1),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      elevation: 3,
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                        child: TextFormField(
-                          readOnly: true,
-                          controller: inward_controller.InwardEntryDateText,
-                          cursorColor: Colors.black,
-                          style: TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.zero,
-                            border: InputBorder.none,
-                            labelText: "Date",
-                            labelStyle: TextStyle(
-                                color: Colors.grey,
-                                fontSize: RequestConstant.Lable_Font_SIZE),
-                            prefixIconConstraints:
-                                BoxConstraints(minWidth: 0, minHeight: 0),
-                            prefixIcon: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 8),
-                                child: ConstIcons.date),
-                          ),
-                          onTap: () async {
-                  if (loginController.user.value.userType != "S") {
-                    var Entrydate = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime(2100),
-                        builder: (context, child) {
-                          return Theme(
-                            data: Theme.of(context).copyWith(
-                              colorScheme: ColorScheme.light(
-                                primary: Theme
-                                    .of(context)
-                                    .primaryColor, // header background color
-                                onPrimary:
-                                Colors.white, // header text color
-                                onSurface:
-                                Colors.black, // body text color
-                              ),
-                              textButtonTheme: TextButtonThemeData(
-                                style: TextButton.styleFrom(
-                                  primary:
-                      Colors.black, // button text color
-                    ),
-                  ),
-                ),
-                child: child!,
-              );
-            });
-                inward_controller.InwardEntryDateText.text = BaseUtitiles.selectDateFormat(Entrydate!);
-              }
-                          },
-                        ),
-                      ),
+                  CommonDateFields(
+                    date1: CommonDateFieldConfig(
+                      title: "Date",
+                      value: inward_controller.InwardEntryDateText.text,
+                      controller: inward_controller.InwardEntryDateText,
+                      selectable: loginController.user.value.userType != "S",
+                      initialDate: DateTime.tryParse(
+                        inward_controller.InwardEntryDateText.text,
+                      ) ??
+                          DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime.now(),
+                      onChanged: (date) {
+                        setState(() {
+                          inward_controller.InwardEntryDateText.text =
+                              CommonDateUtils.formatApiDate(date);
+                        });
+                      },
                     ),
                   ),
 
@@ -439,62 +397,12 @@ class _InwardState extends State<Inward_entry> {
                     ),
                   ),
 
-                  Container(
-                    margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.white70, width: 1),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      elevation: 3,
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                        child: TextFormField(
-                          readOnly: true,
-                          controller: inward_controller.InwardInvoiceDateText,
-                          cursorColor: Colors.black,
-                          style: const TextStyle(color: Colors.black),
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.zero,
-                            border: InputBorder.none,
-                            labelText: "Invoice Date",
-                            labelStyle: TextStyle(
-                                color: Colors.grey,
-                                fontSize: RequestConstant.Lable_Font_SIZE),
-                            prefixIconConstraints:
-                                BoxConstraints(minWidth: 0, minHeight: 0),
-                            prefixIcon: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 8),
-                                child: ConstIcons.date),
-                          ),
-                          onTap: () async {
-                            var Entrydate = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(1900),
-                                lastDate: DateTime(2100),
-                                builder: (context, child) {
-                                  return Theme(data: Theme.of(context).copyWith(
-                                    colorScheme: ColorScheme.light(
-                                      primary: Theme.of(context).primaryColor, // header background color
-                                      onPrimary: Colors.white, // header text color
-                                      onSurface: Colors.black, // body text color
-                                    ),
-                                    textButtonTheme: TextButtonThemeData(
-                                      style: TextButton.styleFrom(
-                                        primary: Colors.black, // button text color
-                                      ),
-                                    ),
-                                  ),
-                                    child: child!,
-                                  );
-                                });
-                            inward_controller.InwardInvoiceDateText.text = BaseUtitiles.selectDateFormat(Entrydate!);
-                          },
-                        ),
-                      ),
+                  CommonDateFields(
+                    date1: CommonDateFieldConfig(
+                        title: "Invoice Date",
+                        value: inward_controller.InwardInvoiceDateText.text,
+                        controller: inward_controller.InwardInvoiceDateText,
+                        selectable: true
                     ),
                   ),
 
@@ -537,70 +445,12 @@ class _InwardState extends State<Inward_entry> {
                     ),
                   ),
 
-                  Container(
-                    margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.white70, width: 1),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      elevation: 3,
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                        child: TextFormField(
-                          readOnly: true,
-                          controller: inward_controller.InwardDCDateText,
-                          cursorColor: Colors.black,
-                          style: const TextStyle(color: Colors.black),
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.zero,
-                            border: InputBorder.none,
-                            labelText: "Dc Date ",
-                            labelStyle: TextStyle(
-                                color: Colors.grey,
-                                fontSize: RequestConstant.Lable_Font_SIZE),
-                            prefixIconConstraints:
-                                BoxConstraints(minWidth: 0, minHeight: 0),
-                            prefixIcon: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 8),
-                                child: ConstIcons.date),
-                          ),
-                          onTap: () async {
-                            var Entrydate = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(1900),
-                                lastDate: DateTime(2100),
-                                builder: (context, child) {
-                                  return Theme(data: Theme.of(context).copyWith(
-                                    colorScheme: ColorScheme.light(
-                                      primary: Theme.of(context).primaryColor, // header background color
-                                      onPrimary: Colors.white, // header text color
-                                      onSurface: Colors.black, // body text color
-                                    ),
-                                    textButtonTheme: TextButtonThemeData(
-                                      style: TextButton.styleFrom(
-                                        primary: Colors.black, // button text color
-                                      ),
-                                    ),
-                                  ),
-                                    child: child!,
-                                  );
-                                });
-                            inward_controller.InwardDCDateText.text = BaseUtitiles.selectDateFormat(Entrydate!);
-                          },
-                          validator: (value) {
-                            if (value!.isEmpty ||
-                                value == "--Select--" ||
-                                value == "--SELECT--") {
-                              return '\u26A0 ${RequestConstant.VALIDATE}';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
+                  CommonDateFields(
+                    date1: CommonDateFieldConfig(
+                        title: "DC Date",
+                        value: inward_controller.InwardDCDateText.text,
+                        controller: inward_controller.InwardDCDateText,
+                        selectable: true
                     ),
                   ),
 

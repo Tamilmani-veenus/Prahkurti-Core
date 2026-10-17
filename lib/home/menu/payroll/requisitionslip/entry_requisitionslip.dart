@@ -13,6 +13,7 @@ import '../../../../controller/reports_controller.dart';
 import '../../../../controller/requisitionslip_controller_new.dart';
 import '../../../../controller/staffcontroller.dart';
 import '../../../../utilities/baseutitiles.dart';
+import '../../../../utilities/common_date_fields.dart';
 import '../../../../utilities/requestconstant.dart';
 
 class RequisitionSlip_Entry extends StatefulWidget {
@@ -102,6 +103,10 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
           requisitionSlipController.isHalfDay.value=element.isHalfDay;
         }
       }
+
+      if (!mounted) return;
+
+      setState(() {});
     });
   }
 
@@ -185,39 +190,26 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                         ),
                       ),
                     ),
-                    Container(
-                            margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(color: Colors.white70, width: 1),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                child: TextFormField(
-                                  readOnly: true,
-                                  controller: requisitionSlipController.Reqdate,
-                                  cursorColor: Colors.black,
-                                  style: const TextStyle(color: Colors.black),
-                                  decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.zero,
-                                    border: InputBorder.none,
-                                    labelText: "Request Date",
-                                    labelStyle: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: RequestConstant.Lable_Font_SIZE,
-                                    ),
-                                    prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                    prefixIcon: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 8, horizontal: 8),
-                                        child: ConstIcons.date),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                    CommonDateFields(
+                      date1: CommonDateFieldConfig(
+                        title: "Request Date",
+                        value: requisitionSlipController.Reqdate.text,
+                        controller: requisitionSlipController.Reqdate,
+                        selectable: loginController.user.value.userType != "S",
+                        initialDate: DateTime.tryParse(
+                          requisitionSlipController.Reqdate.text,
+                        ) ??
+                            DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime.now(),
+                        onChanged: (date) {
+                          setState(() {
+                            requisitionSlipController.Reqdate.text =
+                                CommonDateUtils.formatApiDate(date);
+                          });
+                        },
+                      ),
+                    ),
                     Container(
                       margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
                       child: Card(
@@ -484,140 +476,67 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                             ),
                           ),
 
-                          Container(
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                    child: Card(
-                                      shape: RoundedRectangleBorder(
-                                        side: const BorderSide(color: Colors.white70, width: 1),
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      elevation: 3,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                        child: TextFormField(
-                                          readOnly: true,
-                                          controller: requisitionSlipController.Fromdate,
-                                          cursorColor: Colors.black,
-                                          style: const TextStyle(color: Colors.black),
-                                          decoration: const InputDecoration(
-                                            contentPadding: EdgeInsets.zero,
-                                            border: InputBorder.none,
-                                            labelText: "From Date",
-                                            labelStyle: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: RequestConstant.Lable_Font_SIZE,
-                                            ),
-                                            prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                            prefixIcon: Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 8, horizontal: 8),
-                                                child: ConstIcons.date),
-                                          ),
-                                          onTap: () async {
-                                            var Frdate = await showDatePicker(
-                                              fieldHintText: "From",
-                                              context: context,
-                                              initialDate: DateTime.now(),
-                                              firstDate: DateTime.now(), // disables previous dates
-                                              lastDate: DateTime(2100),
+                          CommonDateFields(
+                            date1: CommonDateFieldConfig(
+                              title: "From Date",
+                              value: requisitionSlipController.Fromdate.text,
+                              controller: requisitionSlipController.Fromdate,
+                              selectable: true,
 
-                                              builder: (context, child) {
-                                                return Theme(
-                                                  data: Theme.of(context).copyWith(
-                                                    colorScheme: ColorScheme.light(
-                                                      primary: Theme.of(context).primaryColor,
-                                                      onPrimary: Colors.white,
-                                                      onSurface: Colors.black,
-                                                    ),
-                                                    textButtonTheme: TextButtonThemeData(
-                                                      style: TextButton.styleFrom(
-                                                        foregroundColor: Colors.black,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  child: child!,
-                                                );
-                                              },
-                                            );
-                                            requisitionSlipController.Fromdate.text = BaseUtitiles.selectDateFormat(Frdate!);
-                                            requisitionSlipController.vehicleAge(DateTime.parse(requisitionSlipController.Fromdate.text),DateTime.parse(requisitionSlipController.Todate.text));
-                                            setState(() {
-                                              requisitionSlipController.isHalfDay.value = false;
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    ),
+                              initialDate: DateTime.tryParse(
+                                  requisitionSlipController.Fromdate.text) ??
+                                  DateTime.now(),
+
+                              firstDate: loginController.user.value.userType == "A"
+                                  ? DateTime(2000)
+                                  : DateTime.now().subtract(const Duration(days: 4)),
+
+                              lastDate: DateTime(2100),
+
+                              onChanged: (date) {
+                                requisitionSlipController.Fromdate.text =
+                                    CommonDateUtils.formatApiDate(date);
+
+                                requisitionSlipController.vehicleAge(
+                                  date,
+                                  CommonDateUtils.parseApiDate(
+                                    requisitionSlipController.Todate.text,
                                   ),
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                    child: Card(
-                                      shape: RoundedRectangleBorder(
-                                        side: const BorderSide(color: Colors.white70, width: 1),
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      elevation: 3,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                        child: TextFormField(
-                                          readOnly: true,
-                                          controller: requisitionSlipController.Todate,
-                                          cursorColor: Colors.black,
-                                          style: const TextStyle(color: Colors.black),
-                                          decoration: const InputDecoration(
-                                            contentPadding: EdgeInsets.zero,
-                                            border: InputBorder.none,
-                                            labelText: "To Date",
-                                            labelStyle: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: RequestConstant.Lable_Font_SIZE,
-                                            ),
-                                            prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                            prefixIcon: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                                child: ConstIcons.date),
-                                          ),
-                                          onTap: () async {
-                                            var Todate = await showDatePicker(
-                                                context: context,
-                                                initialDate: DateTime.parse(requisitionSlipController.Fromdate.text),
-                                                firstDate:DateTime.parse(requisitionSlipController.Fromdate.text),
-                                                lastDate: DateTime(2100),
-                                                builder: (context, child) {
-                                              return Theme(
-                                                data: Theme.of(context).copyWith(
-                                                  colorScheme: ColorScheme.light(
-                                                    primary: Theme.of(context).primaryColor,
-                                                    onPrimary: Colors.white,
-                                                    onSurface:
-                                                    Colors.black, // body text color
-                                                  ),
-                                                  textButtonTheme: TextButtonThemeData(
-                                                    style: TextButton.styleFrom(
-                                                      primary: Colors.black, // button text color
-                                                    ),
-                                                  ),
-                                                ),
-                                                child: child!,
-                                              );
-                                            });
-                                            requisitionSlipController.Todate.text =BaseUtitiles.selectDateFormat(Todate!);
-                                            requisitionSlipController.vehicleAge(DateTime.parse(requisitionSlipController.Fromdate.text),DateTime.parse(requisitionSlipController.Todate.text));
-                                          setState(() {
-                                            requisitionSlipController.isHalfDay.value = false;
-                                          });
-                                            },
-                                        ),
-                                      ),
-                                    ),
+                                );
+
+                                setState(() {
+                                  requisitionSlipController.isHalfDay.value = false;
+                                });
+                              },
+                            ),
+
+                            date2: CommonDateFieldConfig(
+                              title: "To Date",
+                              controller: requisitionSlipController.Todate,
+                              value:  requisitionSlipController.Todate.text,
+                              selectable: true,
+                              initialDate: CommonDateUtils.parseApiDate(
+                                requisitionSlipController.Todate.text,
+                              ),
+
+                              firstDate: CommonDateUtils.parseApiDate(
+                                requisitionSlipController.Fromdate.text,
+                              ),
+                              lastDate: DateTime(2100),
+                              onChanged: (date) {
+                                requisitionSlipController.Todate.text =
+                                    CommonDateUtils.formatApiDate(date);
+
+                                requisitionSlipController.vehicleAge(
+                                  CommonDateUtils.parseApiDate(
+                                    requisitionSlipController.Fromdate.text,
                                   ),
-                                ),
-                              ],
+                                  date,
+                                );
+                                setState(() {
+                                  requisitionSlipController.isHalfDay.value = false;
+                                });
+                              },
                             ),
                           ),
 
@@ -824,134 +743,68 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                             ),
                           ),
 
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                  child: Card(
-                                    shape: RoundedRectangleBorder(
-                                      side: const BorderSide(color: Colors.white70, width: 1),
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    elevation: 3,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                      child: TextFormField(
-                                        readOnly: true,
-                                        controller: requisitionSlipController.Fromdate,
-                                        cursorColor: Colors.black,
-                                        style: const TextStyle(color: Colors.black),
-                                        decoration: const InputDecoration(
-                                          contentPadding: EdgeInsets.zero,
-                                          border: InputBorder.none,
-                                          labelText: "From Date",
-                                          labelStyle: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: RequestConstant.Lable_Font_SIZE,
-                                          ),
-                                          prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                          prefixIcon: Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 8, horizontal: 8),
-                                              child: ConstIcons.date),
-                                        ),
-                                        onTap: () async {
-                                          var Frdate = await showDatePicker(
-                                            fieldHintText: "From",
-                                            context: context,
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime.now(), // disables previous dates
-                                            lastDate: DateTime(2100),
+                          CommonDateFields(
+                            date1: CommonDateFieldConfig(
+                              title: "From Date",
+                              value: requisitionSlipController.Fromdate.text,
+                              controller: requisitionSlipController.Fromdate,
+                              selectable: true,
 
-                                            builder: (context, child) {
-                                              return Theme(
-                                                data: Theme.of(context).copyWith(
-                                                  colorScheme: ColorScheme.light(
-                                                    primary: Theme.of(context).primaryColor,
-                                                    onPrimary: Colors.white,
-                                                    onSurface: Colors.black,
-                                                  ),
-                                                  textButtonTheme: TextButtonThemeData(
-                                                    style: TextButton.styleFrom(
-                                                      foregroundColor: Colors.black,
-                                                    ),
-                                                  ),
-                                                ),
-                                                child: child!,
-                                              );
-                                            },
-                                          );
-                                          requisitionSlipController.Fromdate.text = BaseUtitiles.selectDateFormat(Frdate!);
-                                          requisitionSlipController.vehicleAge(DateTime.parse(requisitionSlipController.Fromdate.text),DateTime.parse(requisitionSlipController.Todate.text));
+                              initialDate: DateTime.tryParse(
+                                  requisitionSlipController.Fromdate.text) ??
+                                  DateTime.now(),
 
-                                        },
-                                      ),
-                                    ),
+                              firstDate: loginController.user.value.userType == "A"
+                                  ? DateTime(2000)
+                                  : DateTime.now().subtract(const Duration(days: 4)),
+
+                              lastDate: DateTime(2100),
+
+                              onChanged: (date) {
+                                requisitionSlipController.Fromdate.text =
+                                    CommonDateUtils.formatApiDate(date);
+
+                                requisitionSlipController.vehicleAge(
+                                  date,
+                                  CommonDateUtils.parseApiDate(
+                                    requisitionSlipController.Todate.text,
                                   ),
-                                ),
+                                );
+
+                                setState(() {
+                                  requisitionSlipController.isHalfDay.value = false;
+                                });
+                              },
+                            ),
+
+                            date2: CommonDateFieldConfig(
+                              title: "To Date",
+                              controller: requisitionSlipController.Todate,
+                              value:  requisitionSlipController.Todate.text,
+                              selectable: true,
+                              initialDate: CommonDateUtils.parseApiDate(
+                                requisitionSlipController.Todate.text,
                               ),
-                              Expanded(
-                                child: Container(
-                                  margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                                  child: Card(
-                                    shape: RoundedRectangleBorder(
-                                      side: const BorderSide(color: Colors.white70, width: 1),
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    elevation: 3,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                      child: TextFormField(
-                                        readOnly: true,
-                                        controller: requisitionSlipController.Todate,
-                                        cursorColor: Colors.black,
-                                        style: const TextStyle(color: Colors.black),
-                                        decoration: const InputDecoration(
-                                          contentPadding: EdgeInsets.zero,
-                                          border: InputBorder.none,
-                                          labelText: "To Date",
-                                          labelStyle: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: RequestConstant.Lable_Font_SIZE,
-                                          ),
-                                          prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                          prefixIcon: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                              child: ConstIcons.date),
-                                        ),
-                                        onTap: () async {
-                                          var Todate = await showDatePicker(
-                                              context: context,
-                                              initialDate: DateTime.parse(requisitionSlipController.Fromdate.text),
-                                              firstDate:DateTime.parse(requisitionSlipController.Fromdate.text),
-                                              lastDate: DateTime(2100),
-                                              builder: (context, child) {
-                                                return Theme(
-                                                  data: Theme.of(context).copyWith(
-                                                    colorScheme: ColorScheme.light(
-                                                      primary: Theme.of(context).primaryColor,
-                                                      onPrimary: Colors.white,
-                                                      onSurface:
-                                                      Colors.black, // body text color
-                                                    ),
-                                                    textButtonTheme: TextButtonThemeData(
-                                                      style: TextButton.styleFrom(
-                                                        primary: Colors.black, // button text color
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  child: child!,
-                                                );
-                                              });
-                                          requisitionSlipController.Todate.text =BaseUtitiles.selectDateFormat(Todate!);
-                                          requisitionSlipController.vehicleAge(DateTime.parse(requisitionSlipController.Fromdate.text),DateTime.parse(requisitionSlipController.Todate.text));
-                                        },
-                                      ),
-                                    ),
+
+                              firstDate: CommonDateUtils.parseApiDate(
+                                requisitionSlipController.Fromdate.text,
+                              ),
+                              lastDate: DateTime(2100),
+                              onChanged: (date) {
+                                requisitionSlipController.Todate.text =
+                                    CommonDateUtils.formatApiDate(date);
+
+                                requisitionSlipController.vehicleAge(
+                                  CommonDateUtils.parseApiDate(
+                                    requisitionSlipController.Fromdate.text,
                                   ),
-                                ),
-                              ),
-                            ],
+                                  date,
+                                );
+                                setState(() {
+                                  requisitionSlipController.isHalfDay.value = false;
+                                });
+                              },
+                            ),
                           ),
 
                           Row(
@@ -1086,61 +939,25 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                               ),
                             ),
                           ),
-                          Container(
-                            margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(color: Colors.white70, width: 1),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                child: TextFormField(
-                                  readOnly: true,
-                                  controller: requisitionSlipController.Date,
-                                  cursorColor: Colors.black,
-                                  style: const TextStyle(color: Colors.black),
-                                  decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.zero,
-                                    border: InputBorder.none,
-                                    labelText: "Date",
-                                    labelStyle: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: RequestConstant.Lable_Font_SIZE,
-                                    ),
-                                    prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                    prefixIcon: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                        child: ConstIcons.date),
-                                  ),
-                                  onTap: () async {
-                                    var Entrydate = await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime.now(),
-                                        lastDate: DateTime(2100),
-                                        builder: (context, child) {
-                                      return Theme(
-                                        data: Theme.of(context).copyWith(
-                                          colorScheme: ColorScheme.light(
-                                            primary: Theme.of(context).primaryColor,
-                                            onPrimary: Colors.white,
-                                            onSurface:
-                                            Colors.black, // body text color
-                                          ),
-                                          textButtonTheme: TextButtonThemeData(
-                                            style: TextButton.styleFrom(
-                                              primary: Colors.black, // button text color
-                                            ),
-                                          ),
-                                        ),
-                                        child: child!,
-                                      );
-                                    });
-                                    requisitionSlipController.Date.text =BaseUtitiles.selectDateFormat(Entrydate!);
-                                  },
-                                ),
-                              ),
+                          CommonDateFields(
+                            date1: CommonDateFieldConfig(
+                              title: "Date",
+                              value: requisitionSlipController.Date.text,
+                              controller: requisitionSlipController.Date,
+                              selectable: true,
+                              initialDate: DateTime.tryParse(
+                                  requisitionSlipController.Date.text) ??
+                                  DateTime.now(),
+                              firstDate: loginController.user.value.userType == "A"
+                                  ? DateTime(2000)
+                                  : DateTime.now().subtract(const Duration(days: 4)),
+                              lastDate: DateTime(2100),
+                              onChanged: (date) {
+                                setState(() {
+                                  requisitionSlipController.Date.text =
+                                      CommonDateUtils.formatApiDate(date);
+                                });
+                              },
                             ),
                           ),
                           Container(
@@ -1413,61 +1230,25 @@ class _RequisitionSlip_EntryState extends State<RequisitionSlip_Entry> {
                               ),
                             ),
                           ),
-                          Container(
-                            margin: const EdgeInsets.only(top: 2, left: 10, right: 10),
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(color: Colors.white70, width: 1),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                child: TextFormField(
-                                  readOnly: true,
-                                  controller: requisitionSlipController.Date,
-                                  cursorColor: Colors.black,
-                                  style: const TextStyle(color: Colors.black),
-                                  decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.zero,
-                                    border: InputBorder.none,
-                                    labelText: "Date",
-                                    labelStyle: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: RequestConstant.Lable_Font_SIZE,
-                                    ),
-                                    prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-                                    prefixIcon: Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                        child: ConstIcons.date),
-                                  ),
-                                  onTap: () async {
-                                    var Entrydate = await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime.now(),
-                                        lastDate: DateTime(2100),
-                                        builder: (context, child) {
-                                          return Theme(
-                                            data: Theme.of(context).copyWith(
-                                              colorScheme: ColorScheme.light(
-                                                primary: Theme.of(context).primaryColor,
-                                                onPrimary: Colors.white,
-                                                onSurface:
-                                                Colors.black, // body text color
-                                              ),
-                                              textButtonTheme: TextButtonThemeData(
-                                                style: TextButton.styleFrom(
-                                                  primary: Colors.black, // button text color
-                                                ),
-                                              ),
-                                            ),
-                                            child: child!,
-                                          );
-                                        });
-                                    requisitionSlipController.Date.text =BaseUtitiles.selectDateFormat(Entrydate!);
-                                  },
-                                ),
-                              ),
+                          CommonDateFields(
+                            date1: CommonDateFieldConfig(
+                              title: "Date",
+                              value: requisitionSlipController.Date.text,
+                              controller: requisitionSlipController.Date,
+                              selectable: true,
+                              initialDate: DateTime.tryParse(
+                                  requisitionSlipController.Date.text) ??
+                                  DateTime.now(),
+                              firstDate: loginController.user.value.userType == "A"
+                                  ? DateTime(2000)
+                                  : DateTime.now().subtract(const Duration(days: 4)),
+                              lastDate: DateTime(2100),
+                              onChanged: (date) {
+                                setState(() {
+                                  requisitionSlipController.Date.text =
+                                      CommonDateUtils.formatApiDate(date);
+                                });
+                              },
                             ),
                           ),
 

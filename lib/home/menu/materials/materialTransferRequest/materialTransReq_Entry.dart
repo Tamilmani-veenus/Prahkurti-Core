@@ -15,6 +15,7 @@ import '../../../../controller/material_transreq_controller.dart';
 import '../../../../controller/projectcontroller.dart';
 import '../../../../controller/sitecontroller.dart';
 import '../../../../utilities/baseutitiles.dart';
+import '../../../../utilities/common_date_fields.dart';
 import '../../../../utilities/requestconstant.dart';
 
 class MaterialTransReqEntry extends StatefulWidget {
@@ -85,6 +86,9 @@ class _MaterialTransReqEntryState extends State<MaterialTransReqEntry> {
               element.createdName.toString();
         });
       }
+      if (!mounted) return;
+
+      setState(() {});
     });
     super.initState();
   }
@@ -292,41 +296,24 @@ class _MaterialTransReqEntryState extends State<MaterialTransReqEntry> {
                         ),
                         Expanded(
                           flex: 3,
-                          child: Container(
-                            margin: const EdgeInsets.only(top: 5, right: 10),
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                    color: Colors.white70, width: 1),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 3, left: 10, bottom: 5),
-                                child: TextFormField(
-                                  readOnly: true,
-                                  controller: materialTransferReqController
-                                      .entryDateText,
-                                  cursorColor: Colors.black,
-                                  style: const TextStyle(color: Colors.black),
-                                  decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.zero,
-                                    border: InputBorder.none,
-                                    labelText: "Date",
-                                    labelStyle: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize:
-                                            RequestConstant.Lable_Font_SIZE),
-                                    prefixIconConstraints: BoxConstraints(
-                                        minWidth: 0, minHeight: 0),
-                                    prefixIcon: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 8, horizontal: 8),
-                                        child: ConstIcons.date),
-                                  ),
-                                ),
-                              ),
+                          child:   CommonDateFields(
+                            date1: CommonDateFieldConfig(
+                              title: "Date",
+                              value: materialTransferReqController.entryDateText.text,
+                              controller: materialTransferReqController.entryDateText,
+                              selectable: loginController.user.value.userType != "S",
+                              initialDate: DateTime.tryParse(
+                                materialTransferReqController.entryDateText.text,
+                              ) ??
+                                  DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime.now(),
+                              onChanged: (date) {
+                                setState(() {
+                                  materialTransferReqController.entryDateText.text =
+                                      CommonDateUtils.formatApiDate(date);
+                                });
+                              },
                             ),
                           ),
                         ),

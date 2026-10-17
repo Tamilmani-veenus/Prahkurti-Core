@@ -3390,7 +3390,7 @@ class BottomsheetControllers {
                           margin: EdgeInsets.only(left: 10),
                           alignment: Alignment.center,
                           child: Text(
-                  type=="mrnReqTracker"?list[index]["companyName"].toString():list[index].companyName.toString(),
+                  type=="mrnReqTracker" || type=="cashbook"?list[index]["companyName"].toString():list[index].companyName.toString(),
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: RequestConstant.Lable_Font_SIZE,
@@ -3398,10 +3398,14 @@ class BottomsheetControllers {
                           ),
                         ),
                         onTap: () async {
-                          if(type=="mrnReqTracker"){
+                          if(type=="mrnReqTracker" || type=="cashbook"){
                             reportsController.companyName.text=list[index]["companyName"].toString();
                             reportsController.selectedCompanyId.value=list[index]["id"];
-                            reportsController.projectname.text = "--ALL--";
+                            if(type=="cashbook") {
+                              reportsController.projectname.text = "--SELECT--";
+                            }else{
+                              reportsController.projectname.text = "--ALL--";
+                            }
                             reportsController.selectedProjectId.value = 0;
                             reportsController.sitename.text = "--ALL--";
                             reportsController.selectedsiteId.value = 0;

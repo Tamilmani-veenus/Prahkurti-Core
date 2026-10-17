@@ -13,6 +13,7 @@ import '../../controller/reports_controller.dart';
 import '../../controller/sitecontroller.dart';
 import '../../controller/subcontcontroller.dart';
 import '../../utilities/baseutitiles.dart';
+import '../../utilities/common_date_fields.dart';
 import '../../utilities/requestconstant.dart';
 import 'mrn_reqtracker_popup.dart';
 
@@ -94,150 +95,41 @@ class _MRN_ReqTracker_ReportState extends State<MRN_ReqTracker_Report> {
                   ),
                 ),
 
-                Container(
-                  margin: EdgeInsets.only(top: 3, left: 10, right: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.white70, width: 1),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 3,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 3),
-                              child: TextFormField(
-                                readOnly: true,
-                                controller: siteController.FromdateController,
-                                cursorColor: Colors.black,
-                                style: TextStyle(color: Colors.black),
-                                decoration: const InputDecoration(
-                                  contentPadding: EdgeInsets.zero,
-                                  border: InputBorder.none,
-                                  labelText: "From Date",
-                                  labelStyle: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: RequestConstant.Lable_Font_SIZE),
-                                  prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
-                                  prefixIcon: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 8),
-                                    child: ConstIcons.date,
-                                  ),
-                                ),
-                                onTap: () async {
-                                  DateTime today = DateTime.now();
+                CommonDateFields(
+                  date1: CommonDateFieldConfig(
+                    title: "From Date",
+                    value: siteController.FromdateController.text,
+                    controller: siteController.FromdateController,
+                    selectable: true,
+                    initialDate: DateTime.now().subtract(const Duration(days: 7)),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime.now(),
+                    onChanged: (date) {
+                      setState(() {
+                        siteController.FromdateController.text =
+                            CommonDateUtils.formatApiDate(date);
+                      });
+                    },
+                  ),
 
-                                  DateTime initialDate = today.subtract(const Duration(days: 7));
-
-                                  if (initialDate.isBefore(DateTime(1900))) {
-                                    initialDate = DateTime(1900);
-                                  }
-
-                                  DateTime? frDate = await showDatePicker(
-                                    context: context,
-                                    initialDate: initialDate,
-                                    firstDate: DateTime(1900),
-                                    lastDate: today,
-                                    builder: (context, child) {
-                                      return Theme(
-                                        data: Theme.of(context).copyWith(
-                                          colorScheme: ColorScheme.light(
-                                            primary: Theme.of(context).primaryColor,
-                                            onPrimary: Colors.white,
-                                            onSurface: Colors.black,
-                                          ),
-                                          textButtonTheme: TextButtonThemeData(
-                                            style: TextButton.styleFrom(
-                                              foregroundColor: Colors.black, // Use foregroundColor instead of primary
-                                            ),
-                                          ),
-                                        ),
-                                        child: child!,
-                                      );
-                                    },
-                                  );
-
-                                  if (frDate != null) {
-                                    siteController.FromdateController.text =
-                                        frDate.toString().substring(0, 10);
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.white70, width: 1),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 3,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 3),
-                              child: TextFormField(
-                                readOnly: true,
-                                controller: siteController.TodateController,
-                                cursorColor: Colors.black,
-                                style: TextStyle(color: Colors.black),
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.zero,
-                                  border: InputBorder.none,
-                                  labelText: "To Date",
-                                  labelStyle: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: RequestConstant.Lable_Font_SIZE),
-                                  prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
-                                  prefixIcon: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 8, horizontal: 8),
-                                      child: Icon(Icons.calendar_month,
-                                          color: Theme.of(context).primaryColor)),
-                                ),
-                                onTap: () async {
-                                  DateTime today = DateTime.now();
-                                  DateTime fromDate = DateTime.parse(siteController.FromdateController.text);
-
-                                  DateTime? toDate = await showDatePicker(
-                                    context: context,
-                                    initialDate: today.isBefore(fromDate) ? fromDate : today,
-                                    firstDate: fromDate,
-                                    lastDate: DateTime.now(), // or DateTime(2100)
-                                    builder: (context, child) {
-                                      return Theme(
-                                        data: Theme.of(context).copyWith(
-                                          colorScheme: ColorScheme.light(
-                                            primary: Theme.of(context).primaryColor,
-                                            onPrimary: Colors.white,
-                                            onSurface: Colors.black,
-                                          ),
-                                        ),
-                                        child: child!,
-                                      );
-                                    },
-                                  );
-
-                                  if (toDate != null) {
-                                    siteController.TodateController.text =
-                                        toDate.toString().substring(0, 10);
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                  date2: CommonDateFieldConfig(
+                    title: "To Date",
+                    value: siteController.TodateController.text,
+                    controller: siteController.TodateController,
+                    selectable: true,
+                    initialDate: DateTime.tryParse(
+                        siteController.FromdateController.text) ??
+                        DateTime.now(),
+                    firstDate: DateTime.tryParse(
+                        siteController.FromdateController.text) ??
+                        DateTime.now(),
+                    lastDate: DateTime.now(),
+                    onChanged: (date) {
+                      setState(() {
+                        siteController.TodateController.text =
+                            CommonDateUtils.formatApiDate(date);
+                      });
+                    },
                   ),
                 ),
 

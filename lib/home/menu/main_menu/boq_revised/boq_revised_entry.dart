@@ -14,6 +14,7 @@ import '../../../../controller/projectcontroller.dart';
 import '../../../../controller/sitecontroller.dart';
 import '../../../../controller/subcontcontroller.dart';
 import '../../../../utilities/baseutitiles.dart';
+import '../../../../utilities/common_date_fields.dart';
 import '../../../../utilities/requestconstant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -82,6 +83,9 @@ class _Boq_Revised_EntryScreenState extends State<Boq_Revised_EntryScreen> {
           boq_revised_controller.boq_remarksController.text = element.remarks;
         });
       }
+      if (!mounted) return;
+
+      setState(() {});
     });
   }
 
@@ -167,54 +171,25 @@ class _Boq_Revised_EntryScreenState extends State<Boq_Revised_EntryScreen> {
                       ),
                     ),
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          margin:
-                          const EdgeInsets.only(top: 5, left: 10, right: 10),
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              side: const BorderSide(
-                                  color: Colors.white70, width: 1),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 3,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 3, left: 10, bottom: 5),
-                              child: TextFormField(
-                                readOnly: true,
-                                controller:
-                                boq_revised_controller.boq_dateController,
-                                cursorColor: Colors.black,
-                                style: const TextStyle(color: Colors.black),
-                                decoration: const InputDecoration(
-                                  contentPadding: EdgeInsets.zero,
-                                  border: InputBorder.none,
-                                  labelText: "Date",
-                                  labelStyle: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: RequestConstant.Lable_Font_SIZE),
-                                  prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
-                                  prefixIcon: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 8, horizontal: 8),
-                                      child: ConstIcons.date),
-                                ),
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '\u26A0 Enter user name';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                  CommonDateFields(
+                    date1: CommonDateFieldConfig(
+                      title: "Date",
+                      value: boq_revised_controller.boq_dateController.text,
+                      controller: boq_revised_controller.boq_dateController,
+                      selectable: loginController.user.value.userType != "S",
+                      initialDate: DateTime.tryParse(
+                        boq_revised_controller.boq_dateController.text,
+                      ) ??
+                          DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime.now(),
+                      onChanged: (date) {
+                        setState(() {
+                          boq_revised_controller.boq_dateController.text =
+                              CommonDateUtils.formatApiDate(date);
+                        });
+                      },
+                    ),
                   ),
                   Container(
                     margin: const EdgeInsets.only(top: 5, left: 10, right: 10),

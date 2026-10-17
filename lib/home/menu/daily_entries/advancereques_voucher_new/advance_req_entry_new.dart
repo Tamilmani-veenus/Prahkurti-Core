@@ -11,8 +11,10 @@ import '../../../../controller/advance_reqvoucher_new_controller.dart';
 import '../../../../controller/auto_yrwise_no_controller.dart';
 import '../../../../controller/bottomsheet_Controllers.dart';
 import '../../../../controller/commonvoucher_controller.dart';
+import '../../../../controller/logincontroller.dart';
 import '../../../../controller/projectcontroller.dart';
 import '../../../../utilities/baseutitiles.dart';
+import '../../../../utilities/common_date_fields.dart';
 import '../../../../utilities/requestconstant.dart';
 import 'advance_sitewisepayment_new.dart';
 
@@ -34,6 +36,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
   ProjectController projectController = Get.put(ProjectController());
   BottomsheetControllers bottomsheetControllers =
   Get.put(BottomsheetControllers());
+  LoginController loginController = Get.put(LoginController());
 
   @override
   void initState() {
@@ -97,6 +100,10 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
           advanceReqVoucherController_new.createdById.value = element.createdBy;
         });
       }
+      if (!mounted) return;
+
+      setState(() {});
+
     });
   }
 
@@ -148,7 +155,7 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                         Container(
                           width:
                           BaseUtitiles.getWidthtofPercentage(context, 50),
-                          margin: EdgeInsets.only(top: 10, left: 10, right: 10),
+                          margin: EdgeInsets.only(top: 0, left: 10, right: 10),
                           child: Card(
                             shape: RoundedRectangleBorder(
                               side: BorderSide(color: Colors.white70, width: 1),
@@ -183,78 +190,25 @@ class _AdvReq_voucher_NewState extends State<AdvReq_voucher_New> {
                             ),
                           ),
                         ),
-                        Container(
-                          width:
-                          BaseUtitiles.getWidthtofPercentage(context, 40),
-                          margin: EdgeInsets.only(top: 10, right: 10),
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.white70, width: 1),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 3,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 3, left: 10, bottom: 5),
-                              child: TextFormField(
-                                readOnly: true,
-                                controller: advanceReqVoucherController_new
-                                    .entryDateController,
-                                cursorColor: Colors.black,
-                                style: TextStyle(color: Colors.black),
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.zero,
-                                  border: InputBorder.none,
-                                  labelText: "Due Date",
-                                  labelStyle: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize:
-                                      RequestConstant.Lable_Font_SIZE),
-                                  prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
-                                  prefixIcon: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 8, horizontal: 8),
-                                      child: ConstIcons.date),
-                                ),
-                                onTap: () async {
-                                  if (advanceReqVoucherController_new.saveButton.value == RequestConstant.RESUBMIT|| advanceReqVoucherController_new.saveButton.value == RequestConstant.APPROVAL) {
-                                  } else {
-                                    var Entrydate = await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime.now(),
-                                        lastDate: DateTime(2100),
-                                        builder: (context, child) {
-                                          return Theme(
-                                            data: Theme.of(context).copyWith(
-                                              colorScheme: ColorScheme.light(
-                                                primary: Theme.of(context)
-                                                    .primaryColor,
-                                                // header background color
-                                                onPrimary: Colors.white,
-                                                // header text color
-                                                onSurface: Colors
-                                                    .black, // body text color
-                                              ),
-                                              textButtonTheme:
-                                              TextButtonThemeData(
-                                                style: TextButton.styleFrom(
-                                                  primary: Colors
-                                                      .black, // button text color
-                                                ),
-                                              ),
-                                            ),
-                                            child: child!,
-                                          );
-                                        });
-                                    advanceReqVoucherController_new
-                                        .entryDateController.text =
-                                        BaseUtitiles.selectDateFormat(
-                                            Entrydate!);
-                                  }
-                                },
-                              ),
+                        Expanded(
+                          child:
+                          CommonDateFields(
+                            date1: CommonDateFieldConfig(
+                              title: "Date",
+                              value: advanceReqVoucherController_new.entryDateController.text,
+                              controller: advanceReqVoucherController_new.entryDateController,
+                              initialDate: DateTime.tryParse(
+                                  advanceReqVoucherController_new.entryDateController.text) ??
+                                  DateTime.now(),
+                              firstDate: DateTime(1900),
+                              lastDate: DateTime.now(),
+                              selectable: loginController.user.value.userType != "S",
+                              onChanged: (date) {
+                                setState(() {
+                                  advanceReqVoucherController_new.entryDateController.text =
+                                      CommonDateUtils.formatApiDate(date);
+                                });
+                              },
                             ),
                           ),
                         ),

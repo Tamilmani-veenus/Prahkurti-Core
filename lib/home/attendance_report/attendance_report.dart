@@ -11,6 +11,7 @@ import '../../controller/projectcontroller.dart';
 import '../../controller/sitecontroller.dart';
 import '../../controller/subcontcontroller.dart';
 import '../../utilities/baseutitiles.dart';
+import '../../utilities/common_date_fields.dart';
 import '../../utilities/requestconstant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -108,163 +109,42 @@ class _AttendanceReportState extends State<AttendanceReport> {
                   ),
                 ),
 
-                Container(
-                  margin: const EdgeInsets.only(top: 3, left: 10, right: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            side: const BorderSide(
-                                color: Colors.white70, width: 1),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          elevation: 3,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 3),
-                            child: TextFormField(
-                              readOnly: true,
-                              controller:
-                                  attendanceController.FromdateController,
-                              cursorColor: Colors.black,
-                              style: const TextStyle(color: Colors.black),
-                              decoration: const InputDecoration(
-                                contentPadding: EdgeInsets.zero,
-                                border: InputBorder.none,
-                                labelText: "From Date",
-                                labelStyle: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: RequestConstant.Lable_Font_SIZE),
-                                prefixIconConstraints:
-                                    BoxConstraints(minWidth: 0, minHeight: 0),
-                                prefixIcon: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 8),
-                                  child: ConstIcons.date,
-                                ),
-                              ),
-                              onTap: () async {
+                CommonDateFields(
+                  date1: CommonDateFieldConfig(
+                    title: "From Date",
+                    value: attendanceController.FromdateController.text,
+                    controller: attendanceController.FromdateController,
+                    selectable: true,
+                    initialDate: DateTime.now().subtract(const Duration(days: 7)),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime.now(),
+                    onChanged: (date) {
+                      setState(() {
+                        attendanceController.FromdateController.text =
+                            CommonDateUtils.formatApiDate(date);
+                      });
+                    },
+                  ),
 
-                                DateTime today = DateTime.now();
-                                DateTime initialDate = today.subtract(const Duration(days: 7));
-
-                                if (initialDate.isBefore(DateTime(1900))) {
-                                  initialDate = DateTime(1900);
-                                }
-
-                                var Frdate = await showDatePicker(
-                                    context: context,
-                                    initialDate: initialDate,
-                                    firstDate: DateTime(1900),
-                                    lastDate: today,
-                                    builder: (context, child) {
-                                      return Theme(
-                                        data: Theme.of(context).copyWith(
-                                          colorScheme: ColorScheme.light(
-                                            primary:
-                                                Theme.of(context).primaryColor,
-                                            onPrimary: Colors.white,
-                                            onSurface:
-                                                Colors.black, // body text color
-                                          ),
-                                          textButtonTheme: TextButtonThemeData(
-                                            style: TextButton.styleFrom(
-                                              primary: Colors
-                                                  .black, // button text color
-                                            ),
-                                          ),
-                                        ),
-                                        child: child!,
-                                      );
-                                    });
-                                attendanceController.FromdateController.text =
-                                    Frdate.toString().substring(0, 10);
-                              },
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Select Date';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          width: BaseUtitiles.getWidthtofPercentage(context, 38),
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.white70, width: 1),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 3,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 3),
-                              child: TextFormField(
-                                readOnly: true,
-                                controller: attendanceController.TodateController,
-                                cursorColor: Colors.black,
-                                style: TextStyle(color: Colors.black),
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.zero,
-                                  border: InputBorder.none,
-                                  labelText: "To Date",
-                                  labelStyle: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: RequestConstant.Lable_Font_SIZE),
-                                  prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
-                                  prefixIcon: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 8, horizontal: 8),
-                                      child: Icon(Icons.calendar_month,
-                                          color: Theme.of(context).primaryColor)),
-                                ),
-                                onTap: () async {
-                                  DateTime today = DateTime.now();
-                                  DateTime fromDate = DateTime.parse(attendanceController.FromdateController.text);
-                                  DateTime? Todate = await showDatePicker(
-                                      context: context,
-                                      initialDate: today.isBefore(fromDate) ? fromDate : today,
-                                      firstDate: fromDate,
-                                      lastDate: DateTime.now(),
-                                      builder: (context, child) {
-                                        return Theme(data: Theme.of(context).copyWith(
-                                          colorScheme: ColorScheme.light(
-                                            primary: Theme.of(context).primaryColor, // header background color
-                                            onPrimary: Colors.white, // header text color
-                                            onSurface: Colors.black, // body text color
-                                          ),
-                                          textButtonTheme: TextButtonThemeData(
-                                            style: TextButton.styleFrom(
-                                              primary: Colors.black, // button text color
-                                            ),
-                                          ),
-                                        ),
-                                          child: child!,
-                                        );
-                                      });
-                                  if(Todate != null) {
-                                    attendanceController.TodateController.text =
-                                        Todate.toString().substring(0, 10);
-                                  }},
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Select Date';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                  date2: CommonDateFieldConfig(
+                    title: "To Date",
+                    value: attendanceController.TodateController.text,
+                    controller: attendanceController.TodateController,
+                    selectable: true,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime.tryParse(
+                        attendanceController.FromdateController.text) ??
+                        DateTime.now(),
+                    lastDate: DateTime.now(),
+                    onChanged: (date) {
+                      setState(() {
+                        attendanceController.TodateController.text =
+                            CommonDateUtils.formatApiDate(date);
+                      });
+                    },
                   ),
                 ),
+
 
                 Container(
                   margin: EdgeInsets.only(top: 5, left: 10, right: 10),
