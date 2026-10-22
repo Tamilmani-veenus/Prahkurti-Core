@@ -1516,8 +1516,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Obx(()=>
-                                     Text(adminDashboardController.boqProgressTableList.length == 2
+                                    Obx(()=> Text(adminDashboardController.boqProgressTableList.length >= 2
                                           ? "Top 2 Active Projects"
                                           : adminDashboardController.boqProgressTableList.length == 1
                                           ? "Top 1 Active Project"

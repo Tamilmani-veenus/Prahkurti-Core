@@ -11,8 +11,10 @@ import '../../../constants/ui_constant/icons_const.dart';
 import '../../../controller/auto_yrwise_no_controller.dart';
 import '../../../controller/bottomsheet_Controllers.dart';
 import '../../../controller/fromsite_controller.dart';
+import '../../../controller/logincontroller.dart';
 import '../../../controller/sitecontroller.dart';
 import '../../../utilities/baseutitiles.dart';
+import '../../../utilities/common_date_fields.dart';
 
 class TransferAcknow_EntryScreen extends StatefulWidget {
   const TransferAcknow_EntryScreen({Key? key}) : super(key: key);
@@ -27,6 +29,7 @@ class _TransferAcknow_EntryScreenState extends State<TransferAcknow_EntryScreen>
   SiteController siteController = Get.put(SiteController());
   BottomsheetControllers bottomsheetControllers = Get.put(BottomsheetControllers());
   FromSiteController fromsiteController = Get.put(FromSiteController());
+  LoginController loginController = Get.put(LoginController());
 
   @override
   void initState() {
@@ -206,70 +209,14 @@ class _TransferAcknow_EntryScreenState extends State<TransferAcknow_EntryScreen>
                           ),
                           Expanded(
                             flex: 3,
-                            child: Container(
-                              width: BaseUtitiles.getWidthtofPercentage(context, 35),
-                              margin: const EdgeInsets.only(top: 5, right: 10),
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  side: const BorderSide(color: Colors.white70, width: 1),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                elevation: 3,
-                                child: Padding(
-                                  padding:
-                                  const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                  child: TextFormField(
-                                    readOnly: true,
-                                    controller: transferAcknowController.entryDateController,
-                                    cursorColor: Colors.black,
-                                    style: TextStyle(color: Colors.black),
-                                    decoration: const InputDecoration(
-                                      contentPadding: EdgeInsets.zero,
-                                      border: InputBorder.none,
-                                      labelText: "Date",
-                                      labelStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: RequestConstant.Lable_Font_SIZE),
-                                      prefixIconConstraints:
-                                      BoxConstraints(minWidth: 0, minHeight: 0),
-                                      prefixIcon: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 8, horizontal: 8),
-                                          child: ConstIcons.date),
-                                    ),
-                                    onTap: () async {
-                                      var Entrydate = await showDatePicker(
-                                          context: context,
-                                          initialDate: DateTime.now(),
-                                          firstDate: DateTime(1900),
-                                          lastDate: DateTime(2100),
-                                          builder: (context, child) {
-                                            return Theme(data: Theme.of(context).copyWith(
-                                              colorScheme: ColorScheme.light(
-                                                primary: Theme.of(context).primaryColor, // header background color
-                                                onPrimary: Colors.white, // header text color
-                                                onSurface: Colors.black, // body text color
-                                              ),
-                                              textButtonTheme: TextButtonThemeData(
-                                                style: TextButton.styleFrom(
-                                                  primary: Colors.black, // button text color
-                                                ),
-                                              ),
-                                            ),
-                                              child: child!,
-                                            );
-                                          });
-                                      transferAcknowController.entryDateController.text =BaseUtitiles.selectDateFormat(Entrydate!);
-                                    },
-                                    validator: (value) {
-                                      if (value!.isEmpty) {
-                                        return '\u26A0 Enter user name';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
+                            child: CommonDateFields(
+                              date1: CommonDateFieldConfig(
+                                title: "Date",
+                                value: transferAcknowController.entryDateController.text,
+                                controller: transferAcknowController.entryDateController,
+                                selectable: loginController.user.value.userType != "S",
                               ),
+
                             ),
                           ),
                         ],

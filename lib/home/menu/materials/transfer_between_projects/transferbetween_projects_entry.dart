@@ -15,6 +15,7 @@ import '../../../../controller/projectcontroller.dart';
 import '../../../../controller/sitecontroller.dart';
 import '../../../../controller/transferbw_project_controller.dart';
 import '../../../../utilities/baseutitiles.dart';
+import '../../../../utilities/common_date_fields.dart';
 import '../../../../utilities/requestconstant.dart';
 
 class TrasferBetweenProjects_Entry extends StatefulWidget {
@@ -105,7 +106,7 @@ class _TrasferBetweenProjects_EntryState
           transferBW_project_Controller.prearedbyText.text = loginController.EmpName();
           transferBW_project_Controller.AgTransReqMasid.value =
               transferBW_project_Controller.transferAllDatasList[0].id;
-        transferBW_project_Controller.createdById.value = transferBW_project_Controller.transferAllDatasList[0].createdBy;
+        // transferBW_project_Controller.createdById.value = transferBW_project_Controller.transferAllDatasList[0].createdBy;
 
       }
 
@@ -174,6 +175,9 @@ class _TrasferBetweenProjects_EntryState
 
         });
       }
+      if (!mounted) return;
+
+      setState(() {});
     });
   }
 
@@ -285,41 +289,24 @@ class _TrasferBetweenProjects_EntryState
                           ),
                           Expanded(
                             flex: 3,
-                            child: Container(
-                              margin: const EdgeInsets.only(top: 5, right: 10),
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  side: const BorderSide(
-                                      color: Colors.white70, width: 1),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                elevation: 3,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 3, left: 10, bottom: 5),
-                                  child: TextFormField(
-                                    readOnly: true,
-                                    controller: transferBW_project_Controller
-                                        .entryDateText,
-                                    cursorColor: Colors.black,
-                                    style: const TextStyle(color: Colors.black),
-                                    decoration: const InputDecoration(
-                                      contentPadding: EdgeInsets.zero,
-                                      border: InputBorder.none,
-                                      labelText: "Date",
-                                      labelStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize:
-                                              RequestConstant.Lable_Font_SIZE),
-                                      prefixIconConstraints: BoxConstraints(
-                                          minWidth: 0, minHeight: 0),
-                                      prefixIcon: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 8, horizontal: 8),
-                                          child: ConstIcons.date),
-                                    ),
-                                  ),
-                                ),
+                            child:  CommonDateFields(
+                              date1: CommonDateFieldConfig(
+                                title: "Date",
+                                value: transferBW_project_Controller.entryDateText.text,
+                                controller: transferBW_project_Controller.entryDateText,
+                                selectable: loginController.user.value.userType != "S",
+                                initialDate: DateTime.tryParse(
+                                  transferBW_project_Controller.entryDateText.text,
+                                ) ??
+                                    DateTime.now(),
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime.now(),
+                                onChanged: (date) {
+                                  setState(() {
+                                    transferBW_project_Controller.entryDateText.text =
+                                        CommonDateUtils.formatApiDate(date);
+                                  });
+                                },
                               ),
                             ),
                           ),

@@ -10,6 +10,7 @@ import '../../../controller/bottomsheet_Controllers.dart';
 import '../../../controller/logincontroller.dart';
 import '../../../controller/punch_in_controller.dart';
 import '../../../controller/staffcontroller.dart';
+import '../../../utilities/common_date_fields.dart';
 import '../../../utilities/image_view.dart';
 
 class PunchSearchReports extends GetView<PunchInController> {
@@ -41,215 +42,42 @@ class PunchSearchReports extends GetView<PunchInController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Padding(
-                      padding:
-                          EdgeInsets.only(left: 8.0, right: 8.0, top: 16.r),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                    color: Colors.white70, width: 1),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 3),
-                                child: TextFormField(
-                                  readOnly: true,
-                                  controller: punchInController.fromDate,
-                                  cursorColor: Colors.black,
-                                  style: const TextStyle(color: Colors.black),
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.zero,
-                                    border: InputBorder.none,
-                                    labelText: "From Date",
-                                    labelStyle: const TextStyle(
-                                        color: Colors.grey,
-                                        fontSize:
-                                            RequestConstant.Lable_Font_SIZE),
-                                    prefixIconConstraints: const BoxConstraints(
-                                        minWidth: 0, minHeight: 0),
-                                    prefixIcon: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 8, horizontal: 8),
-                                      child: Icon(
-                                        Icons.calendar_month,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                    ),
-                                  ),
-                                  onTap: () async {
-                                    var fromDate = await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(2010),
-                                        lastDate: DateTime.now(),
-                                        builder: (context, child) {
-                                          return Theme(
-                                            data: Theme.of(context).copyWith(
-                                              colorScheme: ColorScheme.light(
-                                                primary: Theme.of(context)
-                                                    .primaryColor,
-                                                onPrimary: Colors.white,
-                                                onSurface: Colors.black,
-                                              ),
-                                              textButtonTheme:
-                                                  TextButtonThemeData(
-                                                style: TextButton.styleFrom(
-                                                  foregroundColor: Colors.black,
-                                                ),
-                                              ),
-                                            ),
-                                            child: child!,
-                                          );
-                                        });
-                                    if (fromDate != null) {
-                                      String formattedDate =
-                                          DateFormat('yyyy-MM-dd')
-                                              .format(fromDate);
-                                      punchInController.fromDate.text =
-                                          formattedDate;
-                                    } else {
-                                      if (kDebugMode) {
-                                        print("Date is not selected");
-                                      }
-                                    }
-                                  },
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Select Date';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                    color: Colors.white70, width: 1),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 3),
-                                child: TextFormField(
-                                  readOnly: true,
-                                  controller: punchInController.toDate,
-                                  cursorColor: Colors.black,
-                                  style: const TextStyle(color: Colors.black),
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.zero,
-                                    border: InputBorder.none,
-                                    labelText: "To Date",
-                                    labelStyle: const TextStyle(
-                                        color: Colors.grey,
-                                        fontSize:
-                                            RequestConstant.Lable_Font_SIZE),
-                                    prefixIconConstraints: const BoxConstraints(
-                                        minWidth: 0, minHeight: 0),
-                                    prefixIcon: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 8, horizontal: 8),
-                                        child: Icon(Icons.calendar_month,
-                                            color: Theme.of(context)
-                                                .primaryColor)),
-                                  ),
-                                  onTap: () async {
-                                    DateTime now = DateTime.now();
-                                    DateTime? fromDateParsed;
-                                    if (punchInController
-                                        .fromDate.text.isNotEmpty) {
-                                      fromDateParsed = DateFormat('yyyy-MM-dd')
-                                          .parse(
-                                              punchInController.fromDate.text);
-                                    }
-                                    var todate = await showDatePicker(
-                                      context: context,
-                                      initialDate: DateTime.now(),
-                                      firstDate:
-                                          fromDateParsed ?? DateTime(2010),
-                                      lastDate: now,
-                                      builder: (context, child) {
-                                        return Theme(
-                                          data: Theme.of(context).copyWith(
-                                            colorScheme: ColorScheme.light(
-                                              primary: Theme.of(context)
-                                                  .primaryColor,
-                                              onPrimary: Colors.white,
-                                              onSurface: Colors.black,
-                                            ),
-                                            textButtonTheme:
-                                                TextButtonThemeData(
-                                              style: TextButton.styleFrom(
-                                                foregroundColor: Colors.black,
-                                              ),
-                                            ),
-                                          ),
-                                          child: child!,
-                                        );
-                                      },
-                                    );
-                                    if (todate != null) {
-                                      String formattedDate =
-                                          DateFormat('yyyy-MM-dd')
-                                              .format(todate);
-                                      punchInController.toDate.text =
-                                          formattedDate;
-                                    }
-                                  },
-                                  // onTap: () async {
-                                  //   var todate = await showDatePicker(
-                                  //       context: context,
-                                  //       initialDate: DateTime.now(),
-                                  //       firstDate: DateTime(2010),
-                                  //       lastDate: DateTime.now(),
-                                  //       builder: (context, child) {
-                                  //         return Theme(
-                                  //           data: Theme.of(context).copyWith(
-                                  //             colorScheme: ColorScheme.light(
-                                  //               primary:
-                                  //               Theme.of(context).primaryColor,
-                                  //               onPrimary: Colors.white,
-                                  //               onSurface: Colors.black,
-                                  //             ),
-                                  //             textButtonTheme: TextButtonThemeData(
-                                  //               style: TextButton.styleFrom(
-                                  //                 foregroundColor: Colors
-                                  //                     .black, // button text color
-                                  //               ),
-                                  //             ),
-                                  //           ),
-                                  //           child: child!,
-                                  //         );
-                                  //       });
-                                  //   if (todate != null) {
-                                  //     String formattedDate =
-                                  //     DateFormat('yyyy-MM-dd').format(todate);
-                                  //     punchInController.toDate.text = formattedDate;
-                                  //   } else {
-                                  //     if (kDebugMode) {
-                                  //       print("Date is not selected");
-                                  //     }
-                                  //   }
-                                  // },
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Select Date';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                    SizedBox(height: 5,),
+                    CommonDateFields(
+                      date1: CommonDateFieldConfig(
+                        title: "From Date",
+                        value: punchInController.fromDate.text,
+                        controller: punchInController.fromDate,
+                        selectable: true,
+                        initialDate:
+                            DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime.now(),
+                        onChanged: (date) {
+                          setState(() {
+                            punchInController.fromDate.text =
+                                CommonDateUtils.formatApiDate(date);
+                          });
+                        },
+                      ),
+
+                      date2: CommonDateFieldConfig(
+                        title: "To Date",
+                        value: punchInController.toDate.text,
+                        controller: punchInController.toDate,
+                        selectable: true,
+                        initialDate:
+                            DateTime.now(),
+                        firstDate: DateTime.tryParse(
+                            punchInController.fromDate.text) ??
+                            DateTime.now(),
+                        lastDate: DateTime.now(),
+                        onChanged: (date) {
+                          setState(() {
+                            punchInController.toDate.text =
+                                CommonDateUtils.formatApiDate(date);
+                          });
+                        },
                       ),
                     ),
                     Container(

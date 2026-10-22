@@ -13,6 +13,7 @@ import '../../../controller/projectcontroller.dart';
 import '../../../controller/sitecontroller.dart';
 import '../../../utilities/apiconstant.dart';
 import '../../../utilities/baseutitiles.dart';
+import '../../../utilities/common_date_fields.dart';
 import '../../../utilities/requestconstant.dart';
 import 'mrnpreapr_itemlist.dart';
 
@@ -201,153 +202,46 @@ class _MrnPreApprovalEntryScreenState extends State<MrnPreApprovalEntryScreen> {
                   ),
                 ),
 
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(color: Colors.white70, width: 1),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          elevation: 3,
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 3, left: 10, bottom: 5),
-                            child: TextFormField(
-                              readOnly: true,
-                              controller: mrnPreApprovalController.mrnpre_RequestDateText,
-                              cursorColor: Colors.black,
-                              style: TextStyle(color: Colors.black),
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.zero,
-                                border: InputBorder.none,
-                                labelText: "Request Date",
-                                labelStyle: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: RequestConstant.Lable_Font_SIZE),
-                                prefixIconConstraints:
-                                BoxConstraints(minWidth: 0, minHeight: 0),
-                                prefixIcon: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 8),
-                                    child: ConstIcons.date),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(color: Colors.white70, width: 1),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          elevation: 3,
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 3, left: 10, bottom: 5),
-                            child: TextFormField(
-                              readOnly: true,
-                              controller:mrnPreApprovalController.mrnpre_DueDateText,
-                              style: TextStyle(color: Colors.black),
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.zero,
-                                border: InputBorder.none,
-                                labelText: "Due Date",
-                                labelStyle: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: RequestConstant.Lable_Font_SIZE),
-                                prefixIconConstraints:
-                                BoxConstraints(minWidth: 0, minHeight: 0),
-                                prefixIcon: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 8),
-                                    child: ConstIcons.date),
-                              ),
-                              onTap: () async {
-                                var Entrydate = await showDatePicker(
-                                      context: context,
-                                      initialDate: DateTime.now(),
-                                      firstDate: DateTime(2000),
-                                      lastDate: DateTime(2100),
-                                      builder: (context, child) {
-                                        return Theme(
-                                          data: Theme.of(context).copyWith(
-                                            colorScheme: ColorScheme.light(
-                                              primary: Theme.of(context)
-                                                  .primaryColor,
-                                              // header background color
-                                              onPrimary: Colors.white,
-                                              // header text color
-                                              onSurface: Colors
-                                                  .black, // body text color
-                                            ),
-                                            textButtonTheme:
-                                            TextButtonThemeData(
-                                              style: TextButton.styleFrom(
-                                                primary: Colors
-                                                    .black, // button text color
-                                              ),
-                                            ),
-                                          ),
-                                          child: child!,
-                                        );
-                                      });
-                                mrnPreApprovalController
-                                      .mrnpre_DueDateText.text =
-                                      BaseUtitiles.selectDateFormat(Entrydate!);
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                CommonDateFields(
+                  date1: CommonDateFieldConfig(
+                    title: "Request Date",
+                    value: mrnPreApprovalController.mrnpre_RequestDateText.text,
+                    controller: mrnPreApprovalController.mrnpre_RequestDateText,
+                    selectable: false,
+                  ),
+
+                  date2: CommonDateFieldConfig(
+                    title: "Due Date",
+                    value: mrnPreApprovalController.mrnpre_DueDateText.text,
+                    controller: mrnPreApprovalController.mrnpre_DueDateText,
+                    selectable: true,
+
+                    initialDate:DateTime.tryParse(
+                      mrnPreApprovalController.mrnpre_DueDateText.text,
+                    ) ??
+                        DateTime.now(),
+
+                    firstDate: DateTime.tryParse(
+                      mrnPreApprovalController.mrnpre_RequestDateText.text,
+                    ) ??
+                        DateTime.now(),
+
+                    lastDate: DateTime(2100),
+
+                    onChanged: (date) {
+                     setState(() {
+                       mrnPreApprovalController.mrnpre_DueDateText.text =
+                           CommonDateUtils.formatApiDate(date);
+                     });
+                    },
+                  ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.white70, width: 1),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 3,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                      child: TextFormField(
-                        readOnly: true,
-                        controller: mrnPreApprovalController.mrnpre_ApprovalDateText,
-                        style: TextStyle(color: Colors.black),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.zero,
-                          border: InputBorder.none,
-                          labelText:  "Approval Date",
-                          labelStyle: TextStyle(
-                              color: Colors.grey,
-                              fontSize: RequestConstant.Lable_Font_SIZE),
-                          prefixIconConstraints:
-                          BoxConstraints(minWidth: 0, minHeight: 0),
-                          prefixIcon: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 8),
-                              child: ConstIcons.projectName
-
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value!.isEmpty || value == "--Select--") {
-                            return '\u26A0 Required.';
-                          }
-                          return null;
-                        },
-
-                      ),
-                    ),
+                CommonDateFields(
+                  date1: CommonDateFieldConfig(
+                    title: "Approval Date",
+                    value: mrnPreApprovalController.mrnpre_ApprovalDateText.text,
+                    controller: mrnPreApprovalController.mrnpre_ApprovalDateText,
+                    selectable: false,
                   ),
                 ),
 

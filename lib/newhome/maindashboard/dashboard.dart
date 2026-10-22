@@ -215,7 +215,7 @@ class _Dashboard_screenState extends State<Dashboard_screen> {
                                 ],
                               ),
                             ),
-                            if(!AppClient.isPrahkurti)
+                            if (!AppClient.isPrahkurti)
                             PopupMenuItem(
                               value: "Hr",
                               child: Row(

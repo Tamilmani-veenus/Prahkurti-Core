@@ -12,6 +12,7 @@ import '../../../controller/projectcontroller.dart';
 import '../../../controller/sitecontroller.dart';
 import '../../../utilities/apiconstant.dart';
 import '../../../utilities/baseutitiles.dart';
+import '../../../utilities/common_date_fields.dart';
 import '../../../utilities/requestconstant.dart';
 import 'mrnfinal_itemlist.dart';
 
@@ -177,198 +178,45 @@ class _MrnfinalEntryScreenState extends State<MrnfinalEntryScreen> {
                       ),
                     ),
 
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            margin: const EdgeInsets.only(top: 5, left: 10, right: 10),
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(color: Colors.white70, width: 1),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 3, left: 10, bottom: 5),
-                                child: TextFormField(
-                                  readOnly: true,
-                                  controller: mrnFinalApprovalController.RequestDateText,
-                                  cursorColor: Colors.black,
-                                  style: const TextStyle(color: Colors.black),
-                                  decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.zero,
-                                    border: InputBorder.none,
-                                    labelText: "Request Date",
-                                    labelStyle: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: RequestConstant.Lable_Font_SIZE),
-                                    prefixIconConstraints:
-                                    BoxConstraints(minWidth: 0, minHeight: 0),
-                                    prefixIcon: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 8, horizontal: 8),
-                                        child: ConstIcons.date),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(color: Colors.white70, width: 1),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 3, left: 10, bottom: 5),
-                                child: TextFormField(
-                                  readOnly: true,
-                                  controller: mrnFinalApprovalController.DueDateText,
-                                  style: const TextStyle(color: Colors.black),
-                                  decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.zero,
-                                    border: InputBorder.none,
-                                    labelText: "Due Date",
-                                    labelStyle: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: RequestConstant.Lable_Font_SIZE),
-                                    prefixIconConstraints:
-                                    BoxConstraints(minWidth: 0, minHeight: 0),
-                                    prefixIcon: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 8, horizontal: 8),
-                                        child: ConstIcons.date),
-                                  ),
+                    CommonDateFields(
+                      date1: CommonDateFieldConfig(
+                        title: "Request Date",
+                        value: mrnFinalApprovalController.RequestDateText.text,
+                        controller: mrnFinalApprovalController.RequestDateText,
+                        selectable: false,
+                      ),
+                      date2: CommonDateFieldConfig(
+                        title: "Due Date",
+                        value: mrnFinalApprovalController.DueDateText.text,
+                        controller: mrnFinalApprovalController.DueDateText,
+                        selectable: true,
+                        initialDate:DateTime.tryParse(
+                          mrnFinalApprovalController.DueDateText.text,
+                        ) ??
+                            DateTime.now(),
 
-                                  onTap: () async {
-                                      var Entrydate = await showDatePicker(
-                                          context: context,
-                                          initialDate: DateTime.now(),
-                                          firstDate: DateTime(2000),
-                                          lastDate: DateTime(2100),
-                                          builder: (context, child) {
-                                            return Theme(
-                                              data: Theme.of(context).copyWith(
-                                                colorScheme: ColorScheme.light(
-                                                  primary: Theme.of(context)
-                                                      .primaryColor,
-                                                  // header background color
-                                                  onPrimary: Colors.white,
-                                                  // header text color
-                                                  onSurface: Colors
-                                                      .black, // body text color
-                                                ),
-                                                textButtonTheme:
-                                                TextButtonThemeData(
-                                                  style: TextButton.styleFrom(
-                                                    primary: Colors
-                                                        .black, // button text color
-                                                  ),
-                                                ),
-                                              ),
-                                              child: child!,
-                                            );
-                                          });
-                                      mrnFinalApprovalController
-                                          .DueDateText.text =
-                                          BaseUtitiles.selectDateFormat(Entrydate!);
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                        firstDate: DateTime.tryParse(
+                          mrnFinalApprovalController.RequestDateText.text,
+                        ) ??
+                            DateTime.now(),
+
+                        lastDate: DateTime(2100),
+
+                        onChanged: (date) {
+                       setState(() {
+                         mrnFinalApprovalController.DueDateText.text =
+                             CommonDateUtils.formatApiDate(date);
+                       });
+                        },
+                      ),
                     ),
 
-                    // Container(
-                    //   margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                    //   child: Card(
-                    //     shape: RoundedRectangleBorder(
-                    //       side: BorderSide(color: Colors.white70, width: 1),
-                    //       borderRadius: BorderRadius.circular(15),
-                    //     ),
-                    //     elevation: 3,
-                    //     child: Padding(
-                    //       padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                    //       child: TextFormField(
-                    //         readOnly: true,
-                    //         controller: mrnFinalApprovalController.ApprovalNoText,
-                    //         cursorColor: Colors.black,
-                    //         style: TextStyle(color: Colors.black),
-                    //         decoration: InputDecoration(
-                    //           contentPadding: EdgeInsets.zero,
-                    //           border: InputBorder.none,
-                    //           labelText: "Approval No",
-                    //           labelStyle: TextStyle(
-                    //               color: Colors.grey,
-                    //               fontSize: RequestConstant.Lable_Font_SIZE),
-                    //           prefixIconConstraints:
-                    //           BoxConstraints(minWidth: 0, minHeight: 0),
-                    //           prefixIcon: Padding(
-                    //               padding: EdgeInsets.symmetric(
-                    //                   vertical: 8, horizontal: 8),
-                    //               child: ConstIcons.projectName
-                    //
-                    //           ),
-                    //         ),
-                    //         validator: (value) {
-                    //           if (value!.isEmpty || value == "--Select--") {
-                    //             return '\u26A0 Please select project name.';
-                    //           }
-                    //           return null;
-                    //         },
-                    //
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-
-                    Container(
-                      margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.white70, width: 1),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        elevation: 3,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                          child: TextFormField(
-                            readOnly: true,
-                            controller: mrnFinalApprovalController.ApprovalDateText,
-                            style: TextStyle(color: Colors.black),
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.zero,
-                              border: InputBorder.none,
-                              labelText:  "Approval Date",
-                              labelStyle: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: RequestConstant.Lable_Font_SIZE),
-                              prefixIconConstraints:
-                              BoxConstraints(minWidth: 0, minHeight: 0),
-                              prefixIcon: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 8),
-                                  child: ConstIcons.projectName
-
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value!.isEmpty || value == "--Select--") {
-                                return '\u26A0 Required.';
-                              }
-                              return null;
-                            },
-
-                          ),
-                        ),
+                    CommonDateFields(
+                      date1: CommonDateFieldConfig(
+                        title: "Approval Date",
+                        value: mrnFinalApprovalController.ApprovalDateText.text,
+                        controller: mrnFinalApprovalController.ApprovalDateText,
+                        selectable: false,
                       ),
                     ),
 

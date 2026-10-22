@@ -24,6 +24,7 @@ import '../../../../commonpopup/accountnameadd_alert.dart';
 import '../../../../commonpopup/vouchertype_alert.dart';
 import '../../../punch_in_out/Image_galleryScreen.dart';
 import '../../../punch_in_out/camera_screen.dart';
+import '../../../../../utilities/common_date_fields.dart';
 
 class Staff_Voucher_EntryScreen extends StatefulWidget {
   final String heading;
@@ -53,6 +54,7 @@ class _Subcont_Nmr_EntryScreenState_Site
 
   @override
   void initState() {
+    super.initState();
     var duration = Duration(seconds: 0);
     Future.delayed(duration, () async {
       if (staffVoucher_Controller.SaveButton.value == RequestConstant.SUBMIT) {
@@ -129,8 +131,10 @@ class _Subcont_Nmr_EntryScreenState_Site
           staffVoucher_Controller.createdById.value = element.createdBy;
         });
       }
+      if (!mounted) return;
+
+      setState(() {});
     });
-    super.initState();
   }
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -212,72 +216,23 @@ class _Subcont_Nmr_EntryScreenState_Site
                         ),
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.white70, width: 1),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        elevation: 3,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 3, left: 10, bottom: 5),
-                          child: TextFormField(
-                            readOnly: true,
-                            controller: staffVoucher_Controller.staffvocDate,
-                            cursorColor: Colors.black,
-                            style: TextStyle(color: Colors.black),
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.zero,
-                              border: InputBorder.none,
-                              labelText: "Entry Date",
-                              labelStyle: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: RequestConstant.Lable_Font_SIZE),
-                              prefixIconConstraints:
-                                  BoxConstraints(minWidth: 0, minHeight: 0),
-                              prefixIcon: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 8),
-                                  child: ConstIcons.date),
-                            ),
-                            onTap: () async {
-                              if (staffVoucher_Controller.SaveButton.value ==
-                                  RequestConstant.RESUBMIT) {
-                              } else {
-                                var Entrydate = await showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(1900),
-                                    lastDate: DateTime.now(),
-                                    builder: (context, child) {
-                                      return Theme(
-                                        data: Theme.of(context).copyWith(
-                                          colorScheme: ColorScheme.light(
-                                            primary: Theme.of(context)
-                                                .primaryColor, // header background color
-                                            onPrimary: Colors
-                                                .white, // header text color
-                                            onSurface:
-                                                Colors.black, // body text color
-                                          ),
-                                          textButtonTheme: TextButtonThemeData(
-                                            style: TextButton.styleFrom(
-                                              primary: Colors
-                                                  .black, // button text color
-                                            ),
-                                          ),
-                                        ),
-                                        child: child!,
-                                      );
-                                    });
-                                staffVoucher_Controller.staffvocDate.text =
-                                    BaseUtitiles.selectDateFormat(Entrydate!);
-                              }
-                            },
-                          ),
-                        ),
+                    CommonDateFields(
+                      date1: CommonDateFieldConfig(
+                        title: "Date",
+                        value: staffVoucher_Controller.staffvocDate.text,
+                        controller: staffVoucher_Controller.staffvocDate,
+                        initialDate: DateTime.tryParse(
+                            staffVoucher_Controller.staffvocDate.text) ??
+                            DateTime.now(),
+                        firstDate: DateTime(1900),
+                        lastDate: DateTime.now(),
+                        selectable: loginController.user.value.userType != "S",
+                        onChanged: (date) {
+                         setState(() {
+                           staffVoucher_Controller.staffvocDate.text =
+                               CommonDateUtils.formatApiDate(date);
+                         });
+                        },
                       ),
                     ),
                     Container(

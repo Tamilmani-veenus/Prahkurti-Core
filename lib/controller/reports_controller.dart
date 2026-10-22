@@ -64,6 +64,12 @@ class ReportsController extends GetxController{
           Result(projectId: 0, project: "--ALL--"),
         );
       }
+      else{
+        getProjectdropDownvalue.value.insert(
+        0,
+        Result(projectId: 0, project: "--SELECT--"),
+      );
+      }
 
     }
     else {

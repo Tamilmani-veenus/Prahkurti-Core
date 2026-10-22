@@ -7,11 +7,13 @@ import '../../../../constants/ui_constant/icons_const.dart';
 import '../../../../controller/auto_yrwise_no_controller.dart';
 import '../../../../controller/bottomsheet_Controllers.dart';
 import '../../../../controller/dailyentries_controller.dart';
+import '../../../../controller/logincontroller.dart';
 import '../../../../controller/nmrweeklybill_controller.dart';
 import '../../../../controller/projectcontroller.dart';
 import '../../../../controller/sitecontroller.dart';
 import '../../../../controller/subcontcontroller.dart';
 import '../../../../utilities/baseutitiles.dart';
+import '../../../../utilities/common_date_fields.dart';
 import '../../../../utilities/requestconstant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -34,6 +36,7 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
   NMRWklyController nmrWklyController= Get.put(NMRWklyController());
   DailyEntriesController dailyEntriesController = Get.put(DailyEntriesController());
   BottomsheetControllers bottomsheetControllers = Get.put(BottomsheetControllers());
+  LoginController loginController = Get.put(LoginController());
 
 
   @override
@@ -78,6 +81,9 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
           nmrWklyController.createdById.value = element.createdBy;
         });
       }
+      if (!mounted) return;
+
+      setState(() {});
     });
     super.initState();
   }
@@ -172,67 +178,28 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                           ),
                           Expanded(
                             flex: 3,
-                            child: Container(
-                              margin: const EdgeInsets.only(top: 5, right: 10),
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  side: const BorderSide(color: Colors.white70, width: 1),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                elevation: 3,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 3, left: 10, bottom: 5),
-                                  child: TextFormField(
-                                    readOnly: false,
-                                    controller: nmrWklyController.NmrentryDateController,
-                                    cursorColor: Colors.black,
-                                    style: const TextStyle(color: Colors.black),
-                                    decoration: const InputDecoration(
-                                      contentPadding: EdgeInsets.zero,
-                                      border: InputBorder.none,
-                                      labelText: "Date",
-                                      labelStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: RequestConstant.Lable_Font_SIZE),
-                                      prefixIconConstraints:
-                                      BoxConstraints(minWidth: 0, minHeight: 0),
-                                      prefixIcon: Padding(
-                                          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                          child: ConstIcons.date),
-                                    ),
-                                    onTap: () async {
-                                      if(nmrWklyController.saveButton.value == RequestConstant.RESUBMIT){}
-                                      else{
-                                        var entryDate = await showDatePicker(
-                                            context: context,
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime(1900),
-                                            lastDate: DateTime(2100),
-                                            builder: (context, child) {
-                                              return Theme(data: Theme.of(context).copyWith(
-                                                colorScheme: ColorScheme.light(
-                                                  primary: Theme.of(context).primaryColor, // header background color
-                                                  onPrimary: Colors.white, // header text color
-                                                  onSurface: Colors.black, // body text color
-                                                ),
-                                                textButtonTheme: TextButtonThemeData(
-                                                  style: TextButton.styleFrom(
-                                                    foregroundColor: Colors.black, // button text color
-                                                  ),
-                                                ),
-                                              ),
-                                                child: child!,
-                                              );
-                                            });
-                                        nmrWklyController.NmrentryDateController.text =BaseUtitiles.selectDateFormat(entryDate!);
-                                      }
-                                    },
-                                  ),
-                                ),
+                            child: CommonDateFields(
+                              date1: CommonDateFieldConfig(
+                                title: "Date",
+                                value: nmrWklyController.NmrentryDateController.text,
+                                controller: nmrWklyController.NmrentryDateController,
+                                selectable: loginController.user.value.userType != "S",
+                                initialDate: DateTime.tryParse(
+                                  nmrWklyController.NmrentryDateController.text,
+                                ) ??
+                                    DateTime.now(),
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime.now(),
+                                onChanged: (date) {
+                                  setState(() {
+                                    nmrWklyController.NmrentryDateController.text =
+                                        CommonDateUtils.formatApiDate(date);
+                                  });
+                                },
                               ),
                             ),
                           ),
+
                         ],
                       ),
                       Container (
@@ -436,159 +403,43 @@ class _Subcont_Nmr_EntryScreenState_Site extends State<Subcont_Nmr_EntryScreen_S
                         ),
                         child: const Text("Sub Contractor Work Done Details",style: TextStyle(color: Colors.white),),
                       ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 3),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            SizedBox(
-                              width: BaseUtitiles.getWidthtofPercentage(context, 45),
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(color: Colors.white70, width: 1),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                elevation: 3,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 3),
-                                  child: TextFormField(
-                                    readOnly: true,
-                                    controller: nmrWklyController.FromdateController,
-                                    cursorColor: Colors.black,
-                                    style: TextStyle(color: Colors.black),
-                                    decoration: const InputDecoration(
-                                      contentPadding: EdgeInsets.zero,
-                                      border: InputBorder.none,
-                                      labelText: "From Date",
-                                      labelStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: RequestConstant.Lable_Font_SIZE),
-                                      prefixIconConstraints:
-                                      BoxConstraints(minWidth: 0, minHeight: 0),
-                                      prefixIcon: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 8, horizontal: 8),
-                                        child: ConstIcons.date,
-                                      ),
-                                    ),
-                                    onTap: () async {
-                                      if(nmrWklyController.saveButton.value == RequestConstant.RESUBMIT){
-
-                                      }
-                                      else if(nmrWklyController.NmritemList.value.isNotEmpty){
-
-                                      }
-                                      else{
-                                        var Frdate = await showDatePicker(
-                                            fieldHintText: "From",
-                                            context: context,
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime(1900),
-                                            lastDate: DateTime(2100),
-                                            builder: (context, child) {
-                                              return Theme(data: Theme.of(context).copyWith(
-                                                colorScheme: ColorScheme.light(
-                                                  primary: Theme.of(context).primaryColor, // header background color
-                                                  onPrimary: Colors.white, // header text color
-                                                  onSurface: Colors.black, // body text color
-                                                ),
-                                                textButtonTheme: TextButtonThemeData(
-                                                  style: TextButton.styleFrom(
-                                                    primary: Colors.black, // button text color
-                                                  ),
-                                                ),
-                                              ),
-                                                child: child!,
-                                              );
-                                            });
-                                        nmrWklyController.FromdateController.text = BaseUtitiles.selectDateFormat(Frdate!);
-                                        // nmrWklyController.TodateController.text= BaseUtitiles.NMR_After_OneWeekDate(Frdate);
-                                      }
-                                    },
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return '\u26A0 ${RequestConstant.VALIDATE}';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: BaseUtitiles.getWidthtofPercentage(context, 45),
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(color: Colors.white70, width: 1),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                elevation: 3,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 3),
-                                  child: TextFormField(
-                                    readOnly: true,
-                                    controller: nmrWklyController.TodateController,
-                                    cursorColor: Colors.black,
-                                    style: TextStyle(color: Colors.black),
-                                    decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.zero,
-                                      border: InputBorder.none,
-                                      labelText: "To Date",
-                                      labelStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: RequestConstant.Lable_Font_SIZE),
-                                      prefixIconConstraints:
-                                      BoxConstraints(minWidth: 0, minHeight: 0),
-                                      prefixIcon: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 8, horizontal: 8),
-                                          child: Icon(Icons.calendar_month,
-                                              color: Theme.of(context).primaryColor)),
-                                    ),
-                                    onTap: () async {
-                                      if(nmrWklyController.saveButton.value == RequestConstant.RESUBMIT){
-
-                                      }
-                                      else if(nmrWklyController.NmritemList.value.isNotEmpty){
-
-                                      }
-                                      else{
-                                        var Frdate = await showDatePicker(
-                                            fieldHintText: "From",
-                                            context: context,
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime(1900),
-                                            lastDate: DateTime(2100),
-                                            builder: (context, child) {
-                                              return Theme(data: Theme.of(context).copyWith(
-                                                colorScheme: ColorScheme.light(
-                                                  primary: Theme.of(context).primaryColor, // header background color
-                                                  onPrimary: Colors.white, // header text color
-                                                  onSurface: Colors.black, // body text color
-                                                ),
-                                                textButtonTheme: TextButtonThemeData(
-                                                  style: TextButton.styleFrom(
-                                                    primary: Colors.black, // button text color
-                                                  ),
-                                                ),
-                                              ),
-                                                child: child!,
-                                              );
-                                            });
-                                        nmrWklyController.TodateController.text = BaseUtitiles.selectDateFormat(Frdate!);
-                                      }
-                                    },
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return '\u26A0 ${RequestConstant.VALIDATE}';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                      CommonDateFields(
+                        date1: CommonDateFieldConfig(
+                          title: "From Date",
+                          value: nmrWklyController.FromdateController.text,
+                          controller: nmrWklyController.FromdateController,
+                          selectable: true,
+                          initialDate: DateTime.tryParse(
+                            nmrWklyController.FromdateController.text,
+                          ) ??
+                              DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime.now(),
+                          onChanged: (date) {
+                            setState(() {
+                              nmrWklyController.FromdateController.text =
+                                  CommonDateUtils.formatApiDate(date);
+                            });
+                          },
+                        ),
+                        date2: CommonDateFieldConfig(
+                          title: "To Date",
+                          value: nmrWklyController.TodateController.text,
+                          controller: nmrWklyController.TodateController,
+                          selectable: true,
+                          initialDate: DateTime.tryParse(
+                              nmrWklyController.TodateController.text) ??
+                              DateTime.now(),
+                          firstDate: DateTime.tryParse(
+                              nmrWklyController.FromdateController.text) ??
+                              DateTime.now(),
+                          lastDate: DateTime(2100),
+                          onChanged: (date) {
+                            setState(() {
+                              nmrWklyController.TodateController.text =
+                                  CommonDateUtils.formatApiDate(date);
+                            });
+                          },
                         ),
                       ),
                       Container(

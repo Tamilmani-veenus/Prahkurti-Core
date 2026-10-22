@@ -22,6 +22,7 @@ import '../../../../../utilities/requestconstant.dart';
 import '../../../../commonpopup/requesttype_alert.dart';
 import '../../../../controller/menu_controller.dart';
 import '../../../../utilities/apiconstant.dart';
+import '../../../../utilities/common_date_fields.dart';
 
 class MRNRequest_Indent_Entry extends StatefulWidget {
   final String heading;
@@ -56,6 +57,7 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
 
   @override
   void initState() {
+    super.initState();
     var duration = const Duration(seconds: 0);
     Future.delayed(duration, () async {
       mrn_request_controller.CheckmaterialBalQty();
@@ -71,10 +73,8 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
         projectController.selectedProjectId.value = 0;
         subcontractorController.Subcontractorname.text = "--SELECT--";
         subcontractorController.selectedSubcontId.value = 0;
-        mrn_request_controller.RequestDateController.text =
-            BaseUtitiles.initiateCurrentDateFormat();
-        mrn_request_controller.DuedateController.text =
-            BaseUtitiles.initiateCurrentDateFormat();
+        mrn_request_controller.RequestDateController.text = BaseUtitiles.initiateCurrentDateFormat();
+        mrn_request_controller.DuedateController.text = BaseUtitiles.initiateCurrentDateFormat();
         mrn_request_controller.preparedbyController.text =
             loginController.EmpName();
         mrn_request_controller.ReqTypeController.text = "--SELECT--";
@@ -127,8 +127,10 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
         });
       }
 
+      if (!mounted) return;
+
+      setState(() {});
     });
-    super.initState();
   }
 
   @override
@@ -329,131 +331,44 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                           ),
                         ),
                       ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              margin: const EdgeInsets.only(
-                                  top: 2, left: 10, right: 10),
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  side: const BorderSide(
-                                      color: Colors.white70, width: 1),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                elevation: 3,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 3, left: 10, bottom: 5),
-                                  child: TextFormField(
-                                    readOnly: true,
-                                    controller: mrn_request_controller
-                                        .RequestDateController,
-                                    cursorColor: Colors.black,
-                                    style: const TextStyle(color: Colors.black),
-                                    decoration: const InputDecoration(
-                                      contentPadding: EdgeInsets.zero,
-                                      border: InputBorder.none,
-                                      labelText: "Request Date",
-                                      labelStyle: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize:
-                                            RequestConstant.Lable_Font_SIZE,
-                                      ),
-                                      prefixIconConstraints: BoxConstraints(
-                                          minWidth: 0, minHeight: 0),
-                                      prefixIcon: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 8, horizontal: 8),
-                                          child: ConstIcons.date),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              margin: const EdgeInsets.only(
-                                  top: 2, left: 10, right: 10),
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  side: const BorderSide(
-                                      color: Colors.white70, width: 1),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                elevation: 3,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 3, left: 10, bottom: 5),
-                                  child: TextFormField(
-                                    readOnly: true,
-                                    controller: mrn_request_controller
-                                        .DuedateController,
-                                    cursorColor: Colors.black,
-                                    style: const TextStyle(color: Colors.black),
-                                    decoration: const InputDecoration(
-                                      contentPadding: EdgeInsets.zero,
-                                      border: InputBorder.none,
-                                      labelText: "Due Date",
-                                      labelStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize:
-                                              RequestConstant.Lable_Font_SIZE),
-                                      prefixIconConstraints: BoxConstraints(
-                                          minWidth: 0, minHeight: 0),
-                                      prefixIcon: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 8, horizontal: 8),
-                                          child: ConstIcons.date),
-                                    ),
-                                    onTap: () async {
-                                      // if (mrn_request_controller.screenCheck ==
-                                      //     "PendingScreen") {
-                                      // }
-                                      // else {
-                                        var Entrydate = await showDatePicker(
-                                            context: context,
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime.now(),
-                                            lastDate: DateTime(2100),
-                                            builder: (context, child) {
-                                              return Theme(
-                                                data:
-                                                    Theme.of(context).copyWith(
-                                                  colorScheme:
-                                                      ColorScheme.light(
-                                                    primary: Theme.of(context)
-                                                        .primaryColor,
-                                                    // header background color
-                                                    onPrimary: Colors.white,
-                                                    // header text color
-                                                    onSurface: Colors
-                                                        .black, // body text color
-                                                  ),
-                                                  textButtonTheme:
-                                                      TextButtonThemeData(
-                                                    style: TextButton.styleFrom(
-                                                      primary: Colors
-                                                          .black, // button text color
-                                                    ),
-                                                  ),
-                                                ),
-                                                child: child!,
-                                              );
-                                            });
-                                        mrn_request_controller
-                                                .DuedateController.text =
-                                            BaseUtitiles.selectDateFormat(
-                                                Entrydate!);
-                                      // }
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                      CommonDateFields(
+                        date1: CommonDateFieldConfig(
+                          title: "Request Date",
+                          value: mrn_request_controller.RequestDateController.text,
+                          controller: mrn_request_controller.RequestDateController,
+                          selectable: true,
+                         initialDate: DateTime.tryParse(
+                            mrn_request_controller.RequestDateController.text) ??
+                            DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime.now(),
+                          onChanged: (date) {
+                            setState(() {
+                              mrn_request_controller.RequestDateController.text =
+                                  CommonDateUtils.formatApiDate(date);
+                            });
+                          },
+                        ),
+
+                        date2: CommonDateFieldConfig(
+                          title: "Due Date",
+                          value: mrn_request_controller.DuedateController.text,
+                          controller: mrn_request_controller.DuedateController,
+                          selectable: true,
+                          initialDate: DateTime.tryParse(
+                              mrn_request_controller.DuedateController.text) ??
+                              DateTime.now(),
+                          firstDate: DateTime.tryParse(
+                              mrn_request_controller.RequestDateController.text) ??
+                              DateTime.now(),
+                          lastDate: DateTime(2100),
+                          onChanged: (date) {
+                            setState(() {
+                              mrn_request_controller.DuedateController.text =
+                                  CommonDateUtils.formatApiDate(date);
+                            });
+                          },
+                        ),
                       ),
                       Container(
                         margin:
@@ -548,21 +463,19 @@ class _MRNRequest_Indent_EntryState extends State<MRNRequest_Indent_Entry> {
                                     child: ConstIcons.projectName),
                               ),
                               onTap: () async {
-
-                                  if (mrn_request_controller.saveButton.value == RequestConstant.VERIFY ||
+                                if (mrn_request_controller.saveButton.value == RequestConstant.VERIFY ||
                                       mrn_request_controller
                                           .Material_itemview_GetDbList
                                           .value
                                           .isNotEmpty) {
-                                  } else {
+                                } else {
                                     await projectController.getProjectList();
                                     bottomsheetControllers.ProjectName(
                                         context,
                                         projectController
                                             .getdropDownvalue.value);
                                   }
-
-                              },
+                                  },
                               validator: (value) {
                                 if (value!.isEmpty ||
                                     value == "--Select--" ||

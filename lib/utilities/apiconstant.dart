@@ -1,38 +1,83 @@
 import 'dart:io';
 import 'package:package_info_plus/package_info_plus.dart';
 
-class ApiConfig {
-  // static const String LIVE_ENDPOINT_CORE = "http://192.168.0.250:8080/";  //local
-  static const String LIVE_ENDPOINT_CORE = "http://49.204.233.151:8080/";    //local
 
-  // static const String DEFAULT_BASE_URL_CORE = LIVE_ENDPOINT_CORE + "VeenusAPI/";
-  static const String DEFAULT_BASE_URL_CORE = LIVE_ENDPOINT_CORE + "PrakruthiAPI/";
-  static late final String APIURL_CORE;
+class ApiConfig {
+
+  static const String LIVE_ENDPOINT_1 = "http://49.204.233.151:8080/";
+
+  static const String LIVE_ENDPOINT_2 = "http://122.173.84.247:8080/";
+
+  static const String DEFAULT_BASE_URL = LIVE_ENDPOINT_1 + "PrakruthiAPI/";
+
+  static late final String APIURL;
 
   static late final String WebURL;
-  static String BASE_URL_CORE = APIURL_CORE;
 
   static Future<void> initializeUrl() async {
-    final isLive = await _isEndpointLive(Uri.parse(LIVE_ENDPOINT_CORE).host);
-    if (isLive) {
-      APIURL_CORE = "${LIVE_ENDPOINT_CORE}PrakruthiAPI/";
-      WebURL = "${LIVE_ENDPOINT_CORE}Prahkurti/";
+
+    final liveEndpoint = await _getLiveEndpoint();
+
+    if (liveEndpoint != null) {
+
+      APIURL = "${liveEndpoint}PrakruthiAPI/";
+
+      WebURL = "${liveEndpoint}Prahkurti/";
+
+      print("IP_URL ${APIURL}");
+
     } else {
-      APIURL_CORE = DEFAULT_BASE_URL_CORE;
-      WebURL = "${LIVE_ENDPOINT_CORE}Prahkurti/";
+
+      APIURL = DEFAULT_BASE_URL;
+
+      WebURL = DEFAULT_BASE_URL.replaceAll("PrakruthiAPI/", "Prahkurti/");
+
     }
+
+  }
+
+  static String BASE_URL = APIURL;
+
+  static Future<String?> _getLiveEndpoint() async {
+
+    final ip1 = Uri.parse(LIVE_ENDPOINT_1).host;
+
+    final ip2 = Uri.parse(LIVE_ENDPOINT_2).host;
+
+    if (await _isEndpointLive(ip1)) {
+
+      return LIVE_ENDPOINT_1;
+
+    } else if (await _isEndpointLive(ip2)) {
+
+      return LIVE_ENDPOINT_2;
+
+    }
+
+    return null; // No live endpoint found
+
   }
 
   static Future<bool> _isEndpointLive(String ip) async {
+
     try {
-      final socket = await Socket.connect(ip, 80, timeout: Duration(seconds: 5));
+
+      final socket = await Socket.connect(ip, 8080, timeout: Duration(seconds: 5));
+
       socket.destroy();
+
       return true;
+
     } catch (e) {
+
       return false;
+
     }
+
   }
+
 }
+
 
 class AppClient {
   static late String packageName;
@@ -50,7 +95,7 @@ class AppClient {
 
 class ApiConstant{
 
-  static String BASE_URL_CORE = ApiConfig.BASE_URL_CORE;
+  static String BASE_URL_CORE = ApiConfig.BASE_URL;
   static String Web_URL = ApiConfig.WebURL;
 
   /// ---- Get API's ----
@@ -71,6 +116,8 @@ class ApiConstant{
   static String MATERIALDASHSUPWISE_API = BASE_URL_CORE + "api/DashBoard/DashBoardMaterialSupplierWise";
   static String PUT_PLANNING_CALENDAR_API = BASE_URL_CORE + "api/DashBoard/UpdateMeetingScheduler";
   static String HRDASHBOARD_PLANNINGCALEN_API = BASE_URL_CORE + "api/DashBoard/GetAllMeetingScheduler";
+
+
 
   static String PENDINGLISTAPI = BASE_URL_CORE + "api/Menu/GetMobilePendingList";
   static String REQNOLISTAPI = BASE_URL_CORE + "api/MaterialPurOrdMas/GetReqMasDataByPO";

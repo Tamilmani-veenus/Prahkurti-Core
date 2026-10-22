@@ -16,6 +16,7 @@ import '../../../../controller/projectcontroller.dart';
 import '../../../../controller/sitecontroller.dart';
 import '../../../../controller/subcontcontroller.dart';
 import '../../../../utilities/baseutitiles.dart';
+import '../../../../utilities/common_date_fields.dart';
 import '../../../../utilities/requestconstant.dart';
 
 class WorkOrderBoqEntryScreen extends StatefulWidget {
@@ -90,6 +91,9 @@ class _WorkOrderBoqEntryScreenState extends State<WorkOrderBoqEntryScreen> {
         workOrderBoqController.rebateAmount.text = "0.0";
         workOrderBoqController.Roundoff.text = "0.0";
       }
+      if (!mounted) return;
+
+      setState(() {});
     });
     super.initState();
   }
@@ -177,70 +181,24 @@ class _WorkOrderBoqEntryScreenState extends State<WorkOrderBoqEntryScreen> {
                       ),
                     ),
 
-                    Container(
-                      margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.white70, width: 1),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        elevation: 3,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                          child: TextFormField(
-                            readOnly: true,
-                            controller: workOrderBoqController.workOrdentryDateController,
-                            cursorColor: Colors.black,
-                            style: TextStyle(color: Colors.black),
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.zero,
-                              border: InputBorder.none,
-                              labelText: "Work Order Date",
-                              labelStyle: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: RequestConstant.Lable_Font_SIZE),
-                              prefixIconConstraints:
-                              BoxConstraints(minWidth: 0, minHeight: 0),
-                              prefixIcon: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 8),
-                                  child: ConstIcons.date),
-                            ),
-                            onTap: () async {
-                              if (workOrderBoqController.saveButton.value == RequestConstant.RESUBMIT) {
-                              } else {
-                                var Entrydate = await showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(1900),
-                                    lastDate: DateTime(2100),
-                                    builder: (context, child) {
-                                      return Theme(
-                                        data: Theme.of(context).copyWith(
-                                          colorScheme: ColorScheme.light(
-                                            primary: Theme.of(context).primaryColor,
-                                            // header background color
-                                            onPrimary: Colors.white,
-                                            // header text color
-                                            onSurface:
-                                            Colors.black, // body text color
-                                          ),
-                                          textButtonTheme: TextButtonThemeData(
-                                            style: TextButton.styleFrom(
-                                              primary:
-                                              Colors.black, // button text color
-                                            ),
-                                          ),
-                                        ),
-                                        child: child!,
-                                      );
-                                    });
-                                workOrderBoqController.workOrdentryDateController
-                                    .text = BaseUtitiles.selectDateFormat(Entrydate!);
-                              }
-                            },
-                          ),
-                        ),
+                    CommonDateFields(
+                      date1: CommonDateFieldConfig(
+                        title: "Work Order Date",
+                        value: workOrderBoqController.workOrdentryDateController.text,
+                        controller: workOrderBoqController.workOrdentryDateController,
+                        selectable: loginController.user.value.userType != "S",
+                        initialDate: DateTime.tryParse(
+                          workOrderBoqController.workOrdentryDateController.text,
+                        ) ??
+                            DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime.now(),
+                        onChanged: (date) {
+                          setState(() {
+                            workOrderBoqController.workOrdentryDateController.text =
+                                CommonDateUtils.formatApiDate(date);
+                          });
+                        },
                       ),
                     ),
                     Container(

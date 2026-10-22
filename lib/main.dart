@@ -48,7 +48,6 @@ Future<void> main() async {
 class StartApp extends StatefulWidget {
   const StartApp({super.key});
 
-
   @override
   State<StatefulWidget> createState() => _StartAppState();
 }

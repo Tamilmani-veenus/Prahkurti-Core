@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import '../../../../utilities/common_date_fields.dart';
 import 'transferbetween_sites_additems.dart';
 import '../../../../app_theme/app_colors.dart';
 import '../../../../constants/ui_constant/icons_const.dart';
@@ -105,6 +106,9 @@ class _TransferBetweenSites_EntryState extends State<TransferBetweenSites_Entry>
         transferBt_Site_Controller.entryDateText.text=BaseUtitiles.initiateCurrentDateFormat();
         transferBt_Site_Controller.prearedbyText.text=loginController.EmpName();
       }
+      if (!mounted) return;
+
+      setState(() {});
     });
     super.initState();
   }
@@ -211,68 +215,24 @@ class _TransferBetweenSites_EntryState extends State<TransferBetweenSites_Entry>
                             ),
                             Expanded(
                               flex: 3,
-                              child: Container(
-                                margin: EdgeInsets.only(top: 5, right: 10),
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(color: Colors.white70, width: 1),
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  elevation: 3,
-                                  child: Padding(
-                                    padding:
-                                    const EdgeInsets.only(top: 3, left: 10, bottom: 5),
-                                    child: TextFormField(
-                                      readOnly: true,
-                                      controller: transferBt_Site_Controller.entryDateText,
-                                      cursorColor: Colors.black,
-                                      style: TextStyle(color: Colors.black),
-                                      decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.zero,
-                                        border: InputBorder.none,
-                                        labelText: "Date",
-                                        labelStyle: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: RequestConstant.Lable_Font_SIZE),
-                                        prefixIconConstraints:
-                                        BoxConstraints(minWidth: 0, minHeight: 0),
-                                        prefixIcon: Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 8, horizontal: 8),
-                                            child: ConstIcons.date),
-                                      ),
-                                      onTap: () async {
-                                        var Entrydate = await showDatePicker(
-                                            context: context,
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime(1900),
-                                            lastDate: DateTime(2100),
-                                            builder: (context, child) {
-                                              return Theme(data: Theme.of(context).copyWith(
-                                                colorScheme: ColorScheme.light(
-                                                  primary: Theme.of(context).primaryColor, // header background color
-                                                  onPrimary: Colors.white, // header text color
-                                                  onSurface: Colors.black, // body text color
-                                                ),
-                                                textButtonTheme: TextButtonThemeData(
-                                                  style: TextButton.styleFrom(
-                                                    primary: Colors.black, // button text color
-                                                  ),
-                                                ),
-                                              ),
-                                                child: child!,
-                                              );
-                                            });
-                                        transferBt_Site_Controller.entryDateText.text = BaseUtitiles.selectDateFormat(Entrydate!);
-                                      },
-                                      validator: (value) {
-                                        if (value!.isEmpty || value == "--Select--" || value == "--SELECT--") {
-                                          return '\u26A0 ${RequestConstant.VALIDATE}';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                  ),
+                              child: CommonDateFields(
+                                date1: CommonDateFieldConfig(
+                                  title: "Date",
+                                  value: transferBt_Site_Controller.entryDateText.text,
+                                  controller: transferBt_Site_Controller.entryDateText,
+                                  selectable: loginController.user.value.userType != "S",
+                                  initialDate: DateTime.tryParse(
+                                    transferBt_Site_Controller.entryDateText.text,
+                                  ) ??
+                                      DateTime.now(),
+                                  firstDate: DateTime(2000),
+                                  lastDate: DateTime.now(),
+                                  onChanged: (date) {
+                                    setState(() {
+                                      transferBt_Site_Controller.entryDateText.text =
+                                          CommonDateUtils.formatApiDate(date);
+                                    });
+                                  },
                                 ),
                               ),
                             ),
