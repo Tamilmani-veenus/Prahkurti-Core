@@ -15,6 +15,7 @@ import '../../controller/site_location_controller.dart';
 import '../../home/dashboard/site_locations_view.dart';
 import '../../login/animation_signinpage/signin_page.dart';
 import '../../models/admin_dashboard_response.dart';
+import '../../utilities/apiconstant.dart';
 import '../../utilities/baseutitiles.dart';
 import '../../utilities/requestconstant.dart';
 
@@ -269,6 +270,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                           const SizedBox(
                             height: 10,
                           ),
+                          if(!AppClient.isPrahkurti)
                           _pinSiteLocationCard(context),
                           Obx(() => GridView.builder(
                             padding: EdgeInsets.only(top: 8),
